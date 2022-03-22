@@ -1,0 +1,68 @@
+{
+  "schedule_units": [
+    {
+      "id": "TS_1",
+      "name": "1980_hwts",
+      "ex_attrs": "",
+      "cal_engines": [
+        {
+          "id": "DNN_VM_HOST_CPU",
+          "name": "HOST_CPU",
+          "independent": false,
+          "skip_assign_stream": true,
+          "attach": true
+        },
+        {
+          "id": "DNN_VM_GE_LOCAL",
+          "name": "GE_LOCAL",
+          "independent": false,
+          "skip_assign_stream": true,
+          "attach": true
+        },
+        {
+          "id": "AIcoreEngine",
+          "name": "AICORE",
+          "independent": false,
+          "skip_assign_stream": false,
+          "attach":false
+        },
+
+        {
+          "id": "VectorEngine",
+          "name": "VECTORCORE",
+          "independent": false,
+          "skip_assign_stream": false,
+          "attach":false
+        },
+        {
+          "id": "DNN_VM_AICPU",
+          "name": "AICPU",
+          "independent": false,
+          "skip_assign_stream": false,
+          "attach": true
+        },
+        {
+          "id": "DNN_VM_AICPU_ASCEND",
+          "name": "AICPU_ASCEND",
+          "independent": false,
+          "skip_assign_stream": false,
+          "attach": true
+        },
+        {
+          "id": "DNN_HCCL",
+          "name": "HCCL",
+          "independent": true,
+          "skip_assign_stream": false,
+          "attach": false
+        },
+        {
+          "id": "DNN_VM_RTS",
+          "name": "RTS",
+          "independent": false,
+          "skip_assign_stream": false,
+          "attach": true
+        }
+      ]
+    }
+  ]
+}

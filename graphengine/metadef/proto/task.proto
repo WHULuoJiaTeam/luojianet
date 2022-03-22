@@ -1,0 +1,738 @@
+/* Copyright (C) 2018. Huawei Technologies Co., Ltd. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the Apache License Version 2.0.You may not use this file except in compliance with the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Apache License for more details at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+syntax = "proto3";
+
+package domi;
+
+message ModelTaskDef {
+    string version = 1;
+
+    map<string, string> attr = 9; // Extended field
+    repeated TaskDef task = 10;
+
+    uint64 memory_size = 11;
+    uint32 stream_num = 12;
+    uint32 event_num = 13;
+    uint64 weight_size = 14;
+
+    repeated bytes op = 15; // input/output opdef in bytes
+
+    uint64 base_addr = 16;    // base addr
+    uint64 weight_addr = 17;  // weight addr
+    uint32 batch_num = 18;
+}
+
+
+message TaskDef {
+    uint32 id = 1;
+    uint32 type = 2;
+
+    uint32 stream_id = 10;
+    uint32 event_id = 11;
+
+    KernelDef kernel = 20;
+    KernelExDef kernel_ex = 21;
+    KernelHcclDef kernel_hccl = 25;
+    EventExDef event_ex = 26;
+    LogTimeStampDef log_timestamp = 28;
+
+    uint32 label_id = 30;
+
+    MemcpyAsyncDef memcpy_async = 31;
+    StreamSwitchDef stream_switch = 32;
+    StreamActiveDef stream_active = 33;
+    bytes private_def = 34;
+    uint64 ops_kernel_store_ptr = 35;      // adjustments to other fields in the future
+    StreamSwitchNDef stream_switch_n = 36;
+
+    LabelSetDef label_set = 37;
+    LabelGotoExDef label_goto_ex = 38;
+    LabelSwitchByIndexDef label_switch_by_index = 39;
+    KernelDefWithHandle kernel_with_handle = 40;
+    FftsTaskDef ffts_task = 41;
+    FftsPlusTaskDef ffts_plus_task = 42;
+}
+
+message KernelDef {
+    KernelContext context = 1;
+
+    string stub_func = 10;
+    uint32 block_dim = 11;
+    uint32 args_size = 12;
+    bytes args = 13;
+    bytes sm_desc = 14;
+    bytes flowtable = 15;
+    string so_name = 16;
+    string kernel_name = 17;
+    bytes kernel_ext_info = 18;
+    uint32 kernel_ext_info_size = 19;
+}
+
+message KernelDefWithHandle {
+    KernelContext context = 1;
+
+    uint64 handle = 10;
+    string dev_func = 11;
+    uint32 block_dim = 12;
+    uint32 args_size = 13;
+    bytes args = 14;
+    bytes sm_desc = 15;
+    string original_kernel_key = 16;
+    string node_info = 17;
+}
+
+message KernelContext {
+    uint32 kernel_type = 1;
+    uint32 op_id = 2;                              // OP type in CCE
+    uint32 kernel_func_id = 3;
+    uint32 op_index = 4;                           // TE/Custom operator
+    bool is_flowtable = 5;                         // Identify whether args is a flowtable structure
+    bytes args_offset = 6;                         // args offset information
+    uint32 args_count = 7;                         // args count
+    repeated uint32 origin_op_index = 8;
+}
+
+
+message KernelExDef {
+    uint32 flags = 1;
+
+    uint32 op_index = 4;
+    uint32 args_size = 12;
+    bytes args = 13;
+    bytes task_info = 14;                 // serialized nodeDef, funcDef, inputoutput
+    uint32 task_info_size = 15;
+    bytes kernel_ext_info = 16;
+    uint32 kernel_ext_info_size = 17;
+}
+
+
+message KernelHcclDef {
+    uint32 op_index = 8;
+    string hccl_type = 9;
+}
+
+
+message EventExDef {
+    uint32 op_index = 1;
+    uint32 event_type = 2;
+}
+
+message LogTimeStampDef {
+    uint64 logid = 1;
+    bool notify = 2;
+    uint32 flat = 3;
+}
+
+message MemcpyAsyncDef {
+    uint64 dst = 1;
+    uint64 dst_max = 2;
+    uint64 src = 3;
+    uint64 count = 4;
+    uint32 kind = 5;
+    uint32 op_index = 6;
+}
+
+message StreamSwitchDef {
+    uint32 op_index = 1;
+    uint32 true_stream_id = 2;
+    int64 value = 3;
+    uint64 value_ptr = 4;
+    uint32 data_type = 5;
+}
+
+message StreamActiveDef {
+    uint32 op_index = 1;
+    uint32 active_stream_id = 2;
+}
+
+message StreamSwitchNDef {
+    uint32 op_index = 1;
+    uint32 size = 2;
+    repeated int64 target_value = 3;
+    repeated uint32 true_stream_id = 4;
+    uint32 element_size = 5;
+    uint32 data_type = 6;
+}
+
+message LabelSetDef {
+    uint32 op_index = 1;
+    uint32 label_id = 2;
+    uint32 model_id = 3;
+}
+
+message LabelGotoExDef {
+    uint32 op_index = 1;
+    uint32 label_id = 2;
+    uint32 model_id = 3;
+}
+
+message LabelSwitchByIndexDef {
+    uint32 op_index = 1;
+    uint32 label_max = 2;
+}
+
+message FftsTaskDef {
+    uint32 op_index = 1;
+
+    uint32 ffts_type = 2;   // 2: Auto Threading / 3: Manual Threading
+    uint32 addr_size = 3;   // Total task addr num
+    FftsDescInfoDef ffts_desc = 4;
+    repeated FftsSubTaskDef sub_task = 5;
+    repeated TicketCacheDef ticket_cache = 6;
+}
+
+message FftsDescInfoDef {
+    uint32 tm = 1;    // thread subtask kickstart mode, 0:order, 1:disorder
+    uint32 di = 2;    // discard invalidate
+    uint32 dw = 3;    // discard write back
+    uint32 df = 4;    // discard flush
+    uint32 data_split_unit = 5;    // split source or ticket cache by 2~dataSplitUnit MB
+    uint32 prefetch_ost_num = 6;
+    uint32 cache_maintain_ost_num = 7;
+    uint32 aic_prefetch_upper = 8;
+    uint32 aic_prefetch_lower = 9;
+    uint32 aiv_prefetch_upper = 10;
+    uint32 aiv_prefetch_lower = 11;
+}
+
+message FftsSubTaskDef {
+    uint32 sub_task_type = 1;   // 0: AIC / 1: AIV / 2: DMU / 3: NOP / 4: Prefetch
+
+    uint32 thread_dim = 2;    // thread count
+    uint32 dst_tick_cache_vld_bitmap = 3;
+    uint32 src_tick_cache_vld_bitmap = 4;
+    uint32 src_data_out_of_subgraph_bitmap = 5;
+
+    repeated uint32 dst_tick_cache_id = 6;  // Max 8 output
+    repeated uint32 src_tick_cache_id = 7;  // Max 8 input
+
+    AutoThreadAicAivDef auto_thread_aic_aiv = 8;
+
+    ManualThreadAicAivDef manual_thread_aic_aiv = 9;
+    ManualThreadNopDef manual_thread_nop = 10;
+}
+
+message TicketCacheDef {
+    uint32 cache_option = 1;    // 1: invalidate / 2: flush
+    uint32 ticket_cache_window = 2;
+
+    AutoThreadCacheDef auto_thread_cache = 3;
+
+    ManualThreadCacheDef manual_thread_cache = 4;
+}
+
+message AutoThreadAicAivDef {
+    repeated uint64 task_addr = 1; // input / output address (runtime device memory)
+    repeated uint64 task_addr_offset = 2;
+    uint32 task_param_offset = 3;
+
+    uint32 sat_mode = 4;
+    uint32 schedule_mode = 5;    // 0:normal mode, 1:batch mode, 2:sync mode, 3:reserved
+    uint32 cache_prefetch_cnt = 6;    // units is 2K
+    uint32 prefetch_enable_bitmap = 7;  // 8 bit bitmap
+    uint32 prefetch_once_bitmap = 8;    // 8 bit bitmap
+
+    uint32 tail_blk_dim = 9;
+    uint32 non_tail_blk_dim = 10;
+
+    string non_tail_task_func_stub = 11;
+    string tail_task_func_stub = 12;
+
+    repeated AutoThreadPrefetchDef src_prefetch = 13;
+    uint32 input_output_count = 14;
+}
+
+message AutoThreadCacheDef {
+    uint64 data_addr = 1;   // device mem
+    uint32 data_addr_offset = 2;
+    uint32 non_tail_data_len = 3;
+    uint32 tail_data_len = 4;
+    uint32 ticket_cache_ref_cnt = 5;
+}
+
+message AutoThreadPrefetchDef {
+    uint64 data_addr = 1;  // device mem
+    uint32 data_addr_offset = 2;
+    uint32 non_tail_data_len = 3;
+    uint32 tail_data_len = 4;
+}
+
+message ManualThreadAicAivDef {
+    repeated uint64 task_addr = 1;    // input/output address(runtime device memory)
+    repeated uint64 task_addr_offset = 2;
+    uint32 task_param_offset = 3;
+
+    uint32 sat_mode = 4;
+    uint32 schedule_mode = 5;    // 0:normal mode; 1:batch mode; 2:sync mode; 3:reserved
+    uint32 cache_prefetch_cnt = 6;  // units is 2K
+    uint32 prefetch_enable_bitmap = 7;  // 8 bit bitmap 1010
+    uint32 prefetch_once_bitmap = 8;    // 8 bit bitmap 1010
+
+    uint32 prefetch_once_dmu_num = 9;   // prefetch_once_dmu_descriptor_index in ffts
+    // num: thread0_prefetch_dmu_descriptor_index - prefetch_once_dmu_descriptor_index
+    // offset: PrefetchOnceDmuDescIndex
+
+    repeated uint32 thread_prefetch_dmu_idx = 10;    // max valid is thread dim
+    repeated uint32 thread_blk_dim = 11;
+
+    repeated string thread_task_func_stub = 12;
+
+    repeated ManualThreadDmuDef prefetch_list = 13;  // dmu desc 0-64k
+    repeated ManualThreadDependencyDef src_dep_tbl = 14;
+    uint32 input_output_count = 15;
+}
+
+message ManualThreadNopDef {
+    repeated ManualThreadDependencyDef src_dep_tbl = 1;
+}
+
+message ManualThreadCacheDef {
+    repeated ManualThreadDmuDef dmu_list = 1;
+
+    repeated uint32 slice_dmu_idx = 2;
+    repeated uint32 ticket_cache_ref_cnt_tbl = 3;
+}
+
+message ManualThreadDmuDef {
+    uint64 data_addr = 1;   // device mem
+    uint32 num_outer = 2;
+    uint32 num_inner = 3;
+    uint32 stride_outer = 4;
+    uint32 len_inner = 5;
+    uint32 stride_inner = 6;
+}
+
+message ManualThreadDependencyDef {
+    repeated uint32 dependency = 1;
+}
+
+message FftsPlusTaskDef {
+    uint32 op_index = 1;
+    uint32 addr_size = 2;   // Total task addr num
+    FftsPlusSqeDef ffts_plus_sqe = 3;
+    repeated FftsPlusCtxDef ffts_plus_ctx = 4;  // include total context
+    repeated AdditionalDataDef additional_data = 5;
+}
+
+message AdditionalDataDef {
+    uint32 data_type = 1;   // ModeInArgsFirstField
+    repeated uint32 context_id = 2;
+}
+
+message FftsPlusSqeDef {
+    StarsSqeHeaderDef sqe_header = 1;
+
+    uint32 wrr_ratio = 2;
+    uint32 sqe_index = 3;
+
+    uint32 total_context_num = 4;
+    uint32 ready_context_num = 5;
+    uint32 preload_context_num = 6;
+
+    uint32 prefetch_ost_num = 7;
+    uint32 cmaint_ost_num = 8;
+
+    uint32 aic_prefetch_lower = 9;
+    uint32 aic_prefetch_upper = 10;
+    uint32 aiv_prefetch_lower = 11;
+    uint32 aiv_prefetch_upper = 12;
+}
+
+message StarsSqeHeaderDef {
+    uint32 l1_lock = 1;
+    uint32 l1_unlock = 2;
+    uint32 block_dim = 3;
+}
+
+// ffts plus context
+message FftsPlusCtxDef {
+    uint32 op_index = 1;
+    uint32 context_type = 2;
+    uint32 context_id = 3;
+
+    FftsPlusAicAivCtxDef aic_aiv_ctx = 4;
+    FftsPlusMixAicAivCtxDef mix_aic_aiv_ctx = 5;
+    FftsPlusSdmaCtxDef sdma_ctx = 6;
+    FftsPlusNotifyCtxDef notify_ctx = 7;
+    FftsPlusWriteValueCtxDef write_value_ctx = 8;
+    FftsPlusAicpuCtxDef aicpu_ctx = 9;
+    FftsPlusDataCtxDef data_ctx = 10;
+    FftsPlusAtStartCtxDef at_start_ctx = 11;
+    FftsPlusAtEndCtxDef at_end_ctx = 12;
+    FftsPlusLabelCtxDef label_ctx = 13;
+    FftsPlusCaseSwitchCtxDef case_switch_ctx = 14;
+    FftsPlusCaseDefaultCtxDef case_default_ctx = 15;
+    FftsPlusCondSwitchCtxDef cond_switch_ctx = 16;
+    FftsPlusCachePersistCtxDef cache_persist_ctx = 17;
+}
+
+// aic/aiv context
+message FftsPlusAicAivCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 prefetch_config = 3;
+    uint32 pred_cnt_init = 4;
+    uint32 pred_cnt = 5;
+    repeated uint32 successor_list = 6; // 16 bits, len = 26
+
+    uint32 schem = 7;
+    uint32 atm = 8;
+    uint32 prefetch_enable_bitmap = 9;
+    uint32 prefetch_once_bitmap = 10;
+
+    uint32 pmg = 11;
+    uint32 ns = 12;
+    uint32 part_id = 13;
+    uint32 qos = 14;
+
+    uint32 thread_id = 15;
+    uint32 thread_dim = 16;
+
+    uint32 non_tail_block_dim = 17;
+    uint32 tail_block_dim = 18;
+
+    uint32 task_param_ptr_offset = 19;
+    uint32 save_task_addr = 20;
+    repeated uint64 task_addr = 21;
+    repeated uint64 task_addr_offset = 22;
+    uint32 input_output_count = 23;
+
+    repeated string kernel_name = 24;
+
+    repeated uint32 src_slot = 25;  // len = 4, context ID for source data which is out of subgraph
+}
+
+// mix aic/aiv context
+message FftsPlusMixAicAivCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 prefetch_config = 3;
+    uint32 pred_cnt_init = 4;
+    uint32 pred_cnt = 5;
+    repeated uint32 successor_list = 6; // len = 26
+
+    uint32 schem = 7;
+    uint32 atm = 8;
+    uint32 prefetch_enable_bitmap = 9;
+    uint32 prefetch_once_bitmap = 10;
+
+    uint32 pmg = 11;
+    uint32 ns = 12;
+    uint32 part_id = 13;
+    uint32 qos = 14;
+
+    uint32 non_tail_block_ratio_n = 15;
+    uint32 tail_block_ratio_n = 16;
+
+    uint32 thread_id = 17;
+    uint32 thread_dim = 18;
+
+    uint32 non_tail_block_dim = 19;
+    uint32 tail_block_dim = 20;
+
+    uint32 aic_task_param_ptr_offset = 21;
+    uint32 aiv_task_param_ptr_offset = 22;
+
+    repeated string kernel_name = 23;
+
+    repeated uint64 task_addr = 24;
+    repeated uint64 task_addr_offset = 25;
+    uint32 input_output_count = 26;
+    uint32 save_task_addr = 27;
+    repeated uint32 src_slot = 28;  // len = 4, context ID for source data which is out of subgraph
+}
+
+// sdma context
+message FftsPlusSdmaCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 pred_cnt_init = 3;
+    uint32 pred_cnt = 4;
+    repeated uint32 successor_list = 5; // len = 26
+
+    uint32 atm = 6;
+    uint32 pmg = 7;
+    uint32 ns = 8;
+    uint32 part_id = 9;
+    uint32 qos = 10;
+
+    uint32 thread_id = 11;
+    uint32 thread_dim = 12;
+
+    uint32 sdma_sqe_header = 13;
+
+    uint32 src_stream_id = 14;
+    uint32 src_sub_stream_id = 15;
+    uint32 dst_stream_id = 16;
+    uint32 dst_sub_stream_id = 17;
+
+    uint64 src_addr_base = 18;
+    uint32 src_addr_offset = 19;
+    uint64 dst_addr_base = 20;
+    uint32 dst_addr_offset = 21;
+
+    uint32 non_tail_data_len = 22;
+    uint32 tail_data_len = 23;
+}
+
+// ffts plus notify record/wait context
+message FftsPlusNotifyCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 pred_cnt_init = 3;
+    uint32 pred_cnt = 4;
+    repeated uint32 successor_list = 5; // len = 26
+
+    uint32 satm = 6;
+    uint32 atm = 7;
+
+    uint32 thread_id = 8;
+    uint32 thread_dim = 9;
+
+    uint32 notify_id_base = 10;
+    uint32 auto_window = 11;
+
+    repeated uint32 notify_id = 12;
+}
+
+// write value context
+message FftsPlusWriteValueCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 pred_cnt_init = 3;
+    uint32 pred_cnt = 4;
+    repeated uint32 successor_list = 5; // len = 26
+
+    uint32 atm = 6;
+    uint32 thread_id = 7;
+    uint32 thread_dim = 8;
+
+    uint32 aw_size = 9;
+    uint32 aw_snoop = 10;
+    uint32 aw_cache = 11;
+    uint32 aw_prot = 12;
+    uint32 aw_va = 13;
+
+    uint32 ar_size = 14;
+    uint32 ar_snoop = 15;
+    uint32 ar_cache = 16;
+    uint32 ar_prot = 17;
+    uint32 ar_va = 18;
+
+    uint64 write_addr_base = 19;
+    uint32 write_addr_offset = 20;
+
+    repeated uint32 write_value = 21;
+}
+
+// aicpu context
+message FftsPlusAicpuCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 pred_cnt_init = 3;
+    uint32 pred_cnt = 4;
+    repeated uint32 successor_list = 5;   // len = 26
+
+    uint32 atm = 6;
+    uint32 sqe_index = 7;
+    uint32 kernel_type = 8;
+    uint32 bm = 9;
+    uint32 topic_type = 10;
+    uint32 qos = 11;
+
+    uint32 thread_id = 12;
+    uint32 thread_dim = 13;
+
+    uint32 non_tail_block_dim = 14;
+    uint32 tail_block_dim = 15;
+
+    uint32 sub_topic_id = 16;
+    uint32 topic_id = 17;
+    uint32 group_id = 18;
+
+    uint32 task_param_offset = 19;
+
+    aicpuKernelDef kernel = 20;
+}
+
+message aicpuKernelDef {
+    uint32 args_size = 1;
+    bytes args = 2;
+    string so_name = 3;
+    string kernel_name = 4;
+    bytes kernel_ext_info = 5;
+    uint32 kernel_ext_info_size = 6;
+}
+
+// data context
+message FftsPlusDataCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 cnt_init = 3;
+    uint32 cnt = 4;
+    repeated uint32 successor_list = 5; // len = 26
+
+    uint32 atm = 6;
+    uint32 pmg = 7;
+    uint32 ns = 8;
+    uint32 part_id = 9;
+    uint32 qos = 10;
+
+    uint32 orig_consumer_counter = 11;
+    uint32 run_consumer_counter = 12;
+
+    uint32 thread_id = 13;
+    uint32 thread_dim = 14;
+
+    uint64 addr_base = 15;
+    uint32 addr_offset = 16;
+
+    uint32 non_tail_num_outter = 17;
+    uint32 non_tail_num_inner = 18;
+    uint32 non_tail_len_inner = 19;
+    uint32 non_tail_stride_outter = 20;
+    uint32 non_tail_stride_inner = 21;
+
+    uint32 tail_num_outter = 22;
+    uint32 tail_num_inner = 23;
+    uint32 tail_len_inner = 24;
+    uint32 tail_stride_outter = 25;
+    uint32 tail_stride_inner = 26;
+}
+
+// at start context
+message FftsPlusAtStartCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 pred_cnt_init = 3;
+    uint32 pred_cnt = 4;
+    repeated uint32 successor_list = 5; // len = 26
+
+    uint32 thread_id = 6;
+    uint32 thread_dim = 7;
+
+    uint32 thread_id_init = 8;
+    uint32 thread_window_size = 9;
+}
+
+// at end context
+message FftsPlusAtEndCtxDef {
+    uint32 at_start_slot_num = 1;
+    uint32 out_label_slot_num = 2;
+    uint32 aten = 3;
+
+    uint32 pred_cnt_init = 4;
+    uint32 pred_cnt = 5;
+
+    repeated uint32 succ_at_start_slot = 6;     // len = 12
+    repeated uint32 succ_out_label_slot = 7;    // len = 12
+
+    uint32 thread_id = 8;
+}
+
+// label context
+message FftsPlusLabelCtxDef {
+    uint32 successor_num = 1;
+    uint32 pred_cnt_init = 2;
+    uint32 pred_cnt = 3;
+    repeated uint32 successor_list = 4; // len = 26
+}
+
+// switch context
+message FftsPlusCaseSwitchCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 start_label_id = 3;
+    uint32 label_list_len = 4;
+    uint32 pred_cnt_init = 5;
+    uint32 pred_cnt = 6;
+    repeated uint32 successor_list = 7; // len = 26
+
+    uint32 atm = 8;
+
+    uint32 thread_id = 9;
+    uint32 thread_dim = 10;
+
+    uint32 ar_size = 11;
+    uint32 snoop = 12;
+    uint32 ar_cache = 13;
+    uint32 ar_prot = 14;
+    uint32 va = 15;
+
+    uint64 load_addr0_base = 16;
+    uint32 ld0_en = 17;
+    uint32 load_addr0_offset = 18;
+
+    uint64 load_addr1_base = 19;
+    uint32 ld1_en = 20;
+    uint32 load_addr1_offset = 21;
+}
+
+// case default context
+message FftsPlusCaseDefaultCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 start_label_id = 3;
+    uint32 label_list_len = 4;
+    uint32 pred_cnt_init = 5;
+    uint32 pred_cnt = 6;
+    repeated uint32 successor_list = 7; // len = 26
+}
+
+// cond context
+message FftsPlusCondSwitchCtxDef {
+    uint32 true_successor_num = 1;
+    uint32 false_successor_num = 2;
+    uint32 aten = 3;
+
+    uint32 condition = 4;
+    uint32 pred_cnt_init = 5;
+    uint32 pred_cnt = 6;
+
+    repeated uint32 true_successor_list = 7;    // len = 12
+    repeated uint32 false_successor_list = 8;   // len = 14
+
+    uint32 atm = 9;
+
+    uint32 thread_id = 10;
+    uint32 thread_dim = 11;
+
+    uint32 ar_size = 12;
+    uint32 snoop = 13;
+    uint32 ar_cache = 14;
+    uint32 ar_prot = 15;
+    uint32 va = 16;
+
+    uint64 load_addr0_base = 17;
+    uint32 ld0_en = 18;
+    uint32 load_addr0_offset = 19;
+
+    uint64 load_addr1_base = 20;
+    uint32 ld1_en = 21;
+    uint32 load_addr1_offset = 22;
+
+    uint32 cmp_value_1 = 23;
+    uint32 cmp_value_2 = 24;
+}
+
+message FftsPlusCachePersistCtxDef {
+    uint32 successor_num = 1;
+    uint32 aten = 2;
+    uint32 prefetch_config = 3;
+    uint32 pred_cnt_init = 4;
+    uint32 pred_cnt = 5;
+    repeated uint32 successor_list = 6; // 16 bits, len = 26
+
+    uint32 persistent_size = 7;
+    uint32 persistent_en = 8;
+    uint32 persistent_id = 9;
+}

@@ -1,0 +1,88 @@
+syntax = "proto3";
+package ge.api_pb;
+
+import "ge_ir.proto";
+
+// GE initialize
+message GEInitialize {
+    map<string, string> options = 1;
+};
+
+// initialize response
+message GEInitializeResponse {
+    uint32 status = 1;
+    uint32 clientId = 2;
+};
+
+// GE finalize
+message GEFinalize {
+    bool final = 1;
+    uint32 clientId = 2;
+};
+
+message GEFinalizeResponse {
+    uint32 status = 1;
+};
+
+// GE Session
+message CreateSession{
+    map<string, string> options = 1;
+};
+
+message CreateSessionResponse {
+    uint32 status = 1;
+    uint64 sessionId = 2;
+};
+
+//GE AddGraph
+//model serialize :: serializegraph
+message SessionAddGraph{
+    uint32 graphId = 1;
+    uint64 sessionId = 2;
+    ge.proto.GraphDef graph = 3;
+};
+
+message SessionAddGraphResponse {
+    uint32 status = 1; 
+};
+
+//GE SessionRemoveGraph
+message SessionRemoveGraph{
+    uint32 graphId = 1;
+    uint64 sessionId = 2;
+};
+
+message SessionRemoveGraphResponse {
+    uint32 status = 1;
+};
+
+message SessionRunGraph{
+    uint32 graphId = 1;
+    uint64 sessionId = 2;
+    repeated ge.proto.TensorDef tensor = 3;
+};
+
+message SessionBuildGraph{
+    uint32 graphId = 1;
+    uint64 sessionId = 2;
+    repeated ge.proto.TensorDef tensor = 3;
+    string savePath = 4;
+};
+
+message SessionRunGraphResponse {
+    uint32 status = 1;
+    repeated ge.proto.TensorDef tensor = 2;
+};
+
+message SessionBuildGraphResponse {
+    uint32 status = 1;
+};
+
+message DestroySession{
+    bool final = 1;
+    uint64 sessionId = 2;
+};
+
+message DestroySessionResponse {
+    uint32 status = 1;
+};

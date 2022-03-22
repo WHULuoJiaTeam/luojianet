@@ -1,0 +1,30 @@
+# MetaDef
+build/
+output/
+prebuilts/
+cov/
+*.ir
+*.out
+
+# Dynamic libraries
+# *.so
+*.dylib
+
+# Static libraries
+*.la
+*.lai
+*.a
+*.lib
+
+# Protocol buffers
+*_pb2.py
+*.pb.h
+*.pb.cc
+
+# Object files
+*.o
+
+# Editor
+.vscode
+.idea/
+cmake-build-*

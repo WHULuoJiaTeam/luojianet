@@ -1,0 +1,1 @@
+optimizer:["aicpu_tf_optimizer","aicpu_ascend_optimizer","AIcoreEngine","VectorEngine","hccl_graph_optimizer", "hvd_graph_optimizer", "DNN_VM_RTS_GRAPH_OPTIMIZER_STORE", "DNN_VM_HOST_CPU_OPTIMIZER"]

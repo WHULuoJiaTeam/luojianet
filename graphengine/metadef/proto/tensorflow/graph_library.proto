@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package domi.tensorflow;
+
+import "graph.proto";
+
+message GeGraphDef {
+  string name = 1;
+  GraphDef graph = 2;
+}
+
+message GraphDefLibrary {
+  repeated GeGraphDef graph_def = 1;
+};

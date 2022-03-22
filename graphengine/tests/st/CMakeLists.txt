@@ -1,0 +1,2 @@
+project(graphengine_st)
+add_subdirectory(testcase)

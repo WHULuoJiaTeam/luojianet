@@ -1,0 +1,4 @@
+###################################################################################
+the directory (stub) saves the stub file
+gen_stubapi.py is using for retrieving API and generating stub functions
+###################################################################################

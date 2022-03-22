@@ -1,0 +1,105 @@
+From 455c9812d70646fe725896d597d6c953bf5a09ac Mon Sep 17 00:00:00 2001
+From: taoxiangdong <taoxiangdong1@huawei.com>
+Date: Wed, 14 Oct 2020 22:14:01 +0800
+Subject: [PATCH] add securec cmake script
+
+---
+ CMakeLists.txt | 86 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
+ create mode 100755 CMakeLists.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100755
+index 0000000..9b91fb2
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,86 @@
++cmake_minimum_required(VERSION 3.14)
++project(Securec)
++file(GLOB SRC_LIST RELATIVE ${CMAKE_CURRENT_LIST_DIR}
++	"src/vsprintf_s.c"
++	"src/wmemmove_s.c"
++	"src/strncat_s.c"
++	"src/vsnprintf_s.c"
++	"src/fwscanf_s.c"
++	"src/scanf_s.c"
++	"src/strcat_s.c"
++	"src/sscanf_s.c"
++	"src/secureprintoutput_w.c"
++	"src/wmemcpy_s.c"
++	"src/wcsncat_s.c"
++	"src/secureprintoutput_a.c"
++	"src/secureinput_w.c"
++	"src/memcpy_s.c"
++	"src/fscanf_s.c"
++	"src/vswscanf_s.c"
++	"src/secureinput_a.c"
++	"src/sprintf_s.c"
++	"src/memmove_s.c"
++	"src/swscanf_s.c"
++	"src/snprintf_s.c"
++	"src/vscanf_s.c"
++	"src/vswprintf_s.c"
++	"src/wcscpy_s.c"
++	"src/vfwscanf_s.c"
++	"src/memset_s.c"
++	"src/wscanf_s.c"
++	"src/vwscanf_s.c"
++	"src/strtok_s.c"
++	"src/wcsncpy_s.c"
++	"src/vfscanf_s.c"
++	"src/vsscanf_s.c"
++	"src/wcstok_s.c"
++	"src/securecutil.c"
++	"src/gets_s.c"
++	"src/swprintf_s.c"
++	"src/strcpy_s.c"
++	"src/wcscat_s.c"
++	"src/strncpy_s.c"
++	)
++
++include_directories(./include)
++include_directories(./src)
++add_library(shared_c_sec SHARED ${SRC_LIST})
++
++target_compile_options(shared_c_sec PRIVATE
++	-I/usr/local/include
++	-Werror
++	-Wall
++	-O1
++)
++target_compile_definitions(shared_c_sec PRIVATE
++	NDEBUG
++	SECUREC_SUPPORT_STRTOLD=1
++	)
++
++add_library(static_c_sec STATIC ${SRC_LIST})
++
++target_compile_options(static_c_sec PRIVATE
++        -I/usr/local/include
++        -Werror
++        -Wall
++        -O1
++)
++
++target_compile_definitions(static_c_sec PRIVATE
++	NDEBUG
++	SECUREC_SUPPORT_STRTOLD=1
++	)
++
++set_target_properties(static_c_sec
++	PROPERTIES
++	OUTPUT_NAME c_sec	
++)
++set_target_properties(shared_c_sec
++        PROPERTIES
++        OUTPUT_NAME c_sec
++)
++install(TARGETS shared_c_sec static_c_sec OPTIONAL
++	DESTINATION lib)
++install(FILES "./include/securec.h"
++	      "./include/securectype.h"
++	      DESTINATION include)
+-- 
+2.17.1
+

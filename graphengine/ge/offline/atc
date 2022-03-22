@@ -1,0 +1,21 @@
+#!/bin/bash
+#-------------------------------------------------------------------
+# Purpose:
+# Copyright 2020 Huawei Technologies Co., Ltd. All rights reserved.
+#-------------------------------------------------------------------
+
+real_path=$(readlink "$0")
+if [ $? -eq 0 ]; then
+    LOCAL_PATH=$(cd "$(dirname "$real_path")"; pwd)
+else
+    LOCAL_PATH=$(cd "$(dirname "$0")"; pwd)
+fi
+PKG_PATH=$(cd ${LOCAL_PATH}/..; pwd)
+LIB_P="/lib64"
+PYTHON_P="/python/site-packages"
+LIB64_PATH="${PKG_PATH}${LIB_P}"
+PYTHON_PATH="${PKG_PATH}${PYTHON_P}"
+export LD_LIBRARY_PATH="${LIB64_PATH}:${LD_LIBRARY_PATH}"
+export PYTHONPATH="${PYTHON_PATH}:${PYTHONPATH}"
+
+${PKG_PATH}/bin/atc.bin "$@"

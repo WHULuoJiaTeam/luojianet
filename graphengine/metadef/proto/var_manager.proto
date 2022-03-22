@@ -1,0 +1,77 @@
+syntax = "proto3";
+package deployer;
+import "ge_ir.proto";
+
+message VarAddrMgrInfo {
+  ge.proto.TensorDescriptor desc = 1;
+  uint64 address = 2;
+  uint64 offset = 3;
+  uint64 memory_type = 4;
+}
+
+message SingleTransNodeInfo {
+  string node_type = 1;
+  ge.proto.TensorDescriptor input = 2;
+  ge.proto.TensorDescriptor output = 3;
+}
+
+message TransNodeMultiInfo {
+  repeated SingleTransNodeInfo node_info = 1;
+}
+
+message BroadcastInfo {
+  string var_name = 1;
+  string broadcast_name = 2;
+  int32 idx =3;
+  int64 input_offset = 4;
+  uint64 input_size = 5;
+  int64 output_offset = 6;
+  uint64 output_size = 7;
+}
+
+message BroadcastMultiInfo {
+  map<string, BroadcastInfo> broadcast_info = 1;
+}
+
+message VarResourceInfo {
+  map<uint64, uint32> var_offset_map = 1;
+  map<string, VarAddrMgrInfo> var_addr_mgr_map = 2;
+  map<string, ge.proto.TensorDescriptor> cur_var_tensor_desc_map = 3;
+  map<string, TransNodeMultiInfo> var_to_trans_road = 4;
+  map<string, uint32> var_names_to_changed_graph_id = 5;
+  map<string, uint32> var_names_to_allocated_graph_id = 6;
+  map<uint32, BroadcastMultiInfo> var_broad_cast_info = 7;
+}
+
+message MemResourceInfo {
+  uint64 total_size = 1;
+  uint64 var_mem_size = 2;
+}
+
+message VarManagerInfo {
+  uint32 version = 1;
+  uint64 session_id = 2;
+  uint32 device_id = 3;
+  uint64 job_id = 4;
+  uint64 graph_mem_max_size = 5;
+  uint64 var_mem_max_size = 6;
+  uint64 var_mem_logic_base = 7;
+  uint64 use_max_mem_size = 8;
+  VarResourceInfo var_resource = 9;
+  map<uint32, MemResourceInfo> mem_resource_map = 10;
+}
+
+message MultiVarManagerInfo {
+  repeated VarManagerInfo var_manager_info = 1;
+}
+
+message SharedContentDescription {
+  uint64 session_id = 1;
+  string node_name = 2;
+  uint64 head_offset = 3;
+  uint64 total_length = 4;
+  uint64 current_offset = 5;
+  uint32 mem_type = 6;
+  ge.proto.TensorDescriptor tensor_desc = 7;
+  bytes om_content = 8;
+}

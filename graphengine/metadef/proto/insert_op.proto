@@ -1,0 +1,140 @@
+syntax = "proto3";
+
+package domi;
+
+message InsertNewOps {
+	repeated AippOpParams aipp_op = 1;
+	repeated MultiShapeOpParams multi_shape_op = 2;
+}
+
+message AippOpParams {
+	enum InputFormat {
+		UNDEFINED = 0;
+		YUV420SP_U8 = 1;
+		XRGB8888_U8 = 2;
+		RGB888_U8   = 3;
+		YUV400_U8   = 4;
+		NC1HWC0DI_FP16 = 5;
+		NC1HWC0DI_S8 = 6;
+		ARGB8888_U8 = 7;
+		YUYV_U8 = 8;
+		YUV422SP_U8 = 9;
+		AYUV444_U8 = 10;
+		RAW10 = 11;
+		RAW12 = 12;
+		RAW16 = 13;
+		RAW24 = 14;
+		RGB16 = 15;
+		RGB20 = 16;
+		RGB24 = 17;
+		RGB8_IR = 18;
+		RGB16_IR = 19;
+		RGB24_IR = 20;
+	}
+
+	enum AippMode {
+		undefined = 0;
+		static = 1;
+		dynamic = 2;
+	}
+
+	// AIPP模式，区分静态AIPP和动态AIPP
+	AippMode aipp_mode = 1;
+
+	// related_input_rank参数为必填，类型为整型，配置范围>=0, <=输入Data算子的个数，默认值为0。
+	// 标识对模型的第几个输入做AIPP处理，例如模型有两个输入，需要对第2个输入做AIPP，则配置related_input_rank为1。
+	uint32 related_input_rank = 2;
+
+        // related_input_name is optional and the top name of data node which inserts aipp
+        string related_input_name = 6;
+
+	// input_edge_idx参数为可选，类型为整型，配置范围为>=0。
+	// 配置该参数的作用，在于对Data算子不同的输出做不同的AIPP处理，如果该参数没有配置，默认对related_input_rank指定的模型输入的所有输出边做AIPP。
+	// 配置值 <= Data算子输出边的个数。
+	repeated uint32 input_edge_idx = 3;
+
+	// [Begin] 动态AIPP参数，配置静态AIPP时无效
+	uint32 max_src_image_size = 4;
+
+	// 是否支持旋转。默认不支持，开启支持旋转时，会有额外的空间和性能损失
+	bool support_rotation = 5;
+
+	// [End] 动态AIPP参数
+
+
+	// [Begin] 静态AIPP参数，配置动态AIPP时无效
+	InputFormat input_format = 51;
+	bool csc_switch = 52;
+	float cpadding_value = 53;
+	bool rbuv_swap_switch = 54;
+	bool ax_swap_switch = 55;
+	bool single_line_mode = 56;
+
+	int32 src_image_size_w = 57;
+	int32 src_image_size_h = 58;
+
+	bool crop = 59;
+	int32 load_start_pos_w = 60;
+	int32 load_start_pos_h = 61;
+	int32 crop_size_w = 62;
+	int32 crop_size_h = 63;
+
+	bool resize = 64;
+	int32 resize_output_w = 65;
+	int32 resize_output_h = 66;
+
+	bool padding = 67;
+	int32 left_padding_size = 68;
+	int32 right_padding_size = 69;
+	int32 top_padding_size = 70;
+	int32 bottom_padding_size = 71;
+	float padding_value = 72;
+
+	int32 mean_chn_0 = 10;
+	int32 mean_chn_1 = 11;
+	int32 mean_chn_2 = 12;
+	int32 mean_chn_3 = 19;
+	float min_chn_0 = 13;
+	float min_chn_1 = 14;
+	float min_chn_2 = 15;
+	float min_chn_3 = 20;
+	repeated float var_reci_chn_0 = 16;
+	repeated float var_reci_chn_1 = 17;
+	repeated float var_reci_chn_2 = 18;
+	repeated float var_reci_chn_3 = 21;
+
+	repeated int32 matrix_r0c0 = 30;
+	repeated int32 matrix_r0c1 = 31;
+	repeated int32 matrix_r0c2 = 32;
+	repeated int32 matrix_r1c0 = 33;
+	repeated int32 matrix_r1c1 = 34;
+	repeated int32 matrix_r1c2 = 35;
+	repeated int32 matrix_r2c0 = 36;
+	repeated int32 matrix_r2c1 = 37;
+	repeated int32 matrix_r2c2 = 38;
+	repeated int32 output_bias_0 = 39;
+	repeated int32 output_bias_1 = 40;
+	repeated int32 output_bias_2 = 41;
+	repeated int32 input_bias_0 = 42;
+	repeated int32 input_bias_1 = 43;
+	repeated int32 input_bias_2 = 44;
+
+	// [End] 静态AIPP参数
+
+       // The n number that is used for raw/rgbir data into f16 transformation.
+       // The transformation equation is x/(2^n). If set to 0, no transform is performed.
+       uint32 raw_rgbir_to_f16_n = 45;
+}
+
+message MultiShapeOpParams {
+	enum MultiShapeMode {
+		batch      = 0;             //动态batch
+		resolution = 1;             //动态分辨率，扩展用
+	}
+
+	MultiShapeMode    mode                      = 1;        //算子模式
+	uint32            related_input_rank        = 2;        //新增算子插入到哪个输入
+
+
+	repeated uint32 batch_list   = 11; //batch_list值，batch_list的个数是2到8之间
+}

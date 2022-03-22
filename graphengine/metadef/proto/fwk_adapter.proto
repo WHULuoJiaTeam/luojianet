@@ -1,0 +1,37 @@
+/* Copyright (C) 2018. Huawei Technologies Co., Ltd. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the Apache License Version 2.0.You may not use this file except in compliance with the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Apache License for more details at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+syntax = "proto3";
+
+package aicpu.FWKAdapter;
+option cc_enable_arenas = true;
+
+
+// Defines an struct for input and output.
+message TensorDataInfo {
+
+  // value DataType
+  uint32 dtype = 1;
+
+  // shape dim
+  repeated int64 dim = 2;
+
+  // data point addr
+  int64 data_addr = 3;
+}
+
+message KernelRunParam {
+  // input
+  repeated TensorDataInfo input = 1;
+  // output
+  repeated TensorDataInfo output = 2;
+}
+

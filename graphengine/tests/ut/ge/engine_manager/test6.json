@@ -1,0 +1,20 @@
+{
+  "schedule_units" : [ {
+    "id" : "TS_1",
+    "name" : "1980_hwts",
+    "ex_attrs" : "",
+    "cal_engines" : [
+      {
+        "id" : "DNN_VM_GE_LOCAL",
+        "name" : "GE_LOCAL",
+        "independent" : false,
+        "attch" : false,
+        "skip_assign_stream" : true
+      },
+      {"id" : "DNN_V100", "name" : "AICORE", "independent" : false, "attch" : false, "skip_assign_stream" : false},
+      {"id" : "DNN_VM_AICPU", "independent" : false, "attch" : true, "skip_assign_stream" : false},
+      {"id" : "DNN_HCCL", "name" : "HCCL", "independent" : true, "attch" : false, "skip_assign_stream" : false},
+      {"id" : "DNN_VM_RTS", "name" : "RTS", "independent" : false, "attch" : true, "skip_assign_stream" : false}
+    ]
+  } ]
+}

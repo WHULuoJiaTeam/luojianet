@@ -1,0 +1,7 @@
+syntax = "proto3";
+package ge.optimizers;
+
+// Default: GE>FE>AICPU
+message Priority{
+    repeated string optimizer = 1;
+}

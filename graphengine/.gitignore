@@ -1,0 +1,39 @@
+# GraphEngine
+/build
+/output
+/prebuilts
+/cov
+/deps
+.autotools
+.project
+.cproject
+.settings/
+/tests/frm/
+*.ir
+*.out
+*.DS_Store
+.DS_Store
+server_config.sh
+
+# Dynamic libraries
+# *.so
+*.dylib
+
+# Static libraries
+*.la
+*.lai
+*.a
+*.lib
+
+# Protocol buffers
+*_pb2.py
+*.pb.h
+*.pb.cc
+
+# Object files
+*.o
+
+# Editor
+.vscode
+.idea/
+cmake-build-*

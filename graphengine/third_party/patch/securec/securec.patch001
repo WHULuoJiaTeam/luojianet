@@ -1,0 +1,22 @@
+diff -Npur -x .git libboundscheck/CMakeLists.txt securec/CMakeLists.txt
+--- libboundscheck/CMakeLists.txt	1970-01-01 08:00:00.000000000 +0800
++++ securec/CMakeLists.txt	2020-09-19 16:53:48.689460700 +0800
+@@ -0,0 +1,18 @@
++cmake_minimum_required(VERSION 3.14)
++project(Securec)
++set(CMAKE_C_FLAGS_DEBUG "$ENV{CFLAGS} -fPIC -O0 -Wall -Wno-deprecated-declarations -g2 -ggdb -fno-inline-functions -fno-omit-frame-pointer -D_LIBCPP_INLINE_VISIBILITY='' -D'_LIBCPP_EXTERN_TEMPLATE(...)='")
++set(CMAKE_C_FLAGS_RELEASE "$ENV{CFLAGS} -fPIC -Wall -D_FORTIFY_SOURCE=2 -O2 -Wno-deprecated-declarations -fstack-protector-all -Wl,-z,relro,-z,now")
++set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
++
++#add flags
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/usr/local/include -Werror")
++
++include_directories(./include)
++aux_source_directory(./src SECUREC_SRCS)
++add_library(c_sec SHARED ${SECUREC_SRCS})
++
++install(TARGETS c_sec
++        DESTINATION lib)
++install(FILES "./include/securec.h"
++              "./include/securectype.h"
++        DESTINATION include)

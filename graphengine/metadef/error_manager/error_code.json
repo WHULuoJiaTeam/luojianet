@@ -1,0 +1,3110 @@
+{
+  "error_info_list" : [
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10001",
+      "ErrMessage": "Value [%s] for [%s] is invalid. Reason: %s.",
+      "Arglist": "value,parameter,reason",
+      "suggestion": {
+        "Possible Cause": "Invalid Argument.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape Argument",
+      "ErrCode": "E10002",
+      "ErrMessage": "Value [%s] for [--input_shape] is invalid. Reason: %s. Must be formatted as [%s].",
+      "Arglist": "shape,reason,sample",
+      "suggestion": {
+        "Possible Cause": "The [--input_shape] argument in the atc command line is invalid.",
+        "Solution": "The valid format is [input_name1:n1,c1,h1,w1;input_name2:n2,c2,h2,w2]. Replace [input_name#] with node names. Ensure that the shape values are integers."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10003",
+      "ErrMessage": "Value [%s] for the [--%s] argument is invalid. Reason: %s.",
+      "Arglist": "value,parameter,reason",
+      "suggestion": {
+        "Possible Cause": "Invalid Argument.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10004",
+      "ErrMessage": "Value for [--%s] is empty.",
+      "Arglist": "parameter",
+      "suggestion": {
+        "Possible Cause": "The argument must not be empty.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10005",
+      "ErrMessage": "Value [%s] for [--%s] is invalid. Must be either [true] or [false].",
+      "Arglist": "value,parameter",
+      "suggestion": {
+        "Possible Cause": "The argument is invalid. Must be either [true] or [false].",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10006",
+      "ErrMessage": "Value [%s] for [--%s] is invalid. Must be either 1 or 0.",
+      "Arglist": "value,parameter",
+      "suggestion": {
+        "Possible Cause": "The argument is invalid. Must be either 1 or 0.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Required Argument",
+      "ErrCode": "E10007",
+      "ErrMessage": "[--%s] is required. Must be [%s].",
+      "Arglist": "parameter,support",
+      "suggestion": {
+        "Possible Cause": "The argument is invalid.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10008",
+      "ErrMessage": "[--weight] must not be empty when [--framework] is set to 0 (Caffe).",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "[--weight] must not be empty when [--framework] is set to 0 (Caffe).",
+        "Solution": "[step] If the source model framework is Caffe, try again with a valid [--weight] argument. [step] If the source model framework is not Caffe, try again with a valid [--framework] argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10009",
+      "ErrMessage": "[--dynamic_batch_size], [--dynamic_image_size], and [--dynamic_dims] are mutually exclusive.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "[--dynamic_batch_size], [--dynamic_image_size], and [--dynamic_dims] are mutually exclusive.",
+        "Solution": "[step] In dynamic shape scenarios, include only one of these options in your command line. [step] In static shape scenarios, remove these options from your command line."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --log Argument",
+      "ErrCode": "E10010",
+      "ErrMessage": "Value [%s] for [--log] is invalid. Must be selected from [debug], [info], [warning], [error], and [null].",
+      "Arglist": "loglevel",
+      "suggestion": {
+        "Possible Cause": "The [--log] argument is invalid.",
+        "Solution": "Valid values include [debug], [info], [warning], [error], and [null]."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape Argument",
+      "ErrCode": "E10011",
+      "ErrMessage": "Argument [%s] for [--input_shape] is invalid. Shape values must be positive integers. The error value is: %s.",
+      "Arglist": "shape,result",
+      "suggestion": {
+        "Possible Cause": "In static shape scenarios, set the shape values of each input node in the [--input_shape] to positive integers.",
+        "Solution": "[step] In static shape scenarios, set the shape values in [--input_shape] to positive integers. [step] In dynamic shape scenarios, add the related dynamic-input option in your command line, such as [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims]."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape Argument",
+      "ErrCode": "E10012",
+      "ErrMessage": "[--dynamic_batch_size] is included, but the dimension count of the dynamic-shape input configured in [--input_shape] is less than 1.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "As [--dynamic_batch_size] is included, the dimension count of the dynamic-shape input configured in [--input_shape] must not be 0.",
+        "Solution": "[step] In static shape scenarios, remove the [--dynamic_batch_size] option from your command line. [step] In dynamic shape scenarios, set the corresponding axis of the dynamic-shape input in [--input_shape] to –1."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10013",
+      "ErrMessage": "Value [%s] for [--%s] is out of range.",
+      "Arglist": "value,parameter",
+      "suggestion": {
+        "Possible Cause": "The argument is out of range.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10014",
+      "ErrMessage": "Value [%s] for [--%s] is invalid.",
+      "Arglist": "value,parameter",
+      "suggestion": {
+        "Possible Cause": "The argument is invalid.",
+        "Solution": "Try again with a valid argument. For details, see [ATC Instructions]."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10015",
+      "ErrMessage": "Value [%s] for [--%s] is invalid.",
+      "Arglist": "value,parameter",
+      "suggestion": {
+        "Possible Cause": "Try again with a valid argument.",
+        "Solution": "Try again with a valid argument. For details, see [ATC Instructions]."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument, Node Not Found",
+      "ErrCode": "E10016",
+      "ErrMessage": "Input Op [%s] specified in [--%s] is not found in the model.",
+      "Arglist": "opname,parameter",
+      "suggestion": {
+        "Possible Cause": "The node specified in the argument does not exist in the model.",
+        "Solution": "Try again with a valid node name."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument, Node Not Found",
+      "ErrCode": "E10017",
+      "ErrMessage": "Input Op [%s] specified in [--%s] is invalid.",
+      "Arglist": "opname,parameter",
+      "suggestion": {
+        "Possible Cause": "The input node specified in the argument is invalid.",
+        "Solution": "Try again with a valid input node name."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10018",
+      "ErrMessage": "Value [%s] for shape [%s] is invalid. When [--dynamic_batch_size] is included, only batch size N can be –1 in [--input_shape].",
+      "Arglist": "shape,index",
+      "suggestion": {
+        "Possible Cause": "When [--dynamic_batch_size] is included, only batch size N can be –1 in the shape.",
+        "Solution": "Try again with a valid [--input_shape] argument. Make sure that non-batch size axes are not –1."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape Argument",
+      "ErrCode": "E10019",
+      "ErrMessage": "When [--dynamic_image_size] is included, only the height and width axes can be –1 in in [--input_shape].",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "When [--dynamic_image_size] is included, only the height and width axes can be –1 in the shape.",
+        "Solution": "Try again with a valid [--input_shape] argument. Make sure that axes other than height and width are not –1."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --dynamic_image_size Argument",
+      "ErrCode": "E10020",
+      "ErrMessage" : "Value [%s] for [--dynamic_image_size] is invalid. Must be formatted as [imagesize1_height,imagesize1_width;imagesize2_height,imagesize2_width].",
+      "Arglist": "dynamic_image_size",
+      "suggestion": {
+        "Possible Cause": "In the [--dynamic_image_size] argument, each profile must have two dimensions.",
+        "Solution": "Try again with a valid [--dynamic_image_size] argument. Make sure that each profile has two dimensions."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10021",
+      "ErrMessage": "Directory for [--%s] is too long. Keep the length within %s.",
+      "Arglist": "parameter,size",
+      "suggestion": {
+        "Possible Cause": "The specified directory is too long.",
+        "Solution": "Try again with a valid directory."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10022",
+      "ErrMessage": "Directory [%s] for [--%s] does not include the file name",
+      "Arglist": "parameter,filename",
+      "suggestion": {
+        "Possible Cause": "The specified directory does not include the file name.",
+        "Solution": "Add the file name to the directory."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --singleop Argument",
+      "ErrCode": "E10023",
+      "ErrMessage": "Value [%s] for [--singleop] is invalid. Must be a proper directory.",
+      "Arglist": "value",
+      "suggestion": {
+        "Possible Cause": "The [--singleop] argument is not a proper directory.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --singleop Argument",
+      "ErrCode": "E10024",
+      "ErrMessage": "Failed to open file [%s] specified by the [--singleop] argument.",
+      "Arglist": "value",
+      "suggestion": {
+        "Possible Cause": "Failed to open the file specified by the [--singleop] argument.",
+        "Solution": "Check the owner group and permission settings and ensure that the user who runs the atc command has enough permission to open the file."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --singleop Argument",
+      "ErrCode": "E10025",
+      "ErrMessage": "File [%s] specified by [--singleop] is not a valid JSON file. Reason: %s.",
+      "Arglist": "realpath,errmsg",
+      "suggestion": {
+        "Possible Cause": "Failed to parse the file specified by the [--singleop] argument in JSON format.",
+        "Solution": "Check that the file is in valid JSON format."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --singleop Argument",
+      "ErrCode": "E10026",
+      "ErrMessage": "Empty Op name in the file specified by the [--singleop] argument.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "The file specified by the [--singleop] argument contains an unnamed Op.",
+        "Solution": "Check that no Op name is empty in the file."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --singleop Argument",
+      "ErrCode": "E10027",
+      "ErrMessage": "[%s] and [%s] for tensor indexed [%s] of Op [%s] are invalid in the file specified by the [--singleop] argument.",
+      "Arglist": "input,type,index,op_name",
+      "suggestion": {
+        "Possible Cause": "The file specified by the [--singleop] argument contains invalid tensor attributes.",
+        "Solution": "Try again with valid tensor dtype and format."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --singleop Argument",
+      "ErrCode": "E10029",
+      "ErrMessage": "Attribute name of Op [%s] is empty in the file specified by the [--singleop] argument.",
+      "Arglist": "op_name",
+      "suggestion": {
+        "Possible Cause": "The file specified by the [--singleop] argument contains an unnamed attribute.",
+        "Solution": "Check that no Op attribute name is empty in the file."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --singleop Argument",
+      "ErrCode": "E10030",
+      "ErrMessage": "Attribute name [%s] of Op [%s] is invalid in the file specified by the [--singleop] argument.",
+      "Arglist": "attrname;op_name",
+      "suggestion": {
+        "Possible Cause": "The file specified by the [--singleop] argument contains an empty attribute.",
+        "Solution": "Check that no Op attribute value is empty in the file."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape Argument",
+      "ErrCode": "E10031",
+      "ErrMessage": "[--dynamic_batch_size] is included, but none of the nodes specified in [--input_shape] have a batch size equaling –1.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "As [--dynamic_batch_size] is included, ensure that at least one of the nodes specified in [--input_shape] has a batch size equaling –1.",
+        "Solution": "[step] In static shape scenarios, remove the [--dynamic_batch_size] option from your command line. [step] In dynamic shape scenarios, set the corresponding axis of the dynamic-shape input in [--input_shape] to –1."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_fp16_nodes Argument",
+      "ErrCode": "E10034",
+      "ErrMessage": "Nodes (for example, [%s]) connected to aipp must not be of type fp16. Check the [--insert_op_conf] and [--input_fp16_nodes] options in your atc command line.",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "Do not set dtype to fp16 for a node connected to aipp.",
+        "Solution": "[step] To enable AIPP, remove the nodes connected to aipp from the [--input_fp16_nodes] argument. [step] If AIPP is not required, remove the [--insert_op_conf] option from your atc command line."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10035",
+      "ErrMessage": "The [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument has [%s] profiles, which is less than the minimum [%s].",
+      "Arglist": "shapesize,minshapesize",
+      "suggestion": {
+        "Possible Cause": "The number of configured profiles is less than the minimum.",
+        "Solution": "Ensure that the number of profiles configured in the [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument is at least the minimum."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10036",
+      "ErrMessage": "[--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] has [%s] profiles, which exceeds the maximum [%s].",
+      "Arglist": "shapesize,maxshapesize",
+      "suggestion": {
+        "Possible Cause": "The number of configured profiles exceeds the maximum.",
+        "Solution": "Ensure that the number of profiles configured in the [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument does not exceed the maximum."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10037",
+      "ErrMessage": "The profiles configured in the [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument have inconsistent dimension counts. A profile has %s dimensions while another has %s dimensions.",
+      "Arglist": "shapesize1,shapesize2",
+      "suggestion": {
+        "Possible Cause": "The configured profiles have inconsistent dimension counts.",
+        "Solution": "Ensure that the profiles configured in the [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument have the same dimension count."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10038",
+      "ErrMessage": "Dimension size [%s] is invalid. Must be greater than 0.",
+      "Arglist": "dim",
+      "suggestion": {
+        "Possible Cause": "The shape values of each profile must be positive.",
+        "Solution": "Set the shape values of each profile to positive in the [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10039",
+      "ErrMessage": "The [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument have duplicate profiles.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "The configured profiles must be unique.",
+        "Solution": "Check that the profiles configured in the [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument are unique."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape Argument",
+      "ErrCode": "E10040",
+      "ErrMessage": "As the [--dynamic_batch_size], [--dynamic_image_size], or [--dynamic_dims] argument is included, the corresponding nodes specified in [--input_shape] must have –1 axes.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "In dynamic shape scenarios, the corresponding shape value in the input node must be set to –1.",
+        "Solution": "[step] In static shape scenarios, remove the [--dynamic_batch_size] option from your command line. [step] In dynamic shape scenarios, set the corresponding axis of the dynamic-shape input in [--input_shape] to –1."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --framework or --model Argument",
+      "ErrCode" : "E10041",
+      "ErrMessage" : "Failed to load the model from [%s]. Check the model file or the [--framework] argument.",
+      "Arglist" : "parameter",
+      "suggestion": {
+        "Possible Cause": "The model file is invalid.",
+        "Solution": "[step] Check that the model file is valid. [step] Check that the [--framework] argument matches the actual framework of the model file."
+      }
+    },
+    {
+      "errClass": "Resource Errors",
+      "errTitle": "Insufficient Memory",
+      "ErrCode": "E10044",
+      "ErrMessage": "The available memory is [%s KB], which is less than the required minimum [%s KB].",
+      "Arglist": "value,min_value",
+      "suggestion": {
+        "Possible Cause": "Auto Tune requires at least 2 GB available memory.",
+        "Solution": "Stop unnecessary processes and ensure that at least 2 GB system memory is available. Alternatively, change a machine with 2 GB or more of available memory."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10045",
+      "ErrMessage": "The number of –1 axes overflow for data [%s] with shape [%s].",
+      "Arglist": "name,shape",
+      "suggestion": {
+        "Possible Cause": "[--dynamic_dims] is included for more than one input, but the number of –1 axes in the [--input_shape] argument does not match the dimension count per profile in [--dynamic_dims].",
+        "Solution": "Ensure that the number of –1 axes in the [--input_shape] argument matches the dimension count per profile in [--dynamic_dims]."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Dynamic Shape Argument",
+      "ErrCode": "E10046",
+      "ErrMessage": "The number of –1 axes of data [%s] with shape [%s] is greater than the dimension count per profile.",
+      "Arglist": "name,shape",
+      "suggestion": {
+        "Possible Cause": "The number of –1 axes in the [--input_shape] argument is greater than the dimension count per profile in [--dynamic_dims].",
+        "Solution": "Ensure that the total number of –1 axes in the [--input_shape] argument is less than the dimension count per profile in [--dynamic_dims]."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10047",
+      "ErrMessage": "[--%s] and [--%s] are mutually exclusive.",
+      "Arglist": "parameter0,parameter1",
+      "suggestion": {
+        "Possible Cause": "The options are mutually exclusive.",
+        "Solution": "Remove either of them and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape_range Argument",
+      "ErrCode": "E10048",
+      "ErrMessage": "Value [%s] for [--input_shape_range] is invalid. Reason: %s. Must be formatted as [%s].",
+      "Arglist": "shape_range,reason,sample",
+      "suggestion": {
+        "Possible Cause": "Invalid --input_shape_range Argument",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape_range Argument",
+      "ErrCode": "E10049",
+      "ErrMessage": "Dimension count [%s] configured in the [--input_shape_range] argument does not match dimension count [%s] of the node.",
+      "Arglist": "shape_range_size,cur_dim_size",
+      "suggestion": {
+        "Possible Cause": "The dimension count in the [--input_shape_range] argument does not match the dimension count of the node.",
+        "Solution": "Set the dimension count in the [--input_shape_range] argument according to the dimension count of the node."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape_range Argument",
+      "ErrCode": "E10050",
+      "ErrMessage": "Current dimension size [%s] is out of range [%s–%s] specified by [--input_shape_range].",
+      "Arglist": "cur_dim,shape_range_left,shape_range_right",
+      "suggestion": {
+        "Possible Cause": "The dimension size is out of the range specified by [--input_shape_range].",
+        "Solution": "Set the dimension size according to [--input_shape_range]."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Invalid --job_id Argument",
+      "ErrCode": "E10051",
+      "ErrMessage": "Value [%s] for [--job_id] is too long, exceeding the allowed maximum [%s].",
+      "Arglist": "id, length",
+      "suggestion": {
+        "Possible Cause": "The length of the [--job_id] argument is too long.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid AIPP Configuration",
+      "ErrCode": "E10052",
+      "ErrMessage": "AIPP configuration is invalid. Reason: %s.",
+      "Arglist": "reason",
+      "suggestion": {
+        "Possible Cause": "The AIPP configuration is invalid.",
+        "Solution": "Try again with valid AIPP configuration."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Invalid Operator Input Count",
+      "ErrCode": "E10401",
+      "ErrMessage": "The operator takes [%s] input(s) according to specification, but [%s] input(s) are configured.",
+      "Arglist": "expect_num, input_num",
+      "suggestion": {
+        "Possible Cause": "The number of inputs configured for operator execution does not match the operator specification.",
+        "Solution": "Try again with a valid number of inputs."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Invalid Input Buffer Allocation for Operator Execution",
+      "ErrCode": "E10402",
+      "ErrMessage": "Input indexed [%s] requires a %s buffer, but %s (aligned) are allocated.",
+      "Arglist": "index, expect_size, input_size",
+      "suggestion": {
+        "Possible Cause": "The input buffer allocation for operator execution does not match that required.",
+        "Solution": "Try again with a valid buffer allocation."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Invalid Operator Output Count",
+      "ErrCode": "E10403",
+      "ErrMessage": "The operator returns [%s] output(s) according to specification, but [%s] output(s) are configured.",
+      "Arglist": "expect_num, input_num",
+      "suggestion": {
+        "Possible Cause": "The number of outputs configured for operator execution does not match the operator specification.",
+        "Solution": "Try again with a valid number of outputs."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Invalid Output Buffer Allocation for Operator Execution",
+      "ErrCode": "E10404",
+      "ErrMessage": "Output indexed [%s] requires a %s buffer, but %s (aligned) are allocated.",
+      "Arglist": "index, expect_size, input_size",
+      "suggestion": {
+        "Possible Cause": "The output buffer allocation for operator execution does not match that required.",
+        "Solution": "Try again with a valid buffer allocation."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Inconsistent Input Buffer Count and Input Tensor Count for Operator Execution",
+      "ErrCode": "E10405",
+      "ErrMessage": "The number of input buffers is [%s], which does not match the number of input tensors [%s].",
+      "Arglist": "input_num, input_desc_num",
+      "suggestion": {
+        "Possible Cause": "The number of input buffers for operator execution does not match the number of input tensors.",
+        "Solution": "Ensure that the number of input buffers for operator execution matches the number of input tensors."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Inconsistent Output Buffer Count and Output Tensor Count for Operator Execution",
+      "ErrCode": "E10406",
+      "ErrMessage": "The number of output buffers is [%s], which does not match the number of output tensors [%s].",
+      "Arglist": "out_num, out_desc_num",
+      "suggestion": {
+        "Possible Cause": "The number of output buffers for operator execution does not match the number of output tensors.",
+        "Solution": "Ensure that the number of output buffers for operator execution matches the number of output tensors."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E10410",
+      "ErrMessage": "File [%s] does not exist.",
+      "Arglist": "cfgpath",
+      "suggestion": {
+        "Possible Cause": "The file specified by the [--keep_dtype] or [--compress_weight_conf] argument does not exist.",
+        "Solution": "Try again with a valid file directory."
+      }
+    },
+    {
+      "errClass": "System Support Errors",
+      "errTitle": "Unsupported Operator",
+      "ErrCode": "E10501",
+      "ErrMessage": "IR for Op [%s, optype [%s]], is not registered.",
+      "Arglist": "opname,optype",
+      "suggestion": {
+        "Possible Cause": "IR for the operator type is not registered.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend, or remove this type of operators from your model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11001",
+      "ErrMessage": "[input_dim] and [input_shape] are mutually exclusive in [NetParameter] for Caffe model conversion.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "[--input_dim] and [--input_shape] are mutually exclusive in NetParameter of the source Caffe model.",
+        "Solution": "Remove either of [--input_dim] and [--input_shape] from your atc command line."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11002",
+      "ErrMessage": "Caffe model has no input.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "The source Caffe model has no input.",
+        "Solution": "Modify your Caffe model and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11003",
+      "ErrMessage": "The number of [input_dim] fields in the model is [%s], which is not 4x the input count [%s].",
+      "Arglist": "input_dim_size,input_size",
+      "suggestion": {
+        "Possible Cause": "The number of [input_dim] fields in the source Caffe model is not 4x the input count. ",
+        "Solution": "Modify your Caffe model and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11004",
+      "ErrMessage": "The number of input shapes is [%s], which does not match the number of inputs [%s].",
+      "Arglist": "input_shape_size,input_size",
+      "suggestion": {
+        "Possible Cause": "The number of input shapes of the source Caffe model does not match the number of inputs.",
+        "Solution": "Modify your Caffe model and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --input_shape Argument",
+      "ErrCode": "E11005",
+      "ErrMessage": "Shape is not defined by using [--input_shape] for input [%s].",
+      "Arglist": "input",
+      "suggestion": {
+        "Possible Cause": "The shape of the input in the source Caffe model is not defined.",
+        "Solution": "Modify your Caffe model, or add the shape of the input to the [--input_shape] argument in your atc command line."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11008",
+      "ErrMessage": "Optype DetectionOutput is unsupported. Modify the model file and use an explicit type, such as FSRDetectionOutput or SSDDetectionOutput.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "The source Caffe model contains an unsupported optype, DetectionOutput.",
+        "Solution": "Modify your Caffe model and replace DetectionOutput operators with FSRDetectionOutput or SSDDetectionOutput."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Unsupported Caffe Operator",
+      "ErrCode": "E11009",
+      "ErrMessage": "No Caffe parser is registered for Op [%s, optype [%s]].",
+      "Arglist": "opname,optype",
+      "suggestion": {
+        "Possible Cause": "No parser is registered for the optype in Caffe model conversion.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend, or remove this type of operators from your model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11012",
+      "ErrMessage": "Unknown bottom blob [%s] at layer [%s]. The bottom blob is indexed [%s].",
+      "Arglist": "bottom_blob,layer,bottom_index",
+      "suggestion": {
+        "Possible Cause": "The bottom blob in the source Caffe model has no connected top blob.",
+        "Solution": "Modify your Caffe model and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11014",
+      "ErrMessage": "Failed to find the top blob for layer [%s].",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "The top blob has no corresponding node in the source Caffe model.",
+        "Solution": "Modify your Caffe model and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11015",
+      "ErrMessage": "Failed to find the bottom blob for layer [%s].",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "The bottom blob has no corresponding node in the source Caffe model.",
+        "Solution": "Modify your Caffe model and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --out_node Argument",
+      "ErrCode": "E11016",
+      "ErrMessage": "Failed to add Op [%s] to NetOutput. Op output index [%s] is not less than [%s]. NetOutput input_index [%s] is not less than [%s].",
+      "Arglist": "opname,outputindex,totlaloutputindex,inputindex,totlalinputindex",
+      "suggestion": {
+        "Possible Cause": "The node index specified by the [--out_node] argument is out of the range of outputs of the corresponding node in the source Caffe model.",
+        "Solution": "Try again with a valid [--out_node] argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid --out_node Argument",
+      "ErrCode": "E11017",
+      "ErrMessage": "Failed to find node [%s] specified by [--out_node].",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "The node specified by the [--out_node] argument does not exist in the source Caffe model.",
+        "Solution": "Try again with a valid [--out_node] argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11018",
+      "ErrMessage": "Op name string [%s] is invalid. Allowed characters include: letters, digits, hyphens (-), periods (.), underscores (_), and slashes (/).",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "The Op name string in the source Caffe model is invalid. Allowed characters include: letters, digits, hyphens (-), periods (.), underscores (_), and slashes (/).",
+        "Solution": "Modify the Op name string and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11021",
+      "ErrMessage": "Model file [%s] contains [layers] structures, which have been deprecated in Caffe and unsupported by ATC. Replace [layers] with [layer].",
+      "Arglist": "realpath",
+      "suggestion": {
+        "Possible Cause": "The Caffe model contains [layers] structures, which have been deprecated in Caffe and unsupported by ATC. Replace [layers] with [layer].",
+        "Solution": "Try again with a valid Caffe model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11022",
+      "ErrMessage": "Invalid prototxt file. No [layer] structures are found in the model.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "No [layer] structures are found in the Caffe model.",
+        "Solution": "Try again with a valid Caffe model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11023",
+      "ErrMessage": "Weight file [%s] contains [layers] structures, which have been deprecated in Caffe and unsupported by ATC. Replace [layers] with [layer].",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "The Caffe weight file contains [layers] structures, which have been deprecated in Caffe and unsupported by ATC. Replace [layers] with [layer].",
+        "Solution": "Try again with a valid Caffe weight file."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11024",
+      "ErrMessage": "Invalid Caffe weight file. No [layer] structures are found in the weight file.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "No [layer] structures are found in the Caffe weight file.",
+        "Solution": "Try again with a valid Caffe weight file."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11027",
+      "ErrMessage": "Op [%s, optype [%s]] in the Caffe model has an input node with shape size 0.",
+      "Arglist": "layername,layertype",
+      "suggestion": {
+        "Possible Cause": "The source Caffe model has an input node with shape size 0.",
+        "Solution": "Try again with a valid Caffe model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11029",
+      "ErrMessage": "Op [%s] exists in model file but not found in weight file.",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "The node exists in the Caffe model file but is not found in weight file.",
+        "Solution": "Try again with a valid Caffe model or weight file. Ensure that the two files match with each other."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe File Error",
+      "ErrCode": "E11032",
+      "ErrMessage": "Failed to parse message [%s]. The error field is %s. Reason: %s.",
+      "Arglist": "message_type,name,reason",
+      "suggestion": {
+        "Possible Cause": "The Caffe .proto file is invalid.",
+        "Solution": "Try again with a valid .proto file."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "The Caffe weight file is invalid.",
+      "ErrCode": "E11033",
+      "ErrMessage": "Failed to convert the weight file. Blob [%s] of size [%s] is invalid. Reason: %s.",
+      "Arglist": "opname,blobsize,reason",
+      "suggestion": {
+        "Possible Cause": "The blob size of the node in the Caffe weight file does not match the number of elements calculated based on its shape.",
+        "Solution": "Try again with a valid Caffe model or weight file. Ensure that the two files match with each other."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11035",
+      "ErrMessage": "The top size of data node [%s] is not 1 but [%s].",
+      "Arglist": "opname,size",
+      "suggestion": {
+        "Possible Cause": "The top size of the data node in the source Caffe model is not 1.",
+        "Solution": "Try again with a valid Caffe model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11036",
+      "ErrMessage": "Data nodes have duplicate top blobs [%s].",
+      "Arglist": "topname",
+      "suggestion": {
+        "Possible Cause": "The data nodes in the source Caffe model have duplicate top blobs.",
+        "Solution": "Try again with a valid Caffe model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Caffe Model Data Error",
+      "ErrCode": "E11037",
+      "ErrMessage": "Op [%s] has zero outputs.",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "Nodes in the Caffe model must have at least one output.",
+        "Solution": "Try again with a valid Caffe model."
+      }
+    },
+    {
+      "errClass": "Configuration Errors",
+      "errTitle": "Operator Prototype Registration Error",
+      "ErrCode": "E12004",
+      "ErrMessage": "Failed to register the prototype of Op [%s]. If input index is less than 0, then input index [–%s] (the abs value) must be less than the input count [%s]",
+      "Arglist": "opname,inputIdx,inputsize",
+      "suggestion": {
+        "Possible Cause": "To optimize an input to an attribute during operator registration, if the input index is less than 0, the absolute value of the index must be less than the actual number of inputs of the operator.",
+        "Solution": "Try again with a valid operator prototype."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "TensorFlow Model Data Error",
+      "ErrCode": "E12009",
+      "ErrMessage": "Op [%s]'s input [%s] is not found in graph_def.",
+      "Arglist": "opname,inputopname",
+      "suggestion": {
+        "Possible Cause": "The input name of the node is not found in the graph.",
+        "Solution": "Try again with a valid TensorFlow model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "TensorFlow Model Data Error",
+      "ErrCode": "E12010",
+      "ErrMessage": "Model has no Placeholder or _Arg node.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "No node of type Placeholder or _Arg is found in the model.",
+        "Solution": "Try again with a valid TensorFlow model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "TensorFlow Model Data Error",
+      "ErrCode": "E12013",
+      "ErrMessage": "Failed to find a subgraph by the name [%s].",
+      "Arglist": "functionname",
+      "suggestion": {
+        "Possible Cause": "No subgraph .proto description is found based on the subgraph name.",
+        "Solution": "[step] To use function subgraphs to convert a TensorFlow model, place the subgraph .proto description file in the same directory as the model file and name it [graph_def_library.pbtxt]. [step] Run the [func2graph.py] script in the ATC installation directory to save the subgraphs to [graph_def_library.pbtxt]."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "TensorFlow Model Data Error",
+      "ErrCode": "E12029",
+      "ErrMessage": "Failed to find the subgraph library. As the model contains function operators, run the [func2graph.py] script in the ATC installation directory to save the subgraphs to [graph_def_library.pbtxt].",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "If the model to convert contains function subgraphs, the [graph_def_library.pbtxt] file is required.",
+        "Solution": "[step] To use function subgraphs to convert a TensorFlow model, place the subgraph .proto description file in the same directory as the model file and name it [graph_def_library.pbtxt]. [step] Run the [func2graph.py] script in the ATC installation directory to save the subgraphs to [graph_def_library.pbtxt]."
+      }
+    },
+    {
+      "errClass": "System Support Errors",
+      "errTitle": "Unsupported Operator",
+      "ErrCode": "E13002",
+      "ErrMessage": "Optype [%s] of Ops kernel [%s] is unsupported. Reason: %s.",
+      "Arglist": "optype,opskernel,reason",
+      "suggestion": {
+        "Possible Cause": "The operator type is unsupported in the operator information library due to specification mismatch.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend, or remove this type of operators from your model."
+      }
+    },
+    {
+      "errClass": "System Support Errors",
+      "errTitle": "Unsupported Operator",
+      "ErrCode": "E13003",
+      "ErrMessage": "No supported Ops kernel and engine are found for [%s], optype [%s].",
+      "Arglist": "opname,optype",
+      "suggestion": {
+        "Possible Cause": "The operator is not supported by the system. Therefore, no hit is found in any operator information library.",
+        "Solution": "[step] Check that the OPP component is installed properly. [step] Submit an issue to request for the support of this operator type."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Invalid Argument for Operator Compilation",
+      "ErrCode": "E14001",
+      "ErrMessage": "Argument [%s] for Op [%s, optype [%s]], is invalid. Reason: %s.",
+      "Arglist": "value,opname,optype,reason",
+      "suggestion": {
+        "Possible Cause": "The argument for operator compilation is invalid.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "ONNX Model Data Error",
+      "ErrCode": "E16001",
+      "ErrMessage": "Model has no [%s] node.",
+      "Arglist": "value",
+      "suggestion": {
+        "Possible Cause": "The node is not found in the ONNX model.",
+        "Solution": "Try again with a valid ONNX model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "ONNX Model Data Error",
+      "ErrCode": "E16002",
+      "ErrMessage": "No ONNX parser is registered for optype [%s].",
+      "Arglist": "optype",
+      "suggestion": {
+        "Possible Cause": "No parser is registered for the optype in ONNX model conversion.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend, or remove this type of operators from your model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "ONNX Model Data Error",
+      "ErrCode": "E16004",
+      "ErrMessage": "ONNX model has no graph.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "The ONNX model has no graph.",
+        "Solution": "Try again with a valid ONNX model."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "ONNX Model Data Error",
+      "ErrCode": "E16005",
+      "ErrMessage": "The model has [%s] [--domain_version] fields, but only one is allowed.",
+      "Arglist": "domain_version_size",
+      "suggestion": {
+        "Possible Cause": "The source ONNX model has more than one [--domain_version] argument.",
+        "Solution": "Try again with a valid ONNX model."
+      }
+    },
+    {
+      "errClass": "File Errors",
+      "errTitle": "Invalid Directory",
+      "ErrCode": "E19000",
+      "ErrMessage": "Path[%s] is empty. Reason: %s.",
+      "Arglist": "path,errmsg",
+      "suggestion": {
+        "Possible Cause": "The file does not exist.",
+        "Solution": "Try again with a valid directory."
+      }
+    },
+    {
+      "errClass": "File Errors",
+      "errTitle": "Failure to Open File",
+      "ErrCode": "E19001",
+      "ErrMessage": "Failed to open file[%s]. Reason: %s.",
+      "Arglist": "file,errmsg",
+      "suggestion": {
+        "Possible Cause": "Failed to open the file.",
+        "Solution": "Fix the error according to the error message."
+      }
+    },
+    {
+      "errClass": "File Errors",
+      "errTitle": "Too Long File Directory",
+      "ErrCode": "E19002",
+      "ErrMessage": "Directory [%s] is too long. Keep the length within [%s] characters.",
+      "Arglist": "filepath,size",
+      "suggestion": {
+        "Possible Cause": "The file directory is too long.",
+        "Solution": "Try again with a valid file directory."
+      }
+    },
+    {
+      "errClass": "File Errors",
+      "errTitle": "Failure to Read File",
+      "ErrCode": "E19003",
+      "ErrMessage": "Failed to read file [%s]. Reason: %s.",
+      "Arglist": "file,errmsg",
+      "suggestion": {
+        "Possible Cause": "Failed to read the file.",
+        "Solution": "Fix the error according to the error message."
+      }
+    },
+    {
+      "errClass": "File Errors",
+      "errTitle": "Failure to Write File",
+      "ErrCode": "E19004",
+      "ErrMessage": "Failed to write file [%s]. Reason: %s.",
+      "Arglist": "file,errmsg",
+      "suggestion": {
+        "Possible Cause": "Failed to write the file.",
+        "Solution": "Fix the error according to the error message."
+      }
+    },
+    {
+      "errClass": "File Errors",
+      "errTitle": "Failure to Parse File",
+      "ErrCode": "E19005",
+      "ErrMessage": "Failed to parse file [%s]. Try again with a valid protobuf file or check the version of your protobuf installation.",
+      "Arglist": "file",
+      "suggestion": {
+        "Possible Cause": "Failed to parse the file.",
+        "Solution": "Check that a matched protobuf version is installed and try again with a valid file."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Operator Name Conflict",
+      "ErrCode": "E19009",
+      "ErrMessage": "Op [%s] has a name conflict in the graph.",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "The graph contains operators with duplicate names.",
+        "Solution": "Ensure that the operators in the graph have unique names."
+      }
+    },
+    {
+      "errClass": "System Support Errors",
+      "errTitle": "Unsupported Operator",
+      "ErrCode": "E19010",
+      "ErrMessage": "No parser is registered for Op [%s, optype [%s]].",
+      "Arglist": "opname,optype",
+      "suggestion": {
+        "Possible Cause": "No parser is registered for the operator type.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Operator Data Verification Failure",
+      "ErrCode": "E19014",
+      "ErrMessage": "Value [%s] for Op [%s] is invalid. Reason: %s.",
+      "Arglist": "value,opname,reason",
+      "suggestion": {
+        "Possible Cause": "Verification of operator data fails.",
+        "Solution": "Fix the error according to the error message."
+      }
+    },
+    {
+      "errClass": "File Errors",
+      "errTitle": "File size invalid",
+      "ErrCode" : "E19015",
+      "ErrMessage" : "File[%s] size %s is out of valid range[0, %s].",
+      "Arglist" : "file,size,maxsize",
+      "suggestion": {
+        "Possible Cause": "File size is not valid.",
+        "Solution": "Try again with a valid file."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Failure to Parse File",
+      "ErrCode": "E19018",
+      "ErrMessage": "Failed to parse file [%s] through [google::protobuf::TextFormat::Parse]. Try again with a valid protobuf file.",
+      "Arglist": "protofile",
+      "suggestion": {
+        "Possible Cause": "Failed to parse the file using the protobuf library function. The file may not be in valid protobuf format.",
+        "Solution": "Try again with a valid file."
+      }
+    },
+    {
+      "errClass": "Resource Errors",
+      "errTitle": "Insufficient Memory",
+      "ErrCode": "E19022",
+      "ErrMessage": "Model %s requires [%s] memory, which exceeds system limit [%s].",
+      "Arglist": "item,size,maxsize",
+      "suggestion": {
+        "Possible Cause": "The memory size required by the model exceeds the system limit.",
+        "Solution": "[step] Retrain the model with a reduced batch size. [step] Reduce the model size."
+      }
+    },
+    {
+      "errClass": "Resource Errors",
+      "errTitle": "Too Large OM Model",
+      "ErrCode": "E19023",
+      "ErrMessage": "Model %s has size [%s], which exceeds system limit [%s].",
+      "Arglist": "item,size,maxsize",
+      "suggestion": {
+        "Possible Cause": "The generated OM model is too large and therefore cannot be dumped to the disk.",
+        "Solution": "Try again with reduced model size."
+      }
+    },
+    {
+      "errClass": "Configuration Errors",
+      "errTitle": "Invalid Environment Variable",
+      "ErrCode": "E19024",
+      "ErrMessage": "Value [%s] for environment variable [%s] is invalid when %s.",
+      "Arglist": "value,env,situation",
+      "suggestion": {
+        "Possible Cause": "The configured environment variable is invalid.",
+        "Solution": "Fix the error according to the error message."
+      }
+    },
+    {
+      "errClass": "Invalid Argument",
+      "errTitle": "Input Tensor Error",
+      "ErrCode": "E19025",
+      "ErrMessage": "Input tensor is invalid. Reason: %s.",
+      "Arglist": "reason",
+      "suggestion": {
+        "Possible Cause": "The input tensor does not match the graph is invalid, resulting in an execution failure of the training or inference job.",
+        "Solution": "Fix the error according to the error message."
+      }
+    },
+    {
+      "errClass": "Invalid Path Name",
+      "errTitle": "Input Path Name Error",
+      "ErrCode": "E19026",
+      "ErrMessage": "Input path name [%s] is invalid. Reason: %s",
+      "Arglist": "pathname,reason",
+      "suggestion": {
+        "Possible Cause": "The input path does not exist or is invalid.",
+        "Solution": "Try again with a valid path."
+      }
+    },
+    {
+      "errClass": "Default Error",
+      "errTitle": "System Terminated",
+      "ErrCode": "E19999",
+      "ErrMessage": "Unknown error occurred. Please check the log.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "System terminated abnormally without valid error messages.",
+        "Solution": "In this scenario, use SdkInfoCollector to collect the logs generated when the fault occurs and locate the fault based on the logs."
+      }
+    },
+    {
+      "errClass": "Minor Error",
+      "errTitle": "Operator Missing High-Priority Performance",
+      "ErrCode": "W11001",
+      "ErrMessage": "Op [%s] does not hit the high-priority operator information library, which might result in compromised performance.",
+      "Arglist": "opname",
+      "suggestion": {
+        "Possible Cause": "The operator does not hit the high-priority operator information library, which might result in compromised performance.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend."
+      }
+    },
+    {
+      "errClass": "Environment Errors",
+      "errTitle": "Invalid Configuration File",
+      "ErrCode": "E30000",
+      "ErrMessage": "System error occurred. Failed to load AI CPU Op library information from file [%s]. Reason: %s.",
+      "Arglist": "filename,reason",
+      "suggestion": {
+        "Possible Cause": "The configuration file does not exist or the file is invalid.",
+        "Solution": "Reinstall the FwkACLlib or ACLlib component or edit the file."
+      }
+    },
+    {
+      "errClass": "Environment Errors",
+      "errTitle": "Invalid Configuration File",
+      "ErrCode": "E30001",
+      "ErrMessage": "System error occurred. Failed to load AI CPU kernel info from JSON file [%s]. Reason: %s.",
+      "Arglist": "filename,reason",
+      "suggestion": {
+        "Possible Cause": "The configuration file does not exist or the file is invalid.",
+        "Solution": "Reinstall the OPP component or edit the file."
+      }
+    },
+    {
+      "errClass": "Environment Errors",
+      "errTitle": "Invalid Configuration File",
+      "ErrCode": "E30002",
+      "ErrMessage": "System error occurred. Failed to load IR configuration file [%s]. Reason: %s.",
+      "Arglist": "filename,reason",
+      "suggestion": {
+        "Possible Cause": "The configuration file does not exist or the file is invalid.",
+        "Solution": "Reinstall the FwkACLlib or ACLlib component or edit the file."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid GE Initialization Argument",
+      "ErrCode": "E20100",
+      "ErrMessage": "Value [%s] is invalid for option [ge.opSelectImplmode]. Must be either [high_precision] or [high_performance].",
+      "Arglist": "op_select_impl_mode",
+      "suggestion": {
+        "Possible Cause": "The operator implementation mode specified for GE initialization is invalid. Must be either [high_precision] or [high_performance].",
+        "Solution": "Try again with a valid [opSelectImplmode] argument, which must match the [--op_select_implmode] argument in the ATC command line. Alternatively, the error is due to a GE translation failure."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid GE Initialization Argument",
+      "ErrCode": "E20101",
+      "ErrMessage": "Value [%s] is invalid for option [%s].",
+      "Arglist": "value,option",
+      "suggestion": {
+        "Possible Cause": "See the error message for details.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid GE Initialization Argument",
+      "ErrCode": "E20102",
+      "ErrMessage": "Value [%s] is invalid for option [ge.engineType]. Must be either [AiCore] or [VectorCore].",
+      "Arglist": "engine_type",
+      "suggestion": {
+        "Possible Cause": "The engine type argument for GE initialization is invalid. Only [AiCore] or [VectorCore] is supported.",
+        "Solution": "Contact Huawei technical support to check the engine type specified for GE initialization."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Platform Initialization Argument",
+      "ErrCode": "E20103",
+      "ErrMessage": "Value [%s] for option [ge.aicoreNum] is out of range (0, %s].",
+      "Arglist": "value,ai_core_num",
+      "suggestion": {
+        "Possible Cause": "The number of AI Cores configured for platform initialization is out of the valid range. This is a Huawei internal parameter and is user-irrelevant.",
+        "Solution": "Contact Huawei technical support to check the value of [aicoreNum] in the [platform.ini] file."
+      }
+    },
+    {
+      "errClass": "Operator Compilation Errors",
+      "errTitle": "Failure to Precompile Op",
+      "ErrCode": "E20001",
+      "ErrMessage": "Failed to precompile Op [%s, optype [%s]] of graph_id [%s].",
+      "Arglist": "op_name,op_type,graph_id",
+      "suggestion": {
+        "Possible Cause": "The operator has an invalid argument.",
+        "Solution": "See the error message for details, and then check the Python stack where the error log is reported."
+      }
+    },
+    {
+      "errClass": "Invalid Operator Arguments",
+      "errTitle": "Failure to Precompile Op",
+      "ErrCode": "E20002",
+      "ErrMessage": "Failed to precompile Op [%s, optype [%s]] of graph_id [%s] in thread [%s] of task [%s].",
+      "Arglist": "op_name,op_type,graph_id,thread_id,task_id",
+      "suggestion": {
+        "Possible Cause": "The operator has an invalid argument.",
+        "Solution": "See the error message for details, and then check the Python stack where the error log is reported."
+      }
+    },
+    {
+      "errClass": "Operator Compilation Errors",
+      "errTitle": "Failure to Compile Op",
+      "ErrCode": "E20003",
+      "ErrMessage": "Failed to compile Op [%s, optype [%s]] of graph_id [%s].",
+      "Arglist": "op_name,op_type,graph_id",
+      "suggestion": {
+        "Possible Cause": "The operator has an invalid argument.",
+        "Solution": "See the error message for details, and then check the Python stack where the error log is reported."
+      }
+    },
+    {
+      "errClass": "Operator Compilation Errors",
+      "errTitle": "Failure to Compile Op",
+      "ErrCode": "E20004",
+      "ErrMessage": "Failed to compile Op [%s, optype [%s]] of graph_id [%s] in thread [%s] of task [%s].",
+      "Arglist": "op_name,op_type,graph_id,thread_id,task_id",
+      "suggestion": {
+        "Possible Cause": "The operator has an invalid argument.",
+        "Solution": "See the error message for details, and then check the Python stack where the error log is reported."
+      }
+    },
+    {
+      "errClass": "Task Generation Errors",
+      "errTitle": "Failure to Generate Task",
+      "ErrCode": "E20005",
+      "ErrMessage": "Failed to generate a task for Op [%s, optype [%s]] of graph_id [%s].",
+      "Arglist": "op_name,op_type,graph_id",
+      "suggestion": {
+        "Possible Cause": "A compilation argument is invalid, the operator is not compiled, or the GE memory allocation is invalid.",
+        "Solution": "Check the error message and error log."
+      }
+    },
+    {
+      "errClass": "Invalid Operator Arguments",
+      "errTitle": "Failure to Calculate Data Edge Size",
+      "ErrCode": "E20006",
+      "ErrMessage": "Failed to calculate the tensor size of Op [%s, optype %s].",
+      "Arglist": "op_name,op_type",
+      "suggestion": {
+        "Possible Cause": "Failed to calculate the data edge size, possibly due to an invalid shape or format.",
+        "Solution": "Inspect the error log, perform a partial dump by using SdkInfoCollector or the [export DUMP_GE_GRAPH=2] command, and then send the partial dump to Huawei technical support for fault locating."
+      }
+    },
+    {
+      "errClass": "Fusion Pass Errors",
+      "errTitle": "Failure to Execute Fusion Pass",
+      "ErrCode": "E20007",
+      "ErrMessage": "Failed to run the following graph fusion pass: [%s]. The pass type is [%s].",
+      "Arglist": "pass_name,pass_type",
+      "suggestion": {
+        "Possible Cause": "The fusion pass code has a bug or the source graph does not meet the fusion pass requirements.",
+        "Solution": "[step] If the pass code is user-defined, check the error message and the verification logic. [step] If the pass code is not user-defined, perform a complete or partial dump by using SdkInfoCollector and then send the dump to Huawei technical support for fault locating."
+      }
+    },
+    {
+      "errClass": "Fusion Pass Errors",
+      "errTitle": "Failure to Execute Fusion Pass",
+      "ErrCode": "E20008",
+      "ErrMessage": "Failed to run pass [%s]. Reason: %s.",
+      "Arglist": "pass_name,errmsg",
+      "suggestion": {
+        "Possible Cause": "The fusion pass code has a bug or the source graph does not meet the fusion pass requirements.",
+        "Solution": "Check the pass code."
+      }
+    },
+    {
+      "errClass": "Fusion Pass Errors",
+      "errTitle": "Failure to Execute Fusion Pass",
+      "ErrCode": "E20009",
+      "ErrMessage": "Failed to do topological sorting after graph fusion, graph is cyclic, graph name: %s, pass name: %s.",
+      "Arglist": "graph_name,pass_name",
+      "suggestion": {
+        "Possible Cause": "The fusion pass code has a bug.",
+        "Solution": "Check the pass code."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Empty Path",
+      "ErrCode": "W21000",
+      "ErrMessage": "Path [%s] is empty. Reason: %s.",
+      "Arglist": "path,errmsg",
+      "suggestion": {
+        "Possible Cause": "This error does not terminate the process. The path is not specified or the specified path is empty.",
+        "Solution": "Try again with a valid path."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Open File",
+      "ErrCode": "E21001",
+      "ErrMessage": "Failed to open file [%s]. Reason: %s.",
+      "Arglist": "file,errmsg",
+      "suggestion": {
+        "Possible Cause": "The file does not exist or cannot be opened.",
+        "Solution": "Check the error message and error log."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Read File",
+      "ErrCode": "E21002",
+      "ErrMessage": "Failed to read file [%s]. Reason: %s.",
+      "Arglist": "file,errmsg",
+      "suggestion": {
+        "Possible Cause": "The file path is empty or the file does not exist.",
+        "Solution": "Check the error message and error log."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Empty Path",
+      "ErrCode": "E21003",
+      "ErrMessage": "The file path of node [%s] is empty. Reason: %s.",
+      "Arglist": "op_name,errmsg",
+      "suggestion": {
+        "Possible Cause": "The compilation result of this node is empty, possibly due to a compilation failure.",
+        "Solution": "[step] Check the error message to see if a compilation failure has occurred. [step] If no compilation failure has occurred, contact Huawei technical support for fault locating."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Path",
+      "ErrCode": "W40001",
+      "ErrMessage": "Path [%s] for [%s] is invalid. Reason: %s.",
+      "Arglist": "path,arg,result",
+      "suggestion": {
+        "Possible Cause": "The path is empty or does not exist.",
+        "Solution": "Try again with a valid path."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Create Directory",
+      "ErrCode": "W40002",
+      "ErrMessage": "Failed to create directory [%s]. Reason: %s.",
+      "Arglist": "path,result",
+      "suggestion": {
+        "Possible Cause": "You do not have the permission on the directory or the directory name is invalid.",
+        "Solution": "Modify the permission or directory name and try again."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Import te.platform.log_util",
+      "ErrCode": "E40000",
+      "ErrMessage": "Failed to import te.platform.log_util.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "A component installation is missing or its installed version does not match. Alternatively, the specified Python path is incorrect.",
+        "Solution": "[step] Check that all required components are properly installed, Python is properly installed, and the specified Python path matches the Python installation directory. [step] Check the configured environment variables such as [PYTHONPATH] and [ASCEND_OPP_PATH]."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Import Python Module",
+      "ErrCode": "E40001",
+      "ErrMessage": "Failed to import the Python module: [%s]",
+      "Arglist": "result",
+      "suggestion": {
+        "Possible Cause": "A component installation is missing or its installed version does not match. Alternatively, the specified Python path is incorrect.",
+        "Solution": "Check that all required components are properly installed and the specified Python path matches the Python installation directory."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Call Python Function",
+      "ErrCode": "E40002",
+      "ErrMessage": "Failed to call function [%s] with arguments [%s].",
+      "Arglist": "func,args",
+      "suggestion": {
+        "Possible Cause": "An invalid argument is passed or the Python function has a bug.",
+        "Solution": "This error is caused by an internal problem. Check the code of the Python function call."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Import Auto Tiling Manager of Python Module",
+      "ErrCode": "E40003",
+      "ErrMessage": "Failed to import Auto Tiling Manager of Python module: [%s]",
+      "Arglist": "auto_tune_path",
+      "suggestion": {
+        "Possible Cause": "A component installation is missing or its installed version does not match. Alternatively, the specified [PYTHONPATH] is invalid.",
+        "Solution": "Check that all required components are properly installed and the specified [PYTHONPATH] matches the Python installation directory."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Import RL Tiling Manager of Python Module",
+      "ErrCode": "E40004",
+      "ErrMessage": "Failed to import RL Tiling Manager of Python module: [%s]",
+      "Arglist": "rl_path",
+      "suggestion": {
+        "Possible Cause": "A component installation is missing or its installed version does not match. Alternatively, the specified [PYTHONPATH] is invalid.",
+        "Solution": "Check that the ATC and FwkACLlib components are properly installed and the specified [PYTHONPATH] matches the Python installation directory."
+      }
+    },
+    {
+      "errClass": "Invalid Operator Arguments",
+      "errTitle": "Failure to Execute Function check_supported",
+      "ErrCode": "E40005",
+      "ErrMessage": "Failed to execute the [check_supported] function of Op [%s, oppath [%s], optype [%s]].",
+      "Arglist": "op_name,op_path,op_type",
+      "suggestion": {
+        "Possible Cause": "An invalid argument is passed or the Python function [check_supported] has a bug. This error is most likely caused by an internal problem.",
+        "Solution": "This error is caused by an internal problem. Contact Huawei technical support to check the Python function call in the code and the implementation of the [check_supported] function."
+      }
+    },
+    {
+      "errClass": "Invalid Operator Arguments",
+      "errTitle": "Failure to Obtain Op Format",
+      "ErrCode": "E40006",
+      "ErrMessage": "Failed to obtain Op [%s]'s format. Reason: %s.",
+      "Arglist": "op_name,fail_reason",
+      "suggestion": {
+        "Possible Cause": "An invalid argument is passed or the Python function has a bug.",
+        "Solution": "This error is caused by an internal problem. Contact Huawei technical support to check the Python function call in the code and the implementation of the [op_select_format] function."
+      }
+    },
+    {
+      "errClass": "Invalid Operator Arguments",
+      "errTitle": "Failure to Precompile Op",
+      "ErrCode": "E40007",
+      "ErrMessage": "Failed to precompile Op [%s, oppath [%s], optype [%s]].",
+      "Arglist": "op_name,op_path,op_type",
+      "suggestion": {
+        "Possible Cause": "See the error message for details.",
+        "Solution": "See the error message for details, and then check the Python stack where the error log is reported."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Failure to Import Python Module",
+      "ErrCode": "E40008",
+      "ErrMessage": "Failed to import the Python module from [%s].",
+      "Arglist": "module_path",
+      "suggestion": {
+        "Possible Cause": "A component installation is missing or its installed version does not match. Alternatively, the specified [PYTHONPATH] is invalid. Check that Python is properly installed, and the specified Python path matches the Python installation directory.",
+        "Solution": "Check that the ATC and FwkACLlib components are properly installed and the specified [PYTHONPATH] matches the Python installation directory."
+      }
+    },
+    {
+      "errClass": "Operator Compilation Errors",
+      "errTitle": "Failure to Compile Op",
+      "ErrCode": "E40009",
+      "ErrMessage": "Failed to compile Op [%s, oppath [%s], optype [%s]] of taskID [%s].",
+      "Arglist": "op_name,opp_path,op_type,task_id",
+      "suggestion": {
+        "Possible Cause": "See the error message for details.",
+        "Solution": "See the error message for details, and then check the Python stack where the error log is reported."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Auto Tune Mode",
+      "ErrCode": "E40010",
+      "ErrMessage": "Auto Tune mode [%s] is invalid.",
+      "Arglist": "auto_tune_mode",
+      "suggestion": {
+        "Possible Cause": "The specified Auto Tune mode is invalid.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "E40011",
+      "ErrMessage": "Argument [%s] is invalid. Reason: %s.",
+      "Arglist": "arg,reason",
+      "suggestion": {
+        "Possible Cause": "An invalid argument is passed.",
+        "Solution": "Try again with a valid argument. If the error persists, check the argument verification logic in the code."
+      }
+    },
+    {
+      "errClass": "TBE Compiler Errors",
+      "errTitle": "Invalid IR",
+      "ErrCode": "EB0000",
+      "ErrMessage": "Failed to compile the operator. Reason:%s, %s",
+      "Arglist": "message,traceback",
+      "suggestion": {
+        "Possible Cause": "The IR is invalid.",
+        "Solution": "Check that the Compute and Schedule APIs are used correctly. For details, see the TBE Custom Operator Developer Guide. If the error persists, contact Huawei technical support."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "Invalid SoC Version",
+      "ErrCode": "EE1000",
+      "ErrMessage": "Value %s is invalid for the SoC version. Valid values are: %s",
+      "Arglist": "version,valid_name",
+      "suggestion": {
+        "Possible Cause": "The SoC version argument is invalid.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "Environment Errors",
+      "errTitle": "Device Error",
+      "ErrCode": "EE2000",
+      "ErrMessage": "Device [%s] is not running properly.",
+      "Arglist": "device_id",
+      "suggestion": {
+        "Possible Cause": "Failed to connect to the device, possibly due to a bus error or device error.",
+        "Solution": "Send the log to Huawei technical support for fault locating."
+      }
+    },
+    {
+      "errClass": "Environment Errors",
+      "errTitle": "Failure to Allocate Memory",
+      "ErrCode": "EE2001",
+      "ErrMessage": "Failed to allocate memory for [%s] due to insufficient memory. The requested allocation is %s.",
+      "Arglist": "target,size",
+      "suggestion": {
+        "Possible Cause": "System memory is insufficient for the network.",
+        "Solution": "[step] Free the system memory and try again. [step] If no more system memory can be freed, reduce the network size and try again."
+      }
+    },
+    {
+      "errClass": "Environment Errors",
+      "errTitle": "Driver return failed",
+      "ErrCode": "EE3001",
+      "ErrMessage": "The process has lost connection between the host and device. This might be caused by execution timeout of particular operators or unstable connection. Check the error message detail and try again.",
+      "Arglist": "",
+      "suggestion": {
+        "Possible Cause": "The execution of a particular operator times out or the host and device connection is unstable.",
+        "Solution": "[step] Fix the timout operator or fix the connection problem between host and device, then restart the app"
+      }
+    },
+    {
+      "errClass": "Task Schedule Execution Errors",
+      "errTitle": "Model Execution Error",
+      "ErrCode": "EE4001",
+      "ErrMessage": "This stream has been bound to a model. Repeated binding is not allowed. %s",
+      "Arglist": "extend_info",
+      "suggestion": {
+        "Possible Cause": "This stream has been bound to a model. Repeated binding is not allowed.",
+        "Solution": "Remove redundant bindings from your code."
+      }
+    },
+    {
+      "errClass": "Task Schedule Execution Errors",
+      "errTitle": "Model Execution Error",
+      "ErrCode": "EE4002",
+      "ErrMessage": "Failed to bind the stream to the model. %s",
+      "Arglist": "extend_info",
+      "suggestion": {
+        "Possible Cause": "The model ID does not match the input arguments or the specific stream is busy.",
+        "Solution": "See the error message for details and modify the rtModelBindStream arguments."
+      }
+    },
+    {
+      "errClass": "Task Schedule Execution Errors",
+      "errTitle": "Profiling Execution Error",
+      "ErrCode": "EE4003",
+      "ErrMessage": "Failed to profile the HWTS log, as online profiling is in process. Please stop online profiling first. %s",
+      "Arglist": "extend_info",
+      "suggestion": {
+        "Possible Cause": "Failed to profile the HWTS log, as online profiling is in process.",
+        "Solution": "Stop online profiling and try again."
+      }
+    },
+    {
+      "errClass": "Task Schedule Execution Errors",
+      "errTitle": "Profiling Execution Error",
+      "ErrCode": "EE4004",
+      "ErrMessage": "Failed to enable profiling. %s",
+      "Arglist": "extend_info",
+      "suggestion": {
+        "Possible Cause": "Profiling is enabled. See the error message for details.",
+        "Solution": "Disable profiling and try again."
+      }
+    },
+    {
+      "errClass": "Task Schedule Execution Errors",
+      "errTitle": "Task Schedule Resource Error",
+      "ErrCode": "EE5001",
+      "ErrMessage": "Insufficient HWTS submit queue(SQ) resource. %s",
+      "Arglist": "extend_info",
+      "suggestion": {
+        "Possible Cause": "The HWTS SQ resource are not sufficient to launch any new tasks.",
+        "Solution": "Wait until sufficient HWTS SQ resource is available."
+      }
+    },
+    {
+      "errClass": "Task Schedule Execution Errors",
+      "errTitle": "Task Schedule Resource Error",
+      "ErrCode": "EE5002",
+      "ErrMessage": "Insufficient task schedule memory. %s",
+      "Arglist": "extend_info",
+      "suggestion": {
+        "Possible Cause": "The task schedule memory are not sufficient to allocate new memory.",
+        "Solution": "Reduce the number of tasks of your model and try again."
+      }
+    },
+    {
+      "errClass": "ACL API Errors",
+      "errTitle": "Invalid Argument",
+      "ErrCode": "EH0001",
+      "ErrMessage": "Value [%s] for [%s] is invalid. Reason: %s.",
+      "Arglist": "value,param,reason",
+      "suggestion": {
+        "Possible Cause": "The argument is invalid.",
+        "Solution": "Try again with a valid argument."
+      }
+    },
+    {
+      "errClass": "ACL API Errors",
+      "errTitle": "Null Pointer",
+      "ErrCode": "EH0002",
+      "ErrMessage": "Argument [%s] must not be null.",
+      "Arglist": "param",
+      "suggestion": {
+        "Possible Cause": "A null pointer is passed to the parameter.",
+        "Solution": "Check that memory is properly allocated to the pointer and try again with a valid pointer."
+      }
+    },
+    {
+      "errClass": "ACL API Errors",
+      "errTitle": "Invalid Path",
+      "ErrCode": "EH0003",
+      "ErrMessage": "Path [%s] is invalid. Reason: %s.",
+      "Arglist": "path,reason",
+      "suggestion": {
+        "Possible Cause": "The input path does not exist or is invalid. Alternatively, you do not have enough permission to access the path.",
+        "Solution": "Try again with a valid path."
+      }
+    },
+    {
+      "errClass": "ACL API Errors",
+      "errTitle": "Invalid File",
+      "ErrCode": "EH0004",
+      "ErrMessage": "File [%s] is invalid. Reason: %s.",
+      "Arglist": "path,reason",
+      "suggestion": {
+        "Possible Cause": "The file is invalid.",
+        "Solution": "Try again with a valid file."
+      }
+    },
+    {
+      "errClass": "ACL API Errors",
+      "errTitle": "Invalid AIPP Argument",
+      "ErrCode": "EH0005",
+      "ErrMessage": "AIPP argument [%s] is invalid. Reason: %s.",
+      "Arglist": "param,reason",
+      "suggestion": {
+        "Possible Cause": "The AIPP argument is invalid.",
+        "Solution": "Try again with a valid AIPP argument."
+      }
+    },
+    {
+      "errClass": "ACL API Errors",
+      "errTitle": "Feature Unsupported",
+      "ErrCode": "EH0006",
+      "ErrMessage": "%s is not supported. Reason: %s.",
+      "Arglist": "feature, reason",
+      "suggestion": {
+        "Possible Cause": "The feature is not supported.",
+        "Solution": "Check if parameters of unsupported features are used according to your environment setup."
+      }
+    },
+  {
+    "errClass": "Environment Errors",
+    "errTitle": "Invalid Environment Variable Configuration",
+    "ErrCode": "EI0001",
+    "ErrMessage": "Environment variable [%s] is invalid. Tips: %s.",
+    "Arglist": "env,tips",
+    "suggestion": {
+      "Possible Cause": "The environment variable configuration is invalid.",
+      "Solution": "Try again with valid environment variable configuration."
+    }
+  },
+  {
+    "errClass": "Environment Errors",
+    "errTitle": "SO File Not Found",
+    "ErrCode": "EI0002",
+    "ErrMessage": "SO file [%s] is not found.",
+    "Arglist": "so_name",
+    "suggestion": {
+      "Possible Cause": "The file does not exist or is damaged.",
+      "Solution": "Try again with a valid FwkACLlib installation."
+    }
+  },
+  {
+    "errClass": "Invalid Operator Arguments",
+    "errTitle": "Invalid Collective Communication Op Argument",
+    "ErrCode": "EI0003",
+    "ErrMessage": "In [%s], value [%s] of parameter [%s] is invalid. Tips: %s.",
+    "Arglist": "ccl_op,value,parameter,tips",
+    "suggestion": {
+      "Possible Cause": "The collective communication operator has an invalid argument.",
+      "Solution": "Try again with a valid argument."
+    }
+  },
+  {
+    "errClass": "Environment Errors",
+    "errTitle": "Invalid Ranktable Configuration",
+    "ErrCode": "EI0004",
+    "ErrMessage": "Invalid ranktable, with rankID [%s] and local devID [%s]. Check that ranktable [%s] is valid and the environment setup matches the ranktable.",
+    "Arglist": "rankid,devId,ranktable_path",
+    "suggestion": {
+      "Possible Cause": "The cluster configuration in the ranktable file does not match that of the actual operating environment, or the configuration format is invalid",
+      "Solution": "Try again with a valid cluster configuration in the ranktable file. Ensure that the configuration matches the operating environment."
+    }
+  },
+  {
+    "errClass": "Invalid Operator Arguments",
+    "errTitle": "Inconsistent Collective Communication Arguments Between Ranks",
+    "ErrCode": "EI0005",
+    "ErrMessage": "The arguments for collective communication are inconsistent between ranks: tag [%s], parameter [%s], local [%s], remote [%s]",
+    "Arglist": "tag,para_name,local_para,remote_para",
+    "suggestion": {
+      "Possible Cause": "The arguments for collective communication are inconsistent between ranks.",
+      "Solution": "Try again with valid arguments. Ensure that the arguments are consistent between ranks."
+    }
+  },
+  {
+    "errClass": "Invalid Operator Arguments",
+    "errTitle": "Invalid Collective Communication Allocation",
+    "ErrCode": "EI0006",
+    "ErrMessage": "[%s] failed with info [%s]. Please check the passed [%s] resource.",
+    "Arglist": "resource_op,resource_info,resource_type",
+    "suggestion": {
+      "Possible Cause": "The memory or notify allocation passed to collective communication is invalid.",
+      "Solution": "Try again with a valid memory or notify allocation."
+    }
+  },
+  {
+    "errClass": "Environment Errors",
+    "errTitle": "Allocation Failure",
+    "ErrCode": "EI0007",
+    "ErrMessage": "Failed to allocate resource [%s], with info [%s].",
+    "Arglist": "resource_type, resource_info",
+    "suggestion": {
+      "Possible Cause": "Failed to allocate memory or notify due to resource insufficiency.",
+      "Solution": "Clean up unnecessary allocations."
+    }
+  },
+  {
+      "ErrCode": "E50000",
+      "ErrMessage": "The op [%s] missing [%s] parameter",
+      "Arglist": "op_name, param_name"
+    },
+    {
+        "ErrCode": "E50001",
+        "ErrMessage": "The length of input [%s] of [%s] op needs to be %s, but the length is [%s]",
+        "Arglist": "param,op_name,expected_length, length"
+    },
+    {
+        "ErrCode": "E50002",
+        "ErrMessage": "The  format of input [%s] of [%s] op needs to be [%s], but incoming format is [%s]",
+        "Arglist": "param,op_name,expected_format_list,format"
+    },
+    {
+        "ErrCode": "E50003",
+        "ErrMessage": "The data type of input [%s] of [%s] op needs to be [%s], but incoming data type is [%s]",
+        "Arglist": "param,op_name,expected_data_type_list,data_type"
+    },
+    {
+        "ErrCode": "E50004",
+        "ErrMessage": "1.The op [%s] input [%s] data type is [%s], but input [%s] data type is [%s], They must meet the rule [%s]",
+        "Arglist": "op_name,param1,param1_data_type,param2,param2_data_type,rule"
+    },
+    {
+        "ErrCode": "E50009",
+        "ErrMessage": "1.The op [%s] has rule: [%s], but input [%s] shape is [%s]",
+        "Arglist": "op_name, rule_desc,param_name, param_shape"
+    },
+    {
+        "ErrCode": "E50012",
+        "ErrMessage": "The [%s] op has rule: %s, but [%s] is [%s]",
+        "Arglist": "op_name,rule_desc,param_name, param_value"
+    },
+    {
+        "ErrCode": "E50029",
+        "ErrMessage": "The op[%s] input parameter[%s] should be [%s], actual the input is [%s]",
+        "Arglist": "op_name,param_name,expected_value,input_value"
+    },
+    {
+        "ErrCode": "E50030",
+        "ErrMessage": "The op[%s] required input parameter[%s] must exist.",
+        "Arglist": "op_name,param_name"
+    },
+    {
+        "ErrCode": "E50031",
+        "ErrMessage": "In op[%s], the [%s] of [%s] and [%s] must be same, actual the [%s] of [%s] is [%s] and the [%s] of [%s] is [%s]",
+        "Arglist": "op_name,attr_name,param1_name,param2_name,attr_name,param1_name,param1_value,attr_name,param2_name,param2_value"
+    },
+    {
+        "ErrCode": "E50032",
+        "ErrMessage": "When dtype of a is [%s], the op[%s] out dtype must in [%s], actual out dtype is [%s]",
+        "Arglist": "a_dtype,op_name,expected_dtype_list,out_dtype"
+    },
+    {
+        "ErrCode": "E50033",
+        "ErrMessage": "The format of [%s] of op[%s] must in [%s], actual format is [%s]",
+        "Arglist": "param_name,op_name,expected_format_list,format"
+    },
+    {
+        "ErrCode": "E50034",
+        "ErrMessage": "The dtype of [%s] of op[%s] must in [%s], actual dtype is [%s]",
+        "Arglist": "param_name,op_name,expected_dtype_list,dtype"
+    },
+    {
+        "ErrCode": "E50035",
+        "ErrMessage": "In op[%s], the dim of [%s] must be [%s], actual input is [%s]",
+        "Arglist": "op_name,param_name,expected_length,length"
+    },
+    {
+        "ErrCode": "E50036",
+        "ErrMessage": "When the shape of a is [%s] and the shape of b is [%s], the shape of c of op [%s] must be [%s], actual input is [%s]",
+        "Arglist": "a_shape,b_shape,op_name, expected_shape,shape"
+    },
+    {
+        "ErrCode": "E50037",
+        "ErrMessage": "The format of [%s] of op[%s] must in [%s], actual format is [%s]",
+        "Arglist": "param_name,op_name, expected_format_list,format"
+    },
+    {
+        "ErrCode": "E50038",
+        "ErrMessage": "In op [%s], the 1d value of shape a should be equal to 0d value of shape b, actual input are [%s] and [%s]",
+        "Arglist": "op_name,a_1d,b_0d"
+    },
+    {
+        "ErrCode": "E50039",
+        "ErrMessage": "In op[%s], the channel of x should be equal to  filter's, actual input are [%s] and [%s]",
+        "Arglist": "op_name,channel_of_x,channel_of_filter"
+    },
+    {
+        "ErrCode": "E50040",
+        "ErrMessage": "In op[%s], the [%s] must in range [%s], actual is [%s]",
+        "Arglist": "op_name,range,attr_name,value"
+    },
+    {
+        "ErrCode": "E50041",
+        "ErrMessage": "In op[%s], the depth of feature map after padding can not be less than shape_filter's, actual are [%s] and [%s]",
+        "Arglist": "op_name,depth_of_x,depth_of_filter"
+    },
+    {
+        "ErrCode": "E50042",
+        "ErrMessage": "In op[%s], the depth of pad can not be less than shape_filter's, actual are [%s] and [%s]",
+        "Arglist": "op_name,depth_of_pad,depth_of_filter"
+    },
+    {
+        "ErrCode": "E50043",
+        "ErrMessage": "In op[%s], x H(after pad) must >= filter H, actual are [%s] and [%s]",
+        "Arglist": "op_name,h_of_x,h_of_filter"
+    },
+    {
+        "ErrCode": "E50044",
+        "ErrMessage": "In op[%s], x W(after pad) must >= filter W, actual are [%s] and [%s]",
+        "Arglist": "op_name,w_of_x,w_of_filter"
+    },
+    {
+        "ErrCode": "E50045",
+        "ErrMessage": "In op[%s],filter H must > Pad H, actual are [%s] and [%s]",
+        "Arglist": "op_name,h_of_filter,h_of_pad"
+    },
+    {
+        "ErrCode": "E50046",
+        "ErrMessage": "In op[%s],filter W must > Pad W, actual are [%s] and [%s]",
+        "Arglist": "op_name,w_of_filter,w_of_pad"
+    },
+    {
+        "ErrCode": "E50047",
+        "ErrMessage": "In op[%s], x W(after pad) must >= stride W, actual are [%s] and [%s]",
+        "Arglist": "op_name,w_of_x,w_of_filter"
+    },
+    {
+        "ErrCode": "E50048",
+        "ErrMessage": "In op[%s], x W(after pad) must >= stride W, actual are [%s] and [%s]",
+        "Arglist": "op_name,w_of_x,w_of_stride"
+    },
+    {
+        "ErrCode": "E50049",
+        "ErrMessage": "In op[%s], [%s] exceed 64 bit limitations",
+        "Arglist": "op_name,attr_name"
+    },
+    {
+        "ErrCode": "E50050",
+        "ErrMessage": "In op [%s], only support pads model [%s], actual is [%s]",
+        "Arglist": "op_name,expected_pad_mode,actual_pad_mode"
+    },
+    {
+        "ErrCode": "E50051",
+        "ErrMessage": "In op[%s], Invalid input size due to large kernel size and stride",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E50052",
+        "ErrMessage": "In op[%s], Dilations in the batch and depth dimensions must be 1,actual are [%s] and [%s].",
+        "Arglist": "op_name,dilation_n,dilation_c"
+    },
+    {
+        "ErrCode": "E50053",
+        "ErrMessage": "In op[%s], Shape error : The compute result of H under convolution rule cannot match",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E50054",
+        "ErrMessage": "In op[%s], Shape error : The compute result of W under convolution rule cannot match",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E50055",
+        "ErrMessage": "In op[%s], Input is too large, the minimum tiling may exceed L1_Buffer",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E50056",
+        "ErrMessage": "In V200 op[%s],dilation_h and dilation_w must be 1,actual are [%s] and  [%s]",
+        "Arglist": "op_name,dilation_h,dilation_w"
+    },
+    {
+        "ErrCode": "E50057",
+        "ErrMessage": "In op [%s], set either [%s] or [%s], not both",
+        "Arglist": "op_name,param1_name,param2_name"
+    },
+    {
+        "ErrCode": "E50058",
+        "ErrMessage": "In op [%s], [%s]",
+        "Arglist": "op_name,description"
+    },
+    {
+        "ErrCode": "E50059",
+        "ErrMessage": "In op[%s], x channel should be equal to filter channel*groups, x shape is: [%s], filter shape is: [%s], groups is: [%s]",
+        "Arglist": "op_name,x_shape,filter_shape,groups"
+    },
+    {
+        "ErrCode": "E50060",
+        "ErrMessage": "In op [%s], [%s]",
+        "Arglist": "op_name,description"
+    },
+    {
+        "ErrCode": "E60000",
+        "ErrMessage": "The op[%s] input parameter[%s] should be [%s], actual the input is [%s]",
+        "Arglist": "op_name,param_name,expected_value,input_value"
+    },
+    {
+        "ErrCode": "E60001",
+        "ErrMessage": "The op[%s] required input parameter[%s] must exist.",
+        "Arglist": "op_name,param_name"
+    },
+    {
+        "ErrCode": "E60002",
+        "ErrMessage": "In op[%s], the [%s] of [%s] and [%s] must be same, actual the [%s] of [%s] is [%s] and the [%s] of [%s] is [%s]",
+        "Arglist": "op_name,attr_name,param1_name,param2_name,attr_name,param1_name,param1_value,attr_name,param2_name,param2_value"
+    },
+    {
+        "ErrCode": "E60003",
+        "ErrMessage": "When dtype of a is [%s], the op[%s] out dtype must in [%s], actual out dtype is [%s]",
+        "Arglist": "a_dtype,op_name,expected_dtype_list,out_dtype"
+    },
+    {
+        "ErrCode": "E60004",
+        "ErrMessage": "The format of [%s] of op[%s] must in [%s], actual format is [%s]",
+        "Arglist": "param_name,op_name, expected_format_list,format"
+    },
+    {
+        "ErrCode": "E60005",
+        "ErrMessage": "The dtype of [%s] of op[%s] must in [%s], actual dtype is [%s]",
+        "Arglist": "param_name,op_name,expected_dtype_list,dtype"
+    },
+    {
+        "ErrCode": "E60006",
+        "ErrMessage": "In op[%s], the dim of [%s] must be [%s], actual input is [%s]",
+        "Arglist": "op_name,param_name,expected_length,length"
+    },
+    {
+        "ErrCode": "E60007",
+        "ErrMessage": "When the shape of a is [%s] and the shape of b is [%s], the shape of c of op [%s] must be [%s], actual input is [%s]",
+        "Arglist": "a_shape,b_shape,op_name,expected_shape,shape"
+    },
+    {
+        "ErrCode": "E60008",
+        "ErrMessage": "The original format of [%s] of op[%s] must in [%s], actual format is [%s]",
+        "Arglist": "param_name,op_name,expected_format_list,format"
+    },
+    {
+        "ErrCode": "E60009",
+        "ErrMessage": "In op [%s], the 1d value of shape a should be equal to 0d value of shape b, actual input are [%s] and [%s]",
+        "Arglist": "op_name,a_1d,b_0d"
+    },
+    {
+        "ErrCode": "E60010",
+        "ErrMessage": "In op[%s], the channel of a should be equal to  filter's, actual input are [%s] and [%s]",
+        "Arglist": "op_name,channel_of_x,channel_of_filter"
+    },
+    {
+        "ErrCode": "E60011",
+        "ErrMessage": "In op[%s], the [%s] must in range [%s], actual is [%s]",
+        "Arglist": "op_name,attr_name,range,value"
+    },
+    {
+        "ErrCode": "E60012",
+        "ErrMessage": "In op[%s], the depth of feature map after padding can not be less than shape_filter's, actual are [%s] and [%s]",
+        "Arglist": "op_name,depth_of_x,depth_of_filter"
+    },
+    {
+        "ErrCode": "E60013",
+        "ErrMessage": "In op[%s], the depth of pad can not be less than shape_filter's, actual are [%s] and [%s]",
+        "Arglist": "op_name,depth_of_pad,depth_of_filter"
+    },
+    {
+        "ErrCode": "E60014",
+        "ErrMessage": "In op[%s], x H(after pad) must >= filter H, actual are [%s] and [%s]",
+        "Arglist": "op_name,h_of_x,h_of_filter"
+    },
+    {
+        "ErrCode": "E60015",
+        "ErrMessage": "In op[%s], x W(after pad) must >= filter W, actual are [%s] and [%s]",
+        "Arglist": "op_name,w_of_x,w_of_filter"
+    },
+    {
+        "ErrCode": "E60016",
+        "ErrMessage": "In op[%s],filter H must > Pad H, actual are [%s] and [%s]",
+        "Arglist": "op_name,h_of_filter,h_of_pad"
+    },
+    {
+        "ErrCode": "E60017",
+        "ErrMessage": "In op[%s],filter W must > Pad W, actual are [%s] and [%s]",
+        "Arglist": "op_name,w_of_filter,w_of_pad"
+    },
+    {
+        "ErrCode": "E60018",
+        "ErrMessage": "In op[%s], x W(after pad) must >= stride W, actual are [%s] and [%s]",
+        "Arglist": "op_name,w_of_x,w_of_filter"
+    },
+    {
+        "ErrCode": "E60019",
+        "ErrMessage": "In op[%s], x W(after pad) must >= stride W, actual are [%s] and [%s]",
+        "Arglist": "op_name,w_of_x,w_of_stride"
+    },
+    {
+        "ErrCode": "E60020",
+        "ErrMessage": "In op[%s], [%s] exceed 64 bit limitations",
+        "Arglist": "op_name,attr_name"
+    },
+    {
+        "ErrCode": "E60021",
+        "ErrMessage": "In op [%s], only support pads model [%s], actual is [%s]",
+        "Arglist": "op_name,expected_pad_mode,actual_pad_mode"
+    },
+    {
+        "ErrCode": "E60022",
+        "ErrMessage": "In op[%s], Invalid input size due to large kernel size and stride",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E60023",
+        "ErrMessage": "In op[%s], Dilations in the batch and depth dimensions must be 1,actual are [%s] and [%s].",
+        "Arglist": "op_name,dilation_n,dilation_c"
+    },
+    {
+        "ErrCode": "E60024",
+        "ErrMessage": "In op[%s], Shape error : The compute result of H under convolution rule cannot match",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E60025",
+        "ErrMessage": "In op[%s], Shape error : The compute result of W under convolution rule cannot match",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E60026",
+        "ErrMessage": "In op[%s], Input is too large, the minimum tiling may exceed L1_Buffer",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E60027",
+        "ErrMessage": "In V200 op[%s],dilation_h and dilation_w must be 1,actual are [%s] and  [%s]",
+        "Arglist": "op_name,dilation_h,dilation_w"
+    },
+    {
+        "ErrCode": "E60101",
+        "ErrMessage": "In op[%s], the last 2 dim of [%s] should be [%s], actual are [%s] ",
+        "Arglist": "op_name,param_name,expected_two_dims,actual_two_dim"
+    },
+    {
+        "ErrCode": "E60102",
+        "ErrMessage": "When the shape of a is [%s] and the shape of b is [%s], the first 2 dims of c of op[%s] must be [%s], actual input is [%s]",
+        "Arglist": "a_shape,b_shape,op_name,expected_first_two_dims,two_dim"
+    },
+    {
+        "ErrCode": "E60103",
+        "ErrMessage": "In op[%s], block_in of a should be [%s], actual input is [%s]",
+        "Arglist": "op_name,expected_value,value"
+    },
+    {
+        "ErrCode": "E60104",
+        "ErrMessage": "In op[%s], block_reduce of a should be [%s], actual input is [%s]",
+        "Arglist": "op_name,expected_value,value"
+    },
+    {
+        "ErrCode": "E60105",
+        "ErrMessage": "In op[%s], block_out of b should be [%s], actual input is [%s]",
+        "Arglist": "op_name,expected_value,value"
+    },
+    {
+        "ErrCode": "E60106",
+        "ErrMessage": "In op[%s], block_reduce of b should be [%s], actual input is [%s]",
+        "Arglist": "op_name,expected_value,value"
+    },
+    {
+        "ErrCode": "E60107",
+        "ErrMessage": "In op[%s], [%s] should be 4d list",
+        "Arglist": "op_name,param_name"
+    },
+    {
+        "ErrCode": "E60108",
+        "ErrMessage": "In op[%s], [%s]",
+        "Arglist": "op_name,reason"
+    },
+    {
+        "ErrCode": "E60109",
+        "ErrMessage": "In op[%s], input_memory_type should be 0 or 2, actual is [%s]",
+        "Arglist": "op_name,input_memory_type"
+    },
+    {
+        "ErrCode": "E60110",
+        "ErrMessage": "In op[%s], output_memory_type should be 0 or 2, actual [%s]",
+        "Arglist": "op_name,output_memory_type"
+    },
+    {
+        "ErrCode": "E60111",
+        "ErrMessage": "In op[%s], slice_offset is valid, actual is [%s]",
+        "Arglist": "op_name,slice_offset"
+    },
+    {
+        "ErrCode": "E60112",
+        "ErrMessage": "In op[%s], valid_shape is valid, actual valid_shape is [%s] and shape_in is [%s]",
+        "Arglist": "op_name,valid_shape,shape_in"
+    },
+    {
+        "ErrCode": "E60113",
+        "ErrMessage": "When dtype of b is int8, the op[%s]'s parameter[transpose_b] value must be False.",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E60114",
+        "ErrMessage": "In op[%s], [%s],actual is [%s]",
+        "Arglist": "op_name,reason,value"
+    },
+    {
+        "ErrCode": "E60028",
+        "ErrMessage": "The op [%s] input parameter [%s] should be [%s] type, but the type you enter is [%s]",
+        "Arglist": "opname,param_name, optype,optype"
+    },
+    {
+        "ErrCode": "E60029",
+        "ErrMessage": "The op [%s] [%s] input does not contain the [%s] key",
+        "Arglist": "op_name,param_name, key"
+    },
+    {
+        "ErrCode": "E60030",
+        "ErrMessage": "The  length of input [%s] of [%s] op needs to be [%s],but the length is [%s]",
+        "Arglist": "param_name, op_name, expected_length, length"
+    },
+    {
+        "ErrCode": "E60031",
+        "ErrMessage": "The  format of input [%s] of [%s] op needs to be [%s], but the format you enter is [%s]",
+        "Arglist": "param_name,op_name,expeted_format_list,format"
+    },
+    {
+        "ErrCode": "E60032",
+        "ErrMessage": "The input[%s] data type of the op[%s] is [%s], but the data type you enter is [%s]",
+        "Arglist": "param_name, op_name, expected_data_type_list,data_type"
+    },
+    {
+        "ErrCode": "E60033",
+        "ErrMessage": "The op [%s] has rule: %s, but [%s] is [%s]",
+        "Arglist": "op_name, rule_desc, param_name,param_value"
+    },
+    {
+        "ErrCode": "E60034",
+        "ErrMessage": "The op [%s]'s kernel name[%s] is invalid, it can only contain letters, numbers and underscores, and begin with underscores or letters",
+        "Arglist": "op_name,kernel_name"
+    },
+    {
+        "ErrCode": "E60035",
+        "ErrMessage": "The op [%s] does not support this fusion mode",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E60037",
+        "ErrMessage": "In op[%s], the type of [%s] should be in [%s], actual is [%s]",
+        "Arglist": "op_name,param_name,type_list,type"
+    },
+    {
+        "ErrCode": "E60038",
+        "ErrMessage": "In op[%s], [%s]",
+        "Arglist": "op_name,desc"
+    },
+    {
+        "ErrCode": "E60039",
+        "ErrMessage": "In op[%s], the [%s] of [%s] should be [%s] than [%s], actual is [%s]",
+        "Arglist": "op_name,attr_name,param_name,comparator,expected_value,input_value"
+    },
+    {
+        "ErrCode": "E60040",
+        "ErrMessage": "The op[%s] [%s] requires attribute [%s]",
+        "Arglist": "op_name,param_name,attr_name"
+    },
+    {
+        "ErrCode": "E60115",
+        "ErrMessage": "The op [%s] get illegal tiling parameter",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E60116",
+        "ErrMessage": "tiling query has rule: %s",
+        "Arglist": "rule_desc"
+    },
+    {
+        "ErrCode": "E60117",
+        "ErrMessage": "Failed to generate solution space, because of %s",
+        "Arglist": "cause_desc"
+    },
+    {
+        "ErrCode": "E60118",
+        "ErrMessage": "Invalid platform,only support [%s]",
+        "Arglist": "platform_desc"
+    },
+    {
+        "ErrCode": "E60119",
+        "ErrMessage": "In op[%s], Input is too large, the minimum tiling may exceed UB_Buffer",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E61000",
+        "ErrMessage": "In op [%s], [%s] should be 4d list",
+        "Arglist": "op_name,param_name"
+    },
+    {
+        "ErrCode": "E61001",
+        "ErrMessage": "In op [%s], [%s]",
+        "Arglist": "op_name,reason"
+    },
+    {
+        "ErrCode": "E61203",
+        "ErrMessage": "In op [%s], [%s] , the value is [%s] and [%s]",
+        "Arglist": "op_name,sence_params,param_1,param_2"
+    },
+    {
+        "ErrCode": "E61204",
+        "ErrMessage": "In op [%s], [%s] , the value is [%s]",
+        "Arglist": "op_name,sence_params,param_1"
+    },
+    {
+        "ErrCode": "E61205",
+        "ErrMessage": "In op[%s], [%s]",
+        "Arglist": "op_name,reason"
+    },
+    {
+        "ErrCode": "E61300",
+        "ErrMessage": "In op [%s], [%s] must be [%s] [%s]",
+        "Arglist": "op_name,param_name,expect_value,condition"
+    },
+    {
+        "ErrCode": "E61301",
+        "ErrMessage": "In op [%s], [%s] must be equal to [%s]",
+        "Arglist": "op_name,param_name_1,param_name_2"
+    },
+    {
+        "ErrCode": "E61500",
+        "ErrMessage": "In op [%s], input_memory_type should be 0 or 1 or 2, actual is [%s]",
+        "Arglist": "op_name,input_memory_type"
+    },
+    {
+        "ErrCode": "E61501",
+        "ErrMessage": "In op [%s], output_memory_type should be 0 or 1 or 2, actual [%s]",
+        "Arglist": "op_name,output_memory_type"
+    },
+    {
+        "ErrCode": "E61600",
+        "ErrMessage": "In op [%s] param [%s] must > 0",
+        "Arglist": "op_name, param"
+    },
+    {
+        "ErrCode": "E61601",
+        "ErrMessage": "In op [%s], if it is the [%s] cut shape, the [%s] must be [%s]",
+        "Arglist": "op_name,scene,param_name"
+    },
+    {
+        "ErrCode": "E61602",
+        "ErrMessage": "In op [%s] input parameter [%s] should be [%s] type, but the type you enter is [%s]",
+        "Arglist": "op_name, param_name, optype_1, optype_2"
+    },
+    {
+        "ErrCode": "E61603",
+        "ErrMessage": "In op [%s] [%s] must equal to [%s]",
+        "Arglist": "op_name, optype_1, optype_2"
+    },
+    {
+        "ErrCode": "E62001",
+        "ErrMessage": "In op[%s],dilation_h, dilation_w and dilation_d must be 1,actual are [%s], [%s] and  [%s].",
+        "Arglist": "op_name,para1,para2,para3"
+    },
+    {
+        "ErrCode": "E62002",
+        "ErrMessage": "In op[%s], the type and dim of [%s] must be  [%s] and [%s], actual they are  [%s] and [%s] respectively.",
+        "Arglist": "op_name,param_name,expected_type,expected_length,type,length"
+    },
+    {
+        "ErrCode": "E62003",
+        "ErrMessage": "In op[%s], the size of [%s] on [%s] dimension should be in range [%s], but it is [%s].",
+        "Arglist": "op_name,para1,para2,para3,para4"
+    },
+    {
+        "ErrCode": "E62004",
+        "ErrMessage": "In op[%s],filter D must > Pad D, actual they are [%s] and [%s].",
+        "Arglist": "op_name,para1,para2"
+    },
+    {
+        "ErrCode": "E62005",
+        "ErrMessage": "In op[%s], x D(after pad) must >= stride D, actual they are [%s] and [%s].",
+        "Arglist": "op_name,para1,para2"
+    },
+    {
+        "ErrCode": "E62006",
+        "ErrMessage": "In op[%s],[%s].",
+        "Arglist": "op_name,para1"
+    },
+    {
+        "ErrCode": "E62301",
+        "ErrMessage": "In op[%s], the second value of BL1_shape should be a factor of  the block num, actual input is [%s].",
+        "Arglist": "op_name,para1"
+    },
+    {
+        "ErrCode": "E62302",
+        "ErrMessage": "In op[%s], the second value of BL1_shape should be even number, but actually it is [%s].",
+        "Arglist": "op_name,para1"
+    },
+    {
+        "ErrCode": "E62303",
+        "ErrMessage": "In op[%s], the value of AL1_shape & BL1_shape are  not reasonable, which are [%s] and [%s].",
+        "Arglist": "op_name,para1,para2"
+    },
+    {
+        "ErrCode": "E62304",
+        "ErrMessage": "In op[%s], the dim of [%s] should be [%s], but it is  [%s].",
+        "Arglist": "op_name,para1,para2,para3"
+    },
+    {
+        "ErrCode": "E62305",
+        "ErrMessage": "In op[%s], the value of [%s] should be [%s], but it is  [%s].",
+        "Arglist": "op_name,param_name,expect_value,value"
+    },
+    {
+        "ErrCode": "E62306",
+        "ErrMessage": "In op[%s], [%s].",
+        "Arglist": "op_name,para1"
+    },
+    {
+        "ErrCode": "E62501",
+        "ErrMessage": "In op[%s], [%s] should be 6d list.",
+        "Arglist": "op_name,para1"
+    },
+    {
+        "ErrCode": "E62502",
+        "ErrMessage": "In op[%s], there is a division by zero operation during calculating, the oprands are [%s] and [%s]. ",
+        "Arglist": "op_name,para1,para2"
+    },
+    {
+        "ErrCode": "E62503",
+        "ErrMessage": "In op[%s], the  Fmap's batch must be equal to the batch in backpropagation, it should be [%s], but actually it is [%s].",
+        "Arglist": "op_name,para1,para2"
+    },
+    {
+        "ErrCode": "E62504",
+        "ErrMessage": "In op[%s], the  Dedy's channel must be equal to the Filter's batch in backpropagation, it should be [%s], but actually it is [%s].",
+        "Arglist": "op_name,para1,para2"
+    },
+    {
+        "ErrCode": "E62505",
+        "ErrMessage": "In op[%s], the  input's channel must be equal to the Filter's batch in backpropagation, it should be [%s], but actually it is [%s].",
+        "Arglist": "op_name,para1,para2"
+    },
+    {
+        "ErrCode": "E62506",
+        "ErrMessage": "In op[%s], the  Dedy's channel must be equal to the Filter's channel in backpropagation, it should be [%s], but actually it is [%s].",
+        "Arglist": "op_name,para1,para2"
+    },
+    {
+        "ErrCode": "E62507",
+        "ErrMessage": "In op[%s], the [%s] dim of Filter(after dilation) must be less than the corresponding dim of input(after padding), they are [%s] and [%s].",
+        "Arglist": "op_name,para1,para2,para3"
+    },
+    {
+        "ErrCode": "E62508",
+        "ErrMessage": "In op[%s], Shape error : The compute result of D under convolution rule cannot match.",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E62509",
+        "ErrMessage": "In op[%s], the type of axis of [%s] must be positive int.",
+        "Arglist": "op_name,para1"
+    },
+    {
+        "ErrCode": "E62510",
+        "ErrMessage": "In op[%s], Dilations in the batch and channel dimensions must be 1.",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E62511",
+        "ErrMessage": "In op[%s], C0 must be 16, but actually it is [%s].",
+        "Arglist": "op_name,para1"
+    },
+    {
+        "ErrCode": "E64001",
+        "ErrMessage": "In op[%s], the [%s] must be int and in range [%s], actual is [%s]",
+        "Arglist": "op_name,attr_name, range, value"
+    },
+    {
+        "ErrCode": "E64002",
+        "ErrMessage": "In op[%s], [%s] must be equal to [%s], while the input of them are [%s]",
+        "Arglist": "op_name, param1, param2, actual_value"
+    },
+    {
+        "ErrCode": "E64003",
+        "ErrMessage": "In op[%s], shape format of [%s] must be [%s], and the dim is [%s], actual the dim is [%s]",
+        "Arglist": "op_name, param_name, format, expect_dim, dim"
+    },
+    {
+        "ErrCode": "E64004",
+        "ErrMessage": "In op[%s], The type of axis of [%s] must be [%s], actual the [%s]ed axis is [%s]",
+        "Arglist": "op_name, param_name, axis_rule, wrong_axis, actual_value"
+    },
+    {
+        "ErrCode": "E64005",
+        "ErrMessage": "In op[%s], pads must less than filter In [%s], actual input of [%s] are [%s] while filter is [%s]",
+        "Arglist": "op_name, direction, pads_dir, pads_value, filter_value "
+    },
+    {
+        "ErrCode": "E64006",
+        "ErrMessage": "In tiling of op [%s], k of [%s] must be integral multiply of [%s], actual are [%s] and [%s]",
+        "Arglist": "op_name, param_1, param_2, value_1, value_2"
+    },
+    {
+        "ErrCode": "E64007",
+        "ErrMessage": "In tiling of op [%s], [%s] of L1 must be integral multiply of L0, that mean [%s] must >=1, actual it is [%s]",
+        "Arglist": "op_name, axis_name, param_name, param_value"
+    },
+    {
+        "ErrCode": "E64008",
+        "ErrMessage": "In tiling of op [%s], [%s] of [%s] and [%s] must be same, actual they are [%s] and [%s]",
+        "Arglist": "op_name, axis_name, param_1, param_2, value_1, value_2"
+    },
+    {
+        "ErrCode": "E64009",
+        "ErrMessage": "In tiling of op [%s], it has rules: CUB_matrix[1] = CL0_matrix[1], CUB_matrix[0] is a factor of CL0_matrix[0]",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E64010",
+        "ErrMessage": "In tiling of op [%s], value of [%s] can only be 1 or 2, while the value is [%s]",
+        "Arglist": "op_name, buffer_name, value"
+    },
+    {
+        "ErrCode": "E65001",
+        "ErrMessage": "In op [%s], The type of axis of [%s] must be [%s], actual the [%s]ed axis is [%s]",
+        "Arglist": "op_name, param_name, axis_rule, wrong_axis, actual_value"
+    },
+    {
+        "ErrCode": "E65002",
+        "ErrMessage": "In op [%s], the dtype of [%s] and [%s] must be equal",
+        "Arglist": "op_name, param_1, param_2"
+    },
+    {
+        "ErrCode": "E65003",
+        "ErrMessage": "In op[%s], shape format of [%s] must be [%s], and the dim is [%s], actual the dim is [%s]",
+        "Arglist": "op_name, param_name, format, expect_dim, dim"
+    },
+    {
+        "ErrCode": "E65004",
+        "ErrMessage": "In op[%s], deconvolution not support offset_w now.",
+        "Arglist": "op_name"
+    },
+    {
+        "ErrCode": "E65005",
+        "ErrMessage": "In op[%s], [%s] must <= [%s]",
+        "Arglist": "op_name, param_1, param_2"
+    },
+    {
+        "ErrCode": "E65006",
+        "ErrMessage": "In op[%s], the [%s] must be int and in range [%s], actual is [%s]",
+        "Arglist": "op_name, attr_name, range, value"
+    },
+    {
+        "ErrCode": "E65007",
+        "ErrMessage": "In op[%s], [%s] must be equal to [%s], while the input of them are [%s]",
+        "Arglist": "op_name, param1, param2, actual_value"
+    },
+    {
+        "ErrCode": "E65008",
+        "ErrMessage": "In op [%s], input_memory_type should be [%s], actual is [%s]",
+        "Arglist": "op_name, input_memory_type_range, input_memory_type"
+    },
+    {
+        "ErrCode": "E65009",
+        "ErrMessage": "In op [%s], output_memory_type should be [%s], actual is [%s]",
+        "Arglist": "op_name, output_memory_type_range, output_memory_type"
+    },
+    {
+      "ErrCode": "E70001",
+      "ErrMessage": "In op[%s], the mandatory parameter[%s] is missed.",
+      "Arglist": "op_name,param_name"
+  },
+  {
+      "ErrCode": "E70002",
+      "ErrMessage": "In op[%s], the format of input[%s] should be one of [%s], but actually is [%s].",
+      "Arglist": "op_name,param_name,expected_format_list,format"
+  },
+  {
+      "ErrCode": "E70003",
+      "ErrMessage": "In op[%s], the dtype of input[%s] should be one of [%s], but actually is [%s].",
+      "Arglist": "op_name,param_name,expected_data_type_list,data_type"
+  },
+  {
+      "ErrCode": "E70004",
+      "ErrMessage": "In op[%s], the parameter[%s]'s type should be [%s],  but actually is [%s].",
+      "Arglist": "op_name,param_name,param_type,actual_type"
+  },
+  {
+      "ErrCode": "E70005",
+      "ErrMessage": "Op[%s] get attr[%s] failed.",
+      "Arglist": "op_name,param_name"
+  },
+  {
+      "ErrCode": "E70006",
+      "ErrMessage": "Op[%s] set attr[%s] failed.",
+      "Arglist": "op_name,param_name"
+  },
+  {
+      "ErrCode": "E70007",
+      "ErrMessage": "The op[%s] input parameter[%s] should be [%s], actual the input is [%s].",
+      "Arglist": "op_name,param_name,excepted_value,input_value"
+  },
+  {
+      "ErrCode": "E70008",
+      "ErrMessage": "The op [%s] update [%s] param failed.",
+      "Arglist": "op_name,param_name"
+  },
+  {
+      "ErrCode": "E70009",
+      "ErrMessage": "The op [%s] has rule: %s, but [%s] is [%s].",
+      "Arglist": "op_name,rule_desc,param_name,param_value"
+  },
+  {
+      "ErrCode": "E70010",
+      "ErrMessage": "In op[%s], the shape size(product of all dimensions) of input[%s] should less than [%s], but actually is [%s].",
+      "Arglist": "op_name,input_name,max_value,real_value"
+  },
+  {
+      "ErrCode": "E70011",
+      "ErrMessage": "In op[%s], the num of dimensions of input[%s] should be in the range of [%s, %s], but actually is [%s].",
+      "Arglist": "op_name,param_name,max_value,min_value,real_value"
+  },
+  {
+    "ErrCode": "E70012",
+    "ErrMessage": "In op[%s], the inputs[%s][%s] could not be broadcast together with shapes[%s][%s].",
+    "Arglist": "op_name,input1_name,input2_name,input1_shape,input2_shape"
+  },
+  {
+    "ErrCode": "E70013",
+    "ErrMessage": "In op[%s], the dtype of inputs[%s][%s] should be same, but actually is [%s][%s].",
+    "Arglist": "op_name,input1_name,input2_name,input1_dtype,input2_dtype"
+  },
+  {
+      "ErrCode": "E70014",
+      "ErrMessage": "In op[aipp], aipp output H and W should be equal to data's H and W, but actually aipp output H is [%s], aipp output W is [%s], data's H is [%s], data's W is [%s].",
+      "Arglist": "aipp_output_H,aipp_output_W,data_H,data_W"
+  },
+  {
+      "ErrCode": "E70015",
+      "ErrMessage": "In op[%s], the shape of input[%s] is invalid, [%s].",
+      "Arglist": "op_name,param_name,error_detail"
+  },
+  {
+      "ErrCode": "E70016",
+      "ErrMessage": "In op[%s], the shape of inputs[%s][%s] are invalid, [%s].",
+      "Arglist": "op_name,param_name1,param_name2,error_detail"
+  },
+  {
+      "ErrCode": "E70017",
+      "ErrMessage": "In op[%s], the shape of output[%s] is invalid, [%s].",
+      "Arglist": "op_name,param_name,error_detail"
+  },
+  {
+      "ErrCode": "E70018",
+      "ErrMessage": "In op[%s], failed to get compileparams, mainly get [%s] error.",
+      "Arglist": "op_name,param_name"
+  },
+  {
+      "ErrCode" : "EA0000",
+      "ErrMessage" : "Compile operator failed, cause: %s, %s",
+      "Arglist" : "message,traceback"
+    },
+    {
+      "ErrCode" : "E90000",
+      "ErrMessage" : "Compile operator failed, cause: %s %s",
+      "Arglist" : "message,traceback"
+    },
+    {
+      "ErrCode" : "EC0000",
+      "ErrMessage" : "AutoTune run Failed,lhisi connected failed. Please ping the lhisi_ip or check the es_ip and es_port in config.json",
+      "Arglist" : ""
+    },
+    {  "ErrCode" : "EC0001",
+    "ErrMessage" : "AutoTune run Failed,lhisi connected failed. Please check the es_user and es_password in config.json",
+    "Arglist" : ""
+   },
+   {
+    "ErrCode" : "EC0002",
+    "ErrMessage" : "AutoTune run Failed, LHISI mounted path don't exits, Please check nfs mount path or check the es_password exits in config.json",
+    "Arglist" : ""
+  },
+  {
+    "ErrCode" : "EC0004",
+    "ErrMessage" : "AutoTune run Failed, Permission denied. Please check ./tss/bin permission rwx in current user or if host isn't root user, please set the export file like ${host_share_path} *(rw,sync,root_squash,anonuid=id*,anongid=gid*)",
+    "Arglist" : ""
+  },
+  {
+    "ErrCode" : "EC0003",
+    "ErrMessage" : "AutoTune run Failed,FileNotFoundError. Please check the config.json or tss/bin/kernel_perf_comm exists",
+    "Arglist" : ""
+  },
+  {
+    "ErrCode" : "EC0005",
+    "ErrMessage" : "GATune run Failed. Run .o failed, because soc_version doesn't match the device.",
+    "Arglist" : ""
+  },
+  {
+    "ErrCode" : "ED0000",
+    "ErrMessage" : "RLTune run Failed. Specify evb_conf for remote devices.",
+    "Arglist" : ""
+  },
+  {
+    "ErrCode" : "ED0001",
+    "ErrMessage" : "RLTune run Failed. Run .o failed, because soc_version doesn't match the device.",
+    "Arglist" : ""
+  },
+  {
+    "ErrCode" : "EF0000",
+    "ErrMessage" : "Failed to read or write repository files [%s], please check its dir's existence and permission.",
+    "Arglist" : "filepath"
+  },
+  {
+    "ErrCode" : "EF0001",
+    "ErrMessage" : "Invalid soc_version: [%s], [%s] Fusion only support [%s], please check.",
+    "Arglist" : "version,lxtype,version_str"
+  },
+  {
+    "ErrCode" : "WF0000",
+    "ErrMessage" : "Open config file [%s] failed, please check its existence, permission and etc.",
+    "Arglist" : "filepath"
+  },
+  {
+    "ErrCode" : "WF0001",
+    "ErrMessage" : "Config file [%s] format error, it should be json format.",
+    "Arglist" : "filepath"
+  },
+  {
+    "ErrCode": "E68000",
+    "ErrMessage": "the tiling_type is error, only support [%s], but tiling_type is [%s].",
+    "Arglist": "expect_value,real_value"
+  },
+  {
+    "ErrCode": "E68001",
+    "ErrMessage": "info_dict should be dict, but the input type is [%s].",
+    "Arglist": "real_value"
+  },
+  {
+    "ErrCode": "E68002",
+    "ErrMessage": "the keyword [%s] is missing in input params.",
+    "Arglist": "keyword"
+  },
+  {
+    "ErrCode": "E68003",
+    "ErrMessage": "only support: [%s], but the input is [%s].",
+    "Arglist": "expect_value,real_value"
+  },
+  {
+    "ErrCode": "E68004",
+    "ErrMessage": "the type of param is illegal, only support [%s], but the type of param is [%s].",
+    "Arglist": "expect_value,real_value"
+  },
+  {
+    "ErrCode": "E68005",
+    "ErrMessage": "the length of param is illegal, only support [%s], but the length of param is [%s].",
+    "Arglist": "expect_value,real_value"
+  },
+  {
+    "ErrCode": "E68006",
+    "ErrMessage": "the input param is illegal, don't support [%s], but the param is [%s].",
+    "Arglist": "not_expect_value,real_value"
+  },
+  {
+    "ErrCode": "E68007",
+    "ErrMessage": "the input param is illegal, only support [%s], but the param is [%s].",
+    "Arglist": "expect_value,real_value"
+  },
+  {
+    "ErrCode": "E68008",
+    "ErrMessage": "the fm_l1_valid_size must be 1/2, 3/4, 1 times fm_shape_size, but fm_l1_valid_size is [%s], fm_shape_size is [%s].",
+    "Arglist": "fm_l1_valid_size,fm_shape_size"
+  },
+  {
+    "ErrCode": "E68009",
+    "ErrMessage": "when it is tuning tiling mode, illegal current input params is: [%s].",
+    "Arglist": "current_value"
+  },
+  {
+    "ErrCode": "E68010",
+    "ErrMessage": "when it is tuning tiling mode, illegal previous input params is: [%s].",
+    "Arglist": "previous_value"
+  },
+  {
+    "ErrCode": "E68011",
+    "ErrMessage": "tiling params is changed, previous input is [%s], current input is [%s].",
+    "Arglist": "previous_value,current_value"
+  },
+  {
+    "ErrCode": "E68012",
+    "ErrMessage": "tiling mode is not tuning tiling, current is [%s].",
+    "Arglist": "real_value"
+  },
+  {
+    "ErrCode": "E68013",
+    "ErrMessage": "only support legal tiling, but the return value of tiling is [%s].",
+    "Arglist": "real_value"
+  },
+  {
+    "ErrCode": "E68014",
+    "ErrMessage": "the tiling_type is error, dynamic shape not support [%s].",
+    "Arglist": "real_value"
+  },
+  {
+    "ErrCode": "E68015",
+    "ErrMessage": "only support [%s], but the type of return value is [%s].",
+    "Arglist": "expect_value,real_value"
+  },
+  {
+    "ErrCode": "E68016",
+    "ErrMessage": "the environment path [%s] is not set or invalid, expect [%s].",
+    "Arglist": "env_name,expect_value"
+  },
+  {
+    "ErrCode": "E68017",
+    "ErrMessage": "the [%s] model does not support [%s] type.",
+    "Arglist": "tiling_model,tiling_type"
+  },
+  {
+    "ErrCode": "E68050",
+    "ErrMessage": "[%s] close failed.",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68051",
+    "ErrMessage": "[%s] should not be empty.",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68052",
+    "ErrMessage": "get function [%s] failed.",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68053",
+    "ErrMessage": "only support: [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68054",
+    "ErrMessage": "[%s] plugin handler is NULL!",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68055",
+    "ErrMessage": "mode = [%s] is not found in [%s].",
+    "Arglist": "mode_name,param_name"
+  },
+  {
+    "ErrCode": "E68056",
+    "ErrMessage": "platform flag [%s] is not supported.",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68057",
+    "ErrMessage": "not support costmodel query for platform flag [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68058",
+    "ErrMessage": "not support costmodel query for opTag [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68059",
+    "ErrMessage": "cannot find corresponding hardware platform name for platform flag [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68060",
+    "ErrMessage": "cannot find corresponding op name for opTag [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68061",
+    "ErrMessage": "not support repository query for platform flag [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68062",
+    "ErrMessage": "not support repository query for opTag [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68063",
+    "ErrMessage": "cannot find corresponding platform flag for platform [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68064",
+    "ErrMessage": "CceConfBase::GetInstance Failed.",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68065",
+    "ErrMessage": "cannot find corresponding loaded [%s].",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68066",
+    "ErrMessage": "current operation caused data overflow.",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68067",
+    "ErrMessage": "tiling index [%s] should not be [%s].",
+    "Arglist": "index_name,not_expect_value"
+  },
+  {
+    "ErrCode": "E68068",
+    "ErrMessage": "kAL1/kBL1 should be greater than 0 and less than or equal to l1buffer.",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68069",
+    "ErrMessage": "[%s] should be less than or equal to [%s].",
+    "Arglist": "param_name,threshhold"
+  },
+  {
+    "ErrCode": "E68070",
+    "ErrMessage": "size of [%s] should be greater than [%s].",
+    "Arglist": "size_value,threshhold"
+  },
+  {
+    "ErrCode": "E68071",
+    "ErrMessage": "mDim is zero, illegal!",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68072",
+    "ErrMessage": "divisor can not be zero!",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68073",
+    "ErrMessage": "The keyword [%s] is not in [%s].",
+    "Arglist": "key_name,param_name"
+  },
+  {
+    "ErrCode": "E68074",
+    "ErrMessage": "run function [%s] failed.",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68075",
+    "ErrMessage": "[%s] can not be zero.",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68076",
+    "ErrMessage": "value at index [%s] of [%s] can not be zero.",
+    "Arglist": "index_name,param_name"
+  },
+  {
+    "ErrCode": "E68077",
+    "ErrMessage": "the length of all features not up to 46.",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68078",
+    "ErrMessage": "size of index should be even.",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68079",
+    "ErrMessage": "cost model close failed.",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68080",
+    "ErrMessage": "cost model can not be NULL!",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68081",
+    "ErrMessage": "doing [%s] node decompress fail.",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68082",
+    "ErrMessage": "the [%s] tree node can not be NULL!",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68083",
+    "ErrMessage": "repository is empty!",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68084",
+    "ErrMessage": "the readable length of key and value of repository are not equal!",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68085",
+    "ErrMessage": "current op can not be L1 fusion.",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68086",
+    "ErrMessage": "current op can not be L1/L2 fusion.",
+    "Arglist": ""
+  },
+  {
+    "ErrCode": "E68087",
+    "ErrMessage": "size of [%s] should be greater than or equal to [%s].",
+    "Arglist": "size_value,threshhold"
+  },
+  {
+    "ErrCode": "E68088",
+    "ErrMessage": "[%s] open failed.",
+    "Arglist": "param_name"
+  },
+  {
+    "ErrCode": "E68089",
+    "ErrMessage": "tiling is not found in repository file.",
+    "Arglist": ""
+  },
+    {
+      "errClass": "System Support Errors",
+      "errTitle": "Unsupported Operator",
+      "ErrCode": "EZ0501",
+      "ErrMessage": "IR for Op [%s, optype [%s]], is not registered.",
+      "Arglist": "opname,optype",
+      "suggestion": {
+        "Possible Cause": "IR for the operator type is not registered.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend, or remove this type of operators from your model."
+      }
+    },
+    {
+      "errClass": "System Support Errors",
+      "errTitle": "Unsupported Operator",
+      "ErrCode": "EZ3002",
+      "ErrMessage": "Optype [%s] of Ops kernel [%s] is unsupported. Reason: %s.",
+      "Arglist": "optype,opskernel,reason",
+      "suggestion": {
+        "Possible Cause": "The operator type is unsupported in the operator information library due to specification mismatch.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend, or remove this type of operators from your model."
+      }
+    },
+    {
+      "errClass": "System Support Errors",
+      "errTitle": "Unsupported Operator",
+      "ErrCode": "EZ3003",
+      "ErrMessage": "No supported Ops kernel and engine are found for [%s], optype [%s].",
+      "Arglist": "opname,optype",
+      "suggestion": {
+        "Possible Cause": "The operator is not supported by the system. Therefore, no hit is found in any operator information library.",
+        "Solution": "[step] Check that the OPP component is installed properly. [step] Submit an issue to request for the support of this operator type."
+      }
+    },
+    {
+      "errClass": "System Support Errors",
+      "errTitle": "Unsupported Operator",
+      "ErrCode": "EZ9010",
+      "ErrMessage": "No parser is registered for Op [%s, optype [%s]].",
+      "Arglist": "opname,optype",
+      "suggestion": {
+        "Possible Cause": "No parser is registered for the operator type.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend."
+      }
+    },
+    {
+      "errClass": "Command Line Errors",
+      "errTitle": "ONNX Model Data Error",
+      "ErrCode": "E76002",
+      "ErrMessage": "No ONNX parser is registered for optype [%s].",
+      "Arglist": "optype",
+      "suggestion": {
+        "Possible Cause": "No parser is registered for the optype in ONNX model conversion.",
+        "Solution": "Submit an issue to request for support at https://gitee.com/ascend, or remove this type of operators from your model."
+      }
+    }
+  ]
+}

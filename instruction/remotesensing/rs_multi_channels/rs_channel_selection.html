@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>多光谱数据通道优选 &mdash; LuoJiaNet master documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/training.css" type="text/css" />
+   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/js/training.js"></script>
+        
+        
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> LuoJiaNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">LuoJiaNET安装</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">基本介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_gpu_install_pip.html">pip方式安装安装LuoJiaNET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_linux_gpu_install_src.html">源码编译方式安装Linux LuoJiaNET GPU版本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_win_cpu_install_src.html">源码编译方式安装Window LuoJiaNET CPU版本</a></li>
+</ul>
+<p class="caption"><span class="caption-text">入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">初学入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset.html">自定义样本加载与处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model.html">自定义模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autograd.html">模型自动求导</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../save_load_model.html">保存及加载模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../linear_regression.html">简单线性函数拟合</a></li>
+</ul>
+<p class="caption"><span class="caption-text">进阶教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/mid_low_level_api.html">全流程自定义</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/distributed_training/distributed_training_gpu.html">分布式并行训练 （GPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/custom_ops/custom_operator_cpu.html">自定义算子（CPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/custom_ops/custom_operator_gpu.html">自定义算子（GPU）</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">LuoJiaNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>多光谱数据通道优选</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/remotesensing/rs_multi_channels/rs_channel_selection.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="id1">
+<h1>多光谱数据通道优选<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">GPU</span></code> <code class="docutils literal notranslate"><span class="pre">进阶</span></code> <code class="docutils literal notranslate"><span class="pre">分布式并行</span></code></p>
+<!-- TOC -->
+<ul class="simple">
+<li><p><a class="reference external" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83-gpu">分布式并行训练 （GPU）</a></p>
+<ul>
+<li><p><a class="reference external" href="#%E5%87%86%E5%A4%87%E7%8E%AF%E8%8A%82">准备环节</a></p>
+<ul>
+<li><p><a class="reference external" href="#%E9%85%8D%E7%BD%AE%E5%88%86%E5%B8%83%E5%BC%8F%E7%8E%AF%E5%A2%83">配置分布式环境</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#%E8%BF%90%E8%A1%8C%E8%84%9A%E6%9C%AC">运行脚本</a></p></li>
+<li><p><a class="reference external" href="#%E8%BF%90%E8%A1%8C%E5%A4%9A%E6%9C%BA%E8%84%9A%E6%9C%ACTODO">运行多机脚本</a></p></li>
+</ul>
+</li>
+</ul>
+<p>本篇教程我们主要讲解，如何在GPU硬件平台上，利用LuoJiaNET的数据并行及自动并行模式训练ResNet-50网络。</p>
+<div class="section" id="id2">
+<h2>配置分布式环境<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenMPI-4.0.3</span></code>：LuoJiaNET采用的多进程通信库。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NCCL-2.7.6</span></code>：Nvidia集合通信库。</p></li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>调用集合通信库<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>在GPU硬件平台上，LuoJiaNET分布式并行训练的通信使用的是NCCL。
+同时，LuoJiaNET可加入一行代码:
+<code class="docutils literal notranslate"><span class="pre">context.set_auto_parallel_context(parallel_mode=context.ParallelMode.AUTO_PARALLEL)</span></code>，
+指定自动并行模式，获取设备的最优并行能力。</p>
+<p>下面是调用自动并行的代码样例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">luojianet_ms</span> <span class="kn">import</span> <span class="n">context</span>
+<span class="kn">from</span> <span class="nn">luojianet_ms.communication</span> <span class="kn">import</span> <span class="n">init</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">GRAPH_MODE</span><span class="p">,</span> <span class="n">device_target</span><span class="o">=</span><span class="s2">&quot;GPU&quot;</span><span class="p">)</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">set_auto_parallel_context</span><span class="p">(</span><span class="n">parallel_mode</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">ParallelMode</span><span class="o">.</span><span class="n">AUTO_PARALLEL</span><span class="p">)</span>
+    <span class="n">init</span><span class="p">(</span><span class="s2">&quot;nccl&quot;</span><span class="p">)</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>其中，</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode=context.GRAPH_MODE</span></code>：使用分布式训练需要指定运行模式为图模式。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">init(&quot;nccl&quot;)</span></code>：使能NCCL通信，并完成分布式训练初始化操作。</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+mkdir device
+mpirun -n <span class="m">8</span> pytest -s -v ./resnet50_distributed_training.py &gt; train.log <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</pre></div>
+</div>
+<p>脚本会在后台运行，日志文件会保存到device目录下，共跑了10个epoch，每个epoch有234个step，关于Loss部分结果保存在train.log中。选取部分示例，如下：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>epoch: 1 step: 1, loss is 2.3025854
+epoch: 1 step: 1, loss is 2.3025854
+epoch: 1 step: 1, loss is 2.3025854
+epoch: 1 step: 1, loss is 2.3025854
+epoch: 1 step: 1, loss is 2.3025854
+epoch: 1 step: 1, loss is 2.3025854
+epoch: 1 step: 1, loss is 2.3025854
+epoch: 1 step: 1, loss is 2.3025854
+</pre></div>
+</div>
+<p>在GPU上进行分布式训练时，模型参数的保存和加载可参考<a class="reference external" href="https://www.luojianet.cn/tutorials/zh-CN/master/intermediate/distributed_training/distributed_training_model_parameters_saving_and_loading.html">分布式训练模型参数保存和加载</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, LuoJiaNet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+	<script async="async" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

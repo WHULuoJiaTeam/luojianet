@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>分布式训练模型参数保存和加载 &mdash; LuoJiaNet master documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/training.css" type="text/css" />
+   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/js/training.js"></script>
+        
+        
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> LuoJiaNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">LuoJiaNET安装</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">基本介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_gpu_install_pip.html">pip方式安装安装LuoJiaNET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_linux_gpu_install_src.html">源码编译方式安装Linux LuoJiaNET GPU版本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_win_cpu_install_src.html">源码编译方式安装Window LuoJiaNET CPU版本</a></li>
+</ul>
+<p class="caption"><span class="caption-text">入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">初学入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset.html">自定义样本加载与处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model.html">自定义模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autograd.html">模型自动求导</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../save_load_model.html">保存及加载模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../linear_regression.html">简单线性函数拟合</a></li>
+</ul>
+<p class="caption"><span class="caption-text">进阶教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/mid_low_level_api.html">全流程自定义</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/distributed_training/distributed_training_gpu.html">分布式并行训练 （GPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/custom_ops/custom_operator_cpu.html">自定义算子（CPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/custom_ops/custom_operator_gpu.html">自定义算子（GPU）</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">LuoJiaNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>分布式训练模型参数保存和加载</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/remotesensing/rs_multi_channels/distributed_training_model_parameters_saving_and_loading.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="id1">
+<h1>分布式训练模型参数保存和加载<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Ascend</span></code> <code class="docutils literal notranslate"><span class="pre">GPU</span></code> <code class="docutils literal notranslate"><span class="pre">进阶</span></code> <code class="docutils literal notranslate"><span class="pre">分布式并行</span></code> <code class="docutils literal notranslate"><span class="pre">模型导出</span></code></p>
+<!-- TOC -->
+<ul class="simple">
+<li><p><a class="reference external" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0%E4%BF%9D%E5%AD%98%E5%92%8C%E5%8A%A0%E8%BD%BD">分布式训练模型参数保存和加载</a></p>
+<ul>
+<li><p><a class="reference external" href="#%E8%87%AA%E5%8A%A8%E5%B9%B6%E8%A1%8C%E6%A8%A1%E5%BC%8F">自动并行模式</a></p></li>
+<li><p><a class="reference external" href="#%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C%E6%A8%A1%E5%BC%8F">数据并行模式</a></p></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+<p><a href="https://gitee.com/luojianet/docs/blob/master/tutorials/source_zh_cn/intermediate/distributed_training/distributed_training_model_parameters_saving_and_loading.md" target="_blank"><img src="https://gitee.com/luojianet/docs/raw/master/resource/_static/logo_source.png"></a></p>
+<p>本章将会讲解在Ascend与GPU环境中进行分布式训练时，如何进行参数的保存与加载。涵盖的分布式训练模式包括自动并行（Auto Parallel）与数据并行（Data Parallel）。分布式训练进行模型参数的保存之前，需要先按照<a class="reference external" href="https://www.luojianet.cn/tutorials/zh-CN/master/intermediate/distributed_training/distributed_training_ascend.html">Ascend分布式训练</a>、<a class="reference external" href="https://www.luojianet.cn/tutorials/zh-CN/master/intermediate/distributed_training/distributed_training_gpu.html">GPU分布式训练</a>教程配置分布式环境变量和集合通信库。</p>
+<div class="section" id="id2">
+<h2>自动并行模式<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>自动并行模式（Auto Parallel）下模型参数的保存和加载与非分布式训练的模型参数保存和加载用法相同，以<a class="reference external" href="https://www.luojianet.cn/tutorials/zh-CN/master/intermediate/distributed_training/distributed_training_ascend.html">Ascend分布式训练</a>为例，只需在Ascend训练网络步骤中的<code class="docutils literal notranslate"><span class="pre">test_train_cifar</span></code>方法中添加配置<code class="docutils literal notranslate"><span class="pre">CheckpointConfig</span></code>和<code class="docutils literal notranslate"><span class="pre">ModelCheckpoint</span></code>，即可实现模型参数的保存。需要注意的是，并行模式下需要对每张卡上运行的脚本指定不同的checkpoint保存路径，防止读写文件时发生冲突，具体代码如下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">luojianet.train.callback</span> <span class="kn">import</span> <span class="n">ModelCheckpoint</span><span class="p">,</span> <span class="n">CheckpointConfig</span>
+
+<span class="k">def</span> <span class="nf">test_train_cifar</span><span class="p">(</span><span class="n">epoch_size</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">set_auto_parallel_context</span><span class="p">(</span><span class="n">parallel_mode</span><span class="o">=</span><span class="n">ParallelMode</span><span class="o">.</span><span class="n">AUTO_PARALLEL</span><span class="p">,</span> <span class="n">gradients_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">loss_cb</span> <span class="o">=</span> <span class="n">LossMonitor</span><span class="p">()</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DATA_PATH&#39;</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">num_classes</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">net</span> <span class="o">=</span> <span class="n">resnet50</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">SoftmaxCrossEntropyExpand</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">opt</span> <span class="o">=</span> <span class="n">Momentum</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">,</span> <span class="n">net</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()),</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">ckpt_config</span> <span class="o">=</span> <span class="n">CheckpointConfig</span><span class="p">()</span>
+    <span class="n">ckpt_callback</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;auto_parallel&#39;</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="s2">&quot;./ckpt_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_rank</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">ckpt_config</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">loss_fn</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">opt</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">loss_cb</span><span class="p">,</span> <span class="n">ckpt_callback</span><span class="p">],</span> <span class="n">dataset_sink_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>保存好checkpoint文件后，用户可以很容易加载模型参数进行推理或再训练场景，如用于再训练场景可使用如下代码加载模型：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">luojianet</span> <span class="kn">import</span> <span class="n">load_checkpoint</span><span class="p">,</span> <span class="n">load_param_into_net</span>
+
+<span class="n">net</span> <span class="o">=</span> <span class="n">resnet50</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># The parameter for load_checkpoint is a .ckpt file which has been successfully saved</span>
+<span class="n">param_dict</span> <span class="o">=</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="s1">&#39;path/to/ckpt_file.ckpt&#39;</span><span class="p">)</span>
+<span class="n">load_param_into_net</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>checkpoint配置策略和保存方法可以参考<a class="reference external" href="https://www.luojianet.cn/tutorials/zh-CN/master/save_load_model.html">保存及加载模型</a>。</p>
+</div>
+<div class="section" id="id3">
+<h2>数据并行模式<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>数据并行模式（Data Parallel）下checkpoint的使用方法和自动并行模式（Auto Parallel）一样，只需要将<code class="docutils literal notranslate"><span class="pre">test_train_cifar</span></code>中</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">context</span><span class="o">.</span><span class="n">set_auto_parallel_context</span><span class="p">(</span><span class="n">parallel_mode</span><span class="o">=</span><span class="n">ParallelMode</span><span class="o">.</span><span class="n">AUTO_PARALLEL</span><span class="p">,</span> <span class="n">gradients_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>修改为:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">context</span><span class="o">.</span><span class="n">set_auto_parallel_context</span><span class="p">(</span><span class="n">parallel_mode</span><span class="o">=</span><span class="n">ParallelMode</span><span class="o">.</span><span class="n">DATA_PARALLEL</span><span class="p">,</span> <span class="n">gradients_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>数据并行场景下加载模型参数时建议每卡加载相同的checkpoint文件，避免造成计算误差，或者可以打开<code class="docutils literal notranslate"><span class="pre">context.set_context()</span></code>中的<code class="docutils literal notranslate"><span class="pre">parameter_broadcast</span></code>开关将0号卡的参数广播到其他卡上。</p>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, LuoJiaNet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+	<script async="async" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

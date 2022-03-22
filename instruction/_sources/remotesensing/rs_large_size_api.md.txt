@@ -1,0 +1,287 @@
+# 大幅面影像处理
+
+`CPU` `GPU` `Linux` `进阶`
+
+为方便用户控制模型的执行流程，LuoJiaNET与MindSpore融合提供了高度集成的训练和推理接口`luojianet_ms.Model`，
+用户如果想要对全流程训练和测试的特定模块进行个性化设置，也可以调用对应的中低阶接口自行定义，本文介绍了如何使用中低阶API定义各个模块。
+
+> 你可以在这里下载完整的样例代码：
+## 定义数据集
+
+LuoJiaNET的`luojianet_ms.dataset`模块集成了常见的数据处理功能：用户既可以调用此模块的相关接口来加载常见的数据集，
+也可以构造数据集类并配合使用`GeneratorDataset`接口，实现自定义数据集和数据加载。使用`GeneratorDataset`生成具有多项式关系的样本和对应的标签，代码样例如下：
+
+导入所需的包：
+
+```python
+import numpy as np
+import luojianet_ms as ms
+from luojianet_ms import ops, nn
+from luojianet_ms import dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.common.initializer as init
+```
+
+定义数据集：
+
+```python
+def get_data(data_num, data_size):
+    for _ in range(data_num):
+        data = np.random.randn(data_size)
+        p = np.array([1, 0, -3, 5])
+        label = np.polyval(p, data).sum()
+        yield data.astype(np.float32), np.array([label]).astype(np.float32)
+
+def create_dataset(data_num, data_size, batch_size=32, repeat_size=1):
+    """定义数据集"""
+    input_data = ds.GeneratorDataset(list(get_data(data_num, data_size)), column_names=['data', 'label'])
+    input_data = input_data.batch(batch_size)
+    input_data = input_data.repeat(repeat_size)
+    return input_data
+```
+
+## 定义网络
+
+LuoJiaNET的nn.Module类是构建所有网络的基类，也是网络的基本单元。当用户需要自定义网络时，可以继承Module类，并重写`__init__`方法和`call`方法。
+使用常用的`nn`算子构建一个简单的全连接网络：
+
+```python
+class MyNet(nn.Module):
+    """定义网络"""
+    def __init__(self, input_size=32):
+        super(MyNet, self).__init__()
+        self.fc1 = nn.Dense(input_size, 120, weight_init=init.Normal(0.02))
+        self.fc2 = nn.Dense(120, 84, weight_init=init.Normal(0.02))
+        self.fc3 = nn.Dense(84, 1, weight_init=init.Normal(0.02))
+        self.relu = nn.ReLU()
+
+    def call(self, x):
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+```
+
+## 定义损失函数
+
+损失函数用于衡量预测值与真实值差异的程度。
+LuoJiaNET支持用户根据需要自定义损失函数。定义损失函数类时，既可以继承网络的基类`nn.Module`，也可以继承损失函数的基类`nn.LossBase`。
+
+### 继承Module定义损失函数
+
+使用`nn.Module`定义损失函数的方法与定义一个普通的网络的差别在于，其执行计算前向网络输出与真实值之间的误差。
+
+以平均绝对误差为例，损失函数的定义方法如下(继承自`nn.Module`的类需要重写`__init__`与`call`方法)：
+
+```python
+class MyL1Loss(nn.Module):
+    """定义损失"""
+    def __init__(self):
+        super(MyL1Loss, self).__init__()
+        self.abs = ops.Abs()
+        self.reduce_mean = ops.ReduceMean()
+
+    def call(self, predict, target):
+        x = self.abs(predict - target)
+        return self.reduce_mean(x)
+```
+
+### 继承基类定义损失函数
+
+自定义损失函数时还可以继承损失函数的基类`nn.LossBase`。损失函数的基类在`nn.Module`的基础上，提供了`get_loss`方法，输出损失值。MyL1Loss使用`LossBase`作为基类的定义如下：
+
+```python
+class MyL1Loss(nn.LossBase):
+    """定义损失"""
+    def __init__(self, reduction="mean"):
+        super(MyL1Loss, self).__init__(reduction)
+        self.abs = ops.Abs()
+
+    def call(self, base, target):
+        x = self.abs(base - target)
+        return self.get_loss(x)
+```
+
+## 定义优化器
+
+LuoJiaNET支持用户根据需要自定义优化器。自定义优化器时可以继承优化器基类`nn.Optimizer`，重写`call`函数实现参数的更新。
+
+使用基础的运算算子自定义优化器：
+
+```python
+class MyMomentum(nn.Optimizer):
+    """定义优化器"""
+    def __init__(self, params, learning_rate, momentum=0.9, use_nesterov=False):
+        super(MyMomentum, self).__init__(learning_rate, params)
+        self.momentum = ms.Parameter(ms.Tensor(momentum, mstype.float32), name="momentum")
+        self.use_nesterov = use_nesterov
+        self.moments = self.parameters.clone(prefix="moments", init="zeros")
+        self.assign = ops.Assign()
+
+    def call(self, gradients):
+        lr = self.get_lr()
+        params = self.parameters
+        for i in range(len(params)):
+            self.assign(self.moments[i], self.moments[i] * self.momentum + gradients[i])
+            if self.use_nesterov:
+                update = params[i] - (self.moments[i] * self.momentum + gradients[i]) * lr
+            else:
+                update = params[i] - self.moments[i] * lr
+            self.assign(params[i], update)
+        return params
+```
+
+LuoJiaNET也封装了`ApplyMomentum`算子供用户使用，使用`ApplyMomentum`算子自定义优化器：
+
+```python
+class MyMomentum(nn.Optimizer):
+    """定义优化器"""
+    def __init__(self, params, learning_rate, momentum=0.9, use_nesterov=False):
+        super(MyMomentum, self).__init__(learning_rate, params)
+        self.moments = self.parameters.clone(prefix="moments", init="zeros")
+        self.momentum = momentum
+        self.opt = ops.ApplyMomentum(use_nesterov=use_nesterov)
+
+    def construct(self, gradients):
+        params = self.parameters
+        success = None
+        for param, mom, grad in zip(params, self.moments, gradients):
+            success = self.opt(param, mom, self.learning_rate, grad, self.momentum)
+        return success
+```
+
+## 定义训练流程
+
+LuoJiaNET的`nn.WithLossCell`接口可以将前向网络与损失函数连接起来；
+`nn.TrainOneStepCell`封装了损失网络和优化器，
+在执行训练时通过`GradOperation`算子来进行梯度的获取，通过优化器来实现权重的更新。
+
+定义损失网络：
+
+```python
+class MyWithLossCell(nn.Module):
+    """定义损失网络"""
+    def __init__(self, backbone, loss_fn):
+        super(MyWithLossCell, self).__init__(auto_prefix=False)
+        self.backbone = backbone
+        self.loss_fn = loss_fn
+
+    def call(self, data, label):
+        out = self.backbone(data)
+        return self.loss_fn(out, label)
+
+    def backbone_network(self):
+        return self.backbone
+```
+
+用户可以继承`nn.TrainOneStepCell`来定义自己的训练流程。
+
+```python
+class MyTrainStep(nn.TrainOneStepCell):
+    """定义训练流程"""
+    def __init__(self, network, optimizer):
+        """参数初始化"""
+        super(MyTrainStep, self).__init__(network, optimizer)
+        self.grad = ops.GradOperation(get_by_list=True)
+
+    def call(self, data, label):
+        """构建训练过程"""
+        weights = self.weights
+        loss = self.network(data, label)
+        grads = self.grad(self.network, weights)(data, label)
+        return loss, self.optimizer(grads)
+```
+
+执行训练：
+
+```python
+# 生成多项式分布的训练数据
+dataset_size = 32
+ds_train = create_dataset(2048, dataset_size)
+# 网络
+net = MyNet()
+# 损失函数
+loss_func = MyL1Loss()
+# 优化器
+opt = MyMomentum(net.trainable_params(), 0.01)
+# 构建损失网络
+net_with_criterion = MyWithLossCell(net, loss_func)
+# 构建训练网络
+train_net = MyTrainStep(net_with_criterion, opt)
+# 执行训练，每个epoch打印一次损失值
+epochs = 5
+for epoch in range(epochs):
+    for train_x, train_y in ds_train:
+        train_net(train_x, train_y)
+        loss_val = net_with_criterion(train_x, train_y)
+    print(loss_val)
+```
+
+## 定义精度评定指标
+
+LuoJiaNET的`nn.Metric`模块提供了常见的评估函数，用户也可以根据需要自行定义评估指标：
+
+```python
+class MyMAE(nn.Metric):
+    """定义metric"""
+    def __init__(self):
+        super(MyMAE, self).__init__()
+        self.clear()
+
+    def clear(self):
+        self.abs_error_sum = 0
+        self.samples_num = 0
+
+    def update(self, *inputs):
+        y_pred = inputs[0].asnumpy()
+        y = inputs[1].asnumpy()
+        error_abs = np.abs(y.reshape(y_pred.shape) - y_pred)
+        self.abs_error_sum += error_abs.sum()
+        self.samples_num += y.shape[0]
+
+    def eval(self):
+        return self.abs_error_sum / self.samples_num
+```
+
+## 定义验证流程
+
+LuoJiaNET的`nn.WithEvalCell`模块提供了评估网络函数，用户也可以自己定义评估网络函数：
+
+```python
+class MyWithEvalCell(nn.Module):
+    """定义验证流程"""
+    def __init__(self, network):
+        super(MyWithEvalCell, self).__init__(auto_prefix=False)
+        self.network = network
+
+    def call(self, data, label):
+        outputs = self.network(data)
+        return outputs, label
+```
+
+执行评估：
+
+```python
+# 获取验证数据
+ds_eval = create_dataset(128, dataset_size, 1)
+# 定义评估网络
+eval_net = MyWithEvalCell(net)
+eval_net.set_train(False)
+# 定义评估指标
+mae = MyMAE()
+# 执行推理过程
+for eval_x, eval_y in ds_eval:
+    output, eval_y = eval_net(eval_x, eval_y)
+    mae.update(output, eval_y)
+
+mae_result = mae.eval()
+print("mae: ", mae_result)
+```
+
+## 保存模型
+
+使用LuoJiaNET提供的`save_checkpoint`保存模型，传入网络和保存路径：
+
+```python
+ms.save_checkpoint(net, "./MyNet.ckpt")
+```

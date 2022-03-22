@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>源码编译方式安装Window LuoJiaNET CPU版本 &mdash; LuoJiaNet master documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/training.css" type="text/css" />
+   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/js/training.js"></script>
+        
+        
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="初学入门" href="../quick_start.html" />
+    <link rel="prev" title="源码编译方式安装Linux LuoJiaNET GPU版本" href="luojianet_ms_linux_gpu_install_src.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> LuoJiaNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">LuoJiaNET安装</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">基本介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="luojianet_ms_gpu_install_pip.html">pip方式安装安装LuoJiaNET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="luojianet_ms_linux_gpu_install_src.html">源码编译方式安装Linux LuoJiaNET GPU版本</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">源码编译方式安装Window LuoJiaNET CPU版本</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">环境准备</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mingw">安装MinGW</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">从代码仓下载源码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#luojianet">编译LuoJiaNET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">安装LuoJiaNET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">验证是否成功安装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">初学入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html">自定义样本加载与处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model.html">自定义模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autograd.html">模型自动求导</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../save_load_model.html">保存及加载模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../linear_regression.html">简单线性函数拟合</a></li>
+</ul>
+<p class="caption"><span class="caption-text">进阶教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intermediate/mid_low_level_api.html">全流程自定义</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intermediate/distributed_training/distributed_training_gpu.html">分布式并行训练 （GPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intermediate/custom_ops/custom_operator_cpu.html">自定义算子（CPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intermediate/custom_ops/custom_operator_gpu.html">自定义算子（GPU）</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LuoJiaNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>源码编译方式安装Window LuoJiaNET CPU版本</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/install/luojianet_ms_win_cpu_install_src.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="window-luojianet-cpu">
+<h1>源码编译方式安装Window LuoJiaNET CPU版本<a class="headerlink" href="#window-luojianet-cpu" title="Permalink to this headline">¶</a></h1>
+<!-- TOC -->
+<ul class="simple">
+<li><p><a class="reference external" href="#%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F%E5%AE%89%E8%A3%85luojianet-cpu%E7%89%88%E6%9C%AC">源码编译方式安装LuoJiaNET CPU版本</a></p>
+<ul>
+<li><p><a class="reference external" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">环境准备</a></p>
+<ul>
+<li><p><a class="reference external" href="#%E5%AE%89%E8%A3%85mingw">安装MinGW</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#%E4%BB%8E%E4%BB%A3%E7%A0%81%E4%BB%93%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81">从代码仓下载源码</a></p></li>
+<li><p><a class="reference external" href="#%E7%BC%96%E8%AF%91luojianet">编译LuoJiaNET</a></p></li>
+<li><p><a class="reference external" href="#%E5%AE%89%E8%A3%85luojianet">安装LuoJiaNET</a></p></li>
+<li><p><a class="reference external" href="#%E9%AA%8C%E8%AF%81%E6%98%AF%E5%90%A6%E6%88%90%E5%8A%9F%E5%AE%89%E8%A3%85">验证是否成功安装</a></p></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+<p>本文档介绍如何在CPU环境的Windows系统上，使用源码编译方式快速安装LuoJiaNET。下面以Win 10系统为例说明LuoJiaNET编译安装步骤。</p>
+<div class="section" id="id1">
+<h2>环境准备<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>下表列出了编译安装LuoJiaNET GPU所需的系统环境和第三方依赖。</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>软件名称</th>
+<th>版本</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>10</td>
+<td>编译和运行LuoJiaNET的操作系统</td>
+</tr>
+<tr>
+<td><a href="#安装mingw">MinGW</a></td>
+<td>7.3</td>
+<td>LuoJiaNET CPU使用的编译环境</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="mingw">
+<h3>安装MinGW<a class="headerlink" href="#mingw" title="Permalink to this headline">¶</a></h3>
+<p>在Win10下安装MinGW的详情可查看<a class="reference external" href="https://www.mingw-w64.org/downloads/#mingw-builds">MinGW-64下载页面</a>。</p>
+</div>
+<div class="section" id="id2">
+<h3>从代码仓下载源码<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>打开MinGW命令行，运行如下命令：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://gitee.com/mindspore/luojianet.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="luojianet">
+<h3>编译LuoJiaNET<a class="headerlink" href="#luojianet" title="Permalink to this headline">¶</a></h3>
+<p>进入LuoJiaNET根目录，然后执行编译脚本。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> luojianet
+build_gdal.bat
+build.bat
+</pre></div>
+</div>
+<p>其中：</p>
+<ul class="simple">
+<li><p>build_gdal.bat 用于从源码编译依赖库GDAL，需要较长时间请耐心等待</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build.bat</span></code>用于编译LuoJiaNET CPU版本的源码</p></li>
+<li><p>默认从gitee下载依赖源码。</p></li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>安装LuoJiaNET<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install output/luojianet_gpu-*.whl 
+</pre></div>
+</div>
+<ul>
+<li><p>注意 1：如果在Python环境下验证，出现如下错误：
+<img alt="win10编译错误" src="../_images/msvcr.png" />
+则按照网站 (https://zhuanlan.zhihu.com/p/302587005) 的方法，将Anaconda3\Lib\distutils\cygwinccompiler.py中：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="n">msc_ver</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1900</span><span class="p">:</span>
+       <span class="c1"># VS2015 / MSVC 14.0</span>
+       <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;msvcr140&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>修改为：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>  <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="n">msc_ver</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1900</span><span class="p">:</span>
+        <span class="c1"># VS2015 / MSVC 14.0</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;vcruntime140&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>注意 2：如果希望使用本机编译的Python版本GDAL库，需要将./third_party/GDAL_win/lib/site-packages 拷贝至Python环境Lib/site-package目录下：
+<img alt="win10编译错误" src="../_images/gdal.png" /></p></li>
+</ul>
+<p>在联网状态下，安装LuoJiaNET时会自动下载LuoJiaNET安装包的依赖项（依赖项详情参见<a class="reference external" href="https://gitee.com/mindspore/luojianet/blob/master/setup.py">setup.py</a>中的required_package），其余情况需自行安装。运行模型时，常见依赖可以参考<a class="reference external" href="https://gitee.com/mindspore/luojianet/blob/master/requirements.txt">requirements.txt</a>。</p>
+<p>如果因网速问题下载失败，可多次重复尝试</p>
+</div>
+<div class="section" id="id4">
+<h3>验证是否成功安装<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>方法一：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -c <span class="s2">&quot;import luojianet_ms;luojianet_ms.run_check()&quot;</span>
+</pre></div>
+</div>
+<p>如果输出：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>LuoJiaNET version: 版本号
+The result of multiplication calculation is correct, LuoJiaNET has been installed successfully!
+</pre></div>
+</div>
+<p>说明LuoJiaNET安装成功。</p>
+<p>方法二：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">luojianet_ms</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">import</span> <span class="nn">luojianet_ms.ops</span> <span class="k">as</span> <span class="nn">ops</span>
+<span class="kn">import</span> <span class="nn">luojianet_ms.context</span> <span class="k">as</span> <span class="nn">context</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">device_target</span><span class="o">=</span><span class="s2">&quot;CPU&quot;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>如果输出：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[[[2. 2. 2. 2.]
+   [2. 2. 2. 2.]
+   [2. 2. 2. 2.]]
+
+  [[2. 2. 2. 2.]
+   [2. 2. 2. 2.]
+   [2. 2. 2. 2.]]
+
+  [[2. 2. 2. 2.]
+   [2. 2. 2. 2.]
+   [2. 2. 2. 2.]]]]
+</pre></div>
+</div>
+<p>说明LuoJiaNET安装成功。</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="luojianet_ms_linux_gpu_install_src.html" class="btn btn-neutral float-left" title="源码编译方式安装Linux LuoJiaNET GPU版本" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../quick_start.html" class="btn btn-neutral float-right" title="初学入门" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, LuoJiaNet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+	<script async="async" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

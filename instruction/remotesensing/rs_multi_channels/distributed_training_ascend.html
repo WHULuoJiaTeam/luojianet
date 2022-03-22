@@ -1,0 +1,686 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>分布式并行训练 （Ascend） &mdash; LuoJiaNet master documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/training.css" type="text/css" />
+   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/js/training.js"></script>
+        
+        
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> LuoJiaNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">LuoJiaNET安装</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">基本介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_gpu_install_pip.html">pip方式安装安装LuoJiaNET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_linux_gpu_install_src.html">源码编译方式安装Linux LuoJiaNET GPU版本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/luojianet_ms_win_cpu_install_src.html">源码编译方式安装Window LuoJiaNET CPU版本</a></li>
+</ul>
+<p class="caption"><span class="caption-text">入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">初学入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset.html">自定义样本加载与处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model.html">自定义模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autograd.html">模型自动求导</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../save_load_model.html">保存及加载模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../linear_regression.html">简单线性函数拟合</a></li>
+</ul>
+<p class="caption"><span class="caption-text">进阶教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/mid_low_level_api.html">全流程自定义</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/distributed_training/distributed_training_gpu.html">分布式并行训练 （GPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/custom_ops/custom_operator_cpu.html">自定义算子（CPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intermediate/custom_ops/custom_operator_gpu.html">自定义算子（GPU）</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">LuoJiaNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>分布式并行训练 （Ascend）</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/remotesensing/rs_multi_channels/distributed_training_ascend.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ascend">
+<h1>分布式并行训练 （Ascend）<a class="headerlink" href="#ascend" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Ascend</span></code> <code class="docutils literal notranslate"><span class="pre">进阶</span></code> <code class="docutils literal notranslate"><span class="pre">分布式并行</span></code></p>
+<!-- TOC -->
+<ul class="simple">
+<li><p><a class="reference external" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83-ascend">分布式并行训练 （Ascend）</a></p>
+<ul>
+<li><p><a class="reference external" href="#%E5%87%86%E5%A4%87%E7%8E%AF%E8%8A%82">准备环节</a></p>
+<ul>
+<li><p><a class="reference external" href="#%E4%B8%8B%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86">下载数据集</a></p></li>
+<li><p><a class="reference external" href="#%E9%85%8D%E7%BD%AE%E5%88%86%E5%B8%83%E5%BC%8F%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">配置分布式环境变量</a></p></li>
+<li><p><a class="reference external" href="#%E8%B0%83%E7%94%A8%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1%E5%BA%93">调用集合通信库</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C%E6%A8%A1%E5%BC%8F%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86">数据并行模式加载数据集</a></p></li>
+<li><p><a class="reference external" href="#%E5%AE%9A%E4%B9%89%E7%BD%91%E7%BB%9C">定义网络</a></p></li>
+<li><p><a class="reference external" href="#%E5%AE%9A%E4%B9%89%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8F%8A%E4%BC%98%E5%8C%96%E5%99%A8">定义损失函数及优化器</a></p>
+<ul>
+<li><p><a class="reference external" href="#%E5%AE%9A%E4%B9%89%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0">定义损失函数</a></p></li>
+<li><p><a class="reference external" href="#%E5%AE%9A%E4%B9%89%E4%BC%98%E5%8C%96%E5%99%A8">定义优化器</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#%E8%AE%AD%E7%BB%83%E7%BD%91%E7%BB%9C">训练网络</a></p></li>
+<li><p><a class="reference external" href="#%E8%BF%90%E8%A1%8C%E8%84%9A%E6%9C%AC">运行脚本</a></p></li>
+<li><p><a class="reference external" href="#%E5%A4%9A%E6%9C%BA%E5%A4%9A%E5%8D%A1%E8%AE%AD%E7%BB%83">多机多卡训练</a></p></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+<p><a href="https://gitee.com/luojianet/docs/blob/master/tutorials/source_zh_cn/intermediate/distributed_training/distributed_training_ascend.md" target="_blank"><img src="https://gitee.com/luojianet/docs/raw/master/resource/_static/logo_source.png"></a></p>
+<p>在深度学习中，当数据集和参数量的规模越来越大，训练所需的时间和硬件资源会随之增加，最后会变成制约训练的瓶颈。分布式并行训练，可以降低对内存、计算性能等硬件的需求，是进行训练的重要优化手段。根据并行的原理及模式不同，业界主流的并行类型有以下几种：</p>
+<ul class="simple">
+<li><p>数据并行（Data Parallel）：对数据进行切分的并行模式，一般按照batch维度切分，将数据分配到各个计算单元（worker）中，进行模型计算。</p></li>
+<li><p>模型并行（Model Parallel）：对模型进行切分的并行模式。MindSpore中支持层内模型并行模式，即对参数切分后分配到各个计算单元中进行训练。</p></li>
+<li><p>混合并行（Hybrid Parallel）：指涵盖数据并行和模型并行的并行模式。</p></li>
+</ul>
+<p><img alt="png" src="../../_images/data_parallel1.png" /></p>
+<p>数据并行示意图</p>
+<p><img alt="png" src="../../_images/model_parallel1.png" /></p>
+<p>层间模型并行示意图</p>
+<p>实现以上三种并行模式，依赖于各个计算单元之间进行通信，主要有以下四种集合通信算子:</p>
+<p><img alt="png" src="../../_images/communication1.png" /></p>
+<p>以MatMul为例，简单说明一下对算子进行切分后，如何应用上述的并行逻辑。</p>
+<p><img alt="png" src="../../_images/matmul_net2.png" /></p>
+<p><img alt="png" src="../../_images/apply_allreduce1.png" /></p>
+<p>对于公式所示的矩阵连乘，对于矩阵的切分如公式的子步骤所示，划分到4个计算单元上。各卡上的运算与通信逻辑如上图，通过Allreduce算子保证计算的正确性。</p>
+<p><img alt="png" src="../../_images/matmul_net11.png" /></p>
+<p><img alt="png" src="../../_images/apply_allgather1.png" /></p>
+<p>对于公式所示的矩阵连乘，对于矩阵的切分如公式的子步骤所示，划分到4个计算单元上。各卡上的运算与通信逻辑如上图，通过Allgather算子保证计算的正确性。</p>
+<p>本篇教程我们主要讲解如何在Ascend 910 AI处理器硬件平台上，利用MindSpore通过下面两种并行模式训练ResNet-50网络。</p>
+<ul class="simple">
+<li><p>DATA_PARALLEL：数据并行模式。</p></li>
+<li><p>AUTO_PARALLEL：自动并行模式，融合了数据并行、模型并行及混合并行的1种分布式并行模式，可以自动建立代价模型，找到训练时间较短的并行策略，为用户选择1种并行模式。</p></li>
+</ul>
+<p>依据代价模型的自动策略寻优流程示意图如下所示，以动态规划的方式，求解算子切分的时间、空间代价、算子间切分策略切换的重新排布时间、空间代价，寻优全局最优的算子切分策略策略。</p>
+<p><img alt="png" src="../../_images/cost_model1.png" /></p>
+<blockquote>
+<div><p>你可以在这里下载完整的样例代码：</p>
+<p><a class="reference external" href="https://gitee.com/luojianet/docs/tree/master/docs/sample_code/distributed_training">https://gitee.com/luojianet/docs/tree/master/docs/sample_code/distributed_training</a></p>
+</div></blockquote>
+<p>目录结构如下：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>└─sample_code
+    ├─distributed_training
+    │      rank_table_16pcs.json
+    │      rank_table_8pcs.json
+    │      rank_table_2pcs.json
+    │      resnet.py
+    │      resnet50_distributed_training.py
+    │      run.sh
+    │      run_cluster.sh
+    ...
+</pre></div>
+</div>
+<p>其中，<code class="docutils literal notranslate"><span class="pre">rank_table_16pcs.json</span></code>、<code class="docutils literal notranslate"><span class="pre">rank_table_8pcs.json</span></code>、<code class="docutils literal notranslate"><span class="pre">rank_table_2pcs.json</span></code>是配置当前多卡环境的组网信息文件。<code class="docutils literal notranslate"><span class="pre">resnet.py</span></code>、<code class="docutils literal notranslate"><span class="pre">resnet50_distributed_training.py</span></code>等文件是定义网络结构的脚本。<code class="docutils literal notranslate"><span class="pre">run.sh</span></code>、<code class="docutils literal notranslate"><span class="pre">run_cluster.sh</span></code>是执行脚本。</p>
+<div class="section" id="id1">
+<h2>准备环节<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>下载数据集<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>本样例采用<code class="docutils literal notranslate"><span class="pre">CIFAR-10</span></code>数据集，由10类32*32的彩色图片组成，每类包含6000张图片。其中训练集共50000张图片，测试集共10000张图片。</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">CIFAR-10</span></code>数据集下载链接：<a class="reference external" href="http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz">http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz</a>。</p>
+</div></blockquote>
+<p>将数据集下载并解压到本地路径下，解压后的文件夹为<code class="docutils literal notranslate"><span class="pre">cifar-10-batches-bin</span></code>。</p>
+</div>
+<div class="section" id="id3">
+<h3>配置分布式环境变量<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>在裸机环境（对比云上环境，即本地有Ascend 910 AI 处理器）进行分布式训练时，需要配置当前多卡环境的组网信息文件。如果使用华为云环境，因为云服务本身已经做好了配置，可以跳过本小节。</p>
+<p>以Ascend 910 AI处理器为例，1个8卡环境的json配置文件示例如下，本样例将该配置文件命名为<code class="docutils literal notranslate"><span class="pre">rank_table_8pcs.json</span></code>。2卡环境配置可以参考样例代码中的<code class="docutils literal notranslate"><span class="pre">rank_table_2pcs.json</span></code>文件。</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;server_count&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;server_list&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;server_id&quot;</span><span class="p">:</span> <span class="s2">&quot;10.155.111.140&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;device&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.1.27.6&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.2.27.6&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.3.27.6&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.4.27.6&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.1.27.7&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.2.27.7&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;6&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.3.27.7&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;6&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;7&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.4.27.7&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;7&quot;</span><span class="p">}],</span>
+             <span class="nt">&quot;host_nic_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;reserve&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;completed&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>其中需要根据实际训练环境修改的参数项有：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">server_count</span></code>表示参与训练的机器数量。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">server_id</span></code>表示当前机器的IP地址。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device_id</span></code>表示卡物理序号，即卡所在机器中的实际序号。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device_ip</span></code>表示集成网卡的IP地址，可以在当前机器执行指令<code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">/etc/hccn.conf</span></code>，<code class="docutils literal notranslate"><span class="pre">address_x</span></code>的键值就是网卡IP地址。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rank_id</span></code>表示卡逻辑序号，固定从0开始编号。</p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>调用集合通信库<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>MindSpore分布式并行训练的通信使用了华为集合通信库<code class="docutils literal notranslate"><span class="pre">Huawei</span> <span class="pre">Collective</span> <span class="pre">Communication</span> <span class="pre">Library</span></code>（以下简称HCCL），可以在Ascend AI处理器配套的软件包中找到。同时<code class="docutils literal notranslate"><span class="pre">luojianet.communication.management</span></code>中封装了HCCL提供的集合通信接口，方便用户配置分布式信息。</p>
+<blockquote>
+<div><p>HCCL实现了基于Ascend AI处理器的多机多卡通信，有一些使用限制，我们列出使用分布式服务常见的，详细的可以查看HCCL对应的使用文档。</p>
+<ul class="simple">
+<li><p>单机场景下支持1、2、4、8卡设备集群，多机场景下支持8*n卡设备集群。</p></li>
+<li><p>每台机器的0-3卡和4-7卡各为1个组网，2卡和4卡训练时卡必须相连且不支持跨组网创建集群。</p></li>
+<li><p>组建多机集群时需要保证各台机器使用同一交换机。</p></li>
+<li><p>服务器硬件架构及操作系统需要是SMP（Symmetrical Multi-Processing，对称多处理器）处理模式。</p></li>
+</ul>
+</div></blockquote>
+<p>下面是调用集合通信库样例代码：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">luojianet</span> <span class="kn">import</span> <span class="n">context</span>
+<span class="kn">from</span> <span class="nn">luojianet.communication</span> <span class="kn">import</span> <span class="n">init</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">GRAPH_MODE</span><span class="p">,</span> <span class="n">device_target</span><span class="o">=</span><span class="s2">&quot;Ascend&quot;</span><span class="p">,</span> <span class="n">device_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DEVICE_ID&quot;</span><span class="p">]))</span>
+    <span class="n">init</span><span class="p">()</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>其中，</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode=context.GRAPH_MODE</span></code>：使用分布式训练需要指定运行模式为图模式（PyNative模式当前仅支持数据并行）。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device_id</span></code>：卡的物理序号，即卡所在机器中的实际序号。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">init</span></code>：使能HCCL通信，并完成分布式训练初始化操作。</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>数据并行模式加载数据集<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<p>分布式训练时，数据是以数据并行的方式导入的。下面我们以CIFAR-10数据集为例，介绍以数据并行方式导入CIFAR-10数据集的方法，<code class="docutils literal notranslate"><span class="pre">data_path</span></code>是指数据集的路径，即<code class="docutils literal notranslate"><span class="pre">cifar-10-batches-bin</span></code>文件夹的路径。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">luojianet</span> <span class="kn">import</span> <span class="n">dtype</span> <span class="k">as</span> <span class="n">mstype</span>
+<span class="kn">import</span> <span class="nn">luojianet.dataset</span> <span class="k">as</span> <span class="nn">ds</span>
+<span class="kn">import</span> <span class="nn">luojianet.dataset.transforms.c_transforms</span> <span class="k">as</span> <span class="nn">C</span>
+<span class="kn">import</span> <span class="nn">luojianet.dataset.vision.c_transforms</span> <span class="k">as</span> <span class="nn">vision</span>
+<span class="kn">from</span> <span class="nn">luojianet.communication</span> <span class="kn">import</span> <span class="n">get_rank</span><span class="p">,</span> <span class="n">get_group_size</span>
+
+<span class="k">def</span> <span class="nf">create_dataset</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">repeat_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">):</span>
+    <span class="n">resize_height</span> <span class="o">=</span> <span class="mi">224</span>
+    <span class="n">resize_width</span> <span class="o">=</span> <span class="mi">224</span>
+    <span class="n">rescale</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">255.0</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># 获取rank_id与rank_size</span>
+    <span class="n">rank_id</span> <span class="o">=</span> <span class="n">get_rank</span><span class="p">()</span>
+    <span class="n">rank_size</span> <span class="o">=</span> <span class="n">get_group_size</span><span class="p">()</span>
+    <span class="n">data_set</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">Cifar10Dataset</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">num_shards</span><span class="o">=</span><span class="n">rank_size</span><span class="p">,</span> <span class="n">shard_id</span><span class="o">=</span><span class="n">rank_id</span><span class="p">)</span>
+
+    <span class="c1"># 定义数据的map操作</span>
+    <span class="n">random_crop_op</span> <span class="o">=</span> <span class="n">vision</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">((</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">random_horizontal_op</span> <span class="o">=</span> <span class="n">vision</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()</span>
+    <span class="n">resize_op</span> <span class="o">=</span> <span class="n">vision</span><span class="o">.</span><span class="n">Resize</span><span class="p">((</span><span class="n">resize_height</span><span class="p">,</span> <span class="n">resize_width</span><span class="p">))</span>
+    <span class="n">rescale_op</span> <span class="o">=</span> <span class="n">vision</span><span class="o">.</span><span class="n">Rescale</span><span class="p">(</span><span class="n">rescale</span><span class="p">,</span> <span class="n">shift</span><span class="p">)</span>
+    <span class="n">normalize_op</span> <span class="o">=</span> <span class="n">vision</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.4465</span><span class="p">,</span> <span class="mf">0.4822</span><span class="p">,</span> <span class="mf">0.4914</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2010</span><span class="p">,</span> <span class="mf">0.1994</span><span class="p">,</span> <span class="mf">0.2023</span><span class="p">))</span>
+    <span class="n">changeswap_op</span> <span class="o">=</span> <span class="n">vision</span><span class="o">.</span><span class="n">HWC2CHW</span><span class="p">()</span>
+    <span class="n">type_cast_op</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">TypeCast</span><span class="p">(</span><span class="n">mstype</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="n">c_trans</span> <span class="o">=</span> <span class="p">[</span><span class="n">random_crop_op</span><span class="p">,</span> <span class="n">random_horizontal_op</span><span class="p">]</span>
+    <span class="n">c_trans</span> <span class="o">+=</span> <span class="p">[</span><span class="n">resize_op</span><span class="p">,</span> <span class="n">rescale_op</span><span class="p">,</span> <span class="n">normalize_op</span><span class="p">,</span> <span class="n">changeswap_op</span><span class="p">]</span>
+
+    <span class="c1"># 对图片数据进行map操作</span>
+    <span class="n">data_set</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">operations</span><span class="o">=</span><span class="n">type_cast_op</span><span class="p">,</span> <span class="n">input_columns</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+    <span class="n">data_set</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">operations</span><span class="o">=</span><span class="n">c_trans</span><span class="p">,</span> <span class="n">input_columns</span><span class="o">=</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 对数据集进行处理</span>
+    <span class="n">data_set</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">data_set</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data_set</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">repeat_num</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data_set</span>
+</pre></div>
+</div>
+<p>其中，与单机不同的是，在数据集接口需要传入<code class="docutils literal notranslate"><span class="pre">num_shards</span></code>和<code class="docutils literal notranslate"><span class="pre">shard_id</span></code>参数，分别对应卡的数量和逻辑序号，
+<code class="docutils literal notranslate"><span class="pre">num_shards</span></code>告知数据集处理逻辑需要将完整的数据batch拆分为多少个数据子batch，<code class="docutils literal notranslate"><span class="pre">shard_id</span></code>告知数据集处理逻辑当前进程持有第几个数据子batch，建议通过HCCL接口获取：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_rank</span></code>：获取当前设备在集群中的ID，用于设置<code class="docutils literal notranslate"><span class="pre">shard_id</span></code>。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_group_size</span></code>：获取集群数量，用于设置<code class="docutils literal notranslate"><span class="pre">num_shards</span></code>。</p></li>
+</ul>
+<blockquote>
+<div><p>数据并行场景加载数据集时，建议对每卡指定相同的数据集文件，若是各卡加载的数据集不同，可能会影响计算精度。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id6">
+<h2>定义网络<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<p>数据并行及自动并行模式下，网络定义方式与单机写法一致，可以参考<a class="reference external" href="https://gitee.com/luojianet/docs/blob/master/docs/sample_code/resnet/resnet.py">ResNet网络样例脚本</a>。</p>
+</div>
+<div class="section" id="id7">
+<h2>定义损失函数及优化器<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h3>定义损失函数<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>自动并行以算子为粒度切分模型，通过算法搜索得到最优并行策略，所以与单机训练不同的是，为了有更好的并行训练效果，损失函数建议使用小算子来实现。</p>
+<p>在Loss部分，我们采用<code class="docutils literal notranslate"><span class="pre">SoftmaxCrossEntropyWithLogits</span></code>的展开形式，即按照数学公式，将其展开为多个小算子进行实现，样例代码如下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">luojianet.ops</span> <span class="k">as</span> <span class="nn">ops</span>
+<span class="kn">from</span> <span class="nn">luojianet</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">luojianet</span> <span class="kn">import</span> <span class="n">dtype</span> <span class="k">as</span> <span class="n">mstype</span>
+<span class="kn">import</span> <span class="nn">luojianet.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+<span class="k">class</span> <span class="nc">SoftmaxCrossEntropyExpand</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Cell</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SoftmaxCrossEntropyExpand</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Exp</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">ReduceSum</span><span class="p">(</span><span class="n">keep_dims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onehot</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">OneHot</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_value</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">mstype</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">off_value</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">mstype</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">div</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">RealDiv</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Log</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sum_cross_entropy</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">ReduceSum</span><span class="p">(</span><span class="n">keep_dims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mul</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Mul</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mul2</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Mul</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">ReduceMean</span><span class="p">(</span><span class="n">keep_dims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">ReduceMax</span><span class="p">(</span><span class="n">keep_dims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Sub</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="mf">1e-24</span><span class="p">,</span> <span class="n">mstype</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">construct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logit</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="n">logit_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">logit</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">logit</span><span class="p">,</span> <span class="n">logit_max</span><span class="p">))</span>
+        <span class="n">exp_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">softmax_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">exp_sum</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">ops</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">logit</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">off_value</span><span class="p">)</span>
+        <span class="n">softmax_result_log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">softmax_result</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum_cross_entropy</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">softmax_result_log</span><span class="p">,</span> <span class="n">label</span><span class="p">)),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mul2</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">scalar_to_array</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">loss</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3>定义优化器<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>采用<code class="docutils literal notranslate"><span class="pre">Momentum</span></code>优化器作为参数更新工具，这里定义与单机一致，不再展开，具体可以参考样例代码中的实现。</p>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>训练网络<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">context.set_auto_parallel_context</span></code>是配置并行训练参数的接口，必须在初始化网络之前调用。常用参数包括：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">parallel_mode</span></code>：分布式并行模式，默认为单机模式<code class="docutils literal notranslate"><span class="pre">ParallelMode.STAND_ALONE</span></code>。可选数据并行<code class="docutils literal notranslate"><span class="pre">ParallelMode.DATA_PARALLEL</span></code>及自动并行<code class="docutils literal notranslate"><span class="pre">ParallelMode.AUTO_PARALLEL</span></code>。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parameter_broadcast</span></code>：训练开始前自动广播0号卡上数据并行的参数权值到其他卡上，默认值为<code class="docutils literal notranslate"><span class="pre">False</span></code>。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gradients_mean</span></code>：反向计算时，框架内部会将数据并行参数分散在多台机器的梯度值进行收集，得到全局梯度值后再传入优化器中更新。默认值为<code class="docutils literal notranslate"><span class="pre">False</span></code>，设置为True对应<code class="docutils literal notranslate"><span class="pre">allreduce_mean</span></code>操作，False对应<code class="docutils literal notranslate"><span class="pre">allreduce_sum</span></code>操作。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device_num</span></code>和<code class="docutils literal notranslate"><span class="pre">global_rank</span></code>建议采用默认值，框架内会调用HCCL接口获取。</p></li>
+</ul>
+<p>如脚本中存在多个网络用例，请在执行下个用例前调用<code class="docutils literal notranslate"><span class="pre">context.reset_auto_parallel_context</span></code>将所有参数还原到默认值。</p>
+<p>在下面的样例中我们指定并行模式为自动并行，用户如需切换为数据并行模式只需将<code class="docutils literal notranslate"><span class="pre">parallel_mode</span></code>改为<code class="docutils literal notranslate"><span class="pre">DATA_PARALLEL</span></code>。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">luojianet</span> <span class="kn">import</span> <span class="n">context</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">luojianet.nn</span> <span class="kn">import</span> <span class="n">Momentum</span>
+<span class="kn">from</span> <span class="nn">luojianet.train.callback</span> <span class="kn">import</span> <span class="n">LossMonitor</span>
+<span class="kn">from</span> <span class="nn">luojianet.context</span> <span class="kn">import</span> <span class="n">ParallelMode</span>
+<span class="kn">from</span> <span class="nn">resnet</span> <span class="kn">import</span> <span class="n">resnet50</span>
+
+<span class="n">device_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DEVICE_ID&#39;</span><span class="p">))</span>
+<span class="n">context</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">GRAPH_MODE</span><span class="p">,</span> <span class="n">device_target</span><span class="o">=</span><span class="s2">&quot;Ascend&quot;</span><span class="p">)</span>
+<span class="n">context</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="n">device_id</span><span class="p">)</span> <span class="c1"># set device_id</span>
+
+<span class="k">def</span> <span class="nf">test_train_cifar</span><span class="p">(</span><span class="n">epoch_size</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">set_auto_parallel_context</span><span class="p">(</span><span class="n">parallel_mode</span><span class="o">=</span><span class="n">ParallelMode</span><span class="o">.</span><span class="n">AUTO_PARALLEL</span><span class="p">,</span> <span class="n">gradients_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">loss_cb</span> <span class="o">=</span> <span class="n">LossMonitor</span><span class="p">()</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DATA_PATH&#39;</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">num_classes</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">net</span> <span class="o">=</span> <span class="n">resnet50</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">SoftmaxCrossEntropyExpand</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">opt</span> <span class="o">=</span> <span class="n">Momentum</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">,</span> <span class="n">net</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()),</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">loss_fn</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">opt</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">loss_cb</span><span class="p">],</span> <span class="n">dataset_sink_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>其中，</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dataset_sink_mode=True</span></code>：表示采用数据集的下沉模式，即训练的计算下沉到硬件平台中执行。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LossMonitor</span></code>：能够通过回调函数返回Loss值，用于监控损失函数。</p></li>
+</ul>
+</div>
+<div class="section" id="id11">
+<h2>运行脚本<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
+<p>上述已将训练所需的脚本编辑好了，接下来通过命令调用对应的脚本。</p>
+<p>目前MindSpore分布式执行采用单卡单进程运行方式，即每张卡上运行1个进程，进程数量与使用的卡的数量一致。其中，0卡在前台执行，其他卡放在后台执行。每个进程创建1个目录，用来保存日志信息以及算子编译信息。下面以使用8张卡的分布式训练脚本为例，演示如何运行脚本：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;==============================================================================================================&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;Please run the script as: &quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;bash run.sh DATA_PATH RANK_SIZE&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;For example: bash run.sh /path/dataset 8&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;It is better to use the absolute path.&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;==============================================================================================================&quot;</span>
+<span class="nv">DATA_PATH</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nb">export</span> <span class="nv">DATA_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">DATA_PATH</span><span class="si">}</span>
+<span class="nv">RANK_SIZE</span><span class="o">=</span><span class="nv">$2</span>
+
+<span class="nv">EXEC_PATH</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
+
+test_dist_8pcs<span class="o">()</span>
+<span class="o">{</span>
+    <span class="nb">export</span> <span class="nv">RANK_TABLE_FILE</span><span class="o">=</span><span class="si">${</span><span class="nv">EXEC_PATH</span><span class="si">}</span>/rank_table_8pcs.json
+    <span class="nb">export</span> <span class="nv">RANK_SIZE</span><span class="o">=</span><span class="m">8</span>
+<span class="o">}</span>
+
+test_dist_2pcs<span class="o">()</span>
+<span class="o">{</span>
+    <span class="nb">export</span> <span class="nv">RANK_TABLE_FILE</span><span class="o">=</span><span class="si">${</span><span class="nv">EXEC_PATH</span><span class="si">}</span>/rank_table_2pcs.json
+    <span class="nb">export</span> <span class="nv">RANK_SIZE</span><span class="o">=</span><span class="m">2</span>
+<span class="o">}</span>
+
+test_dist_<span class="si">${</span><span class="nv">RANK_SIZE</span><span class="si">}</span>pcs
+
+<span class="k">for</span><span class="o">((</span><span class="nv">i</span><span class="o">=</span><span class="m">1</span><span class="p">;</span>i&lt;<span class="si">${</span><span class="nv">RANK_SIZE</span><span class="si">}</span><span class="p">;</span>i++<span class="o">))</span>
+<span class="k">do</span>
+    rm -rf device<span class="nv">$i</span>
+    mkdir device<span class="nv">$i</span>
+    cp ./resnet50_distributed_training.py ./resnet.py ./device<span class="nv">$i</span>
+    <span class="nb">cd</span> ./device<span class="nv">$i</span>
+    <span class="nb">export</span> <span class="nv">DEVICE_ID</span><span class="o">=</span><span class="nv">$i</span>
+    <span class="nb">export</span> <span class="nv">RANK_ID</span><span class="o">=</span><span class="nv">$i</span>
+    <span class="nb">echo</span> <span class="s2">&quot;start training for device </span><span class="nv">$i</span><span class="s2">&quot;</span>
+    env &gt; env<span class="nv">$i</span>.log
+    pytest -s -v ./resnet50_distributed_training.py &gt; train.log<span class="nv">$i</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+    <span class="nb">cd</span> ../
+<span class="k">done</span>
+rm -rf device0
+mkdir device0
+cp ./resnet50_distributed_training.py ./resnet.py ./device0
+<span class="nb">cd</span> ./device0
+<span class="nb">export</span> <span class="nv">DEVICE_ID</span><span class="o">=</span><span class="m">0</span>
+<span class="nb">export</span> <span class="nv">RANK_ID</span><span class="o">=</span><span class="m">0</span>
+<span class="nb">echo</span> <span class="s2">&quot;start training for device 0&quot;</span>
+env &gt; env0.log
+pytest -s -v ./resnet50_distributed_training.py &gt; train.log0 <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> -eq <span class="m">0</span> <span class="o">]</span><span class="p">;</span><span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;training success&quot;</span>
+<span class="k">else</span>
+    <span class="nb">echo</span> <span class="s2">&quot;training failed&quot;</span>
+    <span class="nb">exit</span> <span class="m">2</span>
+<span class="k">fi</span>
+<span class="nb">cd</span> ../
+</pre></div>
+</div>
+<p>脚本需要传入变量<code class="docutils literal notranslate"><span class="pre">DATA_PATH</span></code>和<code class="docutils literal notranslate"><span class="pre">RANK_SIZE</span></code>，分别表示数据集的绝对路径和卡的数量。</p>
+<p>分布式相关的环境变量有，</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RANK_TABLE_FILE</span></code>：组网信息文件的路径。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DEVICE_ID</span></code>：当前卡在机器上的实际序号。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RANK_ID</span></code>：当前卡的逻辑序号。</p></li>
+</ul>
+<p>其余环境变量请参考<a class="reference external" href="https://www.luojianet.cn/install">安装教程</a>中的配置项。</p>
+<p>运行时间大约在5分钟内，主要时间是用于算子的编译，实际训练时间在20秒内。用户可以通过<code class="docutils literal notranslate"><span class="pre">ps</span> <span class="pre">-ef</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">pytest</span></code>来监控任务进程。</p>
+<p>日志文件保存到<code class="docutils literal notranslate"><span class="pre">rank</span></code>所对应的<code class="docutils literal notranslate"><span class="pre">device0</span></code>、 <code class="docutils literal notranslate"><span class="pre">device1</span></code>……目录下，<code class="docutils literal notranslate"><span class="pre">env.log</span></code>中记录了环境变量的相关信息，关于Loss部分结果保存在<code class="docutils literal notranslate"><span class="pre">train.log</span></code>中，示例如下：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>epoch: 1 step: 156, loss is 2.0084016
+epoch: 2 step: 156, loss is 1.6407638
+epoch: 3 step: 156, loss is 1.6164391
+epoch: 4 step: 156, loss is 1.6838071
+epoch: 5 step: 156, loss is 1.6320667
+epoch: 6 step: 156, loss is 1.3098773
+epoch: 7 step: 156, loss is 1.3515002
+epoch: 8 step: 156, loss is 1.2943741
+epoch: 9 step: 156, loss is 1.2316195
+epoch: 10 step: 156, loss is 1.1533381
+</pre></div>
+</div>
+</div>
+<div class="section" id="id12">
+<h2>多机多卡训练<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
+<p>前面的章节，对MindSpore的分布式训练进行了介绍，都是基于单机8卡的Ascend环境，使用多机进行分布式训练，可以更大地提升训练速度。
+在Ascend环境下，跨机器的NPU单元的通信与单机内各个NPU单元的通信一样，依旧是通过HCCL进行通信，区别在于，单机内的NPU单元天然的是互通的，而跨机器的则需要保证两台机器的网络是互通的。
+在确认了机器之间的NPU单元的网络是通畅后，配置多机的json配置文件，本教程以16卡的配置文件为例。需要注意的是，在多机的json文件配置中，要求rank_id的排序，与server_id的字典序一致。</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;server_count&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;server_list&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;server_id&quot;</span><span class="p">:</span> <span class="s2">&quot;10.155.111.140&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;device&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.1.27.6&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.2.27.6&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.3.27.6&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.4.27.6&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.1.27.7&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.2.27.7&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;6&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.3.27.7&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;6&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;7&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.4.27.7&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;7&quot;</span><span class="p">}],</span>
+             <span class="nt">&quot;host_nic_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;reserve&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;server_id&quot;</span><span class="p">:</span> <span class="s2">&quot;10.155.111.141&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;device&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.1.27.8&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;8&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.2.27.8&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;9&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.3.27.8&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;10&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.4.27.8&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;11&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.1.27.9&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;12&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.2.27.9&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;13&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;6&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.3.27.9&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;14&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span> <span class="s2">&quot;7&quot;</span><span class="p">,</span><span class="nt">&quot;device_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.4.27.9&quot;</span><span class="p">,</span><span class="nt">&quot;rank_id&quot;</span><span class="p">:</span> <span class="s2">&quot;15&quot;</span><span class="p">}],</span>
+            <span class="nt">&quot;host_nic_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;reserve&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;completed&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>准备好配置文件后，可以进行分布式多机训练脚本的组织，在以2机16卡为例，两台机器上编写的脚本与单机8卡的运行脚本类似，区别在于指定不同的rank_id变量。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;==============================================================================================================&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;Please run the script as: &quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;bash run.sh DATA_PATH RANK_TABLE_FILE RANK_SIZE RANK_START&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;For example: bash run.sh /path/dataset /path/rank_table.json 16 0&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;It is better to use the absolute path.&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;==============================================================================================================&quot;</span>
+
+<span class="nv">execute_path</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
+<span class="nb">echo</span> <span class="si">${</span><span class="nv">execute_path</span><span class="si">}</span>
+<span class="nv">script_self</span><span class="o">=</span><span class="k">$(</span>readlink -f <span class="s2">&quot;</span><span class="nv">$0</span><span class="s2">&quot;</span><span class="k">)</span>
+<span class="nv">self_path</span><span class="o">=</span><span class="k">$(</span>dirname <span class="s2">&quot;</span><span class="si">${</span><span class="nv">script_self</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span>
+<span class="nb">echo</span> <span class="si">${</span><span class="nv">self_path</span><span class="si">}</span>
+
+<span class="nb">export</span> <span class="nv">DATA_PATH</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nb">export</span> <span class="nv">RANK_TABLE_FILE</span><span class="o">=</span><span class="nv">$2</span>
+<span class="nb">export</span> <span class="nv">RANK_SIZE</span><span class="o">=</span><span class="nv">$3</span>
+<span class="nv">RANK_START</span><span class="o">=</span><span class="nv">$4</span>
+<span class="nv">DEVICE_START</span><span class="o">=</span><span class="m">0</span>
+<span class="k">for</span><span class="o">((</span><span class="nv">i</span><span class="o">=</span><span class="m">0</span><span class="p">;</span>i&lt;<span class="o">=</span><span class="m">7</span><span class="p">;</span>i++<span class="o">))</span><span class="p">;</span>
+<span class="k">do</span>
+  <span class="nb">export</span> <span class="nv">RANK_ID</span><span class="o">=</span>$<span class="o">[</span>i+RANK_START<span class="o">]</span>
+  <span class="nb">export</span> <span class="nv">DEVICE_ID</span><span class="o">=</span>$<span class="o">[</span>i+DEVICE_START<span class="o">]</span>
+  rm -rf <span class="si">${</span><span class="nv">execute_path</span><span class="si">}</span>/device_<span class="nv">$RANK_ID</span>
+  mkdir <span class="si">${</span><span class="nv">execute_path</span><span class="si">}</span>/device_<span class="nv">$RANK_ID</span>
+  <span class="nb">cd</span> <span class="si">${</span><span class="nv">execute_path</span><span class="si">}</span>/device_<span class="nv">$RANK_ID</span> <span class="o">||</span> <span class="nb">exit</span>
+  pytest -s <span class="si">${</span><span class="nv">self_path</span><span class="si">}</span>/resnet50_distributed_training.py &gt;train<span class="nv">$RANK_ID</span>.log <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+<span class="k">done</span>
+</pre></div>
+</div>
+<p>上面列出的参考脚本，所要求的代码组织结构如下，脚本中会获取脚本所在路径以及命令执行的路径，并且将所有任务都置于后台执行。</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>└─sample_code
+    ├─distributed_training
+    │      resnet50_distributed_training.py
+    │      run_cluster.sh
+</pre></div>
+</div>
+<p>执行时，两台机器分别执行如下命令，其中rank_table.json按照本章节展示的16卡的分布式json文件参考配置。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># server0</span>
+bash run.sh /path/dataset /path/rank_table.json <span class="m">16</span> <span class="m">0</span>
+<span class="c1"># server1</span>
+bash run.sh /path/dataset /path/rank_table.json <span class="m">16</span> <span class="m">8</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, LuoJiaNet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+	<script async="async" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

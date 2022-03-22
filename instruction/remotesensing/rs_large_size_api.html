@@ -1,0 +1,478 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>大幅面影像处理 &mdash; LuoJiaNet master documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/training.css" type="text/css" />
+   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/js/training.js"></script>
+        
+        
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> LuoJiaNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">LuoJiaNET安装</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">基本介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/luojianet_ms_gpu_install_pip.html">pip方式安装安装LuoJiaNET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/luojianet_ms_linux_gpu_install_src.html">源码编译方式安装Linux LuoJiaNET GPU版本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/luojianet_ms_win_cpu_install_src.html">源码编译方式安装Window LuoJiaNET CPU版本</a></li>
+</ul>
+<p class="caption"><span class="caption-text">入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">初学入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html">自定义样本加载与处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model.html">自定义模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autograd.html">模型自动求导</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../save_load_model.html">保存及加载模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../linear_regression.html">简单线性函数拟合</a></li>
+</ul>
+<p class="caption"><span class="caption-text">进阶教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intermediate/mid_low_level_api.html">全流程自定义</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intermediate/distributed_training/distributed_training_gpu.html">分布式并行训练 （GPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intermediate/custom_ops/custom_operator_cpu.html">自定义算子（CPU）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intermediate/custom_ops/custom_operator_gpu.html">自定义算子（GPU）</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LuoJiaNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>大幅面影像处理</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/remotesensing/rs_large_size_api.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="id1">
+<h1>大幅面影像处理<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">CPU</span></code> <code class="docutils literal notranslate"><span class="pre">GPU</span></code> <code class="docutils literal notranslate"><span class="pre">Linux</span></code> <code class="docutils literal notranslate"><span class="pre">进阶</span></code></p>
+<p>为方便用户控制模型的执行流程，LuoJiaNET与MindSpore融合提供了高度集成的训练和推理接口<code class="docutils literal notranslate"><span class="pre">luojianet_ms.Model</span></code>，
+用户如果想要对全流程训练和测试的特定模块进行个性化设置，也可以调用对应的中低阶接口自行定义，本文介绍了如何使用中低阶API定义各个模块。</p>
+<blockquote>
+<div><p>你可以在这里下载完整的样例代码：</p>
+</div></blockquote>
+<div class="section" id="id2">
+<h2>定义数据集<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>LuoJiaNET的<code class="docutils literal notranslate"><span class="pre">luojianet_ms.dataset</span></code>模块集成了常见的数据处理功能：用户既可以调用此模块的相关接口来加载常见的数据集，
+也可以构造数据集类并配合使用<code class="docutils literal notranslate"><span class="pre">GeneratorDataset</span></code>接口，实现自定义数据集和数据加载。使用<code class="docutils literal notranslate"><span class="pre">GeneratorDataset</span></code>生成具有多项式关系的样本和对应的标签，代码样例如下：</p>
+<p>导入所需的包：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">luojianet_ms</span> <span class="k">as</span> <span class="nn">ms</span>
+<span class="kn">from</span> <span class="nn">luojianet_ms</span> <span class="kn">import</span> <span class="n">ops</span><span class="p">,</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">luojianet_ms</span> <span class="kn">import</span> <span class="n">dtype</span> <span class="k">as</span> <span class="n">mstype</span>
+<span class="kn">import</span> <span class="nn">luojianet_ms.dataset</span> <span class="k">as</span> <span class="nn">ds</span>
+<span class="kn">import</span> <span class="nn">luojianet_ms.common.initializer</span> <span class="k">as</span> <span class="nn">init</span>
+</pre></div>
+</div>
+<p>定义数据集：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">data_num</span><span class="p">,</span> <span class="n">data_size</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data_num</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">data_size</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">label</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">create_dataset</span><span class="p">(</span><span class="n">data_num</span><span class="p">,</span> <span class="n">data_size</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">repeat_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义数据集&quot;&quot;&quot;</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">GeneratorDataset</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">get_data</span><span class="p">(</span><span class="n">data_num</span><span class="p">,</span> <span class="n">data_size</span><span class="p">)),</span> <span class="n">column_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">])</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">repeat_size</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">input_data</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>定义网络<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>LuoJiaNET的nn.Module类是构建所有网络的基类，也是网络的基本单元。当用户需要自定义网络时，可以继承Module类，并重写<code class="docutils literal notranslate"><span class="pre">__init__</span></code>方法和<code class="docutils literal notranslate"><span class="pre">call</span></code>方法。
+使用常用的<code class="docutils literal notranslate"><span class="pre">nn</span></code>算子构建一个简单的全连接网络：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义网络&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="mi">32</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyNet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">weight_init</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mf">0.02</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="n">weight_init</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mf">0.02</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">weight_init</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mf">0.02</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relu</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>定义损失函数<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>损失函数用于衡量预测值与真实值差异的程度。
+LuoJiaNET支持用户根据需要自定义损失函数。定义损失函数类时，既可以继承网络的基类<code class="docutils literal notranslate"><span class="pre">nn.Module</span></code>，也可以继承损失函数的基类<code class="docutils literal notranslate"><span class="pre">nn.LossBase</span></code>。</p>
+<div class="section" id="module">
+<h3>继承Module定义损失函数<a class="headerlink" href="#module" title="Permalink to this headline">¶</a></h3>
+<p>使用<code class="docutils literal notranslate"><span class="pre">nn.Module</span></code>定义损失函数的方法与定义一个普通的网络的差别在于，其执行计算前向网络输出与真实值之间的误差。</p>
+<p>以平均绝对误差为例，损失函数的定义方法如下(继承自<code class="docutils literal notranslate"><span class="pre">nn.Module</span></code>的类需要重写<code class="docutils literal notranslate"><span class="pre">__init__</span></code>与<code class="docutils literal notranslate"><span class="pre">call</span></code>方法)：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyL1Loss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义损失&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyL1Loss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abs</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Abs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduce_mean</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">ReduceMean</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predict</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">predict</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>继承基类定义损失函数<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>自定义损失函数时还可以继承损失函数的基类<code class="docutils literal notranslate"><span class="pre">nn.LossBase</span></code>。损失函数的基类在<code class="docutils literal notranslate"><span class="pre">nn.Module</span></code>的基础上，提供了<code class="docutils literal notranslate"><span class="pre">get_loss</span></code>方法，输出损失值。MyL1Loss使用<code class="docutils literal notranslate"><span class="pre">LossBase</span></code>作为基类的定义如下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyL1Loss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">LossBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义损失&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyL1Loss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">reduction</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abs</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Abs</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">base</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_loss</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id6">
+<h2>定义优化器<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<p>LuoJiaNET支持用户根据需要自定义优化器。自定义优化器时可以继承优化器基类<code class="docutils literal notranslate"><span class="pre">nn.Optimizer</span></code>，重写<code class="docutils literal notranslate"><span class="pre">call</span></code>函数实现参数的更新。</p>
+<p>使用基础的运算算子自定义优化器：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyMomentum</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义优化器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">use_nesterov</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyMomentum</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">momentum</span><span class="p">,</span> <span class="n">mstype</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;momentum&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_nesterov</span> <span class="o">=</span> <span class="n">use_nesterov</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s2">&quot;zeros&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assign</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Assign</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradients</span><span class="p">):</span>
+        <span class="n">lr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lr</span><span class="p">()</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moments</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">moments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">+</span> <span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_nesterov</span><span class="p">:</span>
+                <span class="n">update</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">+</span> <span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="n">lr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">update</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">moments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">lr</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">params</span>
+</pre></div>
+</div>
+<p>LuoJiaNET也封装了<code class="docutils literal notranslate"><span class="pre">ApplyMomentum</span></code>算子供用户使用，使用<code class="docutils literal notranslate"><span class="pre">ApplyMomentum</span></code>算子自定义优化器：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyMomentum</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义优化器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">use_nesterov</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyMomentum</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s2">&quot;zeros&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">=</span> <span class="n">momentum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">ApplyMomentum</span><span class="p">(</span><span class="n">use_nesterov</span><span class="o">=</span><span class="n">use_nesterov</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">construct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradients</span><span class="p">):</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">mom</span><span class="p">,</span> <span class="n">grad</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">moments</span><span class="p">,</span> <span class="n">gradients</span><span class="p">):</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">mom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">success</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>定义训练流程<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<p>LuoJiaNET的<code class="docutils literal notranslate"><span class="pre">nn.WithLossCell</span></code>接口可以将前向网络与损失函数连接起来；
+<code class="docutils literal notranslate"><span class="pre">nn.TrainOneStepCell</span></code>封装了损失网络和优化器，
+在执行训练时通过<code class="docutils literal notranslate"><span class="pre">GradOperation</span></code>算子来进行梯度的获取，通过优化器来实现权重的更新。</p>
+<p>定义损失网络：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyWithLossCell</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义损失网络&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backbone</span><span class="p">,</span> <span class="n">loss_fn</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyWithLossCell</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">auto_prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span> <span class="o">=</span> <span class="n">backbone</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">loss_fn</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">backbone_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span>
+</pre></div>
+</div>
+<p>用户可以继承<code class="docutils literal notranslate"><span class="pre">nn.TrainOneStepCell</span></code>来定义自己的训练流程。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyTrainStep</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">TrainOneStepCell</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义训练流程&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;参数初始化&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyTrainStep</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">GradOperation</span><span class="p">(</span><span class="n">get_by_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;构建训练过程&quot;&quot;&quot;</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+        <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">weights</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>执行训练：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 生成多项式分布的训练数据</span>
+<span class="n">dataset_size</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">ds_train</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="n">dataset_size</span><span class="p">)</span>
+<span class="c1"># 网络</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">MyNet</span><span class="p">()</span>
+<span class="c1"># 损失函数</span>
+<span class="n">loss_func</span> <span class="o">=</span> <span class="n">MyL1Loss</span><span class="p">()</span>
+<span class="c1"># 优化器</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">MyMomentum</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">trainable_params</span><span class="p">(),</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="c1"># 构建损失网络</span>
+<span class="n">net_with_criterion</span> <span class="o">=</span> <span class="n">MyWithLossCell</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">loss_func</span><span class="p">)</span>
+<span class="c1"># 构建训练网络</span>
+<span class="n">train_net</span> <span class="o">=</span> <span class="n">MyTrainStep</span><span class="p">(</span><span class="n">net_with_criterion</span><span class="p">,</span> <span class="n">opt</span><span class="p">)</span>
+<span class="c1"># 执行训练，每个epoch打印一次损失值</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span> <span class="ow">in</span> <span class="n">ds_train</span><span class="p">:</span>
+        <span class="n">train_net</span><span class="p">(</span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span>
+        <span class="n">loss_val</span> <span class="o">=</span> <span class="n">net_with_criterion</span><span class="p">(</span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">loss_val</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id8">
+<h2>定义精度评定指标<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<p>LuoJiaNET的<code class="docutils literal notranslate"><span class="pre">nn.Metric</span></code>模块提供了常见的评估函数，用户也可以根据需要自行定义评估指标：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyMAE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Metric</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义metric&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyMAE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abs_error_sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_num</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span>
+        <span class="n">error_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y_pred</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="n">y_pred</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abs_error_sum</span> <span class="o">+=</span> <span class="n">error_abs</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_num</span> <span class="o">+=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs_error_sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_num</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h2>定义验证流程<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<p>LuoJiaNET的<code class="docutils literal notranslate"><span class="pre">nn.WithEvalCell</span></code>模块提供了评估网络函数，用户也可以自己定义评估网络函数：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyWithEvalCell</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;定义验证流程&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyWithEvalCell</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">auto_prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">label</span>
+</pre></div>
+</div>
+<p>执行评估：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 获取验证数据</span>
+<span class="n">ds_eval</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">dataset_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1"># 定义评估网络</span>
+<span class="n">eval_net</span> <span class="o">=</span> <span class="n">MyWithEvalCell</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="n">eval_net</span><span class="o">.</span><span class="n">set_train</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># 定义评估指标</span>
+<span class="n">mae</span> <span class="o">=</span> <span class="n">MyMAE</span><span class="p">()</span>
+<span class="c1"># 执行推理过程</span>
+<span class="k">for</span> <span class="n">eval_x</span><span class="p">,</span> <span class="n">eval_y</span> <span class="ow">in</span> <span class="n">ds_eval</span><span class="p">:</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">eval_y</span> <span class="o">=</span> <span class="n">eval_net</span><span class="p">(</span><span class="n">eval_x</span><span class="p">,</span> <span class="n">eval_y</span><span class="p">)</span>
+    <span class="n">mae</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">eval_y</span><span class="p">)</span>
+
+<span class="n">mae_result</span> <span class="o">=</span> <span class="n">mae</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mae: &quot;</span><span class="p">,</span> <span class="n">mae_result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>保存模型<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<p>使用LuoJiaNET提供的<code class="docutils literal notranslate"><span class="pre">save_checkpoint</span></code>保存模型，传入网络和保存路径：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ms</span><span class="o">.</span><span class="n">save_checkpoint</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="s2">&quot;./MyNet.ckpt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, LuoJiaNet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+	<script async="async" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+# pip方式安装安装LuoJiaNET
+
+<!-- TOC -->
+
+- [pip方式安装LuoJiaNET GPU版本](#pip方式安装luojianet-gpu版本)
+    - [确认系统环境信息](#确认系统环境信息)
+    - [安装LuoJiaNET](#安装luojianet)
+    - [验证是否成功安装](#验证是否成功安装)
+
+
+本文档介绍如何在GPU环境的Linux系统，或者CPU环境的win10系统上，使用pip方式快速安装LuoJiaNET。
+
+## 确认系统环境信息
+
+- 确认安装Python 3.7.6或者3.7.5
+- 确认安装CUDA 10.1或10.2
+- 确认安装cudnn 7.6.5
+
+## 安装LuoJiaNET
+集成安装包置于目录 ./whl_files，可选根据用户环境，择如下三种方式之一进行安装：
+
+- Windows环境下，执行如下命令安装LuoJiaNET：
+
+```bash
+cd whl_files/win10_cpu
+pip install luojianet_ms-cpu-1.0.0-cp37-cp37m-win_amd64.whl
+```
+
+- Linux CUDA 10.1, cudnn 7.6.5 环境下，执行如下命令安装LuoJiaNET：
+
+```bash
+cd whl_files/ubantu18.04-cuda10.1-cudnn7.6.5
+pip install luojianet_ms_gpu-1.0.0-cp37-cp37m-linux_x86_64.whl
+```
+- Linux CUDA 10.2, cudnn 7.6.5，执行如下命令安装LuoJiaNET：
+
+```bash
+cd whl_files/ubantu18.04-cuda10.2-cudnn7.6.5
+pip install luojianet_ms_gpu-1.0.0-cp37-cp37m-linux_x86_64.whl
+```
+
+- 在联网状态下，安装whl包时会自动下载LuoJiaNET安装包的依赖项
+
+## 验证是否成功安装
+
+方法一：
+
+```bash
+python -c "import luojianet_ms;luojianet_ms.run_check()"
+```
+
+如果输出：
+
+```text
+LuoJiaNET version: 版本号
+The result of multiplication calculation is correct, LuoJiaNET has been installed successfully!
+```
+
+说明LuoJiaNET安装成功了。
+
+方法二：
+
+```python
+import numpy as np
+from luojianet_ms import Tensor
+import luojianet_ms.ops as ops
+import luojianet_ms.context as context
+
+context.set_context(device_target="GPU") #if CPU, set device_target="CPU"
+x = Tensor(np.ones([1,3,3,4]).astype(np.float32))
+y = Tensor(np.ones([1,3,3,4]).astype(np.float32))
+print(ops.add(x, y))
+```
+
+如果输出：
+
+```text
+[[[[2. 2. 2. 2.]
+   [2. 2. 2. 2.]
+   [2. 2. 2. 2.]]
+
+  [[2. 2. 2. 2.]
+   [2. 2. 2. 2.]
+   [2. 2. 2. 2.]]
+
+  [[2. 2. 2. 2.]
+   [2. 2. 2. 2.]
+   [2. 2. 2. 2.]]]]
+```
+
+说明LuoJiaNET安装成功。

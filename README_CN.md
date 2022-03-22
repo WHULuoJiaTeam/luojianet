@@ -5,6 +5,8 @@
 
 LuoJiaNET同时与国产人工智能硬件NPU深度融合，使智能计算软硬件充分协同，形成融合探测机理与地学知识的统一计算图表达、编译优化、图算融合、 自动混合并行的新一代遥感智能解译框架，可进行遥感样本自动提纯与增广，充分融合探测机理与地学知识。
 
+![昇腾全栈](images/architecture.png)
+
 1. 请参照[LuoJiaNet安装手册](https://gitee.com/mindspore/luojianet/blob/master/instruction/index.html)安装whl包或源码编译安装
 
 2. 执行以下命令，验证安装结果。

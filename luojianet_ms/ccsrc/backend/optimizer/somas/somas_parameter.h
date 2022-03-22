@@ -1,0 +1,47 @@
+/**
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+#ifndef LUOJIANET_MS_CCSRC_BACKEND_OPTIMIZER_SOMAS_SOMAS_PARAMETER_H_
+#define LUOJIANET_MS_CCSRC_BACKEND_OPTIMIZER_SOMAS_SOMAS_PARAMETER_H_
+
+#include <memory>
+#include <string>
+#include "base/base.h"
+
+namespace luojianet_ms {
+namespace somas {
+class SomasParameter {
+ public:
+  SomasParameter(size_t id, std::string source_node_name, size_t index, const void *addr, size_t size)
+      : id_(id),
+        source_node_name_(source_node_name),
+        output_index_(index),
+        addr_(const_cast<void *>(addr)),
+        size_(size) {}
+  ~SomasParameter() = default;
+
+  const size_t id_{0};
+  std::string source_node_name_;
+  size_t output_index_;
+  void *addr_;
+  size_t size_;
+};
+using SomasParameterPtr = std::shared_ptr<SomasParameter>;
+}  // namespace somas
+}  // namespace luojianet_ms
+
+#endif  // LUOJIANET_MS_CCSRC_BACKEND_OPTIMIZER_SOMAS_SOMAS_PARAMETER_H_

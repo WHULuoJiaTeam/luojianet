@@ -1,0 +1,112 @@
+/**
+ * To download necessary library from HuaWei server.
+ * Including luojianet_ms-lite .so file, minddata-lite .so file and model file.
+ * The libraries can be downloaded manually.
+ */
+def targetModelFile = "src/main/assets/mobilenetv2.ms"
+def modelDownloadUrl = "https://download.luojianet_ms.cn/model_zoo/official/lite/quick_start/mobilenetv2.ms"
+
+def luojianetLite_Version = "luojianet_ms-lite-1.2.0-android-aarch64"
+def luojianetLite_Version_AAR = "luojianet_ms-lite-maven-1.2.0"
+
+def luojianetLiteDownloadUrl = "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0/LuoJiaNet/lite/release/android/gpu/${luojianetLite_Version}.tar.gz"
+
+def targetRoot = "libs/"
+def LuoJiaNetLibrary = "${targetRoot}${luojianetLite_Version}.tar.gz"
+def LuoJiaNetLibraryAAR = "${targetRoot}${luojianetLite_Version}/${luojianetLite_Version_AAR}.zip"
+
+def cleantargetLuoJiaNetInclude = "${targetRoot}${luojianetLite_Version}"
+def cleantargetLuoJiaNetIncludeAAR = "${targetRoot}luojianet_ms"
+
+
+task downloadModelFile(type: DownloadUrlTask) {
+    doFirst {
+        println "Downloading ${modelDownloadUrl}"
+    }
+    sourceUrl = "${modelDownloadUrl}"
+    target = file("${targetModelFile}")
+}
+
+
+task downloadLuoJiaNetLibrary(type: DownloadUrlTask) {
+    doFirst {
+        println "Downloading ${luojianetLiteDownloadUrl}"
+    }
+    sourceUrl = "${luojianetLiteDownloadUrl}"
+    target = file("${LuoJiaNetLibrary}")
+}
+
+task unzipLuoJiaNetInclude(type: Copy, dependsOn: ['downloadLuoJiaNetLibrary']) {
+    doFirst {
+        println "Unzipping ${LuoJiaNetLibrary}"
+    }
+    from tarTree(resources.gzip("${LuoJiaNetLibrary}"))
+    into "${targetRoot}"
+}
+
+
+task unzipLuoJiaNetIncludeAAR(type: Copy, dependsOn: ['unzipLuoJiaNetInclude']) {
+    doFirst {
+        println "Unzipping ${LuoJiaNetLibraryAAR}"
+    }
+    from zipTree("${LuoJiaNetLibraryAAR}")
+    into "${targetRoot}"
+}
+
+task copyAARToRoot(type: Copy, dependsOn: ['unzipLuoJiaNetIncludeAAR']) {
+    from('libs/luojianet_ms/luojianet_ms-lite/1.2.0/luojianet_ms-lite-1.2.0.aar')
+    into "${targetRoot}"
+}
+
+task cleanUnusedluojianetFiles(type: Delete, dependsOn: ['copyAARToRoot']) {
+    delete fileTree("${targetRoot}").matching {
+        include "*.tar.gz"
+    }
+}
+
+task cleanUnuseFiles(type: Delete, dependsOn: ['cleanUnusedluojianetFiles']) {
+    delete("${cleantargetLuoJiaNetInclude}")
+}
+
+task cleanUnuseFileAAR(type: Delete, dependsOn: ['cleanUnuseFiles']) {
+    delete("${cleantargetLuoJiaNetIncludeAAR}")
+}
+
+
+if (file("libs/luojianet_ms-lite-1.2.0.aar").exists()) {
+    downloadLuoJiaNetLibrary.enabled = false
+    unzipLuoJiaNetInclude.enabled = false
+    unzipLuoJiaNetIncludeAAR.enabled = false
+    cleanUnuseFiles.enabled = false
+    cleanUnuseFileAAR.enabled = false
+    cleanUnusedluojianetFiles.enabled = false
+    copyAARToRoot.enabled = false
+}
+
+
+if (file("src/main/assets/mobilenetv2.ms").exists()) {
+    downloadModelFile.enabled = false
+}
+
+preBuild.dependsOn downloadModelFile
+preBuild.dependsOn downloadLuoJiaNetLibrary
+preBuild.dependsOn unzipLuoJiaNetInclude
+preBuild.dependsOn unzipLuoJiaNetIncludeAAR
+preBuild.dependsOn copyAARToRoot
+preBuild.dependsOn cleanUnusedluojianetFiles
+preBuild.dependsOn cleanUnuseFiles
+preBuild.dependsOn cleanUnuseFileAAR
+
+
+class DownloadUrlTask extends DefaultTask {
+    @Input
+    String sourceUrl
+
+    @OutputFile
+    File target
+
+    @TaskAction
+    void download() {
+        ant.get(src: sourceUrl, dest: target)
+    }
+}

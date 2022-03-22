@@ -1,0 +1,21 @@
+
+0.1.0	MindSpore*1.6.0:œ
+ß
+bprop.18:dout
+
+bprop.18:ybprop.18:dgrad:1bprop.18:dgrad:1"S-Prim-ReluGrad*0
+output_namesZoutputzscalar:List[value1,],€*=
+input_namesZ
+y_backpropZxzscalar:List[value1,value2,],€:Default/S-Prim-ReluGrad-op14
+‹
+
+bprop.18:ybprop.18:[CNode]19:2bprop.18:[CNode]19:2"!S-Prim-hyper_map[zeros_like_leaf]:.Default/S-Prim-hyper_map[zeros_like_leaf]-op15
+…
+bprop.18:dgrad:1
+bprop.18:[CNode]19:2bprop.18:[CNode]20:3bprop.18:[CNode]20:3"S-Prim-MakeTuple:Default/S-Prim-MakeTuple-op16bprop.18*
+bprop.18:grad*
+
+bprop.18:y*
+bprop.18:out*
+bprop.18:dout2
+bprop.18:[CNode]20:3:@eb722f0a05359151f2578b4ad7b0d067988045071352718c64ca6cf29bc5008aP

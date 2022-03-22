@@ -1,0 +1,10 @@
+
+0.1.0	MindSpore*1.6.0:ß
+ê
+bprop.122:xbprop.122:[CNode]123:1bprop.122:[CNode]123:1"!S-Prim-hyper_map[zeros_like_leaf]:.Default/S-Prim-hyper_map[zeros_like_leaf]-op88
+y
+bprop.122:[CNode]123:1bprop.122:[CNode]124:2bprop.122:[CNode]124:2"S-Prim-MakeTuple:Default/S-Prim-MakeTuple-op89	bprop.122*
+bprop.122:x*
+bprop.122:out*
+bprop.122:dout2
+bprop.122:[CNode]124:2:@03ba727554b68f632a7320602b4ab4649b05556a1aac96ba69a106bd541d09bbP

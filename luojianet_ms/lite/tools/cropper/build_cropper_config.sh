@@ -1,0 +1,364 @@
+#!/bin/bash
+
+CURRENT_PATH=$(pwd)
+LUOJIANET_MS_HOME="${CURRENT_PATH}/../../../.."
+echo "LUOJIANET_MS_HOME path is ${LUOJIANET_MS_HOME}"
+cd "${LUOJIANET_MS_HOME}" || exit 1
+CROPPER_OUTPUT_DIR=luojianet_ms/lite/build/tools/cropper
+mkdir -p ${CROPPER_OUTPUT_DIR}
+MAPPING_OUTPUT_FILE_NAME_TMP=${CROPPER_OUTPUT_DIR}/cropper_mapping_tmp.cfg
+MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP=${CROPPER_OUTPUT_DIR}/cropper_mapping_train_tmp.cfg
+CPU_MAPPING_OUTPUT_FILE=${CROPPER_OUTPUT_DIR}/cropper_mapping_cpu.cfg
+GPU_MAPPING_OUTPUT_FILE=${CROPPER_OUTPUT_DIR}/cropper_mapping_gpu.cfg
+NPU_MAPPING_OUTPUT_FILE=${CROPPER_OUTPUT_DIR}/cropper_mapping_npu.cfg
+CPU_TRAIN_MAPPING_OUTPUT_FILE=${CROPPER_OUTPUT_DIR}/cropper_mapping_cpu_train.cfg
+[ -n "${MAPPING_OUTPUT_FILE_NAME_TMP}" ] && rm -f ${MAPPING_OUTPUT_FILE_NAME_TMP}
+[ -n "${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}" ] && rm -f ${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}
+[ -n "${CPU_MAPPING_OUTPUT_FILE}" ] && rm -f ${CPU_MAPPING_OUTPUT_FILE}
+[ -n "${GPU_MAPPING_OUTPUT_FILE}" ] && rm -f ${GPU_MAPPING_OUTPUT_FILE}
+[ -n "${NPU_MAPPING_OUTPUT_FILE}" ] && rm -f ${NPU_MAPPING_OUTPUT_FILE}
+[ -n "${CPU_TRAIN_MAPPING_OUTPUT_FILE}" ] && rm -f ${CPU_TRAIN_MAPPING_OUTPUT_FILE}
+
+ops_list=()
+DEFINE_STR="-DENABLE_ANDROID -DENABLE_ARM -DENABLE_ARM64 -DENABLE_NEON -DNO_DLIB -DUSE_ANDROID_LOG -DANDROID -DENABLE_FP16"
+# get the flatbuffers path
+if [ ${MSLIBS_CACHE_PATH} ]; then
+  FLATBUFFERS_LIST=()
+  while IFS='' read -r line; do FLATBUFFERS_LIST+=("$line"); done < <(ls -d ${MSLIBS_CACHE_PATH}/flatbuffers_*/include)
+  FLATBUFFERS=${FLATBUFFERS_LIST[0]}
+  echo "FLATBUFFERS path is ${FLATBUFFERS}"
+else
+  FLATBUFFERS=$(ls -d luojianet_ms/lite/build/.mslib/flatbuffers_*/include)
+  echo "FLATBUFFERS path is ${FLATBUFFERS}"
+fi
+
+HEADER_LOCATION="-I${LUOJIANET_MS_HOME}
+-I${LUOJIANET_MS_HOME}/luojianet_ms/core
+-I${LUOJIANET_MS_HOME}/luojianet_ms/core/ir
+-I${LUOJIANET_MS_HOME}/luojianet_ms/core/mindrt/include
+-I${LUOJIANET_MS_HOME}/luojianet_ms/core/mindrt/src
+-I${LUOJIANET_MS_HOME}/luojianet_ms/core/mindrt/
+-I${LUOJIANET_MS_HOME}/luojianet_ms/ccsrc
+-I${LUOJIANET_MS_HOME}/luojianet_ms/lite
+-I${LUOJIANET_MS_HOME}/luojianet_ms/lite/src
+-I${LUOJIANET_MS_HOME}/luojianet_ms/lite/src/runtime/kernel/arm
+-I${LUOJIANET_MS_HOME}/third_party
+-I${LUOJIANET_MS_HOME}/luojianet_ms/lite/build
+-I${LUOJIANET_MS_HOME}/cmake/../third_party/securec/include
+-I${FLATBUFFERS}
+-I${LUOJIANET_MS_HOME}/luojianet_ms/lite/build/schema
+-I${LUOJIANET_MS_HOME}/luojianet_ms/lite/build/schema/inner
+-I${LUOJIANET_MS_HOME}/luojianet_ms/ccsrc/backend/kernel_compiler/cpu
+-I${LUOJIANET_MS_HOME}/luojianet_ms/ccsrc/minddata/dataset"
+
+REMOVE_LISTS_STR=""
+getDeep() {
+  map_files=$(gcc -MM ${2} ${DEFINE_STR} ${HEADER_LOCATION})
+  # first is *.o second is *.cc
+  array_deep=()
+  while IFS='' read -r line; do array_deep+=("$line"); done < <(echo ${map_files} | awk -F '\' '{for(i=3;i<=NF;i++){print $i}}' | egrep -v 'flatbuffers|build' | egrep -v ${REMOVE_LISTS_STR})
+  # shellcheck disable=SC2068
+  for array_deep_file in ${array_deep[@]}; do
+    # only add existing files
+    if [[ -e ${array_deep_file%h*}cc ]]; then
+      file_split=$(echo ${array_deep_file} | awk -F '/' '{print $NF}')
+      if [[ "$4" != "train_source" ]] ; then
+        echo "${1},${3},${file_split%h*}cc.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+      fi
+      echo "${1},${3},${file_split%h*}cc.o" >>${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP} 
+    fi
+    if [[ -e ${array_deep_file%h*}c ]]; then
+      file_split=$(echo ${array_deep_file} | awk -F '/' '{print $NF}')
+      if [[ "$4" != "train_source" ]] ; then
+        echo "${1},${3},${file_split%h*}c.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+      fi
+      echo "${1},${3},${file_split%h*}c.o" >>${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}
+    fi
+  done
+}
+
+getOpsFile() {
+  echo "start get operator mapping file $3"
+  # shellcheck disable=SC2068
+  for type in ${ops_list[@]}; do
+    # get mapping
+    ret=$(egrep -r -l "$1${type}," $2)
+    array=("${ret}")
+    # shellcheck disable=SC2068
+    for file in ${array[@]}; do
+      # delete \n
+      out_file=$(echo ${file} | awk -F '/' '{print $NF}')
+      # concat schemaType + fileType + fileName append to files
+      echo "${type},${3},${out_file}.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+      echo "${type},${3},${out_file}.o" >>${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}
+      map_files=$(gcc -MM ${file} ${DEFINE_STR} ${HEADER_LOCATION})
+      # first is *.o second is *.cc
+      array_file=()
+      while IFS='' read -r line; do array_file+=("$line"); done < <(echo ${map_files} | awk -F '\' '{for(i=3;i<=NF;i++){print $i}}' | egrep -v 'flatbuffers|build' | egrep -v ${REMOVE_LISTS_STR})
+      # shellcheck disable=SC2068
+      for array_file in ${array_file[@]}; do
+        # only add existing files
+        if [[ -e ${array_file%h*}cc ]]; then
+          getDeep ${type} ${array_file%h*}cc ${3} &
+          getDeep ${type} ${array_file} ${3} &
+          array_file_split=$(echo ${array_file} | awk -F '/' '{print $NF}')
+          echo "${type},${3},${array_file_split%h*}cc.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+          echo "${type},${3},${array_file_split%h*}cc.o" >>${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}
+        fi
+        if [[ -e ${array_file%h*}c ]]; then
+          getDeep ${type} ${array_file%h*}c ${3} &
+          getDeep ${type} ${array_file} ${3} &
+          array_file_split=$(echo ${array_file} | awk -F '/' '{print $NF}')
+          echo "${type},${3},${array_file_split%h*}c.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+          echo "${type},${3},${array_file_split%h*}c.o" >>${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}
+        fi
+      done
+    done
+  done
+}
+
+getFilesFromArr() {
+  local -n arr_files=${1}
+  # echo " func parm 1 : ${arr_files[@]}"
+  # echo " func parm 2 : $2"
+  # shellcheck disable=SC2068
+  for file in ${arr_files[@]}; do
+    map_files=$(gcc -MM ${file} ${DEFINE_STR} ${HEADER_LOCATION})
+    # first is *.o second is *.cc
+    # shellcheck disable=SC2207
+    array_runtime=($(echo ${map_files} | awk -F '\' '{for(i=3;i<=NF;i++){print $i}}' | grep -v "flatbuffers" | egrep -v ${REMOVE_LISTS_STR}))
+    # only add existing files
+    for array_runtime_file in "${array_runtime[@]}"; do
+      if [[ -e ${array_runtime_file%h*}cc && ! ${all_files[*]} =~ ${array_runtime_file%h*}cc ]]; then
+        all_files=("${all_files[@]}" "${array_runtime_file%h*}cc")
+        getDeep "CommonFile" ${array_runtime_file%h*}cc "common" $2 &
+      fi
+      if [[ -e ${array_runtime_file%h*}c && ! ${all_files[*]} =~ ${array_runtime_file%h*}c ]]; then
+        all_files=("${all_files[@]}" "${array_runtime_file%h*}c")
+        getDeep "CommonFile" ${array_runtime_file%h*}c "common" $2 &
+      fi
+    done
+  done  
+}
+
+getCommonFile() {
+  echo "start get common files"
+  include_h=()
+  while IFS='' read -r line; do include_h+=("$line"); done < <(ls luojianet_ms/lite/include/*.h)
+  regist_include_h=()
+  while IFS='' read -r line; do regist_include_h+=("$line"); done < <(ls luojianet_ms/lite/include/registry/*kernel*.h)
+  src_files_h=()
+  while IFS='' read -r line; do src_files_h+=("$line"); done < <(ls luojianet_ms/lite/src/*.h)
+  common_files_h=()
+  while IFS='' read -r line; do common_files_h+=("$line"); done < <(ls luojianet_ms/lite/src/common/*.h)
+  runtime_files_h=()
+  while IFS='' read -r line; do runtime_files_h+=("$line"); done < <(ls luojianet_ms/lite/src/runtime/*.h)
+  train_files_h=()
+  while IFS='' read -r line; do train_files_h+=("$line"); done < <(ls luojianet_ms/lite/include/train/*.h)
+  while IFS='' read -r line; do train_files_h+=("$line"); done < <(ls luojianet_ms/lite/src/train/*.h)
+  others_files_h=(
+    luojianet_ms/lite/src/runtime/infer_manager.h
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/infer/infer_register.h
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/nnacl_utils.h
+    luojianet_ms/lite/src/ops/populate/populate_register.h
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/op_base.h
+    luojianet_ms/core/ir/dtype/type_id.h
+    luojianet_ms/core/utils/overload.h
+    luojianet_ms/lite/tools/common/option.h
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/intrinsics/ms_simd_instructions.h
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/intrinsics/ms_simd_instructions_fp16.h
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/infer/infer.h
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/tensor_c.h
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/errorcode.h
+  )
+  all_files_h=("${include_h[@]}" "${regist_include_h[@]}" "${src_files_h[@]}" "${common_files_h[@]}"
+               "${runtime_files_h[@]}" "${others_files_h[@]}"
+  )
+
+  # concat regx
+  REMOVE_LISTS_STR="${all_files_h[0]}"
+  # shellcheck disable=SC2068
+  for val in ${all_files_h[@]:1}; do
+    REMOVE_LISTS_STR="$REMOVE_LISTS_STR|$val"
+  done
+
+  cxx_api_files=()
+  while IFS='' read -r line; do cxx_api_files+=("$line"); done < <(ls luojianet_ms/lite/src/cxx_api/graph/*.cc)
+  while IFS='' read -r line; do cxx_api_files+=("$line"); done < <(ls luojianet_ms/lite/src/cxx_api/model/*.cc)
+  while IFS='' read -r line; do cxx_api_files+=("$line"); done < <(ls luojianet_ms/lite/src/cxx_api/tensor/*.cc)
+  while IFS='' read -r line; do cxx_api_files+=("$line"); done < <(ls luojianet_ms/lite/src/cxx_api/*.cc)
+  while IFS='' read -r line; do cxx_api_files+=("$line"); done < <(ls luojianet_ms/lite/src/c_api/*.cc)
+  mindrt_files=()
+  while IFS='' read -r line; do mindrt_files+=("$line"); done < <(ls luojianet_ms/core/mindrt/src/*.cc)
+  while IFS='' read -r line; do mindrt_files+=("$line"); done < <(ls luojianet_ms/core/mindrt/src/async/*.cc)
+  while IFS='' read -r line; do mindrt_files+=("$line"); done < <(ls luojianet_ms/core/mindrt/src/actor/*.cc)
+  src_files=()
+  while IFS='' read -r line; do src_files+=("$line"); done < <(ls luojianet_ms/lite/src/*.cc)
+  regist_files=()
+  while IFS='' read -r line; do regist_files+=("$line"); done < <(ls luojianet_ms/lite/src/registry/*.cc)
+  common_files=()
+  while IFS='' read -r line; do common_files+=("$line"); done < <(ls luojianet_ms/lite/src/common/*.cc)
+  runtime_files_cc=()
+  while IFS='' read -r line; do runtime_files_cc+=("$line"); done < <(ls luojianet_ms/lite/src/runtime/*.cc)
+  # sava all assembly files
+  assembly_files=()
+  while IFS='' read -r line; do assembly_files+=("$line"); done < <(ls luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/assembly/*/*.S)
+  others_files_c=(
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/nnacl_utils.c
+    luojianet_ms/lite/src/runtime/infer_manager.cc
+    luojianet_ms/lite/src/ops/populate/populate_register.cc
+    luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/infer/infer_register.c
+    luojianet_ms/core/utils/status.cc
+  )
+  # save train files
+  train_files=()
+  while IFS='' read -r line; do train_files+=("$line"); done < <(ls luojianet_ms/lite/src/train/*.cc)
+  while IFS='' read -r line; do train_files+=("$line"); done < <(ls luojianet_ms/lite/src/cxx_api/callback/*.cc)
+  while IFS='' read -r line; do train_files+=("$line"); done < <(ls luojianet_ms/lite/src/cxx_api/metrics/*.cc)
+  while IFS='' read -r line; do train_files+=("$line"); done < <(ls luojianet_ms/lite/src/cxx_api/train/*.cc)
+  others_train_files=(
+    luojianet_ms/lite/tools/common/storage.cc
+  )
+  all_files=("${src_files[@]}" "${regist_files[@]}" "${common_files[@]}" "${runtime_files_cc[@]}"
+    "${others_files_c[@]}" "${assembly_files[@]}" "${mindrt_files[@]}"
+    "${cxx_api_files[@]}"
+  ) 
+  getFilesFromArr all_files
+  getFilesFromArr all_files_h
+  # shellcheck disable=SC2068
+  for file in ${all_files[@]}; do
+    file=$(echo ${file} | awk -F '/' '{print $NF}')
+    echo "CommonFile,common,${file}.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+  done
+  
+  all_files_train=("${all_files[@]}" "${train_files[@]}" "${others_train_files[@]}"
+  )
+  all_files_train_h=("${all_files_h[@]}" "${train_files_h[@]}"
+  )
+  REMOVE_LISTS_STR="${all_files_train_h[0]}"
+  # shellcheck disable=SC2068
+  for val in ${all_files_train_h[@]:1}; do
+    REMOVE_LISTS_STR="$REMOVE_LISTS_STR|$val"
+  done
+  getFilesFromArr all_files_train "train_source"
+  getFilesFromArr all_files_train_h "train_source"
+  # shellcheck disable=SC2068
+  for file in ${all_files_train[@]}; do
+    file=$(echo ${file} | awk -F '/' '{print $NF}')
+    echo "CommonFile,common,${file}.o" >>${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}
+  done
+}
+
+# The x86 platform cannot search based on header files, so manually search for the first layer.
+# opencl & ddk
+getOpsFileWithNoDeepSearch() {
+  echo "start get gpu/npu operator mapping file $3"
+  # shellcheck disable=SC2068
+  for type in ${ops_list[@]}; do
+    # get mapping
+    ret=$(egrep -r -l "$1${type}," $2)
+    array=("${ret}")
+    # shellcheck disable=SC2068
+    for file in ${array[@]}; do
+      # delete \n
+      out_file=$(echo ${file} | awk -F '/' '{print $NF}')
+      # concat schemaType + fileType + fileName append to files
+      echo "${type},${3},${out_file}.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+
+      local ret=$(egrep -r *.h\" ${file} | awk -F '\"' '{print $2}')
+      local ret_h=$(egrep -r *.h\" ${file%cc*}h | awk -F '\"' '{print $2}')
+      local depend_file=("${ret}" "${ret_h}")
+      for array_file in ${depend_file[@]}; do
+        # only add existing files
+        if [[ -e luojianet_ms/lite/${array_file%h*}cc ]]; then
+          array_file_split=$(echo ${array_file} | awk -F '/' '{print $NF}')
+          echo "${type},${3},${array_file_split%h*}cc.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+        fi
+        if [[ -e luojianet_ms/lite/${array_file%h*}c ]]; then
+          array_file_split=$(echo ${array_file} | awk -F '/' '{print $NF}')
+          echo "${type},${3},${array_file_split%h*}c.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+        fi
+      done
+    done
+  done
+}
+
+# automatically generate operator list
+generateOpsList() {
+  echo "start generate operator list"
+  ops_list=()
+  while IFS='' read -r line; do ops_list+=("$line"); done < <(grep -Rn "^table" "luojianet_ms/lite/schema/ops.fbs" | awk -F ' ' '{print $2}')
+  ops_num=$((${#ops_list[@]}))
+  echo "ops nums:${ops_num}"
+}
+echo "Start getting all file associations."
+generateOpsList
+getCommonFile
+wait
+sleep 1
+# get src/ops
+getOpsFile "REG_POPULATE\(PrimitiveType_" "luojianet_ms/lite/src/ops/populate" "prototype" &
+getOpsFile "REG_INFER\(.*?, PrimType_" "luojianet_ms/ccsrc/backend/kernel_compiler/cpu/nnacl/infer" "prototype" &
+# support for cpu
+getOpsFile "REG_KERNEL\(.*?, kNumberTypeFloat32, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/arm" "kNumberTypeFloat32" &
+getOpsFile "REG_KERNEL\(.*?, kNumberTypeFloat16, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/arm" "kNumberTypeFloat16" &
+getOpsFile "REG_KERNEL\(.*?, kNumberTypeInt8, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/arm" "kNumberTypeInt8" &
+getOpsFile "REG_KERNEL\(.*?, kNumberTypeInt32, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/arm" "kNumberTypeInt32" &
+getOpsFile "REG_KERNEL\(.*?, kNumberTypeBool, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/arm" "kNumberTypeInt32" &
+wait
+sleep 1
+# remove duplicate files
+sort ${MAPPING_OUTPUT_FILE_NAME_TMP} | uniq >${CPU_MAPPING_OUTPUT_FILE}
+chmod 444 ${CPU_MAPPING_OUTPUT_FILE}
+
+sleep 1
+# remove duplicate files
+sort ${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP} | uniq >${CPU_TRAIN_MAPPING_OUTPUT_FILE}
+chmod 444 ${CPU_TRAIN_MAPPING_OUTPUT_FILE}
+
+# support for gpu
+opencl_files=()
+while IFS='' read -r line; do opencl_files+=("$line"); done < <(ls luojianet_ms/lite/src/runtime/kernel/opencl/*.cc)
+while IFS='' read -r line; do opencl_files+=("$line"); done < <(ls luojianet_ms/lite/src/runtime/gpu/opencl/*.cc)
+opencl_others_files=(
+  "luojianet_ms/lite/src/runtime/kernel/opencl/kernel/fusion_eltwise.cc"
+  "luojianet_ms/lite/src/runtime/kernel/opencl/kernel/to_format.cc"
+  "luojianet_ms/lite/src/runtime/kernel/opencl/kernel/gl_to_cl.cc"
+)
+opencl_files=("${opencl_files[@]}" "${opencl_others_files[@]}")
+# shellcheck disable=SC2068
+for file in ${opencl_files[@]}; do
+  file=$(echo ${file} | awk -F '/' '{print $NF}')
+  echo "CommonFile,common,${file}.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+done
+
+getOpsFileWithNoDeepSearch "REG_KERNEL\(.*?, kNumberTypeFloat32, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/opencl/kernel" "kNumberTypeFloat32" &
+getOpsFileWithNoDeepSearch "REG_KERNEL\(.*?, kNumberTypeFloat16, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/opencl/kernel" "kNumberTypeFloat16" &
+getOpsFileWithNoDeepSearch "REG_KERNEL\(.*?, kNumberTypeInt8, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/opencl/kernel" "kNumberTypeInt8" &
+getOpsFileWithNoDeepSearch "REG_KERNEL\(.*?, kNumberTypeInt32, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/opencl/kernel" "kNumberTypeInt32" &
+getOpsFileWithNoDeepSearch "REG_KERNEL\(.*?, kNumberTypeBool, PrimitiveType_" "luojianet_ms/lite/src/runtime/kernel/opencl/kernel" "kNumberTypeInt32" &
+sleep 1
+wait
+sort ${MAPPING_OUTPUT_FILE_NAME_TMP} | uniq >${GPU_MAPPING_OUTPUT_FILE}
+chmod 444 ${GPU_MAPPING_OUTPUT_FILE}
+
+# support for npu
+npu_files=()
+while IFS='' read -r line; do npu_files+=("$line"); done < <(ls luojianet_ms/lite/src/delegate/npu/*.cc)
+while IFS='' read -r line; do npu_files+=("$line"); done < <(ls luojianet_ms/lite/src/delegate/npu/op/*.cc)
+while IFS='' read -r line; do npu_files+=("$line"); done < <(ls luojianet_ms/lite/src/delegate/npu/pass/*.cc)
+
+# shellcheck disable=SC2068
+for file in ${npu_files[@]}; do
+  file=$(echo ${file} | awk -F '/' '{print $NF}')
+  echo "CommonFile,common,${file}.o" >>${MAPPING_OUTPUT_FILE_NAME_TMP}
+done
+
+sleep 1
+sort ${MAPPING_OUTPUT_FILE_NAME_TMP} | uniq >${NPU_MAPPING_OUTPUT_FILE}
+chmod 444 ${NPU_MAPPING_OUTPUT_FILE}
+
+# modify file permissions to read-only
+[ -n "${MAPPING_OUTPUT_FILE_NAME_TMP}" ] && rm -f ${MAPPING_OUTPUT_FILE_NAME_TMP}
+[ -n "${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}" ] && rm -f ${MAPPING_OUTPUT_FILE_NAME_TRAIN_TMP}
+echo "Complete all tasks."

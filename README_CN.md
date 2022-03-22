@@ -7,7 +7,7 @@ LuoJiaNET同时与国产人工智能硬件NPU深度融合，使智能计算软�
 
 ![昇腾全栈](images/architecture.png)
 
-1. 请参照[LuoJiaNet安装手册](https://gitee.com/mindspore/luojianet/blob/master/instruction/index.html)安装whl包或源码编译安装
+1. 请参照[LuoJiaNet安装手册][r2h](https://gitee.com/mindspore/luojianet/blob/master/instruction/index.html)安装whl包或源码编译安装
 
 2. 执行以下命令，验证安装结果。
 

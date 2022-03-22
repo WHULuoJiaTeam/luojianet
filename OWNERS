@@ -1,0 +1,38 @@
+luojia group:
+- zhang mi
+- zhang zhan
+- zhou huan
+- yang bingnan
+- zhang zhili
+- jiang liangcun
+- cao zhipeng
+- liu shuaiqi
+- wang bin
+- du zhuotong
+- teng haotian
+approvers:
+- kingxian
+- guoqi1024
+- baochong
+- zhaizhiqiang
+
+files:
+  "akg":
+    approvers:
+    - gaoxiong1
+    - ckey_dou
+    - anyrenwei
+
+  "graphengine":
+    approvers:
+    - zhoufeng54
+    - jjfeing
+    - guoqi1024
+    - baochong
+
+  "version.txt":
+    approvers:
+    - zhoufeng54
+    - jjfeing
+    - guoqi1024
+    - baochong

@@ -1,0 +1,2238 @@
+/**
+ * Copyright 2020-2021 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "common/common.h"
+#include "include/api/types.h"
+#include "minddata/dataset/core/de_tensor.h"
+#include "minddata/dataset/include/dataset/audio.h"
+#include "minddata/dataset/include/dataset/execute.h"
+#include "minddata/dataset/include/dataset/transforms.h"
+#include "minddata/dataset/include/dataset/audio.h"
+#include "minddata/dataset/include/dataset/vision.h"
+#include "minddata/dataset/include/dataset/audio.h"
+#include "minddata/dataset/include/dataset/text.h"
+#include "minddata/dataset/text/char_n_gram.h"
+#include "minddata/dataset/text/fast_text.h"
+#include "minddata/dataset/text/glove.h"
+#include "minddata/dataset/text/vectors.h"
+#include "utils/log_adapter.h"
+
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::dataset::CharNGram;
+using luojianet_ms::dataset::FastText;
+using luojianet_ms::dataset::GloVe;
+using luojianet_ms::dataset::Vectors;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
+
+class MindDataTestExecute : public UT::DatasetOpTesting {
+ protected:
+};
+
+TEST_F(MindDataTestExecute, TestAllpassBiquadWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAllpassBiquadWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> allpass_biquad_01 = std::make_shared<audio::AllpassBiquad>(44100, 200);
+  luojianet_ms::dataset::Execute Transform01({allpass_biquad_01});
+  // Filtered waveform by allpassbiquad
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestAllpassBiquadWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAllpassBiquadWithWrongArg.";
+  std::vector<double> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check Q
+  MS_LOG(INFO) << "Q is zero.";
+  std::shared_ptr<TensorTransform> allpass_biquad_op = std::make_shared<audio::AllpassBiquad>(44100, 200, 0);
+  luojianet_ms::dataset::Execute Transform01({allpass_biquad_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestAdjustGammaEager3Channel) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAdjustGammaEager3Channel.";
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto adjust_gamma_op = vision::AdjustGamma(0.1, 1.0);
+
+  auto transform = Execute({decode, adjust_gamma_op});
+  Status rc = transform(image, &image);
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestAdjustGammaEager1Channel) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAdjustGammaEager1Channel.";
+  auto m1 = ReadFileToTensor("data/dataset/apple.jpg");
+  // Transform params
+  auto decode = vision::Decode();
+  auto rgb2gray = vision::RGB2GRAY();
+  auto adjust_gamma_op = vision::AdjustGamma(0.1, 1.0);
+
+  auto transform = Execute({decode, rgb2gray, adjust_gamma_op});
+  Status rc = transform(m1, &m1);
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestAmplitudeToDB) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAmplitudeToDB.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 2, 2, 3}), &input));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> amplitude_to_db_op = std::make_shared<audio::AmplitudeToDB>();
+  // apply amplitude_to_db
+  luojianet_ms::dataset::Execute trans({amplitude_to_db_op});
+  Status status = trans(input_ms, &input_ms);
+  EXPECT_TRUE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestAmplitudeToDBWrongArgs) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAmplitudeToDBWrongArgs.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> amplitude_to_db_op =
+    std::make_shared<audio::AmplitudeToDB>(ScaleType::kPower, 1.0, -1e-10, 80.0);
+  // apply amplitude_to_db
+  luojianet_ms::dataset::Execute trans({amplitude_to_db_op});
+  Status status = trans(input_ms, &input_ms);
+  EXPECT_FALSE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestAmplitudeToDBWrongInput) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAmplitudeToDBWrongInput.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({20}), &input));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> amplitude_to_db_op = std::make_shared<audio::AmplitudeToDB>();
+  // apply amplitude_to_db
+  luojianet_ms::dataset::Execute trans({amplitude_to_db_op});
+  Status status = trans(input_ms, &input_ms);
+  EXPECT_FALSE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestComposeTransforms) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestComposeTransforms.";
+
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  std::shared_ptr<TensorTransform> decode = std::make_shared<vision::Decode>();
+  std::shared_ptr<TensorTransform> center_crop(new vision::CenterCrop({30}));
+  std::shared_ptr<TensorTransform> rescale = std::make_shared<vision::Rescale>(1. / 3, 0.5);
+
+  auto transform = Execute({decode, center_crop, rescale});
+  Status rc = transform(image, &image);
+
+  EXPECT_EQ(rc, Status::OK());
+  EXPECT_EQ(30, image.Shape()[0]);
+  EXPECT_EQ(30, image.Shape()[1]);
+}
+
+/// Feature: ComputeDeltas
+/// Description: test basic function of ComputeDeltas
+/// Expectation: get correct number of data
+TEST_F(MindDataTestExecute, TestComputeDeltas) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestComputeDeltas.";
+  std::shared_ptr<Tensor> input_tensor_;
+
+  int win_length = 5;
+
+  // create tensor
+  TensorShape s = TensorShape({2, 15, 7});
+  // init input vec
+  std::vector<float> input_vec(s.NumOfElements());
+  for (int ind = 0; ind < input_vec.size(); ind++) {
+    input_vec[ind] = std::rand() % (1000) / (1000.0f);
+  }
+  ASSERT_OK(Tensor::CreateFromVector(input_vec, s, &input_tensor_));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+  std::shared_ptr<TensorTransform> compute_deltas_op = std::make_shared<audio::ComputeDeltas>(win_length);
+
+  // apply compute_deltas
+  luojianet_ms::dataset::Execute Transform({compute_deltas_op});
+  Status status = Transform(input_ms, &input_ms);
+  EXPECT_TRUE(status.IsOk());
+}
+
+/// Feature: ComputeDeltas
+/// Description: test wrong input args of ComputeDeltas
+/// Expectation: get nullptr of iterator
+TEST_F(MindDataTestExecute, TestComputeDeltasWrongArgs) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestComputeDeltasWrongArgs.";
+  std::shared_ptr<Tensor> input_tensor_;
+  // win_length is less than minimum of 3
+  int win_length = 2;
+
+  // create tensor
+  TensorShape s = TensorShape({2, 15, 7});
+  // init input vec
+  std::vector<float> input_vec(s.NumOfElements());
+  for (int ind = 0; ind < input_vec.size(); ind++) {
+    input_vec[ind] = std::rand() % (1000) / (1000.0f);
+  }
+  ASSERT_OK(Tensor::CreateFromVector(input_vec, s, &input_tensor_));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+
+  std::shared_ptr<TensorTransform> compute_deltas_op = std::make_shared<audio::ComputeDeltas>(win_length);
+  luojianet_ms::dataset::Execute Transform({compute_deltas_op});
+  Status status = Transform(input_ms, &input_ms);
+  EXPECT_FALSE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestCrop) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestCrop.";
+
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto crop = vision::Crop({10, 30}, {10, 15});
+
+  auto transform = Execute({decode, crop});
+  Status rc = transform(image, &image);
+
+  EXPECT_EQ(rc, Status::OK());
+  EXPECT_EQ(image.Shape()[0], 10);
+  EXPECT_EQ(image.Shape()[1], 15);
+}
+
+TEST_F(MindDataTestExecute, TestFrequencyMasking) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestFrequencyMasking.";
+  std::shared_ptr<Tensor> input_tensor_;
+  TensorShape s = TensorShape({6, 2});
+  ASSERT_OK(Tensor::CreateFromVector(
+    std::vector<float>({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f}), s, &input_tensor_));
+  auto input_tensor = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+  std::shared_ptr<TensorTransform> frequency_masking_op = std::make_shared<audio::FrequencyMasking>(true, 2);
+  luojianet_ms::dataset::Execute transform({frequency_masking_op});
+  Status status = transform(input_tensor, &input_tensor);
+  EXPECT_TRUE(status.IsOk());
+}
+
+/// Feature: RandomLighting
+/// Description: test RandomLighting Op when alpha=0.1
+/// Expectation: the data is processed successfully
+TEST_F(MindDataTestExecute, TestRandomLighting) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRandomLighting.";
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto random_lighting_op = vision::RandomLighting(0.1);
+
+  auto transform = Execute({decode, random_lighting_op});
+  Status rc = transform(image, &image);
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestTimeMasking) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTimeMasking.";
+  std::shared_ptr<Tensor> input_tensor_;
+  TensorShape s = TensorShape({2, 6});
+  ASSERT_OK(Tensor::CreateFromVector(
+    std::vector<float>({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f}), s, &input_tensor_));
+  auto input_tensor = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+  std::shared_ptr<TensorTransform> time_masking_op = std::make_shared<audio::TimeMasking>(true, 2);
+  luojianet_ms::dataset::Execute transform({time_masking_op});
+  Status status = transform(input_tensor, &input_tensor);
+  EXPECT_TRUE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestTimeStretchEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTimeStretchEager.";
+  std::shared_ptr<Tensor> input_tensor_;
+  // op param
+  int freq = 4;
+  int hop_length = 20;
+  float rate = 1.3;
+  int frame_num = 10;
+  // create tensor
+  TensorShape s = TensorShape({2, freq, frame_num, 2});
+  // init input vec
+  std::vector<float> input_vec(2 * freq * frame_num * 2);
+  for (int ind = 0; ind < input_vec.size(); ind++) {
+    input_vec[ind] = std::rand() % (1000) / (1000.0f);
+  }
+  ASSERT_OK(Tensor::CreateFromVector(input_vec, s, &input_tensor_));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+  std::shared_ptr<TensorTransform> time_stretch_op = std::make_shared<audio::TimeStretch>(hop_length, freq, rate);
+
+  // apply timestretch
+  luojianet_ms::dataset::Execute Transform({time_stretch_op});
+  Status status = Transform(input_ms, &input_ms);
+  EXPECT_TRUE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestTimeStretchParamCheck) {
+  MS_LOG(INFO) << "Doing MindDataTestTimeStretch-TestTimeStretchParamCheck.";
+  // Create an input
+  std::shared_ptr<Tensor> input_tensor_;
+  std::shared_ptr<Tensor> output_tensor;
+  TensorShape s = TensorShape({1, 4, 3, 2});
+  ASSERT_OK(Tensor::CreateFromVector(
+    std::vector<float>({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f,
+                        1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f}),
+    s, &input_tensor_));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+
+  std::shared_ptr<TensorTransform> time_stretch1 = std::make_shared<audio::TimeStretch>(4, 512, -2);
+  luojianet_ms::dataset::Execute Transform1({time_stretch1});
+  Status status = Transform1(input_ms, &input_ms);
+  EXPECT_FALSE(status.IsOk());
+
+  std::shared_ptr<TensorTransform> time_stretch2 = std::make_shared<audio::TimeStretch>(4, -512, 2);
+  luojianet_ms::dataset::Execute Transform2({time_stretch2});
+  status = Transform2(input_ms, &input_ms);
+  EXPECT_FALSE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestTransformInput1) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTransformInput1.";
+  // Test Execute with transform op input using API constructors, with std::shared_ptr<TensorTransform pointers,
+  // instantiated via mix of make_shared and new
+
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Define transform operations
+  std::shared_ptr<TensorTransform> decode = std::make_shared<vision::Decode>();
+  std::shared_ptr<TensorTransform> resize(new vision::Resize({224, 224}));
+  std::shared_ptr<TensorTransform> normalize(
+    new vision::Normalize({0.485 * 255, 0.456 * 255, 0.406 * 255}, {0.229 * 255, 0.224 * 255, 0.225 * 255}));
+  std::shared_ptr<TensorTransform> hwc2chw = std::make_shared<vision::HWC2CHW>();
+
+  luojianet_ms::dataset::Execute Transform({decode, resize, normalize, hwc2chw});
+
+  // Apply transform on image
+  Status rc = Transform(image, &image);
+
+  // Check image info
+  ASSERT_TRUE(rc.IsOk());
+  ASSERT_EQ(image.Shape().size(), 3);
+  ASSERT_EQ(image.Shape()[0], 3);
+  ASSERT_EQ(image.Shape()[1], 224);
+  ASSERT_EQ(image.Shape()[2], 224);
+}
+
+TEST_F(MindDataTestExecute, TestTransformInput2) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTransformInput2.";
+  // Test Execute with transform op input using API constructors, with std::shared_ptr<TensorTransform pointers,
+  // instantiated via new
+  // With this way of creating TensorTransforms, we don't need to explicitly delete the object created with the
+  // "new" keyword. When the shared pointer goes out of scope the object destructor will be called.
+
+  // Read image, construct MSTensor from dataset tensor
+  std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
+  luojianet_ms::dataset::Tensor::CreateFromFile("data/dataset/apple.jpg", &de_tensor);
+  auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+
+  // Define transform operations
+  std::shared_ptr<TensorTransform> decode(new vision::Decode());
+  std::shared_ptr<TensorTransform> resize(new vision::Resize({224, 224}));
+  std::shared_ptr<TensorTransform> normalize(
+    new vision::Normalize({0.485 * 255, 0.456 * 255, 0.406 * 255}, {0.229 * 255, 0.224 * 255, 0.225 * 255}));
+  std::shared_ptr<TensorTransform> hwc2chw(new vision::HWC2CHW());
+
+  luojianet_ms::dataset::Execute Transform({decode, resize, normalize, hwc2chw});
+
+  // Apply transform on image
+  Status rc = Transform(image, &image);
+
+  // Check image info
+  ASSERT_TRUE(rc.IsOk());
+  ASSERT_EQ(image.Shape().size(), 3);
+  ASSERT_EQ(image.Shape()[0], 3);
+  ASSERT_EQ(image.Shape()[1], 224);
+  ASSERT_EQ(image.Shape()[2], 224);
+}
+
+TEST_F(MindDataTestExecute, TestTransformInput3) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTransformInput3.";
+  // Test Execute with transform op input using API constructors, with auto pointers
+
+  // Read image, construct MSTensor from dataset tensor
+  std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
+  luojianet_ms::dataset::Tensor::CreateFromFile("data/dataset/apple.jpg", &de_tensor);
+  auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+
+  // Define transform operations
+  auto decode = vision::Decode();
+  luojianet_ms::dataset::Execute Transform1(decode);
+
+  auto resize = vision::Resize({224, 224});
+  luojianet_ms::dataset::Execute Transform2(resize);
+
+  // Apply transform on image
+  Status rc;
+  rc = Transform1(image, &image);
+  ASSERT_TRUE(rc.IsOk());
+  rc = Transform2(image, &image);
+  ASSERT_TRUE(rc.IsOk());
+
+  // Check image info
+  ASSERT_EQ(image.Shape().size(), 3);
+  ASSERT_EQ(image.Shape()[0], 224);
+  ASSERT_EQ(image.Shape()[1], 224);
+  ASSERT_EQ(image.Shape()[2], 3);
+}
+
+TEST_F(MindDataTestExecute, TestTransformInputSequential) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTransformInputSequential.";
+  // Test Execute with transform op input using API constructors, with auto pointers;
+  // Apply 2 transformations sequentially, including single non-vector Transform op input
+
+  // Read image, construct MSTensor from dataset tensor
+  std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
+  luojianet_ms::dataset::Tensor::CreateFromFile("data/dataset/apple.jpg", &de_tensor);
+  auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+
+  // Define transform#1 operations
+  std::shared_ptr<TensorTransform> decode(new vision::Decode());
+  std::shared_ptr<TensorTransform> resize(new vision::Resize({224, 224}));
+  std::shared_ptr<TensorTransform> normalize(
+    new vision::Normalize({0.485 * 255, 0.456 * 255, 0.406 * 255}, {0.229 * 255, 0.224 * 255, 0.225 * 255}));
+
+  std::vector<std::shared_ptr<TensorTransform>> op_list = {decode, resize, normalize};
+  luojianet_ms::dataset::Execute Transform(op_list);
+
+  // Apply transform#1 on image
+  Status rc = Transform(image, &image);
+
+  // Define transform#2 operations
+  std::shared_ptr<TensorTransform> hwc2chw(new vision::HWC2CHW());
+  luojianet_ms::dataset::Execute Transform2(hwc2chw);
+
+  // Apply transform#2 on image
+  rc = Transform2(image, &image);
+
+  // Check image info
+  ASSERT_TRUE(rc.IsOk());
+  ASSERT_EQ(image.Shape().size(), 3);
+  ASSERT_EQ(image.Shape()[0], 3);
+  ASSERT_EQ(image.Shape()[1], 224);
+  ASSERT_EQ(image.Shape()[2], 224);
+}
+
+TEST_F(MindDataTestExecute, TestTransformDecodeResizeCenterCrop1) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTransformDecodeResizeCenterCrop1.";
+  // Test Execute with Decode, Resize and CenterCrop transform ops input using API constructors, with shared pointers
+
+  // Read image, construct MSTensor from dataset tensor
+  std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
+  luojianet_ms::dataset::Tensor::CreateFromFile("data/dataset/apple.jpg", &de_tensor);
+  auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+
+  // Define transform operations
+  std::vector<int32_t> resize_paras = {256, 256};
+  std::vector<int32_t> crop_paras = {224, 224};
+  std::shared_ptr<TensorTransform> decode(new vision::Decode());
+  std::shared_ptr<TensorTransform> resize(new vision::Resize(resize_paras));
+  std::shared_ptr<TensorTransform> centercrop(new vision::CenterCrop(crop_paras));
+  std::shared_ptr<TensorTransform> hwc2chw(new vision::HWC2CHW());
+
+  std::vector<std::shared_ptr<TensorTransform>> op_list = {decode, resize, centercrop, hwc2chw};
+  luojianet_ms::dataset::Execute Transform(op_list, MapTargetDevice::kCpu);
+
+  // Apply transform on image
+  Status rc = Transform(image, &image);
+
+  // Check image info
+  ASSERT_TRUE(rc.IsOk());
+  ASSERT_EQ(image.Shape().size(), 3);
+  ASSERT_EQ(image.Shape()[0], 3);
+  ASSERT_EQ(image.Shape()[1], 224);
+  ASSERT_EQ(image.Shape()[2], 224);
+}
+
+TEST_F(MindDataTestExecute, TestUniformAugment) {
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+  std::vector<luojianet_ms::MSTensor> image2;
+
+  // Transform params
+  std::shared_ptr<TensorTransform> decode = std::make_shared<vision::Decode>();
+  std::shared_ptr<TensorTransform> resize_op(new vision::Resize({16, 16}));
+  std::shared_ptr<TensorTransform> vertical = std::make_shared<vision::RandomVerticalFlip>();
+  std::shared_ptr<TensorTransform> horizontal = std::make_shared<vision::RandomHorizontalFlip>();
+
+  std::shared_ptr<TensorTransform> uniform_op(new vision::UniformAugment({resize_op, vertical, horizontal}, 3));
+
+  auto transform1 = Execute({decode});
+  Status rc = transform1(image, &image);
+  ASSERT_TRUE(rc.IsOk());
+
+  auto transform2 = Execute({uniform_op});
+  rc = transform2({image}, &image2);
+  ASSERT_TRUE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBasicTokenizer) {
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("Welcome to China.", &de_tensor);
+  auto txt = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  std::vector<luojianet_ms::MSTensor> txt_result;
+
+  // Transform params
+  std::shared_ptr<TensorTransform> tokenizer =
+    std::make_shared<text::BasicTokenizer>(false, false, NormalizeForm::kNone, false, true);
+
+  // BasicTokenizer has 3 outputs so we need a vector to receive its result
+  auto transform1 = Execute({tokenizer});
+  Status rc = transform1({txt}, &txt_result);
+  ASSERT_EQ(txt_result.size(), 3);
+  ASSERT_TRUE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestRotate) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRotate.";
+
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto rotate = vision::Rotate(10.5);
+
+  auto transform = Execute({decode, rotate});
+  Status rc = transform(image, &image);
+
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestResizeWithBBox) {
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+  std::shared_ptr<TensorTransform> decode_op = std::make_shared<vision::Decode>();
+  std::shared_ptr<TensorTransform> resizewithbbox_op =
+    std::make_shared<vision::ResizeWithBBox>(std::vector<int32_t>{250, 500});
+
+  // Test Compute(Tensor, Tensor) method of ResizeWithBBox
+  auto transform = Execute({decode_op, resizewithbbox_op});
+
+  // Expect fail since Compute(Tensor, Tensor) is not a valid behaviour for this Op,
+  // while Compute(TensorRow, TensorRow) is the correct one.
+  Status rc = transform(image, &image);
+  EXPECT_FALSE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBandBiquadWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestBandBiquadWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> band_biquad_01 = std::make_shared<audio::BandBiquad>(44100, 200);
+  luojianet_ms::dataset::Execute Transform01({band_biquad_01});
+  // Filtered waveform by bandbiquad
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBandBiquadWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestBandBiquadWithWrongArg.";
+  std::vector<double> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check Q
+  MS_LOG(INFO) << "Q is zero.";
+  std::shared_ptr<TensorTransform> band_biquad_op = std::make_shared<audio::BandBiquad>(44100, 200, 0);
+  luojianet_ms::dataset::Execute Transform01({band_biquad_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBandpassBiquadWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestBandpassBiquadWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> bandpass_biquad_01 = std::make_shared<audio::BandpassBiquad>(44100, 200);
+  luojianet_ms::dataset::Execute Transform01({bandpass_biquad_01});
+  // Filtered waveform by bandpassbiquad
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBandpassBiquadWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestBandpassBiquadWithWrongArg.";
+  std::vector<double> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check Q
+  MS_LOG(INFO) << "Q is zero.";
+  std::shared_ptr<TensorTransform> bandpass_biquad_op = std::make_shared<audio::BandpassBiquad>(44100, 200, 0);
+  luojianet_ms::dataset::Execute Transform01({bandpass_biquad_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBandrejectBiquadWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestBandrejectBiquadWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> bandreject_biquad_01 = std::make_shared<audio::BandrejectBiquad>(44100, 200);
+  luojianet_ms::dataset::Execute Transform01({bandreject_biquad_01});
+  // Filtered waveform by bandrejectbiquad
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBandrejectBiquadWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestBandrejectBiquadWithWrongArg.";
+  std::vector<double> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check Q
+  MS_LOG(INFO) << "Q is zero.";
+  std::shared_ptr<TensorTransform> bandreject_biquad_op = std::make_shared<audio::BandrejectBiquad>(44100, 200, 0);
+  luojianet_ms::dataset::Execute Transform01({bandreject_biquad_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestAngleEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAngleEager.";
+  std::vector<double> origin = {1.143, 1.3123, 2.632, 2.554, -1.213, 1.3, 0.456, 3.563};
+  TensorShape input_shape({4, 2});
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateFromVector(origin, input_shape, &de_tensor);
+
+  std::shared_ptr<TensorTransform> angle = std::make_shared<audio::Angle>();
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::dataset::Execute Transform({angle});
+  Status s = Transform(input, &input);
+
+  ASSERT_TRUE(s.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestRGB2BGREager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRGB2BGREager.";
+
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto rgb2bgr_op = vision::RGB2BGR();
+
+  auto transform = Execute({decode, rgb2bgr_op});
+  Status rc = transform(image, &image);
+
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestEqualizerBiquadEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestEqualizerBiquadEager.";
+  int sample_rate = 44100;
+  float center_freq = 3.5;
+  float gain = 5.5;
+  float Q = 0.707;
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<double> test_vector = {0.8236, 0.2049, 0.3335, 0.5933, 0.9911, 0.2482, 0.3007, 0.9054,
+                                     0.7598, 0.5394, 0.2842, 0.5634, 0.6363, 0.2226, 0.2288};
+  Tensor::CreateFromVector(test_vector, TensorShape({5, 3}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  std::shared_ptr<TensorTransform> equalizer_biquad(new audio::EqualizerBiquad({sample_rate, center_freq, gain, Q}));
+  auto transform = Execute({equalizer_biquad});
+  Status rc = transform({input}, &output);
+  ASSERT_TRUE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestEqualizerBiquadParamCheckQ) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestEqualizerBiquadParamCheckQ.";
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<double> test_vector = {0.1129, 0.3899, 0.7762, 0.2437, 0.9911, 0.8764, 0.4524, 0.9034,
+                                     0.3277, 0.8904, 0.1852, 0.6721, 0.1325, 0.2345, 0.5538};
+  Tensor::CreateFromVector(test_vector, TensorShape({3, 5}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  // Check Q
+  std::shared_ptr<TensorTransform> equalizer_biquad_op = std::make_shared<audio::EqualizerBiquad>(44100, 3.5, 5.5, 0);
+  luojianet_ms::dataset::Execute transform({equalizer_biquad_op});
+  Status rc = transform({input}, &output);
+  ASSERT_FALSE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestEqualizerBiquadParamCheckSampleRate) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestEqualizerBiquadParamCheckSampleRate.";
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<double> test_vector = {0.5236, 0.7049, 0.4335, 0.4533, 0.0911, 0.3482, 0.3407, 0.9054,
+                                     0.7598, 0.5394, 0.2842, 0.5634, 0.6363, 0.2226, 0.2288, 0.6743};
+  Tensor::CreateFromVector(test_vector, TensorShape({4, 4}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  // Check sample_rate
+  std::shared_ptr<TensorTransform> equalizer_biquad_op = std::make_shared<audio::EqualizerBiquad>(0, 3.5, 5.5, 0.7);
+  luojianet_ms::dataset::Execute transform({equalizer_biquad_op});
+  Status rc = transform({input}, &output);
+  ASSERT_FALSE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestLowpassBiquadEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestLowpassBiquadEager.";
+  int sample_rate = 44100;
+  float cutoff_freq = 2000.0;
+  float Q = 0.6;
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<double> test_vector = {23.5, 13.2, 62.5, 27.1, 15.5, 30.3, 44.9, 25.0,
+                                     11.3, 37.4, 67.1, 33.8, 73.4, 53.3, 93.7, 31.1};
+  Tensor::CreateFromVector(test_vector, TensorShape({4, 4}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  std::shared_ptr<TensorTransform> lowpass_biquad(new audio::LowpassBiquad({sample_rate, cutoff_freq, Q}));
+  auto transform = Execute({lowpass_biquad});
+  Status rc = transform({input}, &output);
+  ASSERT_TRUE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestLowpassBiuqadParamCheckQ) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestLowpassBiuqadParamCheckQ.";
+
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<double> test_vector = {0.8236, 0.2049, 0.3335, 0.5933, 0.9911, 0.2482, 0.3007, 0.9054,
+                                     0.7598, 0.5394, 0.2842, 0.5634, 0.6363, 0.2226, 0.2288};
+  Tensor::CreateFromVector(test_vector, TensorShape({5, 3}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  // Check Q
+  std::shared_ptr<TensorTransform> lowpass_biquad_op = std::make_shared<audio::LowpassBiquad>(44100, 3000.5, 0);
+  luojianet_ms::dataset::Execute transform({lowpass_biquad_op});
+  Status rc = transform({input}, &output);
+  ASSERT_FALSE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestLowpassBiuqadParamCheckSampleRate) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestLowpassBiuqadParamCheckSampleRate.";
+
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<double> test_vector = {0.5, 4.6, 2.2, 0.6, 1.9, 4.7, 2.3, 4.9, 4.7, 0.5, 0.8, 0.9};
+  Tensor::CreateFromVector(test_vector, TensorShape({6, 2}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  // Check sample_rate
+  std::shared_ptr<TensorTransform> lowpass_biquad_op = std::make_shared<audio::LowpassBiquad>(0, 2000.5, 0.7);
+  luojianet_ms::dataset::Execute transform({lowpass_biquad_op});
+  Status rc = transform({input}, &output);
+  ASSERT_FALSE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestComplexNormEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestComplexNormEager.";
+  // testing
+  std::shared_ptr<Tensor> input_tensor_;
+  Tensor::CreateFromVector(std::vector<float>({1.0, 1.0, 2.0, 3.0, 4.0, 4.0}), TensorShape({3, 2}), &input_tensor_);
+
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+  std::shared_ptr<TensorTransform> complex_norm_01 = std::make_shared<audio::ComplexNorm>(4.0);
+
+  // Filtered waveform by complexnorm
+  luojianet_ms::dataset::Execute Transform01({complex_norm_01});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestContrastWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestContrastWithEager.";
+  // Original waveform
+  std::vector<float> labels = {4.11, 5.37, 5.85, 5.4, 4.27, 1.861, -1.1291, -4.76, 1.495};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({3, 3}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> contrast_01 = std::make_shared<audio::Contrast>();
+  luojianet_ms::dataset::Execute Transform01({contrast_01});
+  // Filtered waveform by contrast
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestContrastWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestContrastWithWrongArg.";
+  std::vector<double> labels = {-1.007, -5.06, 7.934, 6.683, 1.312, 1.84, 2.246, 2.597};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 4}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check enhancement_amount
+  MS_LOG(INFO) << "enhancement_amount is negative.";
+  std::shared_ptr<TensorTransform> contrast_op = std::make_shared<audio::Contrast>(-10);
+  luojianet_ms::dataset::Execute Transform01({contrast_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestDeemphBiquadWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestDeemphBiquadWithEager";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> deemph_biquad_01 = std::make_shared<audio::DeemphBiquad>(44100);
+  luojianet_ms::dataset::Execute Transform01({deemph_biquad_01});
+  // Filtered waveform by deemphbiquad
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestDeemphBiquadWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestDeemphBiquadWithWrongArg.";
+  std::vector<double> labels = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({1, 6}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check sample_rate
+  MS_LOG(INFO) << "sample_rate is zero.";
+  std::shared_ptr<TensorTransform> deemph_biquad_op = std::make_shared<audio::DeemphBiquad>(0);
+  luojianet_ms::dataset::Execute Transform01({deemph_biquad_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+// Feature: Gain
+// Description: test Gain in eager mode
+// Expectation: the data is processed successfully
+TEST_F(MindDataTestExecute, TestGainWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestGainWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> Gain_01 = std::make_shared<audio::Gain>();
+  luojianet_ms::dataset::Execute Transform01({Gain_01});
+  // Filtered waveform by Gain
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestHighpassBiquadEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestHighpassBiquadEager.";
+  int sample_rate = 44100;
+  float cutoff_freq = 3000.5;
+  float Q = 0.707;
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<double> test_vector = {0.8236, 0.2049, 0.3335, 0.5933, 0.9911, 0.2482, 0.3007, 0.9054,
+                                     0.7598, 0.5394, 0.2842, 0.5634, 0.6363, 0.2226, 0.2288};
+  Tensor::CreateFromVector(test_vector, TensorShape({5, 3}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  std::shared_ptr<TensorTransform> highpass_biquad(new audio::HighpassBiquad({sample_rate, cutoff_freq, Q}));
+  auto transform = Execute({highpass_biquad});
+  Status rc = transform({input}, &output);
+  ASSERT_TRUE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestHighpassBiquadParamCheckQ) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestHighpassBiquadParamCheckQ.";
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<float> test_vector = {0.6013, 0.8081, 0.6600, 0.4278, 0.4049, 0.0541, 0.8800, 0.7143, 0.0926, 0.3502,
+                                    0.6148, 0.8738, 0.1869, 0.9023, 0.4293, 0.2175, 0.5132, 0.2622, 0.6490, 0.0741,
+                                    0.7903, 0.3428, 0.1598, 0.4841, 0.8128, 0.7409, 0.7226, 0.4951, 0.5589, 0.9210};
+  Tensor::CreateFromVector(test_vector, TensorShape({5, 3, 2}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  // Check Q
+  std::shared_ptr<TensorTransform> highpass_biquad_op = std::make_shared<audio::HighpassBiquad>(44100, 3000.5, 0);
+  luojianet_ms::dataset::Execute transform({highpass_biquad_op});
+  Status rc = transform({input}, &output);
+  ASSERT_FALSE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestHighpassBiquadParamCheckSampleRate) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestHighpassBiquadParamCheckSampleRate.";
+  std::vector<luojianet_ms::MSTensor> output;
+  std::shared_ptr<Tensor> test;
+  std::vector<double> test_vector = {0.0237, 0.6026, 0.3801, 0.1978, 0.8672, 0.0095, 0.5166, 0.2641, 0.5485, 0.5144};
+  Tensor::CreateFromVector(test_vector, TensorShape({1, 10}), &test);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  // Check sample_rate
+  std::shared_ptr<TensorTransform> highpass_biquad_op = std::make_shared<audio::HighpassBiquad>(0, 3000.5, 0.7);
+  luojianet_ms::dataset::Execute transform({highpass_biquad_op});
+  Status rc = transform({input}, &output);
+  ASSERT_FALSE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestMuLawDecodingEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestMuLawDecodingEager.";
+  // testing
+  std::shared_ptr<Tensor> input_tensor;
+  Tensor::CreateFromVector(std::vector<float>({1, 254, 231, 155, 101, 77}), TensorShape({1, 6}), &input_tensor);
+
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor));
+  std::shared_ptr<TensorTransform> mu_law_encoding_01 = std::make_shared<audio::MuLawDecoding>(255);
+
+  // Filtered waveform by mulawencoding
+  luojianet_ms::dataset::Execute Transform01({mu_law_encoding_01});
+  Status s01 = Transform01(input_01, &input_01);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+/// Feature: MuLawEncoding
+/// Description: test MuLawEncoding in eager mode
+/// Expectation: the data is processed successfully
+TEST_F(MindDataTestExecute, TestMuLawEncodingEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestMuLawEncodingEager.";
+  // testing
+  std::shared_ptr<Tensor> input_tensor;
+  Tensor::CreateFromVector(std::vector<float>({0.1, 0.2, 0.3, 0.4, 0.5, 0.6}), TensorShape({1, 6}), &input_tensor);
+
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor));
+  std::shared_ptr<TensorTransform> mu_law_encoding_01 = std::make_shared<audio::MuLawEncoding>(255);
+
+  // Filtered waveform by mulawencoding
+  luojianet_ms::dataset::Execute Transform01({mu_law_encoding_01});
+  Status s01 = Transform01(input_01, &input_01);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+/// Feature: Overdrive
+/// Description: test basic usage of Overdrive
+/// Expectation: get correct number of data
+TEST_F(MindDataTestExecute, TestOverdriveBasicWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestOverdriveBasicWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> phaser_op_01 = std::make_shared<audio::Overdrive>(5.0, 3.0);
+  luojianet_ms::dataset::Execute Transform01({phaser_op_01});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+/// Feature: Overdrive
+/// Description: test invalid parameter of Overdrive
+/// Expectation: throw exception correctly
+TEST_F(MindDataTestExecute, TestOverdriveWrongArgWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestOverdriveWrongArgWithEager";
+  std::vector<double> labels = {0.271, 1.634, 9.246,  0.108, 1.138, 1.156, 3.394,
+                                1.55,  3.614, 1.8402, 0.718, 4.599, 5.64,  2.510620117187500000e-02,
+                                1.38,  5.825, 4.1906, 5.28,  1.052, 9.36};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({4, 5}), &input));
+
+  // verify the gain range from 0 to 100
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> overdrive_op1 = std::make_shared<audio::Overdrive>(100.1);
+  luojianet_ms::dataset::Execute Transform01({overdrive_op1});
+  Status s01 = Transform01(input_01, &input_01);
+  EXPECT_FALSE(s01.IsOk());
+
+  // verify the color range from 0 to 100
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> overdrive_op2 = std::make_shared<audio::Overdrive>(5.0, 100.1);
+  luojianet_ms::dataset::Execute Transform02({overdrive_op2});
+  Status s02 = Transform02(input_02, &input_02);
+  EXPECT_FALSE(s02.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestRiaaBiquadWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRiaaBiquadWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> riaa_biquad_01 = std::make_shared<audio::RiaaBiquad>(44100);
+  luojianet_ms::dataset::Execute Transform01({riaa_biquad_01});
+  // Filtered waveform by riaabiquad
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestRiaaBiquadWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRiaaBiquadWithWrongArg.";
+  std::vector<float> labels = {3.156, 5.690, 1.362, 1.093, 5.782, 6.381, 5.982, 3.098, 1.222, 6.027,
+                               3.909, 7.993, 4.324, 1.092, 5.093, 0.991, 1.099, 4.092, 8.111, 6.666};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({4, 5}), &input));
+  auto input01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check sample_rate
+  MS_LOG(INFO) << "sample_rate is zero.";
+  std::shared_ptr<TensorTransform> riaa_biquad_op01 = std::make_shared<audio::RiaaBiquad>(0);
+  luojianet_ms::dataset::Execute Transform01({riaa_biquad_op01});
+  Status s01 = Transform01(input01, &input01);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestTrebleBiquadWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTrebleBiquadWithEager.";
+  // Original waveform
+  std::vector<float> labels = {3.156, 5.690, 1.362, 1.093, 5.782, 6.381, 5.982, 3.098, 1.222, 6.027,
+                               3.909, 7.993, 4.324, 1.092, 5.093, 0.991, 1.099, 4.092, 8.111, 6.666};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> treble_biquad_01 = std::make_shared<audio::TrebleBiquad>(44100, 200);
+  luojianet_ms::dataset::Execute Transform01({treble_biquad_01});
+  // Filtered waveform by treblebiquad
+  EXPECT_OK(Transform01(input_01, &input_01));
+}
+
+TEST_F(MindDataTestExecute, TestTrebleBiquadWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestTrebleBiquadWithWrongArg.";
+  std::vector<double> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  auto input02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check sample_rate
+  MS_LOG(INFO) << "sample_rate is zero.";
+  std::shared_ptr<TensorTransform> treble_biquad_op01 = std::make_shared<audio::TrebleBiquad>(0.0, 200.0);
+  luojianet_ms::dataset::Execute Transform01({treble_biquad_op01});
+  EXPECT_ERROR(Transform01(input01, &input01));
+  // Check Q
+  MS_LOG(INFO) << "Q is zero.";
+  std::shared_ptr<TensorTransform> treble_biquad_op02 =
+    std::make_shared<audio::TrebleBiquad>(44100, 200.0, 3000.0, 0.0);
+  luojianet_ms::dataset::Execute Transform02({treble_biquad_op02});
+  EXPECT_ERROR(Transform02(input02, &input02));
+}
+
+TEST_F(MindDataTestExecute, TestLFilterWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestLFilterWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::vector<float> a_coeffs = {0.1, 0.2, 0.3};
+  std::vector<float> b_coeffs = {0.1, 0.2, 0.3};
+  std::shared_ptr<TensorTransform> lfilter_01 = std::make_shared<audio::LFilter>(a_coeffs, b_coeffs);
+  luojianet_ms::dataset::Execute Transform01({lfilter_01});
+  // Filtered waveform by lfilter
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestLFilterWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestLFilterWithWrongArg.";
+  std::vector<double> labels = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({1, 6}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+
+  // Check a_coeffs size equal to b_coeffs
+  MS_LOG(INFO) << "a_coeffs size not equal to b_coeffs";
+  std::vector<float> a_coeffs = {0.1, 0.2, 0.3};
+  std::vector<float> b_coeffs = {0.1, 0.2};
+  std::shared_ptr<TensorTransform> lfilter_op = std::make_shared<audio::LFilter>(a_coeffs, b_coeffs);
+  luojianet_ms::dataset::Execute Transform01({lfilter_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+/// Feature: Phaser
+/// Description: test basic usage of Phaser
+/// Expectation: get correct number of data
+TEST_F(MindDataTestExecute, TestPhaserBasicWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestPhaserBasicWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> phaser_op_01 = std::make_shared<audio::Phaser>(44100);
+  luojianet_ms::dataset::Execute Transform01({phaser_op_01});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+/// Feature: Phaser
+/// Description: test invalid parameter of Phaser
+/// Expectation: throw exception correctly
+TEST_F(MindDataTestExecute, TestPhaserInputArgWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestPhaserInputArgWithEager";
+  std::vector<double> labels = {
+    0.271, 1.634, 9.246, 0.108,
+    1.138, 1.156, 3.394, 1.55,
+    3.614, 1.8402, 0.718, 4.599,
+    5.64, 2.510620117187500000e-02, 1.38, 5.825,
+    4.1906, 5.28, 1.052, 9.36};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({4, 5}), &input));
+
+  // check gain_in rang [0.0,1.0]
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> phaser_op1 = std::make_shared<audio::Phaser>(44100, 2.0);
+  luojianet_ms::dataset::Execute Transform01({phaser_op1});
+  Status s01 = Transform01(input_01, &input_01);
+  EXPECT_FALSE(s01.IsOk());
+
+  // check gain_out range [0.0,1e9]
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> phaser_op2 = std::make_shared<audio::Phaser>(44100, 0.2, -0.1);
+  luojianet_ms::dataset::Execute Transform02({phaser_op2});
+  Status s02 = Transform02(input_02, &input_02);
+  EXPECT_FALSE(s02.IsOk());
+
+  // check delay_ms range [0.0,5.0]
+  auto input_03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> phaser_op3 = std::make_shared<audio::Phaser>(44100, 0.2, 0.2, 6.0);
+  luojianet_ms::dataset::Execute Transform03({phaser_op3});
+  Status s03 = Transform03(input_03, &input_03);
+  EXPECT_FALSE(s03.IsOk());
+
+  // check decay range [0.0,0.99]
+  auto input_04 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> phaser_op4 = std::make_shared<audio::Phaser>(44100, 0.2, 0.2, 4.0, 1.0);
+  luojianet_ms::dataset::Execute Transform04({phaser_op4});
+  Status s04 = Transform04(input_04, &input_04);
+  EXPECT_FALSE(s04.IsOk());
+
+  // check mod_speed range [0.1, 2]
+  auto input_05 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> phaser_op5 = std::make_shared<audio::Phaser>(44100, 0.2, 0.2, 4.0, 0.8, 3.0);
+  luojianet_ms::dataset::Execute Transform05({phaser_op5});
+  Status s05 = Transform05(input_05, &input_05);
+  EXPECT_FALSE(s05.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestDCShiftEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestDCShiftEager.";
+
+  std::vector<float> origin = {0.67443, 1.87523, 0.73465, -0.74553, -1.54346, 1.54093, -1.23453};
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateFromVector(origin, &de_tensor);
+
+  std::shared_ptr<TensorTransform> dc_shift = std::make_shared<audio::DCShift>(0.5, 0.02);
+  auto input = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::dataset::Execute Transform({dc_shift});
+  Status s = Transform(input, &input);
+  ASSERT_TRUE(s.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBiquadWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestBiquadWithEager.";
+  // Original waveform
+  std::vector<float> labels = {3.716064453125,  12.34765625,     5.246826171875,  1.0894775390625,
+                               1.1383056640625, 2.1566162109375, 1.3946533203125, 3.55029296875};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 4}), &input));
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> biquad_01 = std::make_shared<audio::Biquad>(1, 0.02, 0.13, 1, 0.12, 0.3);
+  luojianet_ms::dataset::Execute Transform01({biquad_01});
+  // Filtered waveform by biquad
+  Status s01 = Transform01(input_01, &input_01);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestBiquadWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestBiquadWithWrongArg.";
+  std::vector<double> labels = {
+    2.716064453125000000e-03,
+    6.347656250000000000e-03,
+    9.246826171875000000e-03,
+    1.089477539062500000e-02,
+  };
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({1, 4}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check a0
+  MS_LOG(INFO) << "a0 is zero.";
+  std::shared_ptr<TensorTransform> biquad_op = std::make_shared<audio::Biquad>(1, 0.02, 0.13, 0, 0.12, 0.3);
+  luojianet_ms::dataset::Execute Transform01({biquad_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestFade) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestFade.";
+  std::vector<float> waveform = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(waveform, TensorShape({1, 20}), &input));
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade01 = std::make_shared<audio::Fade>(5, 6, FadeShape::kLinear);
+  luojianet_ms::dataset::Execute Transform01({fade01});
+  Status s01 = Transform01(input_01, &input_01);
+  EXPECT_TRUE(s01.IsOk());
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade02 = std::make_shared<audio::Fade>(5, 6, FadeShape::kQuarterSine);
+  luojianet_ms::dataset::Execute Transform02({fade02});
+  Status s02 = Transform02(input_02, &input_02);
+  EXPECT_TRUE(s02.IsOk());
+  auto input_03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade03 = std::make_shared<audio::Fade>(5, 6, FadeShape::kExponential);
+  luojianet_ms::dataset::Execute Transform03({fade03});
+  Status s03 = Transform03(input_03, &input_03);
+  EXPECT_TRUE(s03.IsOk());
+  auto input_04 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade04 = std::make_shared<audio::Fade>(5, 6, FadeShape::kHalfSine);
+  luojianet_ms::dataset::Execute Transform04({fade04});
+  Status s04 = Transform01(input_04, &input_04);
+  EXPECT_TRUE(s04.IsOk());
+  auto input_05 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade05 = std::make_shared<audio::Fade>(5, 6, FadeShape::kLogarithmic);
+  luojianet_ms::dataset::Execute Transform05({fade05});
+  Status s05 = Transform01(input_05, &input_05);
+  EXPECT_TRUE(s05.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestFadeDefaultArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestFadeDefaultArg.";
+  std::vector<double> waveform = {
+    1.573897564868000000e-03, 5.462374385400000000e-03, 3.584989689205400000e-03, 2.035667767462500000e-02,
+    2.353543454062500000e-02, 1.256616210937500000e-02, 2.394653320312500000e-02, 5.243553968750000000e-02,
+    2.434554533002500000e-02, 3.454566960937500000e-02, 2.343545454437500000e-02, 2.534343093750000000e-02,
+    2.354465654550000000e-02, 1.453545517187500000e-02, 1.454645535875000000e-02, 1.433243195312500000e-02,
+    1.434354554812500000e-02, 3.343435276865400000e-02, 1.234257687312500000e-02, 5.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(waveform, TensorShape({2, 10}), &input));
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade01 = std::make_shared<audio::Fade>();
+  luojianet_ms::dataset::Execute Transform01({fade01});
+  Status s01 = Transform01(input_01, &input_01);
+  EXPECT_TRUE(s01.IsOk());
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade02 = std::make_shared<audio::Fade>(5);
+  luojianet_ms::dataset::Execute Transform02({fade02});
+  Status s02 = Transform02(input_02, &input_02);
+  EXPECT_TRUE(s02.IsOk());
+  auto input_03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade03 = std::make_shared<audio::Fade>(5, 6);
+  luojianet_ms::dataset::Execute Transform03({fade03});
+  Status s03 = Transform03(input_03, &input_03);
+  EXPECT_TRUE(s03.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestFadeWithInvalidArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestFadeWithInvalidArg.";
+  std::vector<float> waveform = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(waveform, TensorShape({1, 20}), &input));
+  auto input_01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade1 = std::make_shared<audio::Fade>(-5, 6);
+  luojianet_ms::dataset::Execute Transform01({fade1});
+  Status s01 = Transform01(input_01, &input_01);
+  EXPECT_FALSE(s01.IsOk());
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade2 = std::make_shared<audio::Fade>(0, -1);
+  luojianet_ms::dataset::Execute Transform02({fade2});
+  Status s02 = Transform02(input_02, &input_02);
+  EXPECT_FALSE(s02.IsOk());
+  auto input_03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade3 = std::make_shared<audio::Fade>(30, 10);
+  luojianet_ms::dataset::Execute Transform03({fade3});
+  Status s03 = Transform03(input_03, &input_03);
+  EXPECT_FALSE(s03.IsOk());
+  auto input_04 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> fade4 = std::make_shared<audio::Fade>(10, 30);
+  luojianet_ms::dataset::Execute Transform04({fade4});
+  Status s04 = Transform04(input_04, &input_04);
+  EXPECT_FALSE(s04.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestVolDefalutValue) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestVolDefalutValue.";
+  std::shared_ptr<Tensor> input_tensor_;
+  TensorShape s = TensorShape({2, 6});
+  ASSERT_OK(Tensor::CreateFromVector(
+    std::vector<float>({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f}), s, &input_tensor_));
+  auto input_tensor = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+  std::shared_ptr<TensorTransform> vol_op = std::make_shared<audio::Vol>(0.333);
+  luojianet_ms::dataset::Execute transform({vol_op});
+  Status status = transform(input_tensor, &input_tensor);
+  EXPECT_TRUE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestVolGainTypePower) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestVolGainTypePower.";
+  std::shared_ptr<Tensor> input_tensor_;
+  TensorShape s = TensorShape({4, 3});
+  ASSERT_OK(Tensor::CreateFromVector(
+    std::vector<double>({4.0f, 5.0f, 3.0f, 5.0f, 4.0f, 6.0f, 6.0f, 1.0f, 2.0f, 3.0f, 2.0f, 1.0f}), s, &input_tensor_));
+  auto input_tensor = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+  std::shared_ptr<TensorTransform> vol_op = std::make_shared<audio::Vol>(0.2, GainType::kPower);
+  luojianet_ms::dataset::Execute transform({vol_op});
+  Status status = transform(input_tensor, &input_tensor);
+  EXPECT_TRUE(status.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestMagphaseEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestMagphaseEager.";
+  float power = 1.0;
+  std::vector<luojianet_ms::MSTensor> output_tensor;
+  std::shared_ptr<Tensor> test;
+  std::vector<float> test_vector = {3, 4, -3, 4, 3, -4, -3, -4, 5, 12, -5, 12, 5, -12, -5, -12};
+  Tensor::CreateFromVector(test_vector, TensorShape({2, 4, 2}), &test);
+  auto input_tensor = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test));
+  std::shared_ptr<TensorTransform> magphase(new audio::Magphase({power}));
+  auto transform = Execute({magphase});
+  Status rc = transform({input_tensor}, &output_tensor);
+  ASSERT_TRUE(rc.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestRandomInvertEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRandomInvertEager.";
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto random_invert_op = vision::RandomInvert(0.6);
+
+  auto transform = Execute({decode, random_invert_op});
+  Status rc = transform(image, &image);
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestRandomAutoContrastEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRandomAutoContrastEager.";
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto random_auto_contrast_op = vision::RandomAutoContrast(0.6);
+
+  auto transform = Execute({decode, random_auto_contrast_op});
+  Status rc = transform(image, &image);
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestRandomEqualizeEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRandomEqualizeEager.";
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto random_equalize_op = vision::RandomEqualize(0.6);
+
+  auto transform = Execute({decode, random_equalize_op});
+  Status rc = transform(image, &image);
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestRandomAdjustSharpnessEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestRandomAdjustSharpnessEager.";
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto random_adjust_sharpness_op = vision::RandomAdjustSharpness(2.0, 0.6);
+
+  auto transform = Execute({decode, random_adjust_sharpness_op});
+  Status rc = transform(image, &image);
+  EXPECT_EQ(rc, Status::OK());
+}
+
+TEST_F(MindDataTestExecute, TestDetectPitchFrequencyWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestDetectPitchFrequencyWithEager.";
+  // Original waveform
+  std::vector<double> labels = {
+    3.716064453125000000e-03, 2.347656250000000000e-03, 9.246826171875000000e-03, 4.089477539062500000e-02,
+    3.138305664062500000e-02, 1.156616210937500000e-02, 0.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 0.840209960937500000e-02, 1.718139648437500000e-02, 2.599121093750000000e-02,
+    5.647949218750000000e-02, 1.510620117187500000e-02, 2.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 3.284790039062500000e-02, 9.052856445312500000e-02, 2.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> detect_pitch_frequency_01 =
+    std::make_shared<audio::DetectPitchFrequency>(30, 0.1, 3, 5, 25);
+  luojianet_ms::dataset::Execute Transform01({detect_pitch_frequency_01});
+  // Detect pitch frequence
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestDetectPitchFrequencyWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestDetectPitchFrequencyWithWrongArg.";
+  std::vector<float> labels = {
+    0.716064e-03, 5.347656e-03, 6.246826e-03, 2.089477e-02, 7.138305e-02,
+    4.156616e-02, 1.394653e-02, 3.550292e-02, 0.614379e-02, 3.840209e-02,
+  };
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 5}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check frame_time
+  MS_LOG(INFO) << "frame_time is zero.";
+  std::shared_ptr<TensorTransform> detect_pitch_frequency_01 =
+    std::make_shared<audio::DetectPitchFrequency>(40, 0, 3, 3, 20);
+  luojianet_ms::dataset::Execute Transform01({detect_pitch_frequency_01});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+  // Check win_length
+  MS_LOG(INFO) << "win_length is zero.";
+  std::shared_ptr<TensorTransform> detect_pitch_frequency_02 =
+    std::make_shared<audio::DetectPitchFrequency>(40, 0.1, 0, 3, 20);
+  luojianet_ms::dataset::Execute Transform02({detect_pitch_frequency_02});
+  Status s02 = Transform02(input_02, &input_02);
+  EXPECT_FALSE(s02.IsOk());
+  // Check freq_low
+  MS_LOG(INFO) << "freq_low is zero.";
+  std::shared_ptr<TensorTransform> detect_pitch_frequency_03 =
+    std::make_shared<audio::DetectPitchFrequency>(40, 0.1, 3, 0, 20);
+  luojianet_ms::dataset::Execute Transform03({detect_pitch_frequency_03});
+  Status s03 = Transform03(input_02, &input_02);
+  EXPECT_FALSE(s03.IsOk());
+  // Check freq_high
+  MS_LOG(INFO) << "freq_high is zero.";
+  std::shared_ptr<TensorTransform> detect_pitch_frequency_04 =
+    std::make_shared<audio::DetectPitchFrequency>(40, 0.1, 3, 3, 0);
+  luojianet_ms::dataset::Execute Transform04({detect_pitch_frequency_04});
+  Status s04 = Transform04(input_02, &input_02);
+  EXPECT_FALSE(s04.IsOk());
+  // Check sample_rate
+  MS_LOG(INFO) << "sample_rate is zero.";
+  std::shared_ptr<TensorTransform> detect_pitch_frequency_05 = std::make_shared<audio::DetectPitchFrequency>(0);
+  luojianet_ms::dataset::Execute Transform05({detect_pitch_frequency_05});
+  Status s05 = Transform05(input_02, &input_02);
+  EXPECT_FALSE(s05.IsOk());
+}
+
+/// Feature: Dither
+/// Description: test Dither in eager mode
+/// Expectation: the data is processed successfully
+TEST_F(MindDataTestExecute, TestDitherWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestDitherWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> dither_01 = std::make_shared<audio::Dither>();
+  luojianet_ms::dataset::Execute Transform01({dither_01});
+  // Filtered waveform by Dither
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestFlangerWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestFlangerWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> flanger_01 = std::make_shared<audio::Flanger>(44100);
+  luojianet_ms::dataset::Execute Transform01({flanger_01});
+  // Filtered waveform by flanger
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+TEST_F(MindDataTestExecute, TestFlangerWithWrongArg) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestFlangerWithWrongArg.";
+  std::vector<double> labels = {1.143, 1.3123, 2.632, 2.554, 1.213, 1.3, 0.456, 3.563};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({4, 2}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  // Check sample_rate
+  MS_LOG(INFO) << "sample_rate is zero.";
+  std::shared_ptr<TensorTransform> flanger_op = std::make_shared<audio::Flanger>(0);
+  luojianet_ms::dataset::Execute Transform01({flanger_op});
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_FALSE(s01.IsOk());
+}
+
+/// Feature: Vectors
+/// Description: test basic usage of Vectors and the ToVectors with default parameter
+/// Expectation: get correct MSTensor
+TEST_F(MindDataTestExecute, TestVectorsParam) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestVectorsParam.";
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("ok", &de_tensor);
+  auto token = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Create expected output.
+  std::shared_ptr<Tensor> de_expected;
+  std::vector<float> expected = {0.418, 0.24968, -0.41242, 0.1217, 0.34527, -0.04445718411};
+  dsize_t dim = 6;
+  ASSERT_OK(Tensor::CreateFromVector(expected, TensorShape({dim}), &de_expected));
+  auto ms_expected = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected));
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testVectors/vectors.txt";
+  std::shared_ptr<Vectors> vectors01;
+  Status s01 = Vectors::BuildFromFile(&vectors01, vectors_dir);
+  EXPECT_EQ(s01, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(vectors01);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status01.IsOk());
+
+  std::shared_ptr<Vectors> vectors02;
+  Status s02 = Vectors::BuildFromFile(&vectors02, vectors_dir, 100);
+  EXPECT_EQ(s02, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(vectors02);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status02.IsOk());
+
+  std::shared_ptr<Vectors> vectors03;
+  Status s03 = Vectors::BuildFromFile(&vectors03, vectors_dir, 3);
+  EXPECT_EQ(s03, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors03 = std::make_shared<text::ToVectors>(vectors03);
+  auto transform03 = Execute({to_vectors03});
+  Status status03 = transform03(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status03.IsOk());
+}
+
+/// Feature: ToVectors
+/// Description: test basic usage of ToVectors and the Vectors with default parameter
+/// Expectation: get correct MSTensor
+TEST_F(MindDataTestExecute, TestToVectorsParam) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestToVectorsParam.";
+  std::shared_ptr<Tensor> de_tensor01;
+  Tensor::CreateScalar<std::string>("none", &de_tensor01);
+  auto token01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor01));
+  std::shared_ptr<Tensor> de_tensor02;
+  Tensor::CreateScalar<std::string>("ok", &de_tensor02);
+  auto token02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor02));
+  std::shared_ptr<Tensor> de_tensor03;
+  Tensor::CreateScalar<std::string>("OK", &de_tensor03);
+  auto token03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor03));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Create expected output.
+  dsize_t dim = 6;
+  std::shared_ptr<Tensor> de_expected01;
+  std::vector<float> expected01 = {0, 0, 0, 0, 0, 0};
+  ASSERT_OK(Tensor::CreateFromVector(expected01, TensorShape({dim}), &de_expected01));
+  auto ms_expected01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected01));
+  std::shared_ptr<Tensor> de_expected02;
+  std::vector<float> expected02 = {-1, -1, -1, -1, -1, -1};
+  ASSERT_OK(Tensor::CreateFromVector(expected02, TensorShape({dim}), &de_expected02));
+  auto ms_expected02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected02));
+  std::shared_ptr<Tensor> de_expected03;
+  std::vector<float> expected03 = {0.418, 0.24968, -0.41242, 0.1217, 0.34527, -0.04445718411};
+  ASSERT_OK(Tensor::CreateFromVector(expected03, TensorShape({dim}), &de_expected03));
+  auto ms_expected03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected03));
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testVectors/vectors.txt";
+  std::shared_ptr<Vectors> vectors;
+  Status s = Vectors::BuildFromFile(&vectors, vectors_dir);
+  EXPECT_EQ(s, Status::OK());
+
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(vectors);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token01, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected01);
+  EXPECT_TRUE(status01.IsOk());
+  std::vector<float> unknown_init = {-1, -1, -1, -1, -1, -1};
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(vectors, unknown_init);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token01, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected02);
+  EXPECT_TRUE(status02.IsOk());
+  std::shared_ptr<TensorTransform> to_vectors03 = std::make_shared<text::ToVectors>(vectors, unknown_init);
+  auto transform03 = Execute({to_vectors03});
+  Status status03 = transform03(token02, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected03);
+  EXPECT_TRUE(status03.IsOk());
+  std::shared_ptr<TensorTransform> to_vectors04 = std::make_shared<text::ToVectors>(vectors, unknown_init, true);
+  auto transform04 = Execute({to_vectors04});
+  Status status04 = transform04(token03, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected03);
+  EXPECT_TRUE(status04.IsOk());
+}
+
+/// Feature: ToVectors
+/// Description: test invalid parameter of ToVectors
+/// Expectation: throw exception correctly
+TEST_F(MindDataTestExecute, TestToVectorsWithInvalidParam) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestToVectorsWithInvalidParam.";
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("none", &de_tensor);
+  auto token = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testVectors/vectors.txt";
+  std::shared_ptr<Vectors> vectors01;
+  Status s = Vectors::BuildFromFile(&vectors01, vectors_dir);
+  EXPECT_EQ(s, Status::OK());
+  std::vector<float> unknown_init = {-1, -1, -1, -1};
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(vectors01, unknown_init);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token, &lookup_result);
+  EXPECT_FALSE(status01.IsOk());
+  std::shared_ptr<Vectors> vectors02 = nullptr;
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(vectors02);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token, &lookup_result);
+  EXPECT_FALSE(status02.IsOk());
+}
+
+/// Feature: FastText
+/// Description: test basic usage of FastText and the ToVectors with default parameter
+/// Expectation: get correct MSTensor
+TEST_F(MindDataTestExecute, TestFastTextParam) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestFastTextParam.";
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("ok", &de_tensor);
+  auto token = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Create expected output.
+  std::shared_ptr<Tensor> de_expected;
+  std::vector<float> expected = {0.418, 0.24968, -0.41242, 0.1217, 0.34527, -0.04445718411};
+  dsize_t dim = 6;
+  ASSERT_OK(Tensor::CreateFromVector(expected, TensorShape({dim}), &de_expected));
+  auto ms_expected = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected));
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/test_fast_text/fast_text.vec";
+  std::shared_ptr<FastText> fast_text01;
+  Status s01 = FastText::BuildFromFile(&fast_text01, vectors_dir);
+  EXPECT_EQ(s01, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(fast_text01);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status01.IsOk());
+
+  std::shared_ptr<FastText> fast_text02;
+  Status s02 = FastText::BuildFromFile(&fast_text02, vectors_dir, 100);
+  EXPECT_EQ(s02, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(fast_text02);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status02.IsOk());
+
+  std::shared_ptr<FastText> fast_text03;
+  Status s03 = FastText::BuildFromFile(&fast_text03, vectors_dir, 3);
+  EXPECT_EQ(s03, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors03 = std::make_shared<text::ToVectors>(fast_text03);
+  auto transform03 = Execute({to_vectors03});
+  Status status03 = transform03(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status03.IsOk());
+}
+
+/// Feature: ToVectors
+/// Description: test basic usage of ToVectors and the FastText with default parameter
+/// Expectation: get correct MSTensor
+TEST_F(MindDataTestExecute, TestToVectorsParamForFastText) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestToVectorsParamForFastText.";
+  std::shared_ptr<Tensor> de_tensor01;
+  Tensor::CreateScalar<std::string>("none", &de_tensor01);
+  auto token01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor01));
+  std::shared_ptr<Tensor> de_tensor02;
+  Tensor::CreateScalar<std::string>("ok", &de_tensor02);
+  auto token02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor02));
+  std::shared_ptr<Tensor> de_tensor03;
+  Tensor::CreateScalar<std::string>("OK", &de_tensor03);
+  auto token03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor03));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Create expected output.
+  dsize_t dim = 6;
+  std::shared_ptr<Tensor> de_expected01;
+  std::vector<float> expected01 = {0, 0, 0, 0, 0, 0};
+  ASSERT_OK(Tensor::CreateFromVector(expected01, TensorShape({dim}), &de_expected01));
+  auto ms_expected01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected01));
+  std::shared_ptr<Tensor> de_expected02;
+  std::vector<float> expected02 = {-1, -1, -1, -1, -1, -1};
+  ASSERT_OK(Tensor::CreateFromVector(expected02, TensorShape({dim}), &de_expected02));
+  auto ms_expected02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected02));
+  std::shared_ptr<Tensor> de_expected03;
+  std::vector<float> expected03 = {0.418, 0.24968, -0.41242, 0.1217, 0.34527, -0.04445718411};
+  ASSERT_OK(Tensor::CreateFromVector(expected03, TensorShape({dim}), &de_expected03));
+  auto ms_expected03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected03));
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/test_fast_text/fast_text.vec";
+  std::shared_ptr<FastText> fast_text;
+  Status s = FastText::BuildFromFile(&fast_text, vectors_dir);
+  EXPECT_EQ(s, Status::OK());
+
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(fast_text);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token01, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected01);
+  EXPECT_TRUE(status01.IsOk());
+  std::vector<float> unknown_init = {-1, -1, -1, -1, -1, -1};
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(fast_text, unknown_init);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token01, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected02);
+  EXPECT_TRUE(status02.IsOk());
+  std::shared_ptr<TensorTransform> to_vectors03 = std::make_shared<text::ToVectors>(fast_text, unknown_init);
+  auto transform03 = Execute({to_vectors03});
+  Status status03 = transform03(token02, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected03);
+  EXPECT_TRUE(status03.IsOk());
+  std::shared_ptr<TensorTransform> to_vectors04 = std::make_shared<text::ToVectors>(fast_text, unknown_init, true);
+  auto transform04 = Execute({to_vectors04});
+  Status status04 = transform04(token03, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected03);
+  EXPECT_TRUE(status04.IsOk());
+}
+
+/// Feature: ToVectors
+/// Description: test invalid parameter of ToVectors for FastText
+/// Expectation: throw exception correctly
+TEST_F(MindDataTestExecute, TestToVectorsWithInvalidParamForFastText) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestToVectorsWithInvalidParamForFastText.";
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("none", &de_tensor);
+  auto token = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/test_fast_text/fast_text.vec";
+  std::shared_ptr<FastText> fast_text01;
+  Status s = FastText::BuildFromFile(&fast_text01, vectors_dir);
+  EXPECT_EQ(s, Status::OK());
+  std::vector<float> unknown_init = {-1, -1, -1, -1};
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(fast_text01, unknown_init);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token, &lookup_result);
+  EXPECT_FALSE(status01.IsOk());
+  std::shared_ptr<FastText> fast_text02 = nullptr;
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(fast_text02);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token, &lookup_result);
+  EXPECT_FALSE(status02.IsOk());
+}
+
+/// Feature: GloVe
+/// Description: test basic usage of GloVe and the ToVectors with default parameter
+/// Expectation: get correct MSTensor
+TEST_F(MindDataTestExecute, TestGloVeParam) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestGloVeParam.";
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("ok", &de_tensor);
+  auto token = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Create expected output.
+  std::shared_ptr<Tensor> de_expected;
+  std::vector<float> expected = {0.418, 0.24968, -0.41242, 0.1217, 0.34527, -0.04445718411};
+  dsize_t dim = 6;
+  ASSERT_OK(Tensor::CreateFromVector(expected, TensorShape({dim}), &de_expected));
+  auto ms_expected = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected));
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testGloVe/glove.6B.test.txt";
+  std::shared_ptr<GloVe> glove01;
+  Status s01 = GloVe::BuildFromFile(&glove01, vectors_dir);
+  EXPECT_EQ(s01, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(glove01);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status01.IsOk());
+
+  std::shared_ptr<GloVe> glove02;
+  Status s02 = GloVe::BuildFromFile(&glove02, vectors_dir, 100);
+  EXPECT_EQ(s02, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(glove02);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status02.IsOk());
+
+  std::shared_ptr<GloVe> glove03;
+  Status s03 = GloVe::BuildFromFile(&glove03, vectors_dir, 3);
+  EXPECT_EQ(s03, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors03 = std::make_shared<text::ToVectors>(glove03);
+  auto transform03 = Execute({to_vectors03});
+  Status status03 = transform03(token, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected);
+  EXPECT_TRUE(status03.IsOk());
+}
+
+/// Feature: ToVectors
+/// Description: test basic usage of ToVectors and the GloVe with default parameter
+/// Expectation: get correct MSTensor
+TEST_F(MindDataTestExecute, TestToVectorsParamForGloVe) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestToVectorsParamForGloVe.";
+  std::shared_ptr<Tensor> de_tensor01;
+  Tensor::CreateScalar<std::string>("none", &de_tensor01);
+  auto token01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor01));
+  std::shared_ptr<Tensor> de_tensor02;
+  Tensor::CreateScalar<std::string>("ok", &de_tensor02);
+  auto token02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor02));
+  std::shared_ptr<Tensor> de_tensor03;
+  Tensor::CreateScalar<std::string>("OK", &de_tensor03);
+  auto token03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor03));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Create expected output.
+  dsize_t dim = 6;
+  std::shared_ptr<Tensor> de_expected01;
+  std::vector<float> expected01 = {0, 0, 0, 0, 0, 0};
+  ASSERT_OK(Tensor::CreateFromVector(expected01, TensorShape({dim}), &de_expected01));
+  auto ms_expected01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected01));
+  std::shared_ptr<Tensor> de_expected02;
+  std::vector<float> expected02 = {-1, -1, -1, -1, -1, -1};
+  ASSERT_OK(Tensor::CreateFromVector(expected02, TensorShape({dim}), &de_expected02));
+  auto ms_expected02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected02));
+  std::shared_ptr<Tensor> de_expected03;
+  std::vector<float> expected03 = {0.418, 0.24968, -0.41242, 0.1217, 0.34527, -0.04445718411};
+  ASSERT_OK(Tensor::CreateFromVector(expected03, TensorShape({dim}), &de_expected03));
+  auto ms_expected03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected03));
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testGloVe/glove.6B.test.txt";
+  std::shared_ptr<GloVe> glove;
+  Status s = GloVe::BuildFromFile(&glove, vectors_dir);
+  EXPECT_EQ(s, Status::OK());
+
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(glove);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token01, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected01);
+  EXPECT_TRUE(status01.IsOk());
+  std::vector<float> unknown_init = {-1, -1, -1, -1, -1, -1};
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(glove, unknown_init);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token01, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected02);
+  EXPECT_TRUE(status02.IsOk());
+  std::shared_ptr<TensorTransform> to_vectors03 = std::make_shared<text::ToVectors>(glove, unknown_init);
+  auto transform03 = Execute({to_vectors03});
+  Status status03 = transform03(token02, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected03);
+  EXPECT_TRUE(status03.IsOk());
+  std::shared_ptr<TensorTransform> to_vectors04 = std::make_shared<text::ToVectors>(glove, unknown_init, true);
+  auto transform04 = Execute({to_vectors04});
+  Status status04 = transform04(token03, &lookup_result);
+  EXPECT_MSTENSOR_EQ(lookup_result, ms_expected03);
+  EXPECT_TRUE(status04.IsOk());
+}
+
+/// Feature: ToVectors
+/// Description: test invalid parameter of ToVectors for GloVe
+/// Expectation: throw exception correctly
+TEST_F(MindDataTestExecute, TestToVectorsWithInvalidParamForGloVe) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestToVectorsWithInvalidParamForGloVe.";
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("none", &de_tensor);
+  auto token = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testGloVe/glove.6B.test.txt";
+  std::shared_ptr<GloVe> glove01;
+  Status s = GloVe::BuildFromFile(&glove01, vectors_dir);
+  EXPECT_EQ(s, Status::OK());
+  std::vector<float> unknown_init = {-1, -1, -1, -1};
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(glove01, unknown_init);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token, &lookup_result);
+  EXPECT_FALSE(status01.IsOk());
+  std::shared_ptr<GloVe> glove02 = nullptr;
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(glove02);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token, &lookup_result);
+  EXPECT_FALSE(status02.IsOk());
+}
+
+/// Feature: CharNGram
+/// Description: test basic usage of CharNGram and the ToVectors with default parameter
+/// Expectation: get correct MSTensor
+TEST_F(MindDataTestExecute, TestCharNGramParam) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestCharNGramParam.";
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("the", &de_tensor);
+  auto token = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Create expected output.
+  std::shared_ptr<Tensor> de_expected01;
+  std::vector<float> expected01 = {-0.840079,-0.0270003,-0.833472,0.588367,-0.210012};
+  ASSERT_OK(Tensor::CreateFromVector(expected01, &de_expected01));
+  auto ms_expected01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected01));
+  std::shared_ptr<Tensor> de_expected02;
+  std::vector<float> expected02 = {-1.34122,0.0442693,-0.48697,0.662939,-0.367669};
+  ASSERT_OK(Tensor::CreateFromVector(expected02, &de_expected02));
+  auto ms_expected02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected02));
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testVectors/char_n_gram_20.txt";
+  std::shared_ptr<CharNGram> char_n_gram01;
+  Status s01 = CharNGram::BuildFromFile(&char_n_gram01, vectors_dir);
+  EXPECT_EQ(s01, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(char_n_gram01);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token, &lookup_result);
+  EXPECT_EQ(lookup_result.Shape(), ms_expected01.Shape());
+  EXPECT_TRUE(status01.IsOk());
+
+  std::shared_ptr<CharNGram> char_n_gram02;
+  Status s02 = CharNGram::BuildFromFile(&char_n_gram02, vectors_dir, 100);
+  EXPECT_EQ(s02, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(char_n_gram02);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token, &lookup_result);
+  EXPECT_EQ(lookup_result.Shape(), ms_expected01.Shape());
+  EXPECT_TRUE(status02.IsOk());
+
+  std::shared_ptr<CharNGram> char_n_gram03;
+  Status s03 = CharNGram::BuildFromFile(&char_n_gram03, vectors_dir, 18);
+  EXPECT_EQ(s03, Status::OK());
+  std::shared_ptr<TensorTransform> to_vectors03 = std::make_shared<text::ToVectors>(char_n_gram03);
+  auto transform03 = Execute({to_vectors03});
+  Status status03 = transform03(token, &lookup_result);
+  EXPECT_EQ(lookup_result.Shape(), ms_expected02.Shape());
+  EXPECT_TRUE(status03.IsOk());
+}
+
+/// Feature: CharNGram
+/// Description: test basic usage of ToVectors and the CharNGram with default parameter
+/// Expectation: get correct MSTensor
+TEST_F(MindDataTestExecute, TestToVectorsParamForCharNGram) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestToVectorsParamForCharNGram.";
+  std::shared_ptr<Tensor> de_tensor01;
+  Tensor::CreateScalar<std::string>("none", &de_tensor01);
+  auto token01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor01));
+  std::shared_ptr<Tensor> de_tensor02;
+  Tensor::CreateScalar<std::string>("the", &de_tensor02);
+  auto token02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor02));
+  std::shared_ptr<Tensor> de_tensor03;
+  Tensor::CreateScalar<std::string>("The", &de_tensor03);
+  auto token03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor03));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Create expected output.
+  std::shared_ptr<Tensor> de_expected01;
+  std::vector<float> expected01(5, 0);
+  ASSERT_OK(Tensor::CreateFromVector(expected01, &de_expected01));
+  auto ms_expected01 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected01));
+  std::shared_ptr<Tensor> de_expected02;
+  std::vector<float> expected02(5, -1);
+  ASSERT_OK(Tensor::CreateFromVector(expected02, &de_expected02));
+  auto ms_expected02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected02));
+  std::shared_ptr<Tensor> de_expected03;
+  std::vector<float> expected03 = {-0.840079,-0.0270003,-0.833472,0.588367,-0.210012};
+  ASSERT_OK(Tensor::CreateFromVector(expected03, &de_expected03));
+  auto ms_expected03 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected03));
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testVectors/char_n_gram_20.txt";
+  std::shared_ptr<CharNGram> char_n_gram;
+  Status s = CharNGram::BuildFromFile(&char_n_gram, vectors_dir);
+  EXPECT_EQ(s, Status::OK());
+
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(char_n_gram);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token01, &lookup_result);
+  EXPECT_EQ(lookup_result.Shape(), ms_expected01.Shape());
+  EXPECT_TRUE(status01.IsOk());
+  std::vector<float> unknown_init(5, -1);
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(char_n_gram, unknown_init);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token01, &lookup_result);
+  EXPECT_EQ(lookup_result.Shape(), ms_expected02.Shape());
+  EXPECT_TRUE(status02.IsOk());
+  std::shared_ptr<TensorTransform> to_vectors03 = std::make_shared<text::ToVectors>(char_n_gram, unknown_init);
+  auto transform03 = Execute({to_vectors03});
+  Status status03 = transform03(token02, &lookup_result);
+  EXPECT_EQ(lookup_result.Shape(), ms_expected03.Shape());
+  EXPECT_TRUE(status03.IsOk());
+  std::shared_ptr<TensorTransform> to_vectors04 = std::make_shared<text::ToVectors>(char_n_gram, unknown_init, true);
+  auto transform04 = Execute({to_vectors04});
+  Status status04 = transform04(token03, &lookup_result);
+  EXPECT_EQ(lookup_result.Shape(), ms_expected03.Shape());
+  EXPECT_TRUE(status04.IsOk());
+}
+
+/// Feature: CharNGram
+/// Description: test invalid parameter of ToVectors
+/// Expectation: throw exception correctly
+TEST_F(MindDataTestExecute, TestToVectorsWithInvalidParamForCharNGram) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestToVectorsWithInvalidParamForCharNGram.";
+  std::shared_ptr<Tensor> de_tensor;
+  Tensor::CreateScalar<std::string>("none", &de_tensor);
+  auto token = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
+  luojianet_ms::MSTensor lookup_result;
+
+  // Transform params.
+  std::string vectors_dir = "data/dataset/testVectors/char_n_gram_20.txt";
+  std::shared_ptr<CharNGram> char_n_gram01;
+  Status s = CharNGram::BuildFromFile(&char_n_gram01, vectors_dir);
+  EXPECT_EQ(s, Status::OK());
+  std::vector<float> unknown_init(4, -1);
+  std::shared_ptr<TensorTransform> to_vectors01 = std::make_shared<text::ToVectors>(char_n_gram01, unknown_init);
+  auto transform01 = Execute({to_vectors01});
+  Status status01 = transform01(token, &lookup_result);
+  EXPECT_FALSE(status01.IsOk());
+  std::shared_ptr<CharNGram> char_n_gram02 = nullptr;
+  std::shared_ptr<TensorTransform> to_vectors02 = std::make_shared<text::ToVectors>(char_n_gram02);
+  auto transform02 = Execute({to_vectors02});
+  Status status02 = transform02(token, &lookup_result);
+  EXPECT_FALSE(status02.IsOk());
+}
+
+// Feature: DBToAmplitude
+// Description: test DBToAmplitude in eager mode
+// Expectation: the data is processed successfully
+TEST_F(MindDataTestExecute, TestDBToAmplitudeWithEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestDBToAmplitudeWithEager.";
+  // Original waveform
+  std::vector<float> labels = {
+    2.716064453125000000e-03, 6.347656250000000000e-03, 9.246826171875000000e-03, 1.089477539062500000e-02,
+    1.138305664062500000e-02, 1.156616210937500000e-02, 1.394653320312500000e-02, 1.550292968750000000e-02,
+    1.614379882812500000e-02, 1.840209960937500000e-02, 1.718139648437500000e-02, 1.599121093750000000e-02,
+    1.647949218750000000e-02, 1.510620117187500000e-02, 1.385498046875000000e-02, 1.345825195312500000e-02,
+    1.419067382812500000e-02, 1.284790039062500000e-02, 1.052856445312500000e-02, 9.368896484375000000e-03};
+  std::shared_ptr<Tensor> input;
+  ASSERT_OK(Tensor::CreateFromVector(labels, TensorShape({2, 10}), &input));
+  auto input_02 = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input));
+  std::shared_ptr<TensorTransform> DBToAmplitude_01 = std::make_shared<audio::DBToAmplitude>(2, 2);
+  luojianet_ms::dataset::Execute Transform01({DBToAmplitude_01});
+  // Filtered waveform by DBToAmplitude
+  Status s01 = Transform01(input_02, &input_02);
+  EXPECT_TRUE(s01.IsOk());
+}
+
+/// Feature: SlidingWindowCmn
+/// Description: test basic function of SlidingWindowCmn
+/// Expectation: get correct number of data
+TEST_F(MindDataTestExecute, TestSlidingWindowCmn) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestSlidingWindowCmn.";
+
+  std::shared_ptr<Tensor> input_tensor_;
+  int32_t cmn_window = 500;
+  int32_t min_cmn_window = 50;
+  bool center = false;
+  bool norm_vars = false;
+
+  // create tensor shape
+  TensorShape s = TensorShape({2, 2, 500});
+  // init input vector
+  std::vector<float> input_vec(s.NumOfElements());
+  for (int idx = 0; idx < input_vec.size(); ++idx) {
+    input_vec[idx] = std::rand() % (1000) / (1000.0f);
+  }
+  ASSERT_OK(Tensor::CreateFromVector(input_vec, s, &input_tensor_));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+  std::shared_ptr<TensorTransform> sliding_window_cmn_op =
+    std::make_shared<audio::SlidingWindowCmn>(cmn_window, min_cmn_window, center, norm_vars);
+
+  // apply sliding_window_cmn
+  luojianet_ms::dataset::Execute Transform({sliding_window_cmn_op});
+  Status status = Transform(input_ms, &input_ms);
+  EXPECT_TRUE(status.IsOk());
+}
+
+/// Feature: SlidingWindowCmn
+/// Description: test wrong input args of SlidingWindowCmn
+/// Expectation: get nullptr of iterator
+TEST_F(MindDataTestExecute, TestSlidingWindowCmnWrongArgs) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestSlidingWindowCmnWrongArgs.";
+
+  std::shared_ptr<Tensor> input_tensor_;
+  // create tensor shape
+  TensorShape s = TensorShape({2, 2, 500});
+  // init input vector
+  std::vector<float> input_vec(s.NumOfElements());
+  for (int idx = 0; idx < input_vec.size(); ++idx) {
+    input_vec[idx] = std::rand() % (1000) / (1000.0f);
+  }
+  ASSERT_OK(Tensor::CreateFromVector(input_vec, s, &input_tensor_));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(input_tensor_));
+
+  // SlidingWindowCmn: cmn_window must be greater than or equal to 0.
+  std::shared_ptr<TensorTransform> sliding_window_cmn_op_1 =
+    std::make_shared<audio::SlidingWindowCmn>(-1, 100, false, false);
+  luojianet_ms::dataset::Execute Transform_1({sliding_window_cmn_op_1});
+  Status status_1 = Transform_1(input_ms, &input_ms);
+  EXPECT_FALSE(status_1.IsOk());
+
+  // SlidingWindowCmn: min_cmn_window must be greater than or equal to 0.
+  std::shared_ptr<TensorTransform> sliding_window_cmn_op_2 =
+    std::make_shared<audio::SlidingWindowCmn>(500, -1, false, false);
+  luojianet_ms::dataset::Execute Transform_2({sliding_window_cmn_op_2});
+  Status status_2 = Transform_2(input_ms, &input_ms);
+  EXPECT_FALSE(status_2.IsOk());
+}
+
+/// Feature: AutoAugment
+/// Description: test AutoAugment eager
+/// Expectation: load one image data and process auto augmentation with given policy on it.
+TEST_F(MindDataTestExecute, TestAutoAugmentEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-TestAutoAugmentEager.";
+  // Read images
+  auto image = ReadFileToTensor("data/dataset/apple.jpg");
+
+  // Transform params
+  auto decode = vision::Decode();
+  auto auto_augment_op = vision::AutoAugment(AutoAugmentPolicy::kImageNet, InterpolationMode::kLinear, {0, 0, 0});
+
+  auto transform = Execute({decode, auto_augment_op});
+  Status rc = transform(image, &image);
+  EXPECT_EQ(rc, Status::OK());
+}
+
+/// Feature: Spectrogram.
+/// Description: test Spectrogram in eager mode.
+/// Expectation: the data is processed successfully.
+TEST_F(MindDataTestExecute, TestSpectrogramEager) {
+  MS_LOG(INFO) << "Doing MindDataTestExecute-SpectrogramEager.";
+  std::shared_ptr<Tensor> test_input_tensor;
+  std::vector<double> waveform = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1};
+  ASSERT_OK(Tensor::CreateFromVector(waveform, TensorShape({1, (long)waveform.size()}), &test_input_tensor));
+  auto input_tensor = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(test_input_tensor));
+  std::shared_ptr<TensorTransform> spectrogram = std::make_shared<audio::Spectrogram>(8, 8, 4, 0, WindowType::kHann,
+                                                                                      2., false, true,
+                                                                                      BorderType::kReflect, true);
+  auto transform = Execute({spectrogram});
+  Status rc = transform({input_tensor}, &input_tensor);
+  ASSERT_TRUE(rc.IsOk());
+}

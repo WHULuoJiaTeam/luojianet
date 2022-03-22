@@ -1,0 +1,16 @@
+{
+  "columns": {
+    "image": {
+      "type": "uint8",
+      "rank": 1
+    },
+    "label" : {
+      "type": "string",
+      "rank": 1
+    },
+    "id" : {
+      "type": "int64",
+      "rank": 0
+    }
+  }
+}

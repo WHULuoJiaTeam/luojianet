@@ -39,6 +39,7 @@ LuoJiaNET同时与国产人工智能硬件NPU深度融合，可同时支持CPU�
     [ 4. 10. 18.]
     ```
 
+3. LuoJiaNET安装手册中，相应的源码见[tutorial](https://gitee.com/mindspore/luojianet/blob/master/examples/tutorial)
 
 ## 版本说明
 

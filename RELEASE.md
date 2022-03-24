@@ -1,6 +1,6 @@
-# LuoJiaNet 1.1.0
+# LuoJiaNet 1.0.0
 
-## LuoJiaNet 1.1.0 Release Notes
+## LuoJiaNet 1.0.0 Release Notes
 
 - Support GDAL built from root for multi-source remote sensing processing
 - Support data parallel / model parallel / hybrid-parallel 

@@ -50,6 +50,11 @@ if(ENABLE_MPI)
 endif()
 
 if(ENABLE_GPU)
+    
+   if(UNIX)
+        SET(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
+    endif()
+
     find_package(CUDA REQUIRED)
     find_package(Threads)
     # if(${CUDA_VERSION} VERSION_LESS ${MS_REQUIRE_CUDA_VERSION})
@@ -57,6 +62,7 @@ if(ENABLE_GPU)
               # but only CUDA ${CUDA_VERSION} found.")
     # endif()
     enable_language(CUDA)
+
     if(NOT CUDA_PATH OR CUDA_PATH STREQUAL "")
         if(DEFINED ENV{CUDA_HOME} AND NOT $ENV{CUDA_HOME} STREQUAL "")
             set(CUDA_PATH $ENV{CUDA_HOME})
@@ -64,6 +70,7 @@ if(ENABLE_GPU)
             set(CUDA_PATH ${CUDA_TOOLKIT_ROOT_DIR})
         endif()
     endif()
+   
 
     if(DEFINED ENV{CUDNN_HOME} AND NOT $ENV{CUDNN_HOME} STREQUAL "")
         set(CUDNN_INCLUDE_DIR $ENV{CUDNN_HOME}/include)

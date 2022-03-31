@@ -110,6 +110,8 @@ if(ENABLE_TESTCASES OR ENABLE_CPP_ST)
     add_subdirectory(tests)
 endif()
 
+# message(FATAL_ERROR "Python3_VERSION_MAJOR, Python3_VERSION_MINOR: ${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
+
 if(ENABLE_RS)
     if(WIN32)
         INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/third_party/GDAL_win/include)

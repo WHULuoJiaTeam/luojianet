@@ -3,7 +3,7 @@ set(Eigen3_CFLAGS "-D_FORTIFY_SOURCE=2 -O2")
 
 
 set(REQ_URL "https://gitee.com/mizhangwhuer/eigen/attach_files/1014163/download/eigen-3.3.9.tar.gz")
-set(MD5 "d41d8cd98f00b204e9800998ecf8427e")
+set(MD5 "609286804b0f79be622ccf7f9ff2b660")
 
 
 luojianet_ms_add_pkg(Eigen3

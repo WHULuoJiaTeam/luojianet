@@ -3,7 +3,7 @@ set(Eigen3_CFLAGS "-D_FORTIFY_SOURCE=2 -O2")
 
 
 set(REQ_URL "https://gitee.com/mizhangwhuer/eigen/repository/archive/3.3.9?format=zip")
-set(MD5 "0cc8684dbc4b4af416cd26d5d7a7f992")
+set(MD5 "d41d8cd98f00b204e9800998ecf8427e")
 
 
 luojianet_ms_add_pkg(Eigen3

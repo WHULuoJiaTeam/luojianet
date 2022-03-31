@@ -143,12 +143,13 @@ if(ENABLE_RS)
 			COMPONENT luojianet_ms
 	)
 
-	file(GLOB GDAL_LIB_LIST "${gdal_LIBPATH}/gdal*")
-	install(
-			FILES ${GDAL_LIB_LIST}
-			DESTINATION ${INSTALL_LIB_DIR}
-			COMPONENT luojianet_ms
-	)
+	# file(GLOB GDAL_LIB_LIST "${gdal_LIBPATH}/gdal*")
+	# message("gdal_LIBPATH: ${gdal_LIBPATH}")
+	# install(
+			# FILES ${GDAL_LIB_LIST}
+			# DESTINATION ${INSTALL_LIB_DIR}
+			# COMPONENT luojianet_ms
+	# )
 
 	# copy over python files
 	file(GLOB_RECURSE MDP_PY_FILES ${CMAKE_SOURCE_DIR}/dataset_plugin/*.py)

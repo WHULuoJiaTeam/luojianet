@@ -23,7 +23,7 @@ build_luojianet()
     echo "start build luojianet_ms project."
     mkdir -pv "${BUILD_PATH}/luojianet_ms"
     cd "${BUILD_PATH}/luojianet_ms"
-    CMAKE_ARGS="-DDEBUG_MODE=$DEBUG_MODE -DBUILD_PATH=$BUILD_PATH"
+    CMAKE_ARGS="-DDEBUG_MODE=$DEBUG_MODE -DBUILD_PATH=$BUILD_PATH -DCMAKE_CXX_COMPILER=$(which g++) -DCMAKE_C_COMPILER=$(which gcc)"
     if [[ "X$ENABLE_COVERAGE" = "Xon" ]]; then
       CMAKE_ARGS="${CMAKE_ARGS} -DENABLE_COVERAGE=ON"
     fi

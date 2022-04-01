@@ -42,11 +42,11 @@ const float weight_for_mul = 0.5;
 enum OpMergeMode {
   OP_MERGE_UNDEFINED = 0,            // undefined behavior
   OP_MERGE_IGNORE = 1,               // indicate an input op merged into other op in compute node list
-  OP_MERGE_CONV = 2,                 // indicate `MindSpore Conv + BiasAdd` --> `ONNX Conv`
-  OP_MERGE_GEMM = 3,                 // indicate `MindSpore MatMul + BiasAdd` --> `ONNX Gemm`
-  OP_MERGE_BATCH_NORM = 4,           // indicate `MindSpore BatchNorm(x)[0]` --> `ONNX Batch Normalization`
-  OP_MERGE_MAXPOOL_WITH_ARGMAX = 5,  // indicate `MindSpore MaxPoolWithArgmax(x)[0]` --> `ONNX MaxPool`
-  OP_MERGE_LAYER_NORM = 6,           // indicate `MindSpore LayerNorm(x)[0]` --> `ONNX MeanVarianceNormalization`
+  OP_MERGE_CONV = 2,                 // indicate `LuoJiaNET Conv + BiasAdd` --> `ONNX Conv`
+  OP_MERGE_GEMM = 3,                 // indicate `LuoJiaNET MatMul + BiasAdd` --> `ONNX Gemm`
+  OP_MERGE_BATCH_NORM = 4,           // indicate `LuoJiaNET BatchNorm(x)[0]` --> `ONNX Batch Normalization`
+  OP_MERGE_MAXPOOL_WITH_ARGMAX = 5,  // indicate `LuoJiaNET MaxPoolWithArgmax(x)[0]` --> `ONNX MaxPool`
+  OP_MERGE_LAYER_NORM = 6,           // indicate `LuoJiaNET LayerNorm(x)[0]` --> `ONNX MeanVarianceNormalization`
 };
 
 struct OpMergedInfo {
@@ -333,7 +333,7 @@ public:
   GenAttrFuncType fn_gen_attr() const { return fn_gen_attr_; }
 
 private:
-  std::string attr_name_;                              // attribute name of MindSpore
+  std::string attr_name_;                              // attribute name of LuoJiaNET
   std::string onnx_attr_name_;                         // corresponding attribute name of ONNX
   onnx::AttributeProto_AttributeType onnx_attr_type_;  // corresponding attribute type of ONNX
   GenAttrFuncType fn_gen_attr_;                        // function used convert
@@ -408,7 +408,7 @@ public:
   }
 
 private:
-  std::string op_type_;                         // operator type of MindSpore
+  std::string op_type_;                         // operator type of LuoJiaNET
   std::string onnx_type_;                       // corresponding ONNX operator type
   std::vector<OpAttrInfo> op_attrs_;            // operator attributes map info
   std::vector<InputConversion> input_casts_;    // if input input_index has type input_type, cast it to target_type
@@ -530,12 +530,12 @@ OPERATOR_ONNX_CONVERT_DEFINE(Softplus, Softplus, OpNameInfo())
 OPERATOR_ONNX_CONVERT_DEFINE(Tanh, Tanh, OpNameInfo())
 OPERATOR_ONNX_CONVERT_DEFINE(Abs, Abs, OpNameInfo())
 
-// MindSpore Softmax axis(int, Tuple)
+// LuoJiaNET Softmax axis(int, Tuple)
 OPERATOR_ONNX_CONVERT_DEFINE(Softmax, Softmax,
                              OpNameInfo().Attr("axis", "axis", onnx::AttributeProto_AttributeType_INT,
                                                SetAttrTupleValueToProto<0>))
 
-// MindSpore LogSoftmax axis(int)
+// LuoJiaNET LogSoftmax axis(int)
 OPERATOR_ONNX_CONVERT_DEFINE(LogSoftmax, LogSoftmax,
                              OpNameInfo().Attr("axis", "axis", onnx::AttributeProto_AttributeType_INT,
                                                SetAttrValueToProto<Int64Imm>))
@@ -613,14 +613,14 @@ public:
     return registry;
   }
 
-  static const mindspore::HashMap<std::string, OpNameInfo> &GetOpConvertMap() { return GetSingleton().op_map_; }
+  static const luojianet_ms::HashMap<std::string, OpNameInfo> &GetOpConvertMap() { return GetSingleton().op_map_; }
 
   void Clear() noexcept { op_map_.clear(); }
 
 private:
   OpConvertRegistry() {}
 
-  mindspore::HashMap<std::string, OpNameInfo> op_map_;
+  luojianet_ms::HashMap<std::string, OpNameInfo> op_map_;
 };
 
 class OnnxExporter {
@@ -646,9 +646,9 @@ private:
   void SetTensorProtoInfo(const ParameterPtr &param, onnx::TensorProto *tensor_proto);
 
   void MatchAndMark(const FuncGraphPtr &func_graph, const std::vector<AnfNodePtr> &nodes,
-                    mindspore::HashMap<AnfNodePtr, OpMergedInfo> *op_merged_infos_ptr);
+                    luojianet_ms::HashMap<AnfNodePtr, OpMergedInfo> *op_merged_infos_ptr);
   void MatchAndMarkCNode(const FuncGraphPtr &func_graph, const CNodePtr &cnode,
-                         mindspore::HashMap<AnfNodePtr, OpMergedInfo> *op_merged_infos_ptr);
+                         luojianet_ms::HashMap<AnfNodePtr, OpMergedInfo> *op_merged_infos_ptr);
   void ExportNodes(const FuncGraphPtr &func_graph, std::map<AnfNodePtr, size_t> *node_map_ptr,
                    onnx::GraphProto *graph_proto);
 
@@ -766,7 +766,7 @@ std::string OnnxExporter::GetOnnxProtoString(const FuncGraphPtr &func_graph) {
 
 void OnnxExporter::InitModelInfo() {
   model_.set_ir_version(onnx::IR_VERSION_2019_1_22);
-  model_.set_producer_name("MindSpore");
+  model_.set_producer_name("LuoJiaNET");
   model_.set_producer_version("1.0");
   onnx::OperatorSetIdProto *opset_proto = model_.add_opset_import();
   opset_proto->set_version(ONNX_VERSION);
@@ -811,7 +811,7 @@ void OnnxExporter::ExportParameters(const FuncGraphPtr &func_graph, onnx::GraphP
 
 onnx::TensorProto_DataType OnnxExporter::GetOnnxDataType(TypeId type_id) {
   // clang-format off
-  static mindspore::HashMap<int, onnx::TensorProto_DataType> type_map = {
+  static luojianet_ms::HashMap<int, onnx::TensorProto_DataType> type_map = {
       {kNumberTypeBool, onnx::TensorProto_DataType_BOOL},
       {kNumberTypeInt8, onnx::TensorProto_DataType_INT8},
       {kNumberTypeInt16, onnx::TensorProto_DataType_INT16},
@@ -843,7 +843,7 @@ void OnnxExporter::SetValueInfoType(const AnfNodePtr &node, onnx::ValueInfoProto
     auto tensor = dyn_cast<TensorType>(dtype);
     auto elem_type = tensor->element();
     const auto &dims = dyn_cast<abstract::Shape>(shape)->shape();
-    // output type of 'Argmax' of MindSpore is int32, output type of 'ArgMax' of ONNX is int64
+    // output type of 'Argmax' of LuoJiaNET is int32, output type of 'ArgMax' of ONNX is int64
     auto type = is_output ? onnx::TensorProto_DataType_INT64 : GetOnnxDataType(elem_type->type_id());
     type_proto->mutable_tensor_type()->set_elem_type(type);
 
@@ -873,7 +873,7 @@ void OnnxExporter::SetTensorProtoInfo(const ParameterPtr &param, onnx::TensorPro
 }
 
 void OnnxExporter::MatchAndMark(const FuncGraphPtr &func_graph, const std::vector<AnfNodePtr> &nodes,
-                                mindspore::HashMap<AnfNodePtr, OpMergedInfo> *op_merged_infos_ptr) {
+                                luojianet_ms::HashMap<AnfNodePtr, OpMergedInfo> *op_merged_infos_ptr) {
   auto &op_merged_infos = *op_merged_infos_ptr;
 
   for (auto &node : nodes) {
@@ -908,7 +908,7 @@ struct MergeRule {
 };
 
 void OnnxExporter::MatchAndMarkCNode(const FuncGraphPtr &func_graph, const CNodePtr &cnode,
-                                     mindspore::HashMap<AnfNodePtr, OpMergedInfo> *op_merged_infos_ptr) {
+                                     luojianet_ms::HashMap<AnfNodePtr, OpMergedInfo> *op_merged_infos_ptr) {
   const std::vector<MergeRule> first_input_merge_rules = {
       {prim::kPrimBiasAdd, prim::kPrimConv2D, OP_MERGE_CONV},
       {prim::kPrimBiasAdd, prim::kPrimConv3D, OP_MERGE_CONV},
@@ -944,7 +944,7 @@ void OnnxExporter::ExportNodes(const FuncGraphPtr &func_graph, std::map<AnfNodeP
                                onnx::GraphProto *const graph_proto) {
   std::vector<AnfNodePtr> nodes = TopoSort(func_graph->get_return(), SuccIncoming, AlwaysInclude);
 
-  mindspore::HashMap<AnfNodePtr, OpMergedInfo> op_merged_infos;
+  luojianet_ms::HashMap<AnfNodePtr, OpMergedInfo> op_merged_infos;
   MatchAndMark(func_graph, nodes, &op_merged_infos);
   int count = -1;
   for (const AnfNodePtr &node : nodes) {
@@ -1284,7 +1284,7 @@ void OnnxExporter::ExportPrimResizeNearestNeighbor(const FuncGraphPtr &graph, co
   auto align_corners = GetOpAttribute<bool>(node, "align_corners");
   std::string coordinate_transformation_mode = align_corners ? "align_corners" : "asymmetric";
   // `nearest_mode` is based on ResizeNearestNeighborCPUKernel::LaunchKernel in
-  // mindspore/ccsrc/backend/kernel_compiler/cpu/resize_nearest_neighbor_cpu_kernel.cc
+  // luojianet_ms/ccsrc/backend/kernel_compiler/cpu/resize_nearest_neighbor_cpu_kernel.cc
   std::string nearest_mode = align_corners ? "round_prefer_ceil" : "floor";
 
   onnx::AttributeProto *coordinate_mode_proto = node_proto->add_attribute();
@@ -1317,7 +1317,7 @@ void OnnxExporter::ExportPrimResizeBilinear(const FuncGraphPtr &graph, const CNo
   mode_proto->set_s("linear");
 }
 
-// MindSpore ExpandDims -> ONNX Reshape
+// LuoJiaNET ExpandDims -> ONNX Reshape
 void OnnxExporter::ExportPrimExpandDims(const FuncGraphPtr &, const CNodePtr &node,
                                         std::map<AnfNodePtr, size_t> *node_map_ptr,
                                         onnx::GraphProto *const graph_proto) {
@@ -1363,7 +1363,7 @@ void OnnxExporter::ExportPrimExpandDims(const FuncGraphPtr &, const CNodePtr &no
   node_proto->add_input(name_shape);
 }
 
-// MindSpore BatchMatMul -> ONNX Transpose + MatMul
+// LuoJiaNET BatchMatMul -> ONNX Transpose + MatMul
 void OnnxExporter::ExportPrimBatchMatMul(const FuncGraphPtr &, const CNodePtr &node,
                                          std::map<AnfNodePtr, size_t> *node_map_ptr,
                                          onnx::GraphProto *const graph_proto) {
@@ -1477,7 +1477,7 @@ void OnnxExporter::SetOneInputNodeProtoInfo(onnx::NodeProto *const node_proto, c
   node_proto->add_input(input);
 }
 
-// MindSpore GeLU -> ONNX 0.5 * X * (1.0 + tanh((sqrt(2/pi) * (x + 0.044715 * pow(x, 3)))))
+// LuoJiaNET GeLU -> ONNX 0.5 * X * (1.0 + tanh((sqrt(2/pi) * (x + 0.044715 * pow(x, 3)))))
 void OnnxExporter::ExportPrimGeLU(const FuncGraphPtr &, const CNodePtr &node,
                                   std::map<AnfNodePtr, size_t> *node_map_ptr, onnx::GraphProto *const graph_proto) {
   auto input_x = GetNodeInputName(node->input(kOneNum), node_map_ptr, graph_proto);
@@ -1655,7 +1655,7 @@ void OnnxExporter::ExportPrimCast(const FuncGraphPtr &, const CNodePtr &node,
     MS_EXCEPTION_IF_NULL(type_ptr);
     attr_proto->set_i(GetOnnxDataType(type_ptr->type_id()));
   } else {
-    MS_LOG(EXCEPTION) << "Need to convert MindSpore Cast input(1) to ONNX Cast to attribute.";
+    MS_LOG(EXCEPTION) << "Need to convert LuoJiaNET Cast input(1) to ONNX Cast to attribute.";
   }
 }
 

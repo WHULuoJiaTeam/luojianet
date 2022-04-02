@@ -68,6 +68,12 @@ install(
 )
 
 install(
+        TARGETS geobject
+        DESTINATION ${INSTALL_BASE_DIR}
+        COMPONENT luojianet_ms
+)
+
+install(
   TARGETS luojianet_shared_lib
   DESTINATION ${INSTALL_LIB_DIR}
   COMPONENT luojianet_ms

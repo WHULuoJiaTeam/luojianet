@@ -135,7 +135,7 @@ void QuadTree::quad_search() {
 
 	/* Select N_NODES. */
 	int n_nodes = N_NODES;
-	if (shuffle_nodelist.size() < n_nodes) {
+	if (shuffle_nodelist.size() < (unsigned int)n_nodes) {
 		n_nodes = shuffle_nodelist.size();
 	}
 
@@ -276,7 +276,7 @@ void QuadTree::grid_search(cv::Mat &top_level_label, int n_classes, int ignore_l
 				Vector2 upperbound = grid.UpperBound + dxy[i];
 				BoundaryBox grid(lowerbound, upperbound);
 
-				/* Search in 512¡Á512 label area. */
+				/* Search in 512ï¿½ï¿½512 label area. */
 				if ((grid.LBx() >= 0 && grid.LBy() >= 0 && grid.LBx() < 512.0 && grid.LBy() < 512.0) && 
 					(grid.UBx() >= 0 && grid.UBy() >= 0 && grid.UBx() < 512.0 && grid.UBy() < 512.0)) {
 					if (istaken(cv::Range(grid.LBx(), grid.UBx()), cv::Range(grid.LBy(), grid.UBy())).at<uchar>(0, 0) == false) {

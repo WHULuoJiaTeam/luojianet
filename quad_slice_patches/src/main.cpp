@@ -194,7 +194,11 @@ py::list get_objects(int device_num, int rank_id,
         out_label_objects.append(dst_label_objects);
     }
 
-	return out_image_objects, out_label_objects;
+    py::list out;
+    out.append(out_image_objects);
+    out.append(out_label_objects);
+
+	return out;
 }
 
 

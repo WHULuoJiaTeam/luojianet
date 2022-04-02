@@ -184,7 +184,7 @@ py::list get_objects(int device_num, int rank_id,
 	py::list out_image_objects, out_label_objects;
 
 	int size = object.image_objects.size();
-    for (int index = 0, index < size, index++) {
+    for (int index = 0; index < size; index++) {
         src_image_objects = object.image_objects[index];
         dst_image_objects = cv_mat_uint8_3c_to_numpy(src_image_objects);
         out_image_objects.append(dst_image_objects);

@@ -12,7 +12,7 @@ import luojianet_ms.dataset as ds
 from luojianet_ms.communication.management import get_rank
 
 from settings import get_args
-# from geobject import get_objects
+from geobject import get_objects
 
 
 def pad(ignore_label, image_list, label_list):
@@ -87,17 +87,12 @@ class TrainDataset(BaseDataset):
         return image_list, label_list
 
     def _get_item(self, image_path, label_path):
-        image_list = []
-        label_list = []
-        for i in range(3):
-            image_list[i].append(cv2.imread('GDataset/train/image/GF2_PMS1__L1A0000564539-MSS1.tif'))
-            label_list[i].append(cv2.imread('GDataset/train/label/GF2_PMS1__L1A0000564539-MSS1_label.tif'))
         # Get the minimum bounding rectangle data of one-specified class, max_size of data is 1024x1024.
-        # image_objects, label_objects = get_objects(device_num=self.device_num, rank_id=get_rank(),
-        #                                            image_path=image_path, label_path=label_path,
-        #                                            n_classes=self.n_classes, ignore_label=self.ignore_label,
-        #                                            block_size=4096, max_searchsize=1024, min_searchsize=16)
-        # image_list, label_list = self.preprocess_data(image_list=image_objects, label_list=label_objects)
+        image_objects, label_objects = get_objects(device_num=self.device_num, rank_id=get_rank(),
+                                                   image_path=image_path, label_path=label_path,
+                                                   n_classes=self.n_classes, ignore_label=self.ignore_label,
+                                                   block_size=4096, max_searchsize=1024, min_searchsize=16)
+        image_list, label_list = self.preprocess_data(image_list=image_objects, label_list=label_objects)
         return image_list, label_list
 
 
@@ -106,7 +101,7 @@ def get_dataset(split='train', repeat=1):
 
     if split == 'val':
         raise NotImplementedError
-    train_dt = TrainDataset(args.n_classes, args.ignore_label, args.image_mean, args.image_std, args.device_num)
+    train_dt = TrainDataset(args.n_classes, args.ignore_label, args.image_mean, args.image_std, args.device_number)
     dataset = ds.GeneratorDataset(source=train_dt, column_names=["image_list", "label_list"],
                                   shuffle=False, num_parallel_workers=args.num_parallel_workers)
     dataset = dataset.batch(args.batch_size, drop_remainder=True)

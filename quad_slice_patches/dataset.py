@@ -88,10 +88,11 @@ class TrainDataset(BaseDataset):
 
     def _get_item(self, image_path, label_path):
         # Get the minimum bounding rectangle data of one-specified class, max_size of data is 1024x1024.
-        image_objects, label_objects = get_objects(device_num=self.device_num, rank_id=get_rank(),
+        data_objects = get_objects(device_num=self.device_num, rank_id=get_rank(),
                                                    image_path=image_path, label_path=label_path,
                                                    n_classes=self.n_classes, ignore_label=self.ignore_label,
                                                    block_size=4096, max_searchsize=1024, min_searchsize=16)
+        image_objects, label_objects = data_objects[0], data_objects[1]
         image_list, label_list = self.preprocess_data(image_list=image_objects, label_list=label_objects)
         return image_list, label_list
 

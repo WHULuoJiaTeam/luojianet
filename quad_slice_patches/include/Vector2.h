@@ -46,6 +46,9 @@
 
 #ifdef _WIN32
   // Microsoft non-standard function
+#ifdef __MINGW32__
+  #define _finite(v) (__builtin_isfinite(v))
+#endif
 #include <cfloat>
 #define VECTOR2_IS_FINITE(n) _finite(n)
 #elif __WIN32__

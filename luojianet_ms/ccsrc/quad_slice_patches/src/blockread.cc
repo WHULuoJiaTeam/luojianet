@@ -1,3 +1,20 @@
+/**
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "blockread.h"
 
 
@@ -89,7 +106,7 @@ void BlockRead::get_class_attribute(string &label_path, int init_cols, int init_
 			
 			cv::Mat label = gdal2cv.gdal_read(label_path, j, i, current_block_cols, current_block_rows);
 
-			/* Make border the residule block to standard BLOCK_SIZE for quick statistic in 512¡Á512 size. */
+			/* Make border the residule block to standard BLOCK_SIZE for quick statistic in 512ï¿½ï¿½512 size. */
 			if (label.rows < block_size || label.cols < block_size) {
 				cv::Mat label_border = make_label_border(label, block_size);
 				quick_statistic_class(label_border, block_index, n_classes, ignore_label);

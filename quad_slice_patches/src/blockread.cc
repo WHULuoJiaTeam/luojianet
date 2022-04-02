@@ -89,7 +89,7 @@ void BlockRead::get_class_attribute(string &label_path, int init_cols, int init_
 			
 			cv::Mat label = gdal2cv.gdal_read(label_path, j, i, current_block_cols, current_block_rows);
 
-			/* Make border the residule block to standard BLOCK_SIZE for quick statistic in 512ï¿½ï¿½512 size. */
+			/* Make border the residule block to standard BLOCK_SIZE for quick statistic in 512¡Á512 size. */
 			if (label.rows < block_size || label.cols < block_size) {
 				cv::Mat label_border = make_label_border(label, block_size);
 				quick_statistic_class(label_border, block_index, n_classes, ignore_label);
@@ -120,7 +120,7 @@ void BlockRead::quick_statistic_class(cv::Mat &label, int block_index, int n_cla
 		}
 	}
 
-	for (int k = 0; k < (int) label_value.size(); k++) {
+	for (int k = 0; k < label_value.size(); k++) {
 		if (label_value[k] > 0) {
 			class_attribute(block_index, k) = true;
 		}

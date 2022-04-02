@@ -126,19 +126,19 @@ def train(dataset):
     model.train(epoch=args.train_epochs, train_dataset=dataset, callbacks=cbs)
 
 
-def fun_target(image_list, label_list):
+def fun_target(image_queue, label_queue):
     class ObjectDataset:
         def __init__(self):
-            self.image_list = image_list
-            self.label_list = label_list
+            self.image_queue = image_queue
+            self.label_queue = label_queue
 
         def __getitem__(self, index):
-            image_sample = self.image_list[index]
-            label_sample = self.label_list[index]
+            image_sample = self.image_queue[index]
+            label_sample = self.label_queue[index]
             return image_sample, label_sample
 
         def __len__(self):
-            return len(self.image_list)
+            return len(self.image_queue)
 
     dataset = ds.GeneratorDataset(source=ObjectDataset(), column_names=["image_sample", "label_sample"], shuffle=False)
     dataset = dataset.repeat(count=1)
@@ -154,13 +154,13 @@ def main_train():
     # Train for each image_list and label_list
     image_queue = []
     label_queue = []
-    for data in dataset.create_tuple_iterator():
+    for data in dataset.create_dict_iterator():
         image_list = data["image_list"]
         label_list = data["label_list"]
         _, list_size, _, _, _ = image_list.shape
-        # Remove batch dimension
-
-
+        # Remove first batch dimension
+        image_list = image_list[0, :, :, :, :]
+        label_list = label_list[0, :, :, :, :]
         for i in range(list_size):
             image_queue.append(image_list[i])
             label_queue.append(label_list[i])

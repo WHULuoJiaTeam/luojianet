@@ -61,7 +61,7 @@ py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(cv::Mat &input) {
 }
 
 
-py::list get_object(int device_num, int rank_id,
+py::list get_objects(int device_num, int rank_id,
                     string &image_path, string &label_path,
                     int n_classes, int ignore_label,
                     int block_size, int max_searchsize, int min_searchsize) {
@@ -184,7 +184,7 @@ py::list get_object(int device_num, int rank_id,
 	py::list out_image_objects, out_label_objects;
 
 	int size = object.image_objects.size();
-    for (int index = 0; index < size; index++) {
+    for (int index = 0, index < size, index++) {
         src_image_objects = object.image_objects[index];
         dst_image_objects = cv_mat_uint8_3c_to_numpy(src_image_objects);
         out_image_objects.append(dst_image_objects);
@@ -194,7 +194,7 @@ py::list get_object(int device_num, int rank_id,
         out_label_objects.append(dst_label_objects);
     }
 
-	return out_image_objects;
+	return out_image_objects, out_label_objects;
 }
 
 
@@ -203,5 +203,5 @@ PYBIND11_MODULE(geobject, m) {
 	m.doc() = "input filename, output py::list for objects";
 
 	// Add bindings here
-	m.def("get_object", &get_object);
+	m.def("get_objects", &get_objects);
 }

@@ -316,17 +316,31 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 if(ENABLE_RS)
-    file(GLOB GDAL_LIB_LIST "${gdal_ext_LIBPATH}/*.so")
+    file(GLOB GDAL_LIB_LIST "${gdal_ext_LIBPATH}/lib*")
     install(
             FILES ${GDAL_LIB_LIST}
             DESTINATION ${INSTALL_LIB_DIR}
             COMPONENT luojianet_ms
     )
 
-    file(GLOB GDAL_EXTRA_LIB_LIST "${gdal_extra_LIBPATH}/*.so")
+    file(GLOB GDAL_EXTRA_LIB_LIST "${gdal_extra_LIBPATH}/lib*")
     install(
             FILES ${GDAL_EXTRA_LIB_LIST}
             DESTINATION ${INSTALL_LIB_DIR}
+            COMPONENT luojianet_ms
+    )
+
+    file(GLOB GDAL_LIB_LIST_SO "${gdal_ext_LIBPATH}/lib*")
+    install(
+            FILES ${GDAL_LIB_LIST_SO}
+            DESTINATION ${INSTALL_LIB_DIR}/..
+            COMPONENT luojianet_ms
+    )
+
+    file(GLOB GDAL_EXTRA_LIB_LIST_SO "${gdal_extra_LIBPATH}/lib*")
+    install(
+            FILES ${GDAL_EXTRA_LIB_LIST_SO}
+            DESTINATION ${INSTALL_LIB_DIR}/..
             COMPONENT luojianet_ms
     )
 

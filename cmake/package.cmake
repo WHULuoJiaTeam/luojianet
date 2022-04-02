@@ -76,6 +76,12 @@ set(INSTALL_BASE_DIR ".")
 set(INSTALL_BIN_DIR "bin")
 set(INSTALL_CFG_DIR "config")
 set(INSTALL_LIB_DIR "lib")
+
+if(ENABLE_RS)
+    set(gdal_ext_LIBPATH ${CMAKE_SOURCE_DIR}/third_party/GDAL_linux/lib/)
+    set(gdal_extra_LIBPATH ${CMAKE_SOURCE_DIR}/third_party/GDAL_linux/third_party/lib/)
+endif()
+
 # set package files
 install(
     TARGETS _c_expression
@@ -246,37 +252,12 @@ if(ENABLE_CPU AND NOT WIN32)
 endif()
 
 if(ENABLE_RS)
-	file(GLOB SQLITE_LIB_LIST "${sqlite_LIBPATH}/lib*")
-	install(
-			FILES ${SQLITE_LIB_LIST}
-			DESTINATION ${INSTALL_LIB_DIR}
-			COMPONENT luojianet_ms
-	)
-
-	file(GLOB PROJ_LIB_LIST "${proj_LIBPATH}/libproj*")
-	install(
-			FILES ${PROJ_LIB_LIST}
-			DESTINATION ${INSTALL_LIB_DIR}
-			COMPONENT luojianet_ms
-	)
-
-	file(GLOB GDAL_LIB_LIST "${gdal_LIBPATH}/libgdal*")
-	install(
-			FILES ${GDAL_LIB_LIST}
-			DESTINATION ${INSTALL_LIB_DIR}
-			COMPONENT luojianet_ms
-	)
-
-	# copy over python files
-	file(GLOB_RECURSE MDP_PY_FILES ${CMAKE_SOURCE_DIR}/dataset_plugin/*.py)
-
-	install(
-			FILES ${MDP_PY_FILES} ${CMAKE_SOURCE_DIR}/setup.py
-			DESTINATION ${INSTALL_PY_DIR}
-			COMPONENT luojianet_ms
-	)
+    install(
+            TARGETS geobject
+            DESTINATION ${INSTALL_BASE_DIR}
+            COMPONENT luojianet_ms
+    )
 endif()
-
 
 if(NOT ENABLE_GE)
     if(ENABLE_D OR ENABLE_ACL)
@@ -333,6 +314,40 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
         COMPONENT luojianet_ms
     )
 endif()
+
+if(ENABLE_RS)
+    file(GLOB GDAL_LIB_LIST "${gdal_ext_LIBPATH}/*.so")
+    install(
+            FILES ${GDAL_LIB_LIST}
+            DESTINATION ${INSTALL_LIB_DIR}
+            COMPONENT luojianet_ms
+    )
+
+    file(GLOB GDAL_EXTRA_LIB_LIST "${gdal_extra_LIBPATH}/*.so")
+    install(
+            FILES ${GDAL_EXTRA_LIB_LIST}
+            DESTINATION ${INSTALL_LIB_DIR}
+            COMPONENT luojianet_ms
+    )
+
+
+#    file(GLOB GDAL_LIB_LIST "${gdal_LIBPATH}/libgdal*")
+#    install(
+#            FILES ${GDAL_LIB_LIST}
+#            DESTINATION ${INSTALL_LIB_DIR}
+#            COMPONENT luojianet_ms
+#    )
+
+    # copy over python files
+    file(GLOB_RECURSE MDP_PY_FILES ${CMAKE_SOURCE_DIR}/dataset_plugin/*.py)
+
+    install(
+            FILES ${MDP_PY_FILES} ${CMAKE_SOURCE_DIR}/setup.py
+            DESTINATION ${INSTALL_PY_DIR}
+            COMPONENT luojianet_ms
+    )
+endif()
+
 
 # set python files
 file(GLOB MS_PY_LIST ${CMAKE_SOURCE_DIR}/luojianet_ms/python/luojianet_ms/*.py)

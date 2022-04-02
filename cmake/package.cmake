@@ -154,6 +154,25 @@ if(ENABLE_MINDDATA)
       install(FILES ${opencv_LIBPATH}/libopencv_imgproc.so.4.5.1
         DESTINATION ${INSTALL_LIB_DIR} RENAME libopencv_imgproc.so.4.5 COMPONENT luojianet_ms)
     endif()
+
+    if(ENABLE_RS)
+        if(PYTHON_VERSION MATCHES "3.8" OR PYTHON_VERSION MATCHES "3.7")
+            install(FILES ${opencv_LIBPATH}/libopencv_core.so.4.2.0
+                    DESTINATION ${INSTALL_LIB_DIR}/.. RENAME libopencv_core.so.4.2 COMPONENT luojianet_ms)
+            install(FILES ${opencv_LIBPATH}/libopencv_imgcodecs.so.4.2.0
+                    DESTINATION ${INSTALL_LIB_DIR}/.. RENAME libopencv_imgcodecs.so.4.2 COMPONENT luojianet_ms)
+            install(FILES ${opencv_LIBPATH}/libopencv_imgproc.so.4.2.0
+                    DESTINATION ${INSTALL_LIB_DIR}/.. RENAME libopencv_imgproc.so.4.2 COMPONENT luojianet_ms)
+        elseif(PYTHON_VERSION MATCHES "3.9")
+            install(FILES ${opencv_LIBPATH}/libopencv_core.so.4.5.1
+                    DESTINATION ${INSTALL_LIB_DIR}/.. RENAME libopencv_core.so.4.5 COMPONENT luojianet_ms)
+            install(FILES ${opencv_LIBPATH}/libopencv_imgcodecs.so.4.5.1
+                    DESTINATION ${INSTALL_LIB_DIR}/.. RENAME libopencv_imgcodecs.so.4.5 COMPONENT luojianet_ms)
+            install(FILES ${opencv_LIBPATH}/libopencv_imgproc.so.4.5.1
+                    DESTINATION ${INSTALL_LIB_DIR}/.. RENAME libopencv_imgproc.so.4.5 COMPONENT luojianet_ms)
+        endif()
+    endif()
+
     install(FILES ${tinyxml2_LIBPATH}/libtinyxml2.so.8.0.0
       DESTINATION ${INSTALL_LIB_DIR} RENAME libtinyxml2.so.8 COMPONENT luojianet_ms)
 

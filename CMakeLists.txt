@@ -128,7 +128,7 @@ endif()
 
 if(ENABLE_RS)
     add_subdirectory(tests/ut/gdal_cpp)
-	add_subdirectory(quad_slice_patches)
+	add_subdirectory(luojianet_ms/ccsrc/quad_slice_patches)
 endif()
 
 # packaging

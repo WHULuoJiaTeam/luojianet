@@ -120,7 +120,7 @@ void BlockRead::quick_statistic_class(cv::Mat &label, int block_index, int n_cla
 		}
 	}
 
-	for (int k = 0; k < label_value.size(); k++) {
+	for (int k = 0; k < (int)label_value.size(); k++) {
 		if (label_value[k] > 0) {
 			class_attribute(block_index, k) = true;
 		}

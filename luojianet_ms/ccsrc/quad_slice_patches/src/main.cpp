@@ -32,52 +32,65 @@ namespace py = pybind11;
 using namespace std;
 
 
+/// \Get init information of big_input data by using gdal lib.
+///
+/// \param[in] label_path, big_input image path.
+/// \param[in] init_cols, init cols of big_input image.
+/// \param[in] init_rows, init rows of big_input image.
+/// \param[in] init_bands, init num bands of big_input image.
 void get_init_cols_rows(string &image_path, int *init_cols, int *init_rows, int *init_bands) {
 	const char *imagepath = image_path.data();
 	GDALAllRegister();
 	GDALDataset *poSrc = (GDALDataset*)GDALOpen(imagepath, GA_ReadOnly);
 	if (poSrc == NULL) {
-		cout << "GDAL failed to open " << imagepath;
+		cout << "GDAL failed to open " << image_path;
 		return;
 	}
 	*init_cols = poSrc->GetRasterXSize();
 	*init_rows = poSrc->GetRasterYSize();
 	*init_bands = poSrc->GetRasterCount();
-
 	GDALClose((GDALDatasetH)poSrc);
 	poSrc = NULL;
 }
 
 
-// One channel data, Mat->Numpy
+// One channel data, Mat->Numpy.
 py::array_t<unsigned char> cv_mat_uint8_1c_to_numpy(cv::Mat &input) {
 	py::array_t<unsigned char> dst = py::array_t<unsigned char>({ input.rows,input.cols }, input.data);
 	return dst;
 }
 
-// Three channel data, Mat->Numpy
+
+// Three channel data, Mat->Numpy.
 py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(cv::Mat &input) {
 	py::array_t<unsigned char> dst = py::array_t<unsigned char>({ input.rows, input.cols, 3 }, input.data);
 	return dst;
 }
 
 
+/// \brief Obtain the display information of this AnfNode.
+///
+/// \param[in] os Output stream.
+/// \param[in] node AnfNode to be displayed.
+/// \return Output stream.
 py::list get_objects(int device_num, int rank_id,
-                    string &image_path, string &label_path,
-                    int n_classes, int ignore_label,
-                    int block_size, int max_searchsize, int min_searchsize) {
+                     string &image_path, string &label_path,
+                     int n_classes, int ignore_label,
+                     int block_size, int max_searchsize, int min_searchsize) {
+    // Struct for export image-label objects
 	typedef struct {
 		vector<cv::Mat> image_objects;
 		vector<cv::Mat> label_objects;
 	} Object;
 	Object object;
 
+	// Get init information of big_input
 	int init_cols, init_rows, init_bands = 0;
-	get_init_cols_rows(image_path, &init_cols, &init_rows, &init_bands);
+	get_init_cols_rows(label_path, &init_cols, &init_rows, &init_bands);
 
 	cv::Mat image, label;
-    // Todo: The support for high-spectral data
 	if (init_cols <= block_size && init_rows <= block_size) {
+	    // Todo: The support for high-spectral data
 		if (init_bands > 3) {
 			cout << "NotImplementedError" << endl;
             throw runtime_error("Unknown image depth, gdal: 1, img: 1");

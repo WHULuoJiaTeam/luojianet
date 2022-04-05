@@ -22,7 +22,7 @@
 ```
 3. 根据需求修改config中的参数
 ```
-"device_target":"CPU",      #GPU或CPU
+    "device_target":"CPU",      #GPU或CPU
     "dataset_path": "WHU-RS19/",  #数据存放位置
     "save_checkpoint_path": "./checkpoint",  #保存的参数存放位置
     "resume":False,   #是否载入模型训练

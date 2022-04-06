@@ -18,7 +18,6 @@
 #include <gdal_priv.h>
 #include <gdal.h>
 #include <opencv2/opencv.hpp>
-
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
@@ -29,9 +28,9 @@
 #include "quadtree.h"
 
 namespace py = pybind11;
-using namespace std;
+using std::vector;
 
-
+namespace luojianet_ms {
 /// \Get init information of big_input data by using gdal lib.
 ///
 /// \param[in] image_path, big_input image path.
@@ -53,7 +52,6 @@ void get_init_cols_rows(string &image_path, int *init_cols, int *init_rows, int 
 	poSrc = NULL;
 }
 
-
 /// \Only choose the first three bands of an image.
 /// \Todo: The support for band-selection algorithm, especially for high-spectral data.
 ///
@@ -64,21 +62,20 @@ void get_init_cols_rows(string &image_path, int *init_cols, int *init_rows, int 
 /// \param[in] current_block_rows, basic processing unit of image rows.
 /// \return three-band image, cv::Mat dtype.
 cv::Mat band_selection(string &image_path,
-                       int col_cord, int row_cord,
-                       int current_block_cols, int current_block_rows) {
-    cv::Mat image;
-    image = gdal2cv.gdal_read(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
+					   int col_cord, int row_cord,
+		               int current_block_cols, int current_block_rows) {
+	GDAL2CV gdal2cv;
+	cv::Mat image = gdal2cv.gdal_read(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
 
-    vector<cv::Mat> all_channels;
+	vector<cv::Mat> all_channels;
 	vector<cv::Mat> three_channels;
 	split(image, all_channels);
 	for (int i = 0; i < 3; i++) {
-        three_channels.push_back(all_channels.at(i));
+		three_channels.push_back(all_channels.at(i));
 	}
 	merge(three_channels, image);
 	return image;
 }
-
 
 /// \One channel data, Mat->Numpy.
 ///
@@ -89,7 +86,6 @@ py::array_t<unsigned char> cv_mat_uint8_1c_to_numpy(cv::Mat &input) {
 	return dst;
 }
 
-
 /// \Three channel data, Mat->Numpy.
 ///
 /// \param[in] input, cv::Mat data.
@@ -98,7 +94,6 @@ py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(cv::Mat &input) {
 	py::array_t<unsigned char> dst = py::array_t<unsigned char>({ input.rows, input.cols, 3 }, input.data);
 	return dst;
 }
-
 
 /// \Get the minimum bounding rectangle data of one-specified class.
 ///
@@ -112,11 +107,11 @@ py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(cv::Mat &input) {
 /// \param[in] max_searchsize, max output data size.
 /// \param[in] min_searchsize, min output data size.
 /// \return out, image-label objects in Numpy dtype.
-py::list get_objects(int device_num, int rank_id,
-                     string &image_path, string &label_path,
-                     int n_classes, int ignore_label,
-                     int block_size, int max_searchsize, int min_searchsize) {
-    // Struct for store export data.
+py::list get_objects(const int device_num, int rank_id,
+	                 string &image_path, string &label_path,
+	                 const int n_classes, const int ignore_label,
+	                 const int block_size, const int max_searchsize, const int min_searchsize) {
+	// Struct for store export data.
 	typedef struct {
 		vector<cv::Mat> image_objects;
 		vector<cv::Mat> label_objects;
@@ -125,57 +120,58 @@ py::list get_objects(int device_num, int rank_id,
 
 	// Get init information of big_input.
 	int init_cols, init_rows, init_bands = 0;
-	get_init_cols_rows(label_path, &init_cols, &init_rows, &init_bands);
+	get_init_cols_rows(image_path, &init_cols, &init_rows, &init_bands);
 
 	cv::Mat image, label;
 	if (init_cols <= block_size && init_rows <= block_size) {
-	    // Todo: The support for high-spectral data (more than 3 bands).
+		// Todo: The support for high-spectral data (more than 3 bands).
 		if (init_bands > 3) {
-		    image = band_selection(image_path, 0, 0, init_cols, init_rows);
+			image = band_selection(image_path, 0, 0, init_cols, init_rows);
 		}
 		else {
 			image = cv::imread(image_path, -1);
 		}
 		label = cv::imread(label_path, -1);
-        // Create data pyramid.
+		// Create data pyramid.
 		Pyramid pyramid;
 		pyramid.create_pyramid(image, label);
 		cv::Mat top_level_image = pyramid.image_pyramid.back();
 		cv::Mat top_level_label = pyramid.label_pyramid.back();
 		cv::Mat ori_level_image = pyramid.image_pyramid.front();
 		cv::Mat ori_level_label = pyramid.label_pyramid.front();
-        // Create quadtree search tree.
+		// Create quadtree search tree.
 		QuadTree quadtree;
 		quadtree.random_search(top_level_image, top_level_label, n_classes, ignore_label);
 		quadtree.get_multiscale_object(ori_level_image, ori_level_label, max_searchsize, min_searchsize);
-        // Store the output data objects.
+		// Store the output data objects.
 		object.image_objects = quadtree.image_objects;
 		object.label_objects = quadtree.label_objects;
 	}
 	else {
-	    // The cord of all-class related data blocks are sequentially stored in related_block_cord.
+		// The cord of all-class related data blocks are sequentially stored in related_block_cord.
 		BlockRead blockread;
 		blockread.get_related_block(label_path, init_cols, init_rows, n_classes, ignore_label, block_size);
 		vector<Vector2> related_block_cord = blockread.related_block_cord;
-        // The data blocks are sequentially processed depend on device num and rank_id of current device.
-        int num_class_related_block_cord = related_block_cord.size();
-        int num_one_device_related_block_cord = num_class_related_block_cord / device_num;
-        int num_residual_related_block_cord = num_class_related_block_cord % device_num;
-        int sequence_beg_index = 0;
-        // The last device is responsible to process residual data blocks.
-        if (num_residual_related_block_cord > 0) {
-            if (rank_id == device_num - 1) {
-                sequence_beg_index = rank_id * num_one_device_related_block_cord;
-                num_one_device_related_block_cord = num_class_related_block_cord - (rank_id * num_one_device_related_block_cord);
-            }
-        }
-        else {
-            sequence_beg_index = rank_id * num_one_device_related_block_cord;
-        }
+		// The data blocks are sequentially processed depend on device num and rank_id of current device.
+		int num_class_related_block_cord = related_block_cord.size();
+		int num_one_device_related_block_cord = num_class_related_block_cord / device_num;
+		int num_residual_related_block_cord = num_class_related_block_cord % device_num;
+		int sequence_beg_index = 0;
+		// The last device is responsible to process residual data blocks.
+		if (num_residual_related_block_cord > 0) {
+			if (rank_id == device_num - 1) {
+				sequence_beg_index = rank_id * num_one_device_related_block_cord;
+				num_one_device_related_block_cord = 
+					num_class_related_block_cord - (rank_id * num_one_device_related_block_cord);
+			}
+		}
+		else {
+			sequence_beg_index = rank_id * num_one_device_related_block_cord;
+		}
 		// for each class-related data block, read their original cord in an sequence.
 		for (int i = 0; i < num_one_device_related_block_cord; i++) {
-			int row_cord = related_block_cord[sequence_beg_index+i].x;
-			int col_cord = related_block_cord[sequence_beg_index+i].y;
+			int row_cord = related_block_cord[sequence_beg_index + i].x;
+			int col_cord = related_block_cord[sequence_beg_index + i].y;
 			int current_block_rows = block_size;
 			int current_block_cols = block_size;
 			// Process the residual data block of big_input data.
@@ -187,56 +183,55 @@ py::list get_objects(int device_num, int rank_id,
 			}
 			GDAL2CV gdal2cv;
 			if (init_bands > 3) {
-			    image = band_selection(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
+				image = band_selection(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
 			}
 			else {
 				image = gdal2cv.gdal_read(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
 			}
 			label = gdal2cv.gdal_read(label_path, col_cord, row_cord, current_block_cols, current_block_rows);
-            // Create data pyramid.
+			// Create data pyramid.
 			Pyramid pyramid;
 			pyramid.create_pyramid(image, label);
 			cv::Mat top_level_image = pyramid.image_pyramid.back();
 			cv::Mat top_level_label = pyramid.label_pyramid.back();
 			cv::Mat ori_level_image = pyramid.image_pyramid.front();
 			cv::Mat ori_level_label = pyramid.label_pyramid.front();
-            // Create quadtree search tree.
+			// Create quadtree search tree.
 			QuadTree quadtree;
 			quadtree.random_search(top_level_image, top_level_label, n_classes, ignore_label);
 			quadtree.get_multiscale_object(ori_level_image, ori_level_label, max_searchsize, min_searchsize);
-            // Store the output data objects.
+			// Store the output data objects.
 			object.image_objects.insert(object.image_objects.end(),
-			                            quadtree.image_objects.begin(), quadtree.image_objects.end());
+										quadtree.image_objects.begin(), quadtree.image_objects.end());
 			object.label_objects.insert(object.label_objects.end(),
-			                            quadtree.label_objects.begin(), quadtree.label_objects.end());
+										quadtree.label_objects.begin(), quadtree.label_objects.end());
 		}
 	}
-    // If the output data objects is empty.
+	// If the output data objects is empty.
 	if (object.image_objects.empty()) {
 		GDAL2CV gdal2cv;
-		cv::Mat image, label;
-		image = gdal2cv.gdal_read(image_path, 0, 0, 1024, 1024);
-		label = gdal2cv.gdal_read(label_path, 0, 0, 1024, 1024);
+		cv::Mat image = gdal2cv.gdal_read(image_path, 0, 0, 1024, 1024);
+		cv::Mat label = gdal2cv.gdal_read(label_path, 0, 0, 1024, 1024);
 		object.image_objects.push_back(image);
 		object.label_objects.push_back(label);
 	}
-    // Convert the Mat dtype to Numpy dtype.
+	// Convert the Mat dtype to Numpy dtype.
 	cv::Mat src_image, src_label;
-    py::array_t<unsigned char> dst_image, dst_label;
+	py::array_t<unsigned char> dst_image, dst_label;
 	py::list out_image_objects, out_label_objects;
-    for (int index = 0; index < object.image_objects.size(); index++) {
-        // image objects.
-        src_image = object.image_objects[index];
-        dst_image = cv_mat_uint8_3c_to_numpy(src_image);
-        out_image_objects.append(dst_image);
-        // label objects.
-        src_label = object.label_objects[index];
-        dst_label = cv_mat_uint8_1c_to_numpy(src_label);
-        out_label_objects.append(dst_label);
-    }
-    py::list out;
-    out.append(out_image_objects);
-    out.append(out_label_objects);
+	for (int index = 0; index < object.image_objects.size(); index++) {
+		// image objects.
+		src_image = object.image_objects[index];
+		dst_image = cv_mat_uint8_3c_to_numpy(src_image);
+		out_image_objects.append(dst_image);
+		// label objects.
+		src_label = object.label_objects[index];
+		dst_label = cv_mat_uint8_1c_to_numpy(src_label);
+		out_label_objects.append(dst_label);
+	}
+	py::list out;
+	out.append(out_image_objects);
+	out.append(out_label_objects);
 	return out;
 }
 
@@ -246,3 +241,5 @@ PYBIND11_MODULE(geobject, m) {
 	// Add bindings function.
 	m.def("get_objects", &get_objects);
 }
+
+}	// namespace luojianet_ms

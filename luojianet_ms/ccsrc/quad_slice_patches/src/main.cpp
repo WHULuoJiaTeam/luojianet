@@ -68,8 +68,8 @@ void get_init_cols_rows(const string& image_path, int* init_cols, int* init_rows
 /// \param[in] current_block_rows, basic processing unit of image rows.
 /// \return three-band image, cv::Mat dtype.
 Mat band_selection(const string& image_path,
-				                    int col_cord, int row_cord,
-		                            int current_block_cols, int current_block_rows) {
+				   int col_cord, int row_cord,
+		           int current_block_cols, int current_block_rows) {
 	GDAL2CV gdal2cv;
 	Mat image = gdal2cv.gdal_read(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
 
@@ -114,9 +114,9 @@ py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(Mat& input) {
 /// \param[in] min_searchsize, min output data size.
 /// \return out, image-label objects in Numpy dtype.
 py::list get_objects(const int device_num, const int rank_id,
-	                              const string& image_path, const string& label_path,
-	                              const int n_classes, const int ignore_label,
-	                              const int block_size, const int max_searchsize, const int min_searchsize) {
+	                 const string& image_path, const string& label_path,
+	                 const int n_classes, const int ignore_label,
+	                 const int block_size, const int max_searchsize, const int min_searchsize) {
 	// Struct for store export data.
 	typedef struct {
 		vector<Mat> image_objects;

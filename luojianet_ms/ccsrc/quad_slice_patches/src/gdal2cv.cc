@@ -1,57 +1,29 @@
-/*M///////////////////////////////////////////////////////////////////////////////////////
-//
-//  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
-//
-//  By downloading, copying, installing or using the software you agree to this license.
-//  If you do not agree to this license, do not download, install,
-//  copy or use the software.
-//
-//
-//                        Intel License Agreement
-//                For Open Source Computer Vision Library
-//
-// Copyright (C) 2000, Intel Corporation, all rights reserved.
-// Third party copyrights are property of their respective owners.
-//
-// Redistribution and use in source and binary forms, with or without modification,
-// are permitted provided that the following conditions are met:
-//
-//   * Redistribution's of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//
-//   * Redistribution's in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//
-//   * The name of Intel Corporation may not be used to endorse or promote products
-//     derived from this software without specific prior written permission.
-//
-// This software is provided by the copyright holders and contributors "as is" and
-// any express or implied warranties, including, but not limited to, the implied
-// warranties of merchantability and fitness for a particular purpose are disclaimed.
-// In no event shall the Intel Corporation or contributors be liable for any direct,
-// indirect, incidental, special, exemplary, or consequential damages
-// (including, but not limited to, procurement of substitute goods or services;
-// loss of use, data, or profits; or business interruption) however caused
-// and on any theory of liability, whether in contract, strict liability,
-// or tort (including negligence or otherwise) arising in any way out of
-// the use of this software, even if advised of the possibility of such damage.
-//
-//M*/
+/**
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include "gdal2cv.h"
 
+namespace luojianet_ms {
 
-GDAL2CV::GDAL2CV() {
+GDAL2CV::GDAL2CV() {}
 
-}
+GDAL2CV::~GDAL2CV() {}
 
-
-GDAL2CV::~GDAL2CV() {
-	
-}
-
-
+// Convert data range.
 double range_cast(const GDALDataType& gdalType, const int& cvDepth, const double& value) {
 	// uint8 -> uint8
 	if (gdalType == GDT_Byte && cvDepth == CV_8U) {
@@ -61,41 +33,34 @@ double range_cast(const GDALDataType& gdalType, const int& cvDepth, const double
 	if (gdalType == GDT_Byte && (cvDepth == CV_16U || cvDepth == CV_16S)) {
 		return (value * 256);
 	}
-
 	// uint8 -> uint32
 	if (gdalType == GDT_Byte && (cvDepth == CV_32F || cvDepth == CV_32S)) {
 		return (value * 16777216);
 	}
-
 	// int16 -> uint8
 	if ((gdalType == GDT_UInt16 || gdalType == GDT_Int16) && cvDepth == CV_8U) {
 		return std::floor(value / 256.0);
 	}
-
 	// int16 -> int16
 	if ((gdalType == GDT_UInt16 || gdalType == GDT_Int16) &&
 		(cvDepth == CV_16U || cvDepth == CV_16S)) {
 		return value;
 	}
-
 	// float32 -> float32
 	// float64 -> float64
 	if ((gdalType == GDT_Float32 || gdalType == GDT_Float64) &&
 		(cvDepth == CV_32F || cvDepth == CV_64F)) {
 		return value;
 	}
-
 	std::cout << GDALGetDataTypeName(gdalType) << std::endl;
 	std::cout << "warning: unknown range cast requested." << std::endl;
 	return (value);
 }
 
-
 void write_pixel(const double& pixelValue, const GDALDataType& gdalType, const int& gdalChannels,
 				 cv::Mat& image, const int& row, const int& col, const int& channel) {
 	// convert the pixel
 	double newValue = range_cast(gdalType, image.depth(), pixelValue);
-
 	// input: 1 channel, output: 1 channel
 	if (gdalChannels == 1 && image.channels() == 1) {
 		if (image.depth() == CV_8U) { image.ptr<uchar>(row)[col] = static_cast<uchar>(newValue); }
@@ -106,7 +71,6 @@ void write_pixel(const double& pixelValue, const GDALDataType& gdalType, const i
 		else if (image.depth() == CV_64F) { image.ptr<double>(row)[col] = newValue; }
 		else { throw std::runtime_error("Unknown image depth, gdal: 1, img: 1"); }
 	}
-
 	// input: 1 channel, output: 3 channel
 	else if (gdalChannels == 1 && image.channels() == 3) {
 		if (image.depth() == CV_8U) { image.ptr<cv::Vec3b>(row)[col] = cv::Vec3b(newValue, newValue, newValue); }
@@ -117,19 +81,16 @@ void write_pixel(const double& pixelValue, const GDALDataType& gdalType, const i
 		else if (image.depth() == CV_64F) { image.ptr<cv::Vec3d>(row)[col] = cv::Vec3d(newValue, newValue, newValue); }
 		else { throw std::runtime_error("Unknown image depth, gdal:1, img: 3"); }
 	}
-
 	// input: 3 channel, output: 1 channel
 	else if (gdalChannels == 3 && image.channels() == 1) {
 		if (image.depth() == CV_8U) { image.ptr<uchar>(row)[col] += (newValue / 3.0); }
 		else { throw std::runtime_error("Unknown image depth, gdal:3, img: 1"); }
 	}
-
 	// input: 4 channel, output: 1 channel
 	else if (gdalChannels == 4 && image.channels() == 1) {
 		if (image.depth() == CV_8U) { image.ptr<uchar>(row)[col] = newValue; }
 		else { throw std::runtime_error("Unknown image depth, gdal: 4, image: 1"); }
 	}
-
 	// input: 3 channel, output: 3 channel
 	else if (gdalChannels == 3 && image.channels() == 3) {
 		if (image.depth() == CV_8U) { image.at<cv::Vec3b>(row, col)[channel] = newValue; }
@@ -140,7 +101,6 @@ void write_pixel(const double& pixelValue, const GDALDataType& gdalType, const i
 		else if (image.depth() == CV_64F) { image.at<cv::Vec3d>(row, col)[channel] = newValue; }
 		else { throw std::runtime_error("Unknown image depth, gdal: 3, image: 3"); }
 	}
-
 	// input: 4 channel, output: 3 channel
 	else if (gdalChannels == 4 && image.channels() == 3) {
 		if (channel >= 4) { return; }
@@ -152,7 +112,6 @@ void write_pixel(const double& pixelValue, const GDALDataType& gdalType, const i
 		else if (image.depth() == CV_64F && channel < 4) { image.at<cv::Vec3d>(row, col)[channel] = newValue; }
 		else { throw std::runtime_error("Unknown image depth, gdal: 4, image: 3"); }
 	}
-
 	// input: 4 channel, output: 4 channel
 	else if (gdalChannels == 4 && image.channels() == 4) {
 		if (image.depth() == CV_8U) { image.at<cv::Vec4b>(row, col)[channel] = newValue; }
@@ -164,7 +123,6 @@ void write_pixel(const double& pixelValue, const GDALDataType& gdalType, const i
 		else if (image.depth() == CV_64F) { image.at<cv::Vec4d>(row, col)[channel] = newValue; }
 		else { throw std::runtime_error("Unknown image depth, gdal: 4, image: 4"); }
 	}
-
 	// input: > 4 channels, output: > 4 channels
 	else if (gdalChannels > 4 && image.channels() > 4) {
 		if (image.depth() == CV_8U) {
@@ -205,21 +163,17 @@ void write_pixel(const double& pixelValue, const GDALDataType& gdalType, const i
 	}
 }
 
-
 void write_ctable_pixel(const double& pixelValue, const GDALDataType& gdalType, GDALColorTable const* gdalColorTable,
 						cv::Mat& image, const int& y, const int& x, const int& c) {
 	if (gdalColorTable == NULL) {
 		write_pixel(pixelValue, gdalType, 1, image, y, x, c);
 	}
-
 	// if we are Grayscale, then do a straight conversion
 	if (gdalColorTable->GetPaletteInterpretation() == GPI_Gray) {
 		write_pixel(pixelValue, gdalType, 1, image, y, x, c);
 	}
-
 	// if we are rgb, then convert here
 	else if (gdalColorTable->GetPaletteInterpretation() == GPI_RGB) {
-
 		// get the pixel
 		short r = gdalColorTable->GetColorEntry((int)pixelValue)->c1;
 		short g = gdalColorTable->GetColorEntry((int)pixelValue)->c2;
@@ -233,43 +187,37 @@ void write_ctable_pixel(const double& pixelValue, const GDALDataType& gdalType, 
 			write_pixel(a, gdalType, 4, image, y, x, 1);
 		}
 	}
-
 	// otherwise, set zeros
 	else {
 		write_pixel(pixelValue, gdalType, 1, image, y, x, c);
 	}
 }
 
-
+// Convert gdal type to opencv type.
 int gdal2opencv(const GDALDataType& gdalType, const int& channels) {
-
 	switch (gdalType) {
-
-		/// UInt8
+	/// UInt8
 	case GDT_Byte:
 		if (channels == 1) { return CV_8UC1; }
 		if (channels == 3) { return CV_8UC3; }
 		if (channels == 4) { return CV_8UC4; }
 		else { return CV_8UC(channels); }
 		return -1;
-
-		/// UInt16
+	/// UInt16
 	case GDT_UInt16:
 		if (channels == 1) { return CV_16UC1; }
 		if (channels == 3) { return CV_16UC3; }
 		if (channels == 4) { return CV_16UC4; }
 		else { return CV_16UC(channels); }
 		return -1;
-
-		/// Int16
+	/// Int16
 	case GDT_Int16:
 		if (channels == 1) { return CV_16SC1; }
 		if (channels == 3) { return CV_16SC3; }
 		if (channels == 4) { return CV_16SC4; }
 		else { return CV_16SC(channels); }
 		return -1;
-
-		/// UInt32
+	/// UInt32
 	case GDT_UInt32:
 	case GDT_Int32:
 		if (channels == 1) { return CV_32SC1; }
@@ -277,35 +225,29 @@ int gdal2opencv(const GDALDataType& gdalType, const int& channels) {
 		if (channels == 4) { return CV_32SC4; }
 		else { return CV_32SC(channels); }
 		return -1;
-
 	case GDT_Float32:
 		if (channels == 1) { return CV_32FC1; }
 		if (channels == 3) { return CV_32FC3; }
 		if (channels == 4) { return CV_32FC4; }
 		else { return CV_32FC(channels); }
 		return -1;
-
 	case GDT_Float64:
 		if (channels == 1) { return CV_64FC1; }
 		if (channels == 3) { return CV_64FC3; }
 		if (channels == 4) { return CV_64FC4; }
 		else { return CV_64FC(channels); }
 		return -1;
-
 	default:
 		std::cout << "Unknown GDAL Data Type" << std::endl;
 		std::cout << "Type: " << GDALGetDataTypeName(gdalType) << std::endl;
 		return -1;
 	}
-
 	return -1;
 }
 
-
+// Convert GDAL Palette Interpretation to OpenCV Pixel Type.
 int gdalPaletteInterpretation2OpenCV(GDALPaletteInterp const& paletteInterp, GDALDataType const& gdalType) {
-	
 	switch (paletteInterp) {
-
 	/// GRAYSCALE
 	case GPI_Gray:
 		if (gdalType == GDT_Byte) { return CV_8UC1; }
@@ -316,7 +258,6 @@ int gdalPaletteInterpretation2OpenCV(GDALPaletteInterp const& paletteInterp, GDA
 		if (gdalType == GDT_Float32) { return CV_32FC1; }
 		if (gdalType == GDT_Float64) { return CV_64FC1; }
 		return -1;
-
 	/// RGB
 	case GPI_RGB:
 		if (gdalType == GDT_Byte) { return CV_8UC1; }
@@ -327,15 +268,13 @@ int gdalPaletteInterpretation2OpenCV(GDALPaletteInterp const& paletteInterp, GDA
 		if (gdalType == GDT_Float32) { return CV_32FC3; }
 		if (gdalType == GDT_Float64) { return CV_64FC3; }
 		return -1;
-
 	/// otherwise
 	default:
 		return -1;
 	}
 }
 
-
-cv::Mat GDAL2CV::gdal_read(string filename, int xStart, int yStart, int xWidth, int yWidth) {
+cv::Mat GDAL2CV::gdal_read(const string& filename, int xStart, int yStart, int xWidth, int yWidth) {
 	const char* filepath = filename.data();
 	GDALAllRegister();
 	GDALDataset *poSrc = (GDALDataset*)GDALOpen(filepath, GA_ReadOnly);
@@ -356,7 +295,7 @@ cv::Mat GDAL2CV::gdal_read(string filename, int xStart, int yStart, int xWidth, 
 		}
 
 		dataType = gdalPaletteInterpretation2OpenCV(poSrc->GetRasterBand(1)->GetColorTable()->GetPaletteInterpretation(),
-													poSrc->GetRasterBand(1)->GetRasterDataType());
+			poSrc->GetRasterBand(1)->GetRasterDataType());
 		if (dataType == -1) {
 			return cv::Mat();
 		}
@@ -410,7 +349,7 @@ cv::Mat GDAL2CV::gdal_read(string filename, int xStart, int yStart, int xWidth, 
 			c = img.channels() - 1;
 		}
 		// make sure the image band has the same dimensions as the image
-		if (band->GetXSize() != m_width || band->GetYSize() != m_height) { 
+		if (band->GetXSize() != m_width || band->GetYSize() != m_height) {
 			return cv::Mat();
 		}
 
@@ -437,3 +376,5 @@ cv::Mat GDAL2CV::gdal_read(string filename, int xStart, int yStart, int xWidth, 
 	GDALClose((GDALDatasetH)poSrc);
 	return img;
 }
+
+}	// namespace luojianet_ms

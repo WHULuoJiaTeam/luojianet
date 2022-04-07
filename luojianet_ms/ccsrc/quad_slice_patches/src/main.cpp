@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+#include <iostream>
+#include <vector>
+
 #include <gdal_priv.h>
 #include <gdal.h>
 #include <opencv2/opencv.hpp>
@@ -28,7 +31,9 @@
 #include "quadtree.h"
 
 namespace py = pybind11;
+using std::cout;
 using std::vector;
+using cv::Mat;
 
 namespace luojianet_ms {
 /// \Get init information of big_input data by using gdal lib.
@@ -52,6 +57,7 @@ void get_init_cols_rows(string &image_path, int *init_cols, int *init_rows, int 
 	poSrc = NULL;
 }
 
+
 /// \Only choose the first three bands of an image.
 /// \Todo: The support for band-selection algorithm, especially for high-spectral data.
 ///
@@ -61,14 +67,14 @@ void get_init_cols_rows(string &image_path, int *init_cols, int *init_rows, int 
 /// \param[in] current_block_cols, basic processing unit of image cols.
 /// \param[in] current_block_rows, basic processing unit of image rows.
 /// \return three-band image, cv::Mat dtype.
-cv::Mat band_selection(string &image_path,
+Mat band_selection(string &image_path,
 					   int col_cord, int row_cord,
 		               int current_block_cols, int current_block_rows) {
 	GDAL2CV gdal2cv;
-	cv::Mat image = gdal2cv.gdal_read(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
+	Mat image = gdal2cv.gdal_read(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
 
-	vector<cv::Mat> all_channels;
-	vector<cv::Mat> three_channels;
+	vector<Mat> all_channels;
+	vector<Mat> three_channels;
 	split(image, all_channels);
 	for (int i = 0; i < 3; i++) {
 		three_channels.push_back(all_channels.at(i));
@@ -77,23 +83,26 @@ cv::Mat band_selection(string &image_path,
 	return image;
 }
 
+
 /// \One channel data, Mat->Numpy.
 ///
 /// \param[in] input, cv::Mat data.
 /// \return dst, numpy dtype.
-py::array_t<unsigned char> cv_mat_uint8_1c_to_numpy(cv::Mat &input) {
+py::array_t<unsigned char> cv_mat_uint8_1c_to_numpy(Mat &input) {
 	py::array_t<unsigned char> dst = py::array_t<unsigned char>({ input.rows,input.cols }, input.data);
 	return dst;
 }
+
 
 /// \Three channel data, Mat->Numpy.
 ///
 /// \param[in] input, cv::Mat data.
 /// \return dst, numpy dtype.
-py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(cv::Mat &input) {
+py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(Mat &input) {
 	py::array_t<unsigned char> dst = py::array_t<unsigned char>({ input.rows, input.cols, 3 }, input.data);
 	return dst;
 }
+
 
 /// \Get the minimum bounding rectangle data of one-specified class.
 ///
@@ -113,8 +122,8 @@ py::list get_objects(const int device_num, int rank_id,
 	                 const int block_size, const int max_searchsize, const int min_searchsize) {
 	// Struct for store export data.
 	typedef struct {
-		vector<cv::Mat> image_objects;
-		vector<cv::Mat> label_objects;
+		vector<Mat> image_objects;
+		vector<Mat> label_objects;
 	} Object;
 	Object object;
 
@@ -122,7 +131,7 @@ py::list get_objects(const int device_num, int rank_id,
 	int init_cols, init_rows, init_bands = 0;
 	get_init_cols_rows(image_path, &init_cols, &init_rows, &init_bands);
 
-	cv::Mat image, label;
+	Mat image, label;
 	if (init_cols <= block_size && init_rows <= block_size) {
 		// Todo: The support for high-spectral data (more than 3 bands).
 		if (init_bands > 3) {
@@ -135,10 +144,10 @@ py::list get_objects(const int device_num, int rank_id,
 		// Create data pyramid.
 		Pyramid pyramid;
 		pyramid.create_pyramid(image, label);
-		cv::Mat top_level_image = pyramid.image_pyramid.back();
-		cv::Mat top_level_label = pyramid.label_pyramid.back();
-		cv::Mat ori_level_image = pyramid.image_pyramid.front();
-		cv::Mat ori_level_label = pyramid.label_pyramid.front();
+		Mat top_level_image = pyramid.image_pyramid.back();
+		Mat top_level_label = pyramid.label_pyramid.back();
+		Mat ori_level_image = pyramid.image_pyramid.front();
+		Mat ori_level_label = pyramid.label_pyramid.front();
 		// Create quadtree search tree.
 		QuadTree quadtree;
 		quadtree.random_search(top_level_image, top_level_label, n_classes, ignore_label);
@@ -192,10 +201,10 @@ py::list get_objects(const int device_num, int rank_id,
 			// Create data pyramid.
 			Pyramid pyramid;
 			pyramid.create_pyramid(image, label);
-			cv::Mat top_level_image = pyramid.image_pyramid.back();
-			cv::Mat top_level_label = pyramid.label_pyramid.back();
-			cv::Mat ori_level_image = pyramid.image_pyramid.front();
-			cv::Mat ori_level_label = pyramid.label_pyramid.front();
+			Mat top_level_image = pyramid.image_pyramid.back();
+			Mat top_level_label = pyramid.label_pyramid.back();
+			Mat ori_level_image = pyramid.image_pyramid.front();
+			Mat ori_level_label = pyramid.label_pyramid.front();
 			// Create quadtree search tree.
 			QuadTree quadtree;
 			quadtree.random_search(top_level_image, top_level_label, n_classes, ignore_label);
@@ -210,13 +219,13 @@ py::list get_objects(const int device_num, int rank_id,
 	// If the output data objects is empty.
 	if (object.image_objects.empty()) {
 		GDAL2CV gdal2cv;
-		cv::Mat image = gdal2cv.gdal_read(image_path, 0, 0, 1024, 1024);
-		cv::Mat label = gdal2cv.gdal_read(label_path, 0, 0, 1024, 1024);
+		Mat image = gdal2cv.gdal_read(image_path, 0, 0, 1024, 1024);
+		Mat label = gdal2cv.gdal_read(label_path, 0, 0, 1024, 1024);
 		object.image_objects.push_back(image);
 		object.label_objects.push_back(label);
 	}
 	// Convert the Mat dtype to Numpy dtype.
-	cv::Mat src_image, src_label;
+	Mat src_image, src_label;
 	py::array_t<unsigned char> dst_image, dst_label;
 	py::list out_image_objects, out_label_objects;
 	for (int index = 0; index < object.image_objects.size(); index++) {
@@ -234,6 +243,7 @@ py::list get_objects(const int device_num, int rank_id,
 	out.append(out_label_objects);
 	return out;
 }
+
 
 // Python API.
 PYBIND11_MODULE(geobject, m) {

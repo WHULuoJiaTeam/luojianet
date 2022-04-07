@@ -36,16 +36,17 @@ using std::vector;
 using cv::Mat;
 
 namespace luojianet_ms {
+
 /// \Get init information of big_input data by using gdal lib.
 ///
 /// \param[in] image_path, big_input image path.
 /// \param[in] init_cols, init cols of big_input image.
 /// \param[in] init_rows, init rows of big_input image.
 /// \param[in] init_bands, init num bands of big_input image.
-void get_init_cols_rows(string &image_path, int *init_cols, int *init_rows, int *init_bands) {
-	const char *imagepath = image_path.data();
+void get_init_cols_rows(const string& image_path, int* init_cols, int* init_rows, int* init_bands) {
+	const char* imagepath = image_path.data();
 	GDALAllRegister();
-	GDALDataset *poSrc = (GDALDataset*)GDALOpen(imagepath, GA_ReadOnly);
+	GDALDataset* poSrc = (GDALDataset*)GDALOpen(imagepath, GA_ReadOnly);
 	if (poSrc == NULL) {
 		cout << "GDAL failed to open " << image_path;
 		return;
@@ -57,7 +58,6 @@ void get_init_cols_rows(string &image_path, int *init_cols, int *init_rows, int 
 	poSrc = NULL;
 }
 
-
 /// \Only choose the first three bands of an image.
 /// \Todo: The support for band-selection algorithm, especially for high-spectral data.
 ///
@@ -67,9 +67,9 @@ void get_init_cols_rows(string &image_path, int *init_cols, int *init_rows, int 
 /// \param[in] current_block_cols, basic processing unit of image cols.
 /// \param[in] current_block_rows, basic processing unit of image rows.
 /// \return three-band image, cv::Mat dtype.
-Mat band_selection(string &image_path,
-					   int col_cord, int row_cord,
-		               int current_block_cols, int current_block_rows) {
+Mat band_selection(const string& image_path,
+				                    int col_cord, int row_cord,
+		                            int current_block_cols, int current_block_rows) {
 	GDAL2CV gdal2cv;
 	Mat image = gdal2cv.gdal_read(image_path, col_cord, row_cord, current_block_cols, current_block_rows);
 
@@ -83,26 +83,23 @@ Mat band_selection(string &image_path,
 	return image;
 }
 
-
 /// \One channel data, Mat->Numpy.
 ///
 /// \param[in] input, cv::Mat data.
 /// \return dst, numpy dtype.
-py::array_t<unsigned char> cv_mat_uint8_1c_to_numpy(Mat &input) {
+py::array_t<unsigned char> cv_mat_uint8_1c_to_numpy(Mat& input) {
 	py::array_t<unsigned char> dst = py::array_t<unsigned char>({ input.rows,input.cols }, input.data);
 	return dst;
 }
-
 
 /// \Three channel data, Mat->Numpy.
 ///
 /// \param[in] input, cv::Mat data.
 /// \return dst, numpy dtype.
-py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(Mat &input) {
+py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(Mat& input) {
 	py::array_t<unsigned char> dst = py::array_t<unsigned char>({ input.rows, input.cols, 3 }, input.data);
 	return dst;
 }
-
 
 /// \Get the minimum bounding rectangle data of one-specified class.
 ///
@@ -116,10 +113,10 @@ py::array_t<unsigned char> cv_mat_uint8_3c_to_numpy(Mat &input) {
 /// \param[in] max_searchsize, max output data size.
 /// \param[in] min_searchsize, min output data size.
 /// \return out, image-label objects in Numpy dtype.
-py::list get_objects(const int device_num, int rank_id,
-	                 string &image_path, string &label_path,
-	                 const int n_classes, const int ignore_label,
-	                 const int block_size, const int max_searchsize, const int min_searchsize) {
+py::list get_objects(const int device_num, const int rank_id,
+	                              const string& image_path, const string& label_path,
+	                              const int n_classes, const int ignore_label,
+	                              const int block_size, const int max_searchsize, const int min_searchsize) {
 	// Struct for store export data.
 	typedef struct {
 		vector<Mat> image_objects;
@@ -243,7 +240,6 @@ py::list get_objects(const int device_num, int rank_id,
 	out.append(out_label_objects);
 	return out;
 }
-
 
 // Python API.
 PYBIND11_MODULE(geobject, m) {

@@ -38,7 +38,7 @@ public:
 
 	void get_related_block(const string &label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size);
 
-	void get_class_attribute(string &label_path, int init_rows, int init_cols, int n_classes, int ignore_label, int block_size);
+	void get_class_attribute(const string &label_path, int init_rows, int init_cols, int n_classes, int ignore_label, int block_size);
 	void quick_statistic_class(cv::Mat &label, int block_index, int n_classes, int ignore_label);
 	void search_related_block(int init_cols, int init_rows, int block_size);
 	void store_related_blockcord(int block_size);

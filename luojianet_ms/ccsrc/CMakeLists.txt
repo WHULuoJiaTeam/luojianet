@@ -267,6 +267,7 @@ endif()
 if(LUOJIANET_MS_PROTO_LIST)
     add_library(proto_input STATIC ${LUOJIANET_MS_PROTO_LIST})
     set_target_properties(proto_input PROPERTIES COMPILE_FLAGS "-Wno-unused-variable")
+    target_compile_options(proto_input PRIVATE "-Wno-array-bounds")
 endif()
 
 ## make sub objects

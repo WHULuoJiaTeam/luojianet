@@ -225,7 +225,7 @@ py::list get_objects(const int device_num, const int rank_id,
 	Mat src_image, src_label;
 	py::array_t<unsigned char> dst_image, dst_label;
 	py::list out_image_objects, out_label_objects;
-	for (int index = 0; index < object.image_objects.size(); index++) {
+	for (int index = 0; index < (unsigned int) object.image_objects.size(); index++) {
 		// image objects.
 		src_image = object.image_objects[index];
 		dst_image = cv_mat_uint8_3c_to_numpy(src_image);

@@ -73,6 +73,7 @@ if(ENABLE_SECURITY)
 endif()
 
 if(ENABLE_GPU)
+    set(CMAKE_CXX_STANDARD 14)
     file(GLOB_RECURSE CUDA_SRC_LIST RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
         "gpu/*.cu"
     )

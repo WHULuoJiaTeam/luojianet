@@ -99,7 +99,7 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 set(MS_CCSRC_PATH ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc)
 set(MS_CCSRC_BUILD_PATH ${BUILD_PATH}/luojianet_ms/luojianet_ms/ccsrc)
 
-if(ENABLE_D OR ENABLE_ACL OR ENABLE_TESTCASES)
+if(ENABLE_D OR ENABLE_ACL)
     include(${CMAKE_SOURCE_DIR}/cmake/dependency_graphengine.cmake)
 endif()
 

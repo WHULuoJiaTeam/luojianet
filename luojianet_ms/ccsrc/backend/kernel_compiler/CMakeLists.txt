@@ -130,4 +130,4 @@ set_property(SOURCE ${KERNEL_SRC_LIST} ${CPU_SRC_LIST} ${GPU_SRC_LIST} ${D_SRC_L
     PROPERTY COMPILE_DEFINITIONS SUBMODULE_ID=luojianet_ms::SubModuleId::SM_KERNEL)
 add_library(_luojianet_backend_kernel_compiler_obj OBJECT ${KERNEL_SRC_LIST} ${CPU_SRC_LIST}
     ${GPU_SRC_LIST} ${D_SRC_LIST} ${AKG_SRC_LIST})
-target_compile_options(_luojianet_backend_kernel_compiler_obj PRIVATE -std=c++14)
+target_compile_features(_luojianet_backend_kernel_compiler_obj PRIVATE std_cxx_14)

@@ -86,7 +86,7 @@ block_index	    class1       class2    ...
 ...
 
 */
-void BlockRead::get_class_attribute(string &label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size) {
+void BlockRead::get_class_attribute(const string &label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size) {
 	int block_num = ceil((float)init_cols / (float)block_size) * ceil((float)init_rows / (float)block_size);
 	cv::Mat_<uchar> all_class_attribute(block_num, n_classes, uchar(0));
 	all_class_attribute.copyTo(class_attribute);

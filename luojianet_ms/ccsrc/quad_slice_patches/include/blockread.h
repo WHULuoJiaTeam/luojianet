@@ -36,7 +36,7 @@ public:
 	BlockRead();
 	~BlockRead();
 
-	void get_related_block(string &label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size);
+	void get_related_block(const string &label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size);
 
 	void get_class_attribute(string &label_path, int init_rows, int init_cols, int n_classes, int ignore_label, int block_size);
 	void quick_statistic_class(cv::Mat &label, int block_index, int n_classes, int ignore_label);

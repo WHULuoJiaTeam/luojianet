@@ -28,7 +28,7 @@ BlockRead::~BlockRead() {
 }
 
 
-void BlockRead::get_related_block(string &label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size) {
+void BlockRead::get_related_block(const string &label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size) {
 	get_class_attribute(label_path, init_cols, init_rows, n_classes, ignore_label, block_size);
 	search_related_block(init_cols, init_rows, block_size);
 	store_related_blockcord(block_size);

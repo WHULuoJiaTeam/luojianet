@@ -18,6 +18,8 @@
 #include "blockread.h"
 #include "gdal2cv.h"
 
+using namespace luojianet_ms;
+
 
 BlockRead::BlockRead() {
 

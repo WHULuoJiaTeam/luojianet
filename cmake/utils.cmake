@@ -112,7 +112,6 @@ function(__find_pkg_then_add_target pkg_name pkg_exe lib_path)
     unset(${pkg_name}_LIBS)
 
     message("_FIND:${${pkg_name}_BASE_DIR}")
-    message("${${pkg_name}_LIBS}")
 
     if(pkg_exe)
         find_program(${pkg_exe}_EXE ${pkg_exe} PATHS ${${pkg_name}_BASE_DIR}/bin NO_DEFAULT_PATH)
@@ -137,6 +136,8 @@ function(__find_pkg_then_add_target pkg_name pkg_exe lib_path)
             set(_LIB_TYPE STATIC)
         endif()
         set(${_LIB_NAME}_LIB ${_LIB_NAME}_LIB-NOTFOUND)
+        message("lib_path: ${lib_path}")
+        message("${${pkg_name}_BASE_DIR}")
         if(APPLE)
             find_library(${_LIB_NAME}_LIB ${_LIB_SEARCH_NAME} PATHS ${${pkg_name}_BASE_DIR}/${lib_path}
                     NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

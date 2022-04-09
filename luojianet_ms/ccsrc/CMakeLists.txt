@@ -5,6 +5,8 @@ include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/include)
 include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/src)
 
+link_directories(${flatbuffers_BASE_DIR}/lib)
+message(FATAL_ERROR "${flatbuffers_BASE_DIR}/lib")
 
 set(SERVER_FLATBUFFER_OUTPUT "${CMAKE_BINARY_DIR}/schema")
 set(FBS_FILES

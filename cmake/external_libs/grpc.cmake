@@ -128,6 +128,8 @@ function(ms_grpc_generate c_var h_var)
 
     set(${c_var})
     set(${h_var})
+    
+    link_directories(${flatbuffers_LIBPATH})
 
     foreach(file ${ARGN})
         get_filename_component(abs_file ${file} ABSOLUTE)

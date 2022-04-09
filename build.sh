@@ -23,6 +23,15 @@ export ENABLE_RS="ON"
 export ENABLE_GPU="ON"
 export ENABLE_MPI="ON"
 
+source ./scripts/build/usage.sh
+source ./scripts/build/default_options.sh
+source ./scripts/build/option_proc_debug.sh
+source ./scripts/build/option_proc_luojianet.sh
+source ./scripts/build/option_proc_lite.sh
+source ./scripts/build/process_options.sh
+source ./scripts/build/parse_device.sh
+source ./scripts/build/build_luojianet.sh
+
 echo "FLAT buffer path: ${flatbuffers_LIBPATH}"
 
 #remove default patches for third party library
@@ -44,15 +53,6 @@ if [ ! -d $DEPS_FOLDER ]; then
     rm -rf ${BUILD_PATH}/luojianet_ms/cmake*
     rm -rf ${BUILD_PATH}/luojianet_ms/CMake*
 fi
-
-source ./scripts/build/usage.sh
-source ./scripts/build/default_options.sh
-source ./scripts/build/option_proc_debug.sh
-source ./scripts/build/option_proc_luojianet.sh
-source ./scripts/build/option_proc_lite.sh
-source ./scripts/build/process_options.sh
-source ./scripts/build/parse_device.sh
-source ./scripts/build/build_luojianet.sh
 
 # check value of input is 'on' or 'off'
 # usage: check_on_off arg_value arg_name

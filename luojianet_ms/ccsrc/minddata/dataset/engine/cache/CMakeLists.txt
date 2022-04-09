@@ -84,7 +84,7 @@ if(ENABLE_CACHE)
         pthread
         -ldl
         -Wl,--no-as-needed
-        luojianet_ms::grpc++)
+        luojianet_ms::grpcpp)
   else()
     target_link_libraries(cache_server
         engine-cache-server
@@ -98,11 +98,11 @@ if(ENABLE_CACHE)
         pthread
         -ldl)
     if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-      target_link_libraries(cache_server luojianet_ms::grpc++)
+      target_link_libraries(cache_server luojianet_ms::grpcpp)
     else()
       target_link_libraries(cache_server
           -Wl,--no-as-needed
-          luojianet_ms::grpc++
+          luojianet_ms::grpcpp
           -Wl,--as-needed)
     endif()
   endif()

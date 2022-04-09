@@ -96,7 +96,7 @@ diff -Npur grpc/CMakeLists.txt grpc-patch/CMakeLists.txt
    SOVERSION ${gRPC_CPP_SOVERSION}
  )
  
-+set_target_properties(grpc++ PROPERTIES OUTPUT_NAME luojianet_ms_grpc++)
++set_target_properties(grpc++ PROPERTIES OUTPUT_NAME luojianet_ms_grpcpp)
 +
  if(WIN32 AND MSVC)
    set_target_properties(grpc++ PROPERTIES COMPILE_PDB_NAME "grpc++"
@@ -105,10 +105,10 @@ diff -Npur grpc/CMakeLists.txt grpc-patch/CMakeLists.txt
    SOVERSION ${gRPC_CPP_SOVERSION}
  )
  
-+set_target_properties(grpc++_reflection PROPERTIES OUTPUT_NAME luojianet_ms_grpc++_reflection)
++set_target_properties(grpc++_reflection PROPERTIES OUTPUT_NAME luojianet_ms_grpcpp_reflection)
 +
  if(WIN32 AND MSVC)
-   set_target_properties(grpc++_reflection PROPERTIES COMPILE_PDB_NAME "grpc++_reflection"
+   set_target_properties(grpc++_reflection PROPERTIES COMPILE_PDB_NAME "grpcpp_reflection"
      COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 @@ -5896,6 +5906,8 @@ set_target_properties(upb PROPERTIES
    SOVERSION ${gRPC_CORE_SOVERSION}

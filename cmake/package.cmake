@@ -79,7 +79,15 @@ set(INSTALL_LIB_DIR "lib")
 
 if(ENABLE_RS)
     set(gdal_ext_LIBPATH ${CMAKE_SOURCE_DIR}/third_party/GDAL_linux/lib/)
-    set(gdal_extra_LIBPATH ${CMAKE_SOURCE_DIR}/third_party/GDAL_linux/third_party/lib/)
+endif()
+
+if(ENABLE_ACL OR ENABLE_GE)
+    if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "x84_64")
+        set(ge_extra_LIBPATH ${CMAKE_SOURCE_DIR}/graphengine/third_party/prebuild/x86_64)
+    else()
+        message(FATAL_ERROR "GE ARM64")
+        set(ge_extra_LIBPATH ${CMAKE_SOURCE_DIR}/graphengine/third_party/prebuild/aarch64)
+    endif()
 endif()
 
 # set package files
@@ -381,6 +389,14 @@ if(ENABLE_RS)
     )
 endif()
 
+if(ENABLE_ACL OR ENABLE_GE)
+    file(GLOB GE_EXTRA_LIB_LIST_SO "${ge_extra_LIBPATH}/*.so")
+    install(
+            FILES ${GE_EXTRA_LIB_LIST_SO}
+            DESTINATION ${INSTALL_LIB_DIR}/..
+            COMPONENT luojianet_ms
+    )
+endif()
 
 # set python files
 file(GLOB MS_PY_LIST ${CMAKE_SOURCE_DIR}/luojianet_ms/python/luojianet_ms/*.py)

@@ -22,7 +22,7 @@ You can call the following directory structure from your dataset files and read 
              ├── ...
 '''
 config = ed({
-    "device_target":"CPU",      #GPU或CPU
+    "device_target":"GPU",      #GPU或CPU
     "dataset_path": "WHU-RS19/",  #数据存放位置
     "save_checkpoint_path": "./checkpoint",  #保存的参数存放位置
     "resume":False,   #是否载入模型训练
@@ -31,11 +31,11 @@ config = ed({
     "loss_scale": 1024,
     "momentum": 0.9,
     "weight_decay": 1e-5,
-    "epoch_size": 350, #训练次数
+    "epoch_size": 200, #训练次数
     "save_checkpoint": True, #是否保存模型
     "save_checkpoint_epochs": 1, #多少次迭代保存一次模型
     "keep_checkpoint_max": 5, 
-    "opt": 'rmsprop', #优化器：RMSprop或SGD
+    "opt": 'rmsprop', #优化器：rmsprop或sgd
     "opt_eps": 0.001, 
     "warmup_epochs": 50, #warmup训练策略
     "lr_decay_mode": "warmup", #学习率衰减方式：steps、poly、cosine以及warmup

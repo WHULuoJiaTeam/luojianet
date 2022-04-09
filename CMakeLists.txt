@@ -104,6 +104,7 @@ if(ENABLE_D OR ENABLE_ACL)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+link_directories(${flatbuffers_LIBPATH})
 add_subdirectory(luojianet_ms/ccsrc)
 add_subdirectory(luojianet_ms/core)
 if(ENABLE_TESTCASES OR ENABLE_CPP_ST)

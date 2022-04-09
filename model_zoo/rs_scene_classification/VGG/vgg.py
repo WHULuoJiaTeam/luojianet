@@ -1,9 +1,4 @@
-"""vgg in pytorch
-[1] Karen Simonyan, Andrew Zisserman
-    Very Deep Convolutional Networks for Large-Scale Image Recognition.
-    https://arxiv.org/abs/1409.1556v6
-"""
-'''VGG11/13/16/19 in Pytorch.'''
+'''VGG11/13/16/19 in LuojiaNet.'''
 import luojianet_ms as ms
 from luojianet_ms import ops, nn
 from luojianet_ms.common.initializer import Normal
@@ -58,20 +53,20 @@ def make_layers(cfg, batch_norm=False):
 
     return nn.SequentialCell(layers)
 
-def vgg11_bn():
-    return VGG(make_layers(cfg['A'], batch_norm=True))
+def vgg11_bn(num_classes):
+    return VGG(make_layers(cfg['A'], batch_norm=True),num_classes)
 
-def vgg13_bn():
-    return VGG(make_layers(cfg['B'], batch_norm=True))
+def vgg13_bn(num_classes):
+    return VGG(make_layers(cfg['B'], batch_norm=True),num_classes)
 
-def vgg16_bn():
-    return VGG(make_layers(cfg['D'], batch_norm=True))
+def vgg16_bn(num_classes):
+    return VGG(make_layers(cfg['D'], batch_norm=True),num_classes)
 
-def vgg19_bn():
-    return VGG(make_layers(cfg['E'], batch_norm=True))
+def vgg19_bn(num_classes):
+    return VGG(make_layers(cfg['E'], batch_norm=True),num_classes)
 
-# ### 测试
-# net = vgg11_bn()
+# ### test
+# net = vgg11_bn(num_classes=100)
 # a = ops.StandardNormal()((1,3,224,224))
 # b = net(a)
 # print(b.shape)

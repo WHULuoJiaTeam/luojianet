@@ -32,8 +32,6 @@ source ./scripts/build/process_options.sh
 source ./scripts/build/parse_device.sh
 source ./scripts/build/build_luojianet.sh
 
-echo "FLAT buffer path: ${flatbuffers_LIBPATH}"
-
 #remove default patches for third party library
 PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
 if [ ! -d $LIB_FOLDER ]; then

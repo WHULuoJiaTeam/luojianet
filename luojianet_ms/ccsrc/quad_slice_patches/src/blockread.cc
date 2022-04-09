@@ -16,6 +16,7 @@
  */
 
 #include "blockread.h"
+#include "gdal2cv.h"
 
 
 BlockRead::BlockRead() {

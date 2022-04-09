@@ -5,7 +5,6 @@ include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/include)
 include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/src)
 
-link_directories(${flatbuffers_LIBPATH})
 #message(FATAL_ERROR "${flatbuffers_LIBPATH}")
 
 set(SERVER_FLATBUFFER_OUTPUT "${CMAKE_BINARY_DIR}/schema")
@@ -271,6 +270,7 @@ if(MODE_ASCEND_ALL)
 endif()
 
 if(LUOJIANET_MS_PROTO_LIST)
+    link_directories(${flatbuffers_LIBPATH})
     add_library(proto_input STATIC ${LUOJIANET_MS_PROTO_LIST})
     set_target_properties(proto_input PROPERTIES COMPILE_FLAGS "-Wno-unused-variable")
     target_compile_options(proto_input PRIVATE "-Wno-array-bounds")

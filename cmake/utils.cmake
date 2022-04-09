@@ -112,6 +112,7 @@ function(__find_pkg_then_add_target pkg_name pkg_exe lib_path)
     unset(${pkg_name}_LIBS)
 
     message("_FIND:${${pkg_name}_BASE_DIR}")
+    message("${${pkg_name}_LIBS}")
 
     if(pkg_exe)
         find_program(${pkg_exe}_EXE ${pkg_exe} PATHS ${${pkg_name}_BASE_DIR}/bin NO_DEFAULT_PATH)

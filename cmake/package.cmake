@@ -79,6 +79,7 @@ set(INSTALL_LIB_DIR "lib")
 
 if(ENABLE_RS)
     set(gdal_ext_LIBPATH ${CMAKE_SOURCE_DIR}/third_party/GDAL_linux/lib/)
+    set(gdal_extra_LIBPATH ${CMAKE_SOURCE_DIR}/third_party/GDAL_linux/third_party/lib/)
 endif()
 
 if(ENABLE_ACL OR ENABLE_GE)

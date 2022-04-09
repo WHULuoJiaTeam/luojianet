@@ -314,8 +314,8 @@ if(NOT ENABLE_GE)
 endif()
 
 if(MS_BUILD_GRPC)
-    install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpc++.so.1.36.1
-      DESTINATION ${INSTALL_LIB_DIR} RENAME libluojianet_ms_grpc++.so.1 COMPONENT luojianet_ms)
+    install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpcpp.so.1.36.1
+      DESTINATION ${INSTALL_LIB_DIR} RENAME libluojianet_ms_grpcpp.so.1 COMPONENT luojianet_ms)
     install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpc.so.15.0.0
       DESTINATION ${INSTALL_LIB_DIR} RENAME libluojianet_ms_grpc.so.15 COMPONENT luojianet_ms)
     install(FILES ${grpc_LIBPATH}/libluojianet_ms_gpr.so.15.0.0

@@ -37,8 +37,8 @@
     "epoch_size": 350, #训练次数
     "save_checkpoint": True, #是否保存模型
     "save_checkpoint_epochs": 1, #多少次迭代保存一次模型
-    "keep_checkpoint_max": 5, 
-    "opt": 'rmsprop', #优化器：RMSprop或SGD
+    "keep_checkpoint_max": 5, #文件内保存模型的最多的个数，超过则删掉最原始的
+    "opt": 'rmsprop', #优化器：rmsprop或sgd
     "opt_eps": 0.001, 
     "warmup_epochs": 50, #warmup训练策略
     "lr_decay_mode": "warmup", #学习率衰减方式：steps、poly、cosine以及warmup

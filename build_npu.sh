@@ -21,7 +21,7 @@ export CUDA_PATH=""
 export BUILD_PATH="${BASEPATH}/build/"
 export ENABLE_RS="ON"
 export ENABLE_GPU="OFF"
-export ENABLE_MPI="ON"
+export ENABLE_MPI="OFF"
 export ENABLE_D="ON"
 
 source ./scripts/build/usage.sh

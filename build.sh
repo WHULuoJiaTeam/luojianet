@@ -40,6 +40,7 @@ fi
 
 DEPS_FOLDER="${BUILD_PATH}/luojianet_ms/_deps"
 if [ ! -d $DEPS_FOLDER ]; then
+    rm -rf ${BUILD_PATH}/luojianet_ms/.mslib
     rm -rf $DEPS_FOLDER
     rm -rf $DEPS_FOLDER/*-src
     rm -rf $DEPS_FOLDER/*-build

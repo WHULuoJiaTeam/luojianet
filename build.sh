@@ -25,12 +25,12 @@ export ENABLE_MPI="ON"
 
 #remove default patches for third party library
 PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
-if [ ! -d $LIB_FOLDER ]; then
+if [ -d $LIB_FOLDER ]; then
      rm -rf $PATCHES_FOLDER
 fi
 
 DEPS_FOLDER="${BUILD_PATH}/luojianet_ms/_deps"
-if [ ! -d $DEPS_FOLDER ]; then
+if [ -d $DEPS_FOLDER ]; then
     rm -rf ${BUILD_PATH}/luojianet_ms/.mslib
     rm -rf $DEPS_FOLDER/*-build
     rm -rf $DEPS_FOLDER/*-subbuild/CMake*

@@ -315,9 +315,9 @@ target_link_libraries(luojianet_ms luojianet_core)
 if(ENABLE_DEBUGGER)
     # debugger: link grpc
     if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-        target_link_libraries(luojianet_ms luojianet_ms::grpc++)
+        target_link_libraries(luojianet_ms luojianet_ms::grpcpp)
     else()
-        target_link_libraries(luojianet_ms -Wl,--no-as-needed luojianet_ms::grpc++)
+        target_link_libraries(luojianet_ms -Wl,--no-as-needed luojianet_ms::grpcpp)
     endif()
 endif()
 

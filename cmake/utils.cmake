@@ -126,7 +126,7 @@ function(__find_pkg_then_add_target pkg_name pkg_exe lib_path)
                 )
         else()
             set_target_properties(${pkg_name}::${pkg_exe} PROPERTIES
-                IMPORTED_LOCATION ${${pkg_exe}_EXE}
+                IMPORTED_LOCATION ${${pkg_name}_BASE_DIR}/bin
                 )
         endif()
         message("found ${${pkg_exe}_EXE}")

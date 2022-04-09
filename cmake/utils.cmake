@@ -118,7 +118,7 @@ function(__find_pkg_then_add_target pkg_name pkg_exe lib_path)
         if(NOT ${pkg_exe}_EXE)
             return()
         endif()
-        message("pkg_exe_EXE: ${pkg_exe}_EXE")
+        message("pkg_exe_EXE: ${${pkg_exe}_EXE}")
         add_executable(${pkg_name}::${pkg_exe} IMPORTED GLOBAL)
         set_target_properties(${pkg_name}::${pkg_exe} PROPERTIES
             IMPORTED_LOCATION ${${pkg_exe}_EXE}

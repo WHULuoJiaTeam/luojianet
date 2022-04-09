@@ -148,7 +148,8 @@ function(__find_pkg_then_add_target pkg_name pkg_exe lib_path)
         if(NOT ${_LIB_NAME}_LIB)
             return()
         endif()
-
+        
+        message("${${_LIB_NAME}_LIB}")
         add_library(${pkg_name}::${_LIB_NAME} ${_LIB_TYPE} IMPORTED GLOBAL)
         if(WIN32 AND ${_LIB_TYPE} STREQUAL "SHARED")
             set_target_properties(${pkg_name}::${_LIB_NAME} PROPERTIES IMPORTED_IMPLIB_RELEASE ${${_LIB_NAME}_LIB})

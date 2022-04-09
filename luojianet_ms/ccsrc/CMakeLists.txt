@@ -7,8 +7,7 @@ include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/src)
 
 #message(FATAL_ERROR "${flatbuffers_LIBPATH}")
 
-SET(CMAKE_EXE_LINKER_FLAGS 
-          "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl, ${flatbuffers_LIBPATH}")
+SET(ENV{LD_LIBRARY_PATH} "${flatbuffers_LIBPATH}:$ENV{LD_LIBRARY_PATH}")
 
 set(SERVER_FLATBUFFER_OUTPUT "${CMAKE_BINARY_DIR}/schema")
 set(FBS_FILES

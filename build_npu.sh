@@ -23,6 +23,7 @@ export ENABLE_RS="ON"
 export ENABLE_GPU="OFF"
 export ENABLE_MPI="OFF"
 export ENABLE_D="ON"
+export ENABLE_AKG="ON"
 
 source ./scripts/build/usage.sh
 source ./scripts/build/default_options.sh

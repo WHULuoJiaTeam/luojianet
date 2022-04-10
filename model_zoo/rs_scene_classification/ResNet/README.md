@@ -2,6 +2,7 @@
 ## 包括ResNet18, ResNet34, ResNet50, ResNet101, ResNet152
 论文：《Deep Residual Learning for Image Recognition》
 链接：[https://arxiv.org/abs/1512.03385](https://arxiv.org/abs/1512.03385)
+![Residual Block](image.png)
 1. 下载常用的遥感分类影像数据集，如WHU-RS19、UCMD以及NWPU DataSet等
 2. 将数据集整理成如下格式：
 ```

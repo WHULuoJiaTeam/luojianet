@@ -1,8 +1,7 @@
 # 遥感影像场景训练SENet部分
-## 包括VGG11, VGG13, VGG16, VGG19
-论文：《Very Deep Convolutional Networks for Large-Scale Image Recognition》
-链接：[https://arxiv.org/abs/1409.1556](https://arxiv.org/abs/1409.1556)
-![VGG网络](image.png)
+论文：《Squeeze-and-Excitation Networks》
+链接：[https://arxiv.org/abs/1709.01507v4](https://arxiv.org/abs/1709.01507v4)
+![SE Block](image.png)
 &emsp;
 1. 下载常用的遥感分类影像数据集，如WHU-RS19、UCMD以及NWPU DataSet等
 2. 将数据集整理成如下格式：

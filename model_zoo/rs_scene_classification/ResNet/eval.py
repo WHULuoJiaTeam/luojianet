@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--device_target', type=str, default="CPU", help='Device target')
 
     args_opt = parser.parse_args()
-    context.set_context(device_id=args_opt.device_target)
+    context.set_context(device_target=args_opt.device_target)
 
     # create dataset
     dataset = create_dataset(dataset_path=args_opt.dataset_path,

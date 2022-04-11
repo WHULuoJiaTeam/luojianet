@@ -24,6 +24,7 @@ export ENABLE_GPU="OFF"
 export ENABLE_MPI="OFF"
 export ENABLE_D="ON"
 export ENABLE_AKG="ON"
+export ENABLE_GE="OFF"
 
 source ./scripts/build/usage.sh
 source ./scripts/build/default_options.sh
@@ -85,6 +86,7 @@ build_exit()
     exit 1
 }
 
+
 make_clean()
 {
   echo "enable make clean"
@@ -96,6 +98,8 @@ echo "---------------- LuoJiaNet: build start ----------------"
 init_default_options
 process_options "$@"
 parse_device
+
+export ENABLE_MPI="OFF"
 
 if [[ "X$COMPILE_LITE" = "Xon" ]]; then
   export COMPILE_MINDDATA_LITE

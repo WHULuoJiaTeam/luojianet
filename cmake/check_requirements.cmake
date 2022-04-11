@@ -34,8 +34,26 @@ elseif(Python3_LIBRARY AND Python3_EXECUTABLE AND
     message("Python3 library path: ${Python3_LIBRARY}")
     message("Python3 interpreter: ${Python3_EXECUTABLE}")
 else()
-    message(FATAL_ERROR "Python3 not found, please install Python>=3.7.5, and set --enable-shared "
-            "if you are building Python locally")
+    find_package(PythonInterp)
+    find_package(PythonLibs)
+    message("PYTHON_INCLUDE_DIR: ${PYTHON_INCLUDE_DIR}")
+    message("PYTHON_LIBRARY: ${PYTHON_LIBRARY}")
+    message("PYTHON_VERSION_STRING: ${PYTHON_VERSION_STRING}")
+    message("PYTHON_EXECUTABLE: ${PYTHON_EXECUTABLE}")
+
+    if(PYTHONINTERP_FOUND)
+        message("Python3 found, version: ${PYTHON_VERSION_STRING}")
+        message("Python3 library path: ${PYTHON_LIBRARY}")
+        message("Python3 interpreter: ${PYTHON_EXECUTABLE}")
+    elseif(PYTHON_LIBRARY AND PYTHON_EXECUTABLE AND
+            ${PYTHON_VERSION_STRING} VERSION_GREATER_EQUAL "3.7.0" AND ${Python3_VERSION} VERSION_LESS "3.9.9")
+        message(WARNING "Maybe python3 environment is broken.")
+        message("Python3 library path: ${PYTHON_LIBRARY}")
+        message("Python3 interpreter: ${PYTHON_EXECUTABLE}")
+    else()
+        message(FATAL_ERROR "Python3 not found, please install Python>=3.7.5, and set --enable-shared "
+                "if you are building Python locally")
+    endif()
 endif()
 
 ## packages used both on windows and linux

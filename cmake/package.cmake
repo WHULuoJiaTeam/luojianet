@@ -303,13 +303,15 @@ if(NOT ENABLE_GE)
             )
         endif()
     elseif(ENABLE_TESTCASES)
-        install(
-            FILES
-                ${CMAKE_BINARY_DIR}/graphengine/metadef/graph/libgraph.so
-                ${BUILD_PATH}/graphengine/c_sec/lib/libc_sec.so
-            DESTINATION ${INSTALL_LIB_DIR}
-            COMPONENT luojianet_ms
-        )
+        if(ENABLE_GE)
+            install(
+                FILES
+                    ${CMAKE_BINARY_DIR}/graphengine/metadef/graph/libgraph.so
+                    ${BUILD_PATH}/graphengine/c_sec/lib/libc_sec.so
+                DESTINATION ${INSTALL_LIB_DIR}
+                COMPONENT luojianet_ms
+            )
+        endif()
     endif()
 endif()
 

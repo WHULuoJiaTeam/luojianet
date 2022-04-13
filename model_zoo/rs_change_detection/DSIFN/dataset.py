@@ -7,7 +7,7 @@ from skimage.io import imread
 from skimage import color
 from luojianet_ms.common import dtype as mstype
 
-import luojianet_ms.dataset as dst_ds
+import luojianet_ms.dataset as ds
 import luojianet_ms.dataset.transforms.c_transforms as C2
 
 class Dataset:

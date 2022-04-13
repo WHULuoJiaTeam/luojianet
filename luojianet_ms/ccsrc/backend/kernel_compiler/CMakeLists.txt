@@ -118,7 +118,12 @@ if(ENABLE_AKG AND ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         list(APPEND AKG_SRC_LIST ${AKG_D_SRC_LIST})
     endif()
     if(ENABLE_CPU)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+        find_package(OpenMP)
+        if (OPENMP_FOUND)
+            set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+            set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+        endif()
         file(GLOB_RECURSE AKG_CPU_SRC_LIST RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
             "akg/cpu/*.cc"
         )

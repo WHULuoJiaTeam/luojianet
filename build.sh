@@ -29,6 +29,8 @@ if [ -d $LIB_FOLDER ]; then
      rm -rf $PATCHES_FOLDER
 fi
 
+exprt LD_LIBRARY_PATH:${BASEPATH}/build/luojianet_ms/_deps/grpc-src/_build$LD_LIBRARY_PATH
+
 DEPS_FOLDER="${BUILD_PATH}/luojianet_ms/_deps"
 if [ -d $DEPS_FOLDER ]; then
     rm -rf $DEPS_FOLDER/*-src

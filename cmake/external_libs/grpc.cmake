@@ -56,7 +56,7 @@ endif()
 if(EXISTS "${CMAKE_BINARY_DIR}/_ms_patch/grpc.patch001")
 	luojianet_ms_add_pkg(grpc
 			VER 1.36.1
-			LIBS luojianet_ms_grpc++ luojianet_ms_grpc luojianet_ms_gpr luojianet_ms_upb luojianet_ms_address_sorting
+			LIBS luojianet_ms_grpcpp luojianet_ms_grpc luojianet_ms_gpr luojianet_ms_upb luojianet_ms_address_sorting
 			EXE grpc_cpp_plugin
 			URL ${REQ_URL}
 			MD5 ${MD5}
@@ -81,7 +81,7 @@ if(EXISTS "${CMAKE_BINARY_DIR}/_ms_patch/grpc.patch001")
 else()
 	luojianet_ms_add_pkg(grpc
 			VER 1.36.1
-			LIBS luojianet_ms_grpc++ luojianet_ms_grpc luojianet_ms_gpr luojianet_ms_upb luojianet_ms_address_sorting
+			LIBS luojianet_ms_grpcpp luojianet_ms_grpc luojianet_ms_gpr luojianet_ms_upb luojianet_ms_address_sorting
 			EXE grpc_cpp_plugin
 			URL ${REQ_URL}
 			MD5 ${MD5}
@@ -109,10 +109,10 @@ endif()
 
 include_directories(${grpc_INC})
 
-add_library(luojianet_ms::grpc++ ALIAS grpc::luojianet_ms_grpcpp)
+add_library(luojianet_ms::grpcpp ALIAS grpc::luojianet_ms_grpcpp)
 
 # link other grpc libs
-target_link_libraries(grpc::luojianet_ms_grpc++ INTERFACE grpc::luojianet_ms_grpc grpc::luojianet_ms_gpr grpc::luojianet_ms_upb
+target_link_libraries(grpc::luojianet_ms_grpcpp INTERFACE grpc::luojianet_ms_grpc grpc::luojianet_ms_gpr grpc::luojianet_ms_upb
     grpc::luojianet_ms_address_sorting)
 
 # modify luojianet_ms macro define

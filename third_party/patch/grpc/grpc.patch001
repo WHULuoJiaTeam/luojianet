@@ -7,6 +7,7 @@ diff -Npur grpc/..rej grpc-patch/..rej
 +@@ -12992,7 +12992,13 @@ if(gRPC_BUILD_CODEGEN AND gRPC_BUILD_GRP
 + add_executable(grpc_cpp_plugin
 +   src/compiler/cpp_plugin.cc
++   src/compiler/cpp_generator.cc
 + )
 +-
 ++if(CMAKE_SYSTEM_NAME MATCHES "Darwin")

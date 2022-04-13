@@ -22,6 +22,7 @@ export BUILD_PATH="${BASEPATH}/build/"
 export ENABLE_RS="ON"
 export ENABLE_GPU="ON"
 export ENABLE_MPI="ON"
+export ENABLE_TESTCASES="ON"
 
 #remove default patches for third party library
 PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"

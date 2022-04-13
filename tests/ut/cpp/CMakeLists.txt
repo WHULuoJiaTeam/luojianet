@@ -284,7 +284,11 @@ if(USE_GLOG)
 endif()
 
 target_link_libraries(luojianet_ms luojianet_core)
-target_link_libraries(ut_tests PRIVATE luojianet_ms luojianet_shared_lib securec graph error_manager)
+if(ENABLE_GE)
+    target_link_libraries(ut_tests PRIVATE luojianet_ms luojianet_shared_lib securec graph error_manager)
+else()
+    target_link_libraries(ut_tests PRIVATE luojianet_ms luojianet_shared_lib securec)
+endif()
 
 if(ENABLE_GPU)
 	target_link_libraries(ut_tests PRIVATE gpu_cuda_lib gpu_queue)

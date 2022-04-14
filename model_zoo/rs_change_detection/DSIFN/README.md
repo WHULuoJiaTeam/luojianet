@@ -43,4 +43,4 @@
     "min_lr": 0.00001 #最小学习率
 ```
 4. 设置完毕后，在cmd下运行``python train.py``进行训练
-5. 训练好的模型会根据config中的参数保存在相应的目录下，选择合适的模型，使用eval.py进行测试，在cmd下运行``python eval.py``进行测试验证（eval代码待更新）
+5. 训练好的模型会根据config中的参数保存在相应的目录下，选择合适的模型，使用eval.py进行测试，在cmd下运行``python eval.py -m ./checkpoint/XXXX.ckpt``进行测试验证

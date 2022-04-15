@@ -41,7 +41,7 @@
     image2_dir = './data/B' # B 时相图片路径
     label1_dir = './data/building_A' # A 时相建筑物标签路径
     label2_dir = './data/building_B' # B 时相建筑物标签路径
-    label3_dir = './data/OUT' # 变化掩膜路径
+    label3_dir = './data/label' # 变化掩膜路径
     save_dir = './model' # 模型保存路径
     batch_size = 1 
     epochs = 150 # 训练次数

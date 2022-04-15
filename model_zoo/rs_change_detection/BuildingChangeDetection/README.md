@@ -2,8 +2,8 @@
 ## 多任务共进的遥感影像建筑物变化检测方法
 论文：2022RS《Built-Up Area Change Detection Using Multi-Task Network with Object-Level Refinement》  
 链接：[https://doi.org/10.3390/rs14040957](https://doi.org/10.3390/rs14040957)  
-代码提供者：高嵩[gaosong@whu.edu.cn](gaosong@whu.edu.cn)  
-(![网络示意图](image.png))
+代码提供者：[gaosong@whu.edu.cn](gaosong@whu.edu.cn)  
+![网络示意图](image.png)
 &emsp;
 1. 下载遥感建筑物变化检测影像数据集，如WHU ChangeDetection等
 2. 将数据集整理成如下格式：  

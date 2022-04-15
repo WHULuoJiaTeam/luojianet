@@ -309,7 +309,7 @@ if(ENABLE_GPU)
 	target_link_libraries(ut_tests PRIVATE gpu_cuda_lib gpu_queue)
 endif()
 
-if(ENALBE_CPU)
+if(ENALBE_CPU OR ENABLE_TESTCASES)
     find_package(OpenMP)
     if (OPENMP_FOUND)
         set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")

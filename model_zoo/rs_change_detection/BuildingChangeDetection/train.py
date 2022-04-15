@@ -90,7 +90,7 @@ if __name__ == '__main__':
     image2_dir = './Building_change_detection/1/B' # B 时相图片路径
     label1_dir = './Building_change_detection/1/building_A' # A 时相建筑物标签路径
     label2_dir = './Building_change_detection/1/building_B' # B 时相建筑物标签路径
-    label3_dir = './Building_change_detection/1/OUT' # 变化掩膜路径
+    label3_dir = './Building_change_detection/1/label' # 变化掩膜路径
 
     save_dir = './model' # 模型保存路径
     batch_size = 1 
@@ -108,7 +108,3 @@ if __name__ == '__main__':
     ckpt_cb = ModelCheckpoint(prefix='CD', directory=save_dir, config=config_ck)
     model = luojianet_ms.Model(net, loss_fn=cross_entropy(), optimizer=optimizer)
     model.train(epochs, Datasets, callbacks=[ckpt_cb, LossMonitor(1)])
-
-    
-
-    

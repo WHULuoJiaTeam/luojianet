@@ -45,7 +45,7 @@
 4. 设置完毕后，在cmd下运行``python train.py``进行训练
 5. 训练好的模型会根据config中的参数保存在相应的目录下，选择合适的模型，使用eval.py进行测试，在cmd下运行``python eval.py -i XXX -m ./checkpoint/XXXX.ckpt -t GPU``进行测试验证，也可以使用``python eval.py --dataset_path xxx --checkpoint_path xxx --device_target xxx``进行使用，输出验证集Precision、Recall、F1、IoU、Kappa。**目前只支持变与不变两种，多类待更新**
 ```
--i --dataset_path 为验证集路径，存储为val.txt，每行包含前后期影像路径和标签路径
+-i --dataset_path 为验证集路径，**图片存储方式参考2中训练集的图像存储方式**
 -m --checkpoint_path为训练权重路径
 -t --device_target为设备类型，包括CPU、GPU、Ascend
 ```

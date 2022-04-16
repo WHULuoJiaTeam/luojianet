@@ -19,7 +19,6 @@ def txt2class(classes_path):
     return class_name
 
 if __name__ == '__main__':
-    # 加载验证数据集
     parser = argparse.ArgumentParser(description='Image classification')
 
     parser.add_argument('-i','--input_file', type=str, default=None, help='Input file path')

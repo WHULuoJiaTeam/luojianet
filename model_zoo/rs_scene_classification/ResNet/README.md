@@ -58,7 +58,7 @@
 -c --checkpoint_path为训练权重路径
 -t --device_target为设备类型，包括CPU、GPU、Ascend
 ```
-输出：验证集的top-1和top-5精度指标
+输出：验证集的top-1和top-5精度指标   
 6. 利用预训练好的模型对单张影像进行预测，选择合适的模型，使用test.py进行预测，在cmd下运行``python test.py -i XXX -o XXX -c1 XXX -c2 XXX -t XXX``进行预测，输出该影像对应top-5的类别、对应ID以及概率,也可运行``python prediction.py --input_file ./input_image/bridge_1.jpg --output_folder ./output --checkpoint_path ./rs_scene_classification_ckp/xxx.ckpt –classes_file xxx.txt  --device_target xxx``进行预测
 ```
 -i --input_file 为输入的单张影像路径，存储于input_image目录

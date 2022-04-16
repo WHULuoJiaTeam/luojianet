@@ -24,15 +24,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Image classification')
 
     parser.add_argument('-i','--input_file', type=str, default=None, help='Input file path')
-    parser.add_argument('-o','--output_file', type=str, default=None, help='Output file path')
+    parser.add_argument('-o','--output_folder', type=str, default=None, help='Output file path')
     parser.add_argument('-c1','--checkpoint_path', type=str, default=None, help='Saved checkpoint file path')
     parser.add_argument('-c2','--classes_file', type=str, default=None, help='Classes saved txt path ')
-    parser.add_argument('-d','--device_target', type=str, default="GPU", help='Device target')
+    parser.add_argument('-t','--device_target', type=str, default="GPU", help='Device target')
     args = parser.parse_args()
 
     context.set_context(device_target=args.device_target)
     img_name = args.input_file.split('/')[-1].split('.')[0]
-    out_dir = os.path.join(args.output_file, img_name+'.json')
+    out_dir = os.path.join(args.output_folder, img_name+'.json')
     class_name = txt2class(args.classes_file)
     img = Image.open(args.input_file).convert('RGB').resize((224,224))
     #更改网络模型 可选vgg, resnet, resnet_se

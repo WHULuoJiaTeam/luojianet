@@ -98,9 +98,9 @@ def test(model_path, data_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Change Detection')
-    parser.add_argument('-m','--model_path', type=str, default=None, help='Saved checkpoint file path')
-    parser.add_argument('-d','--dataset_path', type=str, default=None, help='Saved checkpoint file path')
-    parser.add_argument('--device_target', type=str, default="CPU", help='Device target')
+    parser.add_argument('-m','--checkpoint_path', type=str, default=None, help='Saved checkpoint file path')
+    parser.add_argument('-i','--dataset_path', type=str, default=None, help='Saved checkpoint file path')
+    parser.add_argument('-t','--device_target', type=str, default="CPU", help='Device target')
     args = parser.parse_args()
     set_seed(1)
 

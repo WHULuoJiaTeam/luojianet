@@ -68,7 +68,8 @@ void HcclTask::Distribute() {
   }
 
   ::ge::GETaskInfo ge_task;
-  ge_task.id = 0;
+  static uint32_32 task_id = 0;
+  ge_task.id = task_id++;
   ge_task.type = static_cast<uint16_t>(RT_MODEL_TASK_HCCL);
   ge_task.stream = stream_;
 

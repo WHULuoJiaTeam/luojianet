@@ -45,9 +45,9 @@ if __name__ == '__main__':
     model = Model(net, loss, metrics={"Accuracy":nn.Accuracy()})
     img = np.array(img)/255.0
     img = img[np.newaxis,:,:,:].transpose((0,3,1,2))
-    sigmoid = nn.Softmax()
+    softmax = nn.Softmax()
     output = model.predict(Tensor(img,dtype=mstype.float32))
-    output = sigmoid(output)
+    output = softmax(output)
     topk = ops.TopK()
     value,indexs = topk(output, 5)
     indexs = indexs.squeeze(0).asnumpy()

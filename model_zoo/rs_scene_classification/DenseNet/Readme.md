@@ -3,9 +3,7 @@
 论文：《Densely Connected Convolutional Networks》
 链接：[https://arxiv.org/abs/1608.06993v5](https://arxiv.org/abs/1608.06993v5)
 &emsp;
-<div style="align: center">
-<img src="image.png"/>
-</div>
+![DenseNet](image.png)
 &emsp;
 1. 下载常用的遥感分类影像数据集，如WHU-RS19、UCMD以及NWPU DataSet等
 2. 将数据集整理成如下格式：

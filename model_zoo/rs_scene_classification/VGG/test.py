@@ -4,7 +4,7 @@ import luojianet_ms.ops as ops
 import luojianet_ms.nn as nn
 from luojianet_ms import Model, Tensor, context, load_checkpoint, load_param_into_net
 from vgg import vgg16_bn
-from untils import *
+from utils import *
 import argparse
 import json
 

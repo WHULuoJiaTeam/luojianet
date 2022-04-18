@@ -11,7 +11,7 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common import set_seed
 import os
 
-from untils import get_lr,create_dataset,CrossEntropySmooth
+from utils import get_lr,create_dataset,CrossEntropySmooth
 from config import config
 
 from vgg import *

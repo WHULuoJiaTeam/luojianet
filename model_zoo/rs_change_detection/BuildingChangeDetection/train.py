@@ -58,8 +58,8 @@ class changeDatasets:
         label3 = self.lx(label3)
         
         image = np.concatenate([image1, image2], 0)
-        label = np.concatenate([np.expand_dims(label1[0, :, :], axis=0), np.expand_dims(label2[0, :, :], axis=0), np.expand_dims(label3[0, :, :], axis=0)], 0)
-
+        # label = np.concatenate([np.expand_dims(label1[0, :, :], axis=0), np.expand_dims(label2[0, :, :], axis=0), np.expand_dims(label3[0, :, :], axis=0)], 0)
+        label = np.concatenate([label1, label2,label3], 0)
         
         return image, label
 

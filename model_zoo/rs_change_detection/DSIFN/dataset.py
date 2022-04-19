@@ -6,7 +6,7 @@ import numpy as np
 from skimage.io import imread
 from skimage import color
 from luojianet_ms.common import dtype as mstype
-
+from PIL import Image as pI
 import luojianet_ms.dataset as ds
 import luojianet_ms.dataset.transforms.c_transforms as C2
 import luojianet_ms.dataset.vision.c_transforms as c_vision

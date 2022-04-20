@@ -122,6 +122,45 @@ constexpr char kSwapRedBlueOp[] = "SwapRedBlueOp";
 constexpr char kUniformAugOp[] = "UniformAugOp";
 constexpr char kVerticalFlipOp[] = "VerticalFlipOp";
 
+//RS index
+constexpr char kANDWIOp[] = "ANDWIOp";
+constexpr char kAWEIOp[] = "AWEIOp";
+constexpr char kBMIOp[] = "BMIOp";
+constexpr char kCIWIOp[] = "CIWIOp";
+constexpr char kCSIOp[] = "CSIOp";
+constexpr char kEWI_WOp[] = "EWI_WOp";
+constexpr char kEWI_YOp[] = "EWI_YOp";
+constexpr char kMBWIOp[] = "MBWIOp";
+constexpr char kMCIWIOp[] = "MCIWIOp";
+constexpr char kMNDWIOp[] = "MNDWIOp";
+constexpr char kNDPIOp[] = "NDPIOp";
+constexpr char kNDVIOp[] = "NDVIOp";
+constexpr char kNDWIOp[] = "NDWIOp";
+constexpr char kNWIOp[] = "NWIOp";
+constexpr char kPSIOp[] = "PSIOp";
+constexpr char kRDVIOp[] = "RDVIOp";
+constexpr char kRFDIOp[] = "RFDIOp";
+constexpr char kRVIOp[] = "RVIOp";
+constexpr char kRVI_SAROp[] = "RVI_SAROp";
+constexpr char kDVIOp[] = "DVIOp";
+constexpr char kEVIOp[] = "EVIOp";
+constexpr char kFNDWIOp[] = "FNDWIOp";
+constexpr char kGaborOp[] = "GaborOp";
+constexpr char kGLCMOp[] = "GLCMOp";
+constexpr char kGNDWIOp[] = "GNDWIOp";
+constexpr char kLBPOp[] = "LBPOp";
+constexpr char kMBIOp[] = "MBIOp";
+constexpr char kMSAVIOp[] = "MSAVIOp";
+constexpr char kOSAVIOp[] = "OSAVIOp";
+constexpr char kSAVIOp[] = "SAVIOp";
+constexpr char kSRWIOp[] = "SRWIOp";
+constexpr char kTVIOp[] = "TVIOp";
+constexpr char kVSIOp[] = "VSIOp";
+constexpr char kWDRVIOp[] = "WDRVIOp";
+constexpr char kWI_FOp[] = "WI_FOp";
+constexpr char kWI_HOp[] = "WI_HOp";
+constexpr char kWNDWIOp[] = "WNDWIOp";
+
 // text
 constexpr char kBasicTokenizerOp[] = "BasicTokenizerOp";
 constexpr char kBertTokenizerOp[] = "BertTokenizerOp";

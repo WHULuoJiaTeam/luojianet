@@ -1714,6 +1714,607 @@ class MS_API VerticalFlip final : public TensorTransform {
   std::shared_ptr<TensorOperation> Parse() override;
 };
 
+//***************************************//
+//RS index
+/// \brief ANDWI.
+class MS_API ANDWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  ANDWI();
+
+  /// \brief Destructor.
+  ~ANDWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief AWEI.
+class MS_API AWEI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  AWEI();
+
+  /// \brief Destructor.
+  ~AWEI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief BMI.
+class MS_API BMI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  BMI();
+
+  /// \brief Destructor.
+  ~BMI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief Construct CIWI.
+class MS_API CIWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  explicit CIWI(float digital_C = 100.0);
+
+  /// \brief Destructor.
+  ~CIWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief CSI.
+class MS_API CSI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  CSI();
+
+  /// \brief Destructor.
+  ~CSI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief Construct EWI_W.
+class MS_API EWI_W final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  explicit EWI_W(float m = 0.1, float n = 0.5);
+
+  /// \brief Destructor.
+  ~EWI_W() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief EWI_Y.
+class MS_API EWI_Y final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  EWI_Y();
+
+  /// \brief Destructor.
+  ~EWI_Y() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief Construct FNDWI.
+class MS_API FNDWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  FNDWI(int S, int CNIR);
+
+  /// \brief Destructor.
+  ~FNDWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief MBWI.
+class MS_API MBWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  MBWI();
+
+  /// \brief Destructor.
+  ~MBWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief MNDWI.
+class MS_API MNDWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  MNDWI();
+
+  /// \brief Destructor.
+  ~MNDWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief NDPI.
+class MS_API NDPI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  NDPI();
+
+  /// \brief Destructor.
+  ~NDPI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief NDVI.
+class MS_API NDVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  NDVI();
+
+  /// \brief Destructor.
+  ~NDVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief NDWI.
+class MS_API NDWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  NDWI();
+
+  /// \brief Destructor.
+  ~NDWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief NWI.
+class MS_API NWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  NWI();
+
+  /// \brief Destructor.
+  ~NWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief RVI.
+class MS_API RVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  RVI();
+
+  /// \brief Destructor.
+  ~RVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief DVI.
+class MS_API DVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  DVI();
+
+  /// \brief Destructor.
+  ~DVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief EVI.
+class MS_API EVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  EVI();
+
+  /// \brief Destructor.
+  ~EVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief Construct OSAVI.
+class MS_API OSAVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  OSAVI(float theta);
+
+  /// \brief Destructor.
+  ~OSAVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief Construct Gabor.
+class MS_API Gabor final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  Gabor(bool if_opencv_kernal);
+
+  /// \brief Destructor.
+  ~Gabor() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief Construct GLCM.
+class MS_API GLCM final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  GLCM(int N);
+
+  /// \brief Destructor.
+  ~GLCM() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief GNDWI.
+class MS_API GNDWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  GNDWI();
+
+  /// \brief Destructor.
+  ~GNDWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief Construct LBP.
+class MS_API LBP final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  LBP(int N);
+
+  /// \brief Destructor.
+  ~LBP() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief Construct MBI.
+class MS_API MBI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  MBI(int32_t s_min, int32_t s_max, int32_t delta_s);
+
+  /// \brief Destructor.
+  ~MBI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief MCIWI.
+class MS_API MCIWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  MCIWI();
+
+  /// \brief Destructor.
+  ~MCIWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief MSAVI.
+class MS_API MSAVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  MSAVI();
+
+  /// \brief Destructor.
+  ~MSAVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief PSI.
+class MS_API PSI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  PSI();
+
+  /// \brief Destructor.
+  ~PSI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief RDVI.
+class MS_API RDVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  RDVI();
+
+  /// \brief Destructor.
+  ~RDVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief RFDI.
+class MS_API RFDI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  RFDI();
+
+  /// \brief Destructor.
+  ~RFDI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief RVI_SAR.
+class MS_API RVI_SAR final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  RVI_SAR();
+
+  /// \brief Destructor.
+  ~RVI_SAR() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief Construct SAVI.
+class MS_API SAVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  explicit SAVI(float L = 0.5);
+
+  /// \brief Destructor.
+  ~SAVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief SRWI.
+class MS_API SRWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  SRWI();
+
+  /// \brief Destructor.
+  ~SRWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief TVI.
+class MS_API TVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  TVI();
+
+  /// \brief Destructor.
+  ~TVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief VSI.
+class MS_API VSI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  VSI();
+
+  /// \brief Destructor.
+  ~VSI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief Construct WDRVI.
+class MS_API WDRVI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  WDRVI(float alpha);
+
+  /// \brief Destructor.
+  ~WDRVI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
+/// \brief WI_F.
+class MS_API WI_F final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  WI_F();
+
+  /// \brief Destructor.
+  ~WI_F() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief WI_H.
+class MS_API WI_H final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  WI_H();
+
+  /// \brief Destructor.
+  ~WI_H() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+};
+
+/// \brief Construct WNDWI.
+class MS_API WNDWI final : public TensorTransform {
+ public:
+  /// \brief Constructor.
+  WNDWI(float alpha);
+
+  /// \brief Destructor.
+  ~WNDWI() = default;
+
+ protected:
+  /// \brief The function to convert a TensorTransform object into a TensorOperation object.
+  /// \return Shared pointer to TensorOperation object.
+  std::shared_ptr<TensorOperation> Parse() override;
+  
+ private:
+  struct Data;
+  std::shared_ptr<Data> data_;
+};
+
 }  // namespace vision
 }  // namespace dataset
 }  // namespace luojianet_ms

@@ -18,26 +18,50 @@
 #include "minddata/dataset/api/python/pybind_conversion.h"
 #include "minddata/dataset/api/python/pybind_register.h"
 #include "minddata/dataset/include/dataset/transforms.h"
-
 #include "minddata/dataset/kernels/ir/vision/adjust_gamma_ir.h"
+#include "minddata/dataset/kernels/ir/vision/andwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/auto_augment_ir.h"
 #include "minddata/dataset/kernels/ir/vision/auto_contrast_ir.h"
+#include "minddata/dataset/kernels/ir/vision/awei_ir.h"
+#include "minddata/dataset/kernels/ir/vision/bmi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/bounding_box_augment_ir.h"
 #include "minddata/dataset/kernels/ir/vision/center_crop_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ciwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/convert_color_ir.h"
 #include "minddata/dataset/kernels/ir/vision/crop_ir.h"
+#include "minddata/dataset/kernels/ir/vision/csi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/cutmix_batch_ir.h"
 #include "minddata/dataset/kernels/ir/vision/cutout_ir.h"
 #include "minddata/dataset/kernels/ir/vision/decode_ir.h"
+#include "minddata/dataset/kernels/ir/vision/dvi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/equalize_ir.h"
+#include "minddata/dataset/kernels/ir/vision/evi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ewi_w_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ewi_y_ir.h"
+#include "minddata/dataset/kernels/ir/vision/fndwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/gaussian_blur_ir.h"
+#include "minddata/dataset/kernels/ir/vision/gabor_ir.h"
+#include "minddata/dataset/kernels/ir/vision/glcm_ir.h"
+#include "minddata/dataset/kernels/ir/vision/gndwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/horizontal_flip_ir.h"
 #include "minddata/dataset/kernels/ir/vision/hwc_to_chw_ir.h"
 #include "minddata/dataset/kernels/ir/vision/invert_ir.h"
+#include "minddata/dataset/kernels/ir/vision/lbp_ir.h"
+#include "minddata/dataset/kernels/ir/vision/mbi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/mbwi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/mciwi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/mndwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/mixup_batch_ir.h"
+#include "minddata/dataset/kernels/ir/vision/msavi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ndpi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ndvi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ndwi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/nwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/normalize_ir.h"
 #include "minddata/dataset/kernels/ir/vision/normalize_pad_ir.h"
+#include "minddata/dataset/kernels/ir/vision/osavi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/pad_ir.h"
+#include "minddata/dataset/kernels/ir/vision/psi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_adjust_sharpness_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_affine_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_auto_contrast_ir.h"
@@ -62,16 +86,28 @@
 #include "minddata/dataset/kernels/ir/vision/random_solarize_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_vertical_flip_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_vertical_flip_with_bbox_ir.h"
+#include "minddata/dataset/kernels/ir/vision/rdvi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rescale_ir.h"
 #include "minddata/dataset/kernels/ir/vision/resize_ir.h"
 #include "minddata/dataset/kernels/ir/vision/resize_with_bbox_ir.h"
+#include "minddata/dataset/kernels/ir/vision/rfdi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rgb_to_bgr_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rotate_ir.h"
+#include "minddata/dataset/kernels/ir/vision/rvi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/rvi_sar_ir.h"
+#include "minddata/dataset/kernels/ir/vision/savi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/slice_patches_ir.h"
 #include "minddata/dataset/kernels/ir/vision/softdvpp_decode_random_crop_resize_jpeg_ir.h"
 #include "minddata/dataset/kernels/ir/vision/softdvpp_decode_resize_jpeg_ir.h"
+#include "minddata/dataset/kernels/ir/vision/srwi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/tvi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/uniform_aug_ir.h"
 #include "minddata/dataset/kernels/ir/vision/vertical_flip_ir.h"
+#include "minddata/dataset/kernels/ir/vision/vsi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/wdrvi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/wi_f_ir.h"
+#include "minddata/dataset/kernels/ir/vision/wi_h_ir.h"
+#include "minddata/dataset/kernels/ir/vision/wndwi_ir.h"
 
 namespace luojianet_ms {
 namespace dataset {
@@ -713,5 +749,443 @@ PYBIND_REGISTER(
         return vertical_flip;
       }));
   }));
+
+//#####################################
+//RS index
+// ANDWI 
+PYBIND_REGISTER(
+  ANDWIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::ANDWIOperation, TensorOperation, std::shared_ptr<vision::ANDWIOperation>>(
+      *m, "ANDWIOperation")
+      .def(py::init([]() {
+        auto ANDWI_out = std::make_shared<vision::ANDWIOperation>();
+        THROW_IF_ERROR(ANDWI_out->ValidateParams());
+        return ANDWI_out;
+      }));
+  }));
+  
+// AWEI 
+PYBIND_REGISTER(
+  AWEIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::AWEIOperation, TensorOperation, std::shared_ptr<vision::AWEIOperation>>(
+      *m, "AWEIOperation")
+      .def(py::init([]() {
+        auto AWEI_out = std::make_shared<vision::AWEIOperation>();
+        THROW_IF_ERROR(AWEI_out->ValidateParams());
+        return AWEI_out;
+      }));
+  }));
+  
+// BMI 
+PYBIND_REGISTER(
+  BMIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::BMIOperation, TensorOperation, std::shared_ptr<vision::BMIOperation>>(
+      *m, "BMIOperation")
+      .def(py::init([]() {
+        auto BMI_out = std::make_shared<vision::BMIOperation>();
+        THROW_IF_ERROR(BMI_out->ValidateParams());
+        return BMI_out;
+      }));
+  }));
+
+// CIWI
+PYBIND_REGISTER(CIWIOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::CIWIOperation, TensorOperation, std::shared_ptr<vision::CIWIOperation>>(
+                      *m, "CIWIOperation")
+                      .def(py::init([](float digital_C) {
+                        auto CIWI_op = std::make_shared<vision::CIWIOperation>(digital_C);
+                        THROW_IF_ERROR(CIWI_op->ValidateParams());
+                        return CIWI_op;
+                      }));
+                }));
+				
+// CSI 
+PYBIND_REGISTER(
+  CSIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::CSIOperation, TensorOperation, std::shared_ptr<vision::CSIOperation>>(
+      *m, "CSIOperation")
+      .def(py::init([]() {
+        auto CSI_out = std::make_shared<vision::CSIOperation>();
+        THROW_IF_ERROR(CSI_out->ValidateParams());
+        return CSI_out;
+      }));
+  }));
+
+// EWI_W
+PYBIND_REGISTER(EWI_WOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::EWI_WOperation, TensorOperation,
+                                   std::shared_ptr<vision::EWI_WOperation>>(*m, "EWI_WOperation")
+                    .def(py::init([](float m, float n) {
+                      auto EWI_W_out = std::make_shared<vision::EWI_WOperation>(
+                        m, n);
+                      THROW_IF_ERROR(EWI_W_out->ValidateParams());
+                      return EWI_W_out;
+                    }));
+                }));
+
+// EWI_Y 
+PYBIND_REGISTER(
+  EWI_YOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::EWI_YOperation, TensorOperation, std::shared_ptr<vision::EWI_YOperation>>(
+      *m, "EWI_YOperation")
+      .def(py::init([]() {
+        auto EWI_Y_out = std::make_shared<vision::EWI_YOperation>();
+        THROW_IF_ERROR(EWI_Y_out->ValidateParams());
+        return EWI_Y_out;
+      }));
+  }));
+  
+// FNDWI
+PYBIND_REGISTER(FNDWIOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::FNDWIOperation, TensorOperation,
+                                   std::shared_ptr<vision::FNDWIOperation>>(*m, "FNDWIOperation")
+                    .def(py::init([](int S, int CNIR) {
+                      auto FNDWI_out = std::make_shared<vision::FNDWIOperation>(
+                        S, CNIR);
+                      THROW_IF_ERROR(FNDWI_out->ValidateParams());
+                      return FNDWI_out;
+                    }));
+                }));
+
+// Gabor
+PYBIND_REGISTER(GaborOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::GaborOperation, TensorOperation,
+                                   std::shared_ptr<vision::GaborOperation>>(*m, "GaborOperation")
+                    .def(py::init([](bool if_opencv_kernal) {
+                      auto Gabor_out = std::make_shared<vision::GaborOperation>(if_opencv_kernal);
+                      THROW_IF_ERROR(Gabor_out->ValidateParams());
+                      return Gabor_out;
+                    }));
+                }));
+				
+// GLCM
+PYBIND_REGISTER(GLCMOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::GLCMOperation, TensorOperation,
+                                   std::shared_ptr<vision::GLCMOperation>>(*m, "GLCMOperation")
+                    .def(py::init([](int N) {
+                      auto GLCM_out = std::make_shared<vision::GLCMOperation>(N);
+                      THROW_IF_ERROR(GLCM_out->ValidateParams());
+                      return GLCM_out;
+                    }));
+                }));
+				
+// GNDWI
+PYBIND_REGISTER(GNDWIOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::GNDWIOperation, TensorOperation,
+                                   std::shared_ptr<vision::GNDWIOperation>>(*m, "GNDWIOperation")
+                    .def(py::init([]() {
+                      auto GNDWI_out = std::make_shared<vision::GNDWIOperation>();
+                      THROW_IF_ERROR(GNDWI_out->ValidateParams());
+                      return GNDWI_out;
+                    }));
+                }));
+
+// LBP
+PYBIND_REGISTER(LBPOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::LBPOperation, TensorOperation,
+                                   std::shared_ptr<vision::LBPOperation>>(*m, "LBPOperation")
+                    .def(py::init([](int N) {
+                      auto LBP_out = std::make_shared<vision::LBPOperation>(N);
+                      THROW_IF_ERROR(LBP_out->ValidateParams());
+                      return LBP_out;
+                    }));
+                }));
+
+// MBWI 
+PYBIND_REGISTER(
+   MBWIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::MBWIOperation, TensorOperation, std::shared_ptr<vision::MBWIOperation>>(
+      *m, "MBWIOperation")
+      .def(py::init([]() {
+        auto MBWI_out = std::make_shared<vision::MBWIOperation>();
+        THROW_IF_ERROR(MBWI_out->ValidateParams());
+        return MBWI_out;
+      }));
+  }));
+
+// MCIWI 
+PYBIND_REGISTER(
+  MCIWIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::MCIWIOperation, TensorOperation, std::shared_ptr<vision::MCIWIOperation>>(
+      *m, "MCIWIOperation")
+      .def(py::init([]() {
+        auto MCIWI_out = std::make_shared<vision::MCIWIOperation>();
+        THROW_IF_ERROR(MCIWI_out->ValidateParams());
+        return MCIWI_out;
+      }));
+  }));
+
+// MNDWI 
+PYBIND_REGISTER(
+  MNDWIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::MNDWIOperation, TensorOperation, std::shared_ptr<vision::MNDWIOperation>>(
+      *m, "MNDWIOperation")
+      .def(py::init([]() {
+        auto MNDWI_out = std::make_shared<vision::MNDWIOperation>();
+        THROW_IF_ERROR(MNDWI_out->ValidateParams());
+        return MNDWI_out;
+      }));
+  }));
+
+// NDPI 
+PYBIND_REGISTER(
+  NDPIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::NDPIOperation, TensorOperation, std::shared_ptr<vision::NDPIOperation>>(
+      *m, "NDPIOperation")
+      .def(py::init([]() {
+        auto NDPI_out = std::make_shared<vision::NDPIOperation>();
+        THROW_IF_ERROR(NDPI_out->ValidateParams());
+        return NDPI_out;
+      }));
+  }));
+
+// NDVI 
+PYBIND_REGISTER(
+  NDVIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::NDVIOperation, TensorOperation, std::shared_ptr<vision::NDVIOperation>>(
+      *m, "NDVIOperation")
+      .def(py::init([]() {
+        auto NDVI_out = std::make_shared<vision::NDVIOperation>();
+        THROW_IF_ERROR(NDVI_out->ValidateParams());
+        return NDVI_out;
+      }));
+  }));
+  
+// NDWI 
+PYBIND_REGISTER(
+  NDWIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::NDWIOperation, TensorOperation, std::shared_ptr<vision::NDWIOperation>>(
+      *m, "NDWIOperation")
+      .def(py::init([]() {
+        auto NDWI_out = std::make_shared<vision::NDWIOperation>();
+        THROW_IF_ERROR(NDWI_out->ValidateParams());
+        return NDWI_out;
+      }));
+  }));
+  
+// NWI 
+PYBIND_REGISTER(
+  NWIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::NWIOperation, TensorOperation, std::shared_ptr<vision::NWIOperation>>(
+      *m, "NWIOperation")
+      .def(py::init([]() {
+        auto NWI_out = std::make_shared<vision::NWIOperation>();
+        THROW_IF_ERROR(NWI_out->ValidateParams());
+        return NWI_out;
+      }));
+  }));
+  
+// PSI 
+PYBIND_REGISTER(
+  PSIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::PSIOperation, TensorOperation, std::shared_ptr<vision::PSIOperation>>(
+      *m, "PSIOperation")
+      .def(py::init([]() {
+        auto PSI_out = std::make_shared<vision::PSIOperation>();
+        THROW_IF_ERROR(PSI_out->ValidateParams());
+        return PSI_out;
+      }));
+  }));
+
+// RVI 
+PYBIND_REGISTER(
+  RVIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::RVIOperation, TensorOperation, std::shared_ptr<vision::RVIOperation>>(
+      *m, "RVIOperation")
+      .def(py::init([]() {
+        auto RVI_out = std::make_shared<vision::RVIOperation>();
+        THROW_IF_ERROR(RVI_out->ValidateParams());
+        return RVI_out;
+      }));
+  }));
+
+// DVI 
+PYBIND_REGISTER(
+  DVIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::DVIOperation, TensorOperation, std::shared_ptr<vision::DVIOperation>>(
+      *m, "DVIOperation")
+      .def(py::init([]() {
+        auto DVI_out = std::make_shared<vision::DVIOperation>();
+        THROW_IF_ERROR(DVI_out->ValidateParams());
+        return DVI_out;
+      }));
+  }));
+  
+// EVI 
+PYBIND_REGISTER(
+  EVIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::EVIOperation, TensorOperation, std::shared_ptr<vision::EVIOperation>>(
+      *m, "EVIOperation")
+      .def(py::init([]() {
+        auto EVI_out = std::make_shared<vision::EVIOperation>();
+        THROW_IF_ERROR(EVI_out->ValidateParams());
+        return EVI_out;
+      }));
+  }));
+  
+// OSAVI
+PYBIND_REGISTER(OSAVIOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::OSAVIOperation, TensorOperation,
+                                   std::shared_ptr<vision::OSAVIOperation>>(*m, "OSAVIOperation")
+                    .def(py::init([](float theta) {
+                      auto OSAVI_out = std::make_shared<vision::OSAVIOperation>(theta);
+                      THROW_IF_ERROR(OSAVI_out->ValidateParams());
+                      return OSAVI_out;
+                    }));
+                }));
+
+// MBI
+PYBIND_REGISTER(MBIOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::MBIOperation, TensorOperation,
+                                   std::shared_ptr<vision::MBIOperation>>(*m, "MBIOperation")
+                    .def(py::init([](int32_t s_min, int32_t s_max, int32_t delta_s) {
+                      auto MBI_out = std::make_shared<vision::MBIOperation>(
+                        s_min, s_max, delta_s);
+                      THROW_IF_ERROR(MBI_out->ValidateParams());
+                      return MBI_out;
+                    }));
+                }));
+
+// MSAVI 
+PYBIND_REGISTER(
+  MSAVIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::MSAVIOperation, TensorOperation, std::shared_ptr<vision::MSAVIOperation>>(
+      *m, "MSAVIOperation")
+      .def(py::init([]() {
+        auto MSAVI_out = std::make_shared<vision::MSAVIOperation>();
+        THROW_IF_ERROR(MSAVI_out->ValidateParams());
+        return MSAVI_out;
+      }));
+  }));
+  
+// RDVI 
+PYBIND_REGISTER(
+  RDVIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::RDVIOperation, TensorOperation, std::shared_ptr<vision::RDVIOperation>>(
+      *m, "RDVIOperation")
+      .def(py::init([]() {
+        auto RDVI_out = std::make_shared<vision::RDVIOperation>();
+        THROW_IF_ERROR(RDVI_out->ValidateParams());
+        return RDVI_out;
+      }));
+  }));
+  
+// RFDI 
+PYBIND_REGISTER(
+  RFDIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::RFDIOperation, TensorOperation, std::shared_ptr<vision::RFDIOperation>>(
+      *m, "RFDIOperation")
+      .def(py::init([]() {
+        auto RFDI_out = std::make_shared<vision::RFDIOperation>();
+        THROW_IF_ERROR(RFDI_out->ValidateParams());
+        return RFDI_out;
+      }));
+  }));
+  
+// RVI_SAR 
+PYBIND_REGISTER(
+  RVI_SAROperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::RVI_SAROperation, TensorOperation, std::shared_ptr<vision::RVI_SAROperation>>(
+      *m, "RVI_SAROperation")
+      .def(py::init([]() {
+        auto RVI_SAR_out = std::make_shared<vision::RVI_SAROperation>();
+        THROW_IF_ERROR(RVI_SAR_out->ValidateParams());
+        return RVI_SAR_out;
+      }));
+  }));
+
+// SAVI
+PYBIND_REGISTER(SAVIOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::SAVIOperation, TensorOperation,
+                                   std::shared_ptr<vision::SAVIOperation>>(*m, "SAVIOperation")
+                    .def(py::init([](float L) {
+                      auto SAVI_out = std::make_shared<vision::SAVIOperation>(L);
+                      THROW_IF_ERROR(SAVI_out->ValidateParams());
+                      return SAVI_out;
+                    }));
+                }));
+				
+// SRWI 
+PYBIND_REGISTER(
+  SRWIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::SRWIOperation, TensorOperation, std::shared_ptr<vision::SRWIOperation>>(
+      *m, "SRWIOperation")
+      .def(py::init([]() {
+        auto SRWI_out = std::make_shared<vision::SRWIOperation>();
+        THROW_IF_ERROR(SRWI_out->ValidateParams());
+        return SRWI_out;
+      }));
+  }));
+
+// TVI 
+PYBIND_REGISTER(
+  TVIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::TVIOperation, TensorOperation, std::shared_ptr<vision::TVIOperation>>(
+      *m, "TVIOperation")
+      .def(py::init([]() {
+        auto TVI_out = std::make_shared<vision::TVIOperation>();
+        THROW_IF_ERROR(TVI_out->ValidateParams());
+        return TVI_out;
+      }));
+  }));
+  
+// VSI 
+PYBIND_REGISTER(
+  VSIOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::VSIOperation, TensorOperation, std::shared_ptr<vision::VSIOperation>>(
+      *m, "VSIOperation")
+      .def(py::init([]() {
+        auto VSI_out = std::make_shared<vision::VSIOperation>();
+        THROW_IF_ERROR(VSI_out->ValidateParams());
+        return VSI_out;
+      }));
+  }));
+  
+// WDRVI
+PYBIND_REGISTER(WDRVIOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::WDRVIOperation, TensorOperation,
+                                   std::shared_ptr<vision::WDRVIOperation>>(*m, "WDRVIOperation")
+                    .def(py::init([](float alpha) {
+                      auto WDRVI_out = std::make_shared<vision::WDRVIOperation>(alpha);
+                      THROW_IF_ERROR(WDRVI_out->ValidateParams());
+                      return WDRVI_out;
+                    }));
+                }));
+				
+// WI_F 
+PYBIND_REGISTER(
+  WI_FOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::WI_FOperation, TensorOperation, std::shared_ptr<vision::WI_FOperation>>(
+      *m, "WI_FOperation")
+      .def(py::init([]() {
+        auto WI_F_out = std::make_shared<vision::WI_FOperation>();
+        THROW_IF_ERROR(WI_F_out->ValidateParams());
+        return WI_F_out;
+      }));
+  }));
+  
+// WI_H 
+PYBIND_REGISTER(
+  WI_HOperation, 1, ([](const py::module *m) {
+    (void)py::class_<vision::WI_HOperation, TensorOperation, std::shared_ptr<vision::WI_HOperation>>(
+      *m, "WI_HOperation")
+      .def(py::init([]() {
+        auto WI_H_out = std::make_shared<vision::WI_HOperation>();
+        THROW_IF_ERROR(WI_H_out->ValidateParams());
+        return WI_H_out;
+      }));
+  }));
+  
+// WNDWI
+PYBIND_REGISTER(WNDWIOperation, 1, ([](const py::module *m) {
+                  (void)py::class_<vision::WNDWIOperation, TensorOperation,
+                                   std::shared_ptr<vision::WNDWIOperation>>(*m, "WNDWIOperation")
+                    .def(py::init([](float alpha) {
+                      auto WNDWI_out = std::make_shared<vision::WNDWIOperation>(alpha);
+                      THROW_IF_ERROR(WNDWI_out->ValidateParams());
+                      return WNDWI_out;
+                    }));
+                }));
+
 }  // namespace dataset
 }  // namespace luojianet_ms

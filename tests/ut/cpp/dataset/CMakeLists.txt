@@ -79,6 +79,7 @@ SET(DE_UT_SRCS
         center_crop_op_test.cc
         channel_swap_test.cc
         circular_pool_test.cc
+        ciwi_op_test.cc
         coco_op_test.cc
         common/bboxop_common.cc
         common/common.cc
@@ -93,12 +94,20 @@ SET(DE_UT_SRCS
         datatype_test.cc
         decode_op_test.cc
         distributed_sampler_test.cc
+        dvi_op_test.cc
         equalize_op_test.cc
         execute_test.cc
         execution_tree_test.cc
+        evi_op_test.cc
+        ewi_w_op_test.cc
+        ewi_y_op_test.cc
         fill_op_test.cc
+        fndwi_op_test.cc
         c_api_vision_gaussian_blur_test.cc
+        gabor_op_test.cc
         global_context_test.cc
+        glcm_op_test.cc
+        gndwi_op_test.cc
         gnn_graph_test.cc
         image_process_test.cc
         interrupt_test.cc
@@ -109,15 +118,25 @@ SET(DE_UT_SRCS
         ir_vision_random_test.cc
         ir_vision_test.cc
         jieba_tokenizer_op_test.cc
+        lbp_op_test.cc
         main_test.cc
         map_op_test.cc
         mask_test.cc
+        mbi_op_test.cc
+        mciwi_op_test.cc
         memory_pool_test.cc
         mind_record_op_test.cc
         mixup_batch_op_test.cc
+        msavi_op_test.cc
+        mndwi_op_test.cc
+        ndpi_op_test.cc
+        ndvi_op_test.cc
+        ndwi_op_test.cc
+        nwi_op_test.cc
         normalize_op_test.cc
         one_hot_op_test.cc
         optimization_pass_test.cc
+        osavi_op_test.cc
         pad_end_op_test.cc
         pad_op_test.cc
         path_test.cc
@@ -141,15 +160,19 @@ SET(DE_UT_SRCS
         random_solarize_op_test.cc
         random_vertical_flip_op_test.cc
         random_vertical_flip_with_bbox_op_test.cc
+        rdvi_op_test.cc
         rescale_op_test.cc
         resize_op_test.cc
         resize_with_bbox_op_test.cc
         rgba_to_bgr_op_test.cc
         rgba_to_rgb_op_test.cc
+        rvi_op_test.cc
+        savi_op_test.cc
         schema_test.cc
         slice_op_test.cc
         sliding_window_op_test.cc
         solarize_op_test.cc
+        srwi_op_test.cc
         stand_alone_samplers_test.cc
         status_test.cc
         storage_container_test.cc
@@ -167,8 +190,12 @@ SET(DE_UT_SRCS
         treap_test.cc
         tree_modifying_function_test.cc
         trucate_pair_test.cc
+        tvi_op_test.cc
         type_cast_op_test.cc
+        wdrvi_op_test.cc
         weighted_random_sampler_test.cc
+        wi_f_op_test.cc
+        wndwi_op_test.cc
         )
 
 if(ENABLE_PYTHON)

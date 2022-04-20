@@ -626,7 +626,6 @@ class MixUpBatch(ImageTensorOperation):
     def parse(self):
         return cde.MixUpBatchOperation(self.alpha)
 
-
 class Normalize(ImageTensorOperation):
     """
     Normalize the input image with respect to mean and standard deviation. This operator will normalize
@@ -2035,3 +2034,271 @@ class VerticalFlip(ImageTensorOperation):
 
     def parse(self):
         return cde.VerticalFlipOperation()
+
+##########################################
+# RS index
+
+#ANDWI
+class ANDWI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.ANDWIOperation()
+
+#AWEI
+class AWEI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.AWEIOperation()
+        
+#BMI
+class BMI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.BMIOperation()
+
+#CIWI
+class CIWI(ImageTensorOperation): 
+
+    def __init__(self, digital_C = 100.0): 
+        self.digital_C = digital_C
+
+    def parse(self): 
+        return cde.CIWIOperation(self.digital_C)
+        
+#CSI
+class CSI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.CSIOperation()
+ 
+##EWI_W
+class EWI_W(ImageTensorOperation): 
+
+    def __init__(self, m = 0.1 , n = 0.5): 
+        self.m = 0.1 
+        self.n = 0.5 
+
+    def parse(self): 
+        return cde.EWI_WOperation(self.m, self.n)
+ 
+#EWI_Y
+class EWI_Y(ImageTensorOperation):
+
+    def parse(self):
+        return cde.EWI_YOperation()
+        
+##FNDWI
+class FNDWI(ImageTensorOperation): 
+
+    def __init__(self, S = 1 , CNIR = 40): 
+        self.S = S
+        self.CNIR = CNIR
+
+    def parse(self): 
+        return cde.FNDWIOperation(self.S, self.CNIR)
+
+##Gabor
+class Gabor(ImageTensorOperation): 
+
+    def __init__(self, if_opencv_kernal = True): 
+        self.if_opencv_kernal = if_opencv_kernal
+
+    def parse(self): 
+        return cde.GaborOperation(self.if_opencv_kernal)
+        
+##GLCM
+class GLCM(ImageTensorOperation): 
+
+    def __init__(self, N = 0): 
+        self.N = N
+        
+    def parse(self): 
+        return cde.GLCMOperation(self.N)
+        
+#GNDWI
+class GNDWI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.GNDWIOperation()
+
+##LBP
+class LBP(ImageTensorOperation): 
+
+    def __init__(self, N = 0): 
+        self.N = N
+
+    def parse(self): 
+        return cde.LBPOperation(self.N)
+
+##MBI
+class MBI(ImageTensorOperation): 
+
+    def __init__(self, s_min = 3 , s_max = 20, delta_s = 1): 
+        self.s_min = s_min 
+        self.s_max = s_max 
+        self.delta_s = delta_s
+
+    def parse(self): 
+        return cde.MBIOperation(self.s_min, self.s_max, self.delta_s)
+        
+#MBWI
+class MBWI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.MBWIOperation()
+
+#MCIWI
+class MCIWI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.MCIWIOperation()
+        
+#MNDWI
+class MNDWI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.MNDWIOperation()
+        
+#NDPI
+class NDPI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.NDPIOperation()
+
+#NDVI
+class NDVI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.NDVIOperation()
+
+#NDWI
+class NDWI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.NDWIOperation()
+        
+#NWI
+class NWI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.NWIOperation()
+
+#PSI
+class PSI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.PSIOperation()
+        
+#RFDI
+class RFDI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.RFDIOperation()
+
+#RVI
+class RVI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.RVIOperation()
+        
+#DVI
+class DVI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.DVIOperation()
+
+#EVI
+class EVI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.EVIOperation()
+
+#OSAVI
+class OSAVI(ImageTensorOperation): 
+
+    def __init__(self, theta = 0.16): 
+        self.theta = theta 
+
+    # parse 函数必须要重写，用于返回一个中间表示类 ExampleOperation 
+    def parse(self): 
+        # cde.ExampleOperation 为上述 pybind 文件编译后导出的接口 
+        return cde.OSAVIOperation(self.theta)
+        
+#MSAVI
+class MSAVI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.MSAVIOperation()
+        
+#RDVI
+class RDVI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.RDVIOperation()
+        
+#RVI_SAR
+class RVI_SAR(ImageTensorOperation):
+
+    def parse(self):
+        return cde.RVI_SAROperation()
+
+#SAVI
+class SAVI(ImageTensorOperation): 
+
+    def __init__(self, L = 0.5): 
+        self.L = L 
+
+    # parse 函数必须要重写，用于返回一个中间表示类 ExampleOperation 
+    def parse(self): 
+        # cde.ExampleOperation 为上述 pybind 文件编译后导出的接口 
+        return cde.SAVIOperation(self.L)
+        
+#SRWI
+class SRWI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.SRWIOperation()
+        
+#TVI
+class TVI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.TVIOperation()
+        
+#VSI
+class VSI(ImageTensorOperation):
+
+    def parse(self):
+        return cde.VSIOperation()
+        
+#WDRVI
+class WDRVI(ImageTensorOperation): 
+
+    def __init__(self, alpha= 0.1): 
+        self.alpha = alpha 
+
+    # parse 函数必须要重写，用于返回一个中间表示类 ExampleOperation 
+    def parse(self): 
+        # cde.ExampleOperation 为上述 pybind 文件编译后导出的接口 
+        return cde.WDRVIOperation(self.alpha)
+        
+#WI_F
+class WI_F(ImageTensorOperation):
+
+    def parse(self):
+        return cde.WI_FOperation()
+        
+#WI_H
+class WI_H(ImageTensorOperation):
+
+    def parse(self):
+        return cde.WI_HOperation()
+        
+#WNDWI
+class WNDWI(ImageTensorOperation): 
+
+    def __init__(self, alpha= 0.45): 
+        self.alpha = alpha 
+
+    def parse(self): 
+        return cde.WNDWIOperation(self.alpha)

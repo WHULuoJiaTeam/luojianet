@@ -29,9 +29,281 @@
 #include "minddata/dataset/kernels/image/math_utils.h"
 #include "minddata/dataset/kernels/image/resize_cubic_op.h"
 
+#include "gdal_priv.h"
+#include "gdal.h"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <cstdio>
+#include "minddata/dataset/core/GDALOpenCV.h"
+#include "minddata/dataset/core/GLCM_utils.h"
+
+
 const int32_t MAX_INT_PRECISION = 16777216;  // float int precision is 16777216
 const int32_t DEFAULT_NUM_HEIGHT = 1;
 const int32_t DEFAULT_NUM_WIDTH = 1;
+
+auto max_(uchar a,uchar b,uchar c)
+{
+    uchar temp=a;
+	if(b>a) temp=b;
+	if(temp<c) temp=c;
+	return temp;
+}
+
+cv::Mat RGB2GRAY(cv::Mat src) {
+    CV_Assert(src.channels() == 3);
+    cv::Mat dst = cv::Mat::zeros(src.size(), CV_8UC1);
+    cv::Vec3b rgb;
+    int r = src.rows;
+    int c = src.cols;
+
+    for (int i = 0; i < r; ++i) {
+        for (int j = 0; j < c; ++j) {
+            rgb = src.at<cv::Vec3b>(i, j);
+            uchar B = rgb[0]; uchar G = rgb[1]; uchar R = rgb[2];
+            dst.at<uchar>(i, j) = max_(R, G ,B);
+        }
+    }
+    return dst;
+}
+
+cv::Mat OLBP(cv::Mat img)
+{
+	cv::Mat result;
+	result.create(img.rows - 2, img.cols - 2, img.type());
+
+	result.setTo(0);
+
+	for (int i = 1; i < img.rows - 1; i++)
+	{
+		for (int j = 1; j < img.cols - 1; j++)
+		{
+			uchar center = img.at<uchar>(i, j);
+			uchar code = 0;
+			code |= (img.at<uchar>(i - 1, j - 1) >= center) << 7;
+			code |= (img.at<uchar>(i - 1, j) >= center) << 6;
+			code |= (img.at<uchar>(i - 1, j + 1) >= center) << 5;
+			code |= (img.at<uchar>(i, j + 1) >= center) << 4;
+			code |= (img.at<uchar>(i + 1, j + 1) >= center) << 3;
+			code |= (img.at<uchar>(i + 1, j) >= center) << 2;
+			code |= (img.at<uchar>(i + 1, j - 1) >= center) << 1;
+			code |= (img.at<uchar>(i, j - 1) >= center) << 0;
+			result.at<uchar>(i - 1, j - 1) = code;
+		}
+	}
+	return result;
+}
+
+cv::Mat ELBP(cv::Mat img, int radius, int neighbors)
+{
+	cv::Mat result;
+	result.create(img.rows - radius * 2, img.cols - radius * 2, img.type());
+	result.setTo(0);
+
+	for (int n = 0; n < neighbors; n++)
+	{
+		// sample points
+		float x = static_cast<float>(radius * cos(2.0*CV_PI*n / static_cast<float>(neighbors)));
+		float y = static_cast<float>(-radius * sin(2.0*CV_PI*n / static_cast<float>(neighbors)));
+		// relative indices
+		int fx = static_cast<int>(floor(x));
+		int fy = static_cast<int>(floor(y));
+		int cx = static_cast<int>(ceil(x));
+		int cy = static_cast<int>(ceil(y));
+		// fractional part
+		float ty = y - fy;
+		float tx = x - fx;
+		// set interpolation weights
+		float w1 = (1 - tx) * (1 - ty);
+		float w2 = tx * (1 - ty);
+		float w3 = (1 - tx) *      ty;
+		float w4 = tx * ty;
+		// iterate through your data
+		for (int i = radius; i < img.rows - radius; i++)
+		{
+			for (int j = radius; j < img.cols - radius; j++)
+			{
+				// calculate interpolated value
+				float t = static_cast<float>(w1*img.at<uchar>(i + fy, j + fx) + w2 * img.at<uchar>(i + fy, j + cx) + w3 * img.at<uchar>(i + cy, j + fx) + w4 * img.at<uchar>(i + cy, j + cx));
+				// floating point precision, so check some machine-dependent epsilon
+				result.at<uchar>(i - radius, j - radius) += ((t > img.at<uchar>(i, j)) || (std::abs(t - img.at<uchar>(i, j)) < std::numeric_limits<float>::epsilon())) << n;
+			}
+		}
+	}
+	return result;
+}
+
+int getHopCount(uchar i)
+{
+	uchar a[8] = { 0 };
+	int cnt = 0;
+	int k = 7;
+
+	while (k)
+	{
+		a[k] = i & 1;
+		i = i >> 1;
+		--k;
+	}
+
+	for (int k = 0; k < 7; k++)
+	{
+		if (a[k] != a[k + 1])
+			++cnt;
+	}
+
+	if (a[0] != a[7])
+		++cnt;
+
+	return cnt;
+}
+
+cv::Mat RILBP(cv::Mat img)
+{
+	uchar RITable[256];
+	int temp;
+	int val;
+	cv::Mat result;
+	result.create(img.rows - 2, img.cols - 2, img.type());
+	result.setTo(0);
+
+	for (int i = 0; i < 256; i++)
+	{
+		val = i;
+		for (int j = 0; j < 7; j++)
+		{
+			temp = i >> 1;
+			if (val > temp)
+			{
+				val = temp;
+			}
+		}
+		RITable[i] = val;
+	}
+
+	for (int i = 1; i < img.rows - 1; i++)
+	{
+		for (int j = 1; j < img.cols - 1; j++)
+		{
+			uchar center = img.at<uchar>(i, j);
+			uchar code = 0;
+			code |= (img.at<uchar>(i - 1, j - 1) >= center) << 7;
+			code |= (img.at<uchar>(i - 1, j) >= center) << 6;
+			code |= (img.at<uchar>(i - 1, j + 1) >= center) << 5;
+			code |= (img.at<uchar>(i, j + 1) >= center) << 4;
+			code |= (img.at<uchar>(i + 1, j + 1) >= center) << 3;
+			code |= (img.at<uchar>(i + 1, j) >= center) << 2;
+			code |= (img.at<uchar>(i + 1, j - 1) >= center) << 1;
+			code |= (img.at<uchar>(i, j - 1) >= center) << 0;
+			result.at<uchar>(i - 1, j - 1) = RITable[code];
+		}
+	}
+	return result;
+}
+
+cv::Mat UniformLBP(cv::Mat img)
+{
+	uchar UTable[256];
+	memset(UTable, 0, 256 * sizeof(uchar));
+	uchar temp = 1;
+	for (int i = 0; i < 256; i++)
+	{
+		if (getHopCount(i) <= 2)
+		{
+			UTable[i] = temp;
+			++temp;
+		}
+	}
+	cv::Mat result;
+	result.create(img.rows - 2, img.cols - 2, img.type());
+
+	result.setTo(0);
+
+	for (int i = 1; i < img.rows - 1; i++)
+	{
+		for (int j = 1; j < img.cols - 1; j++)
+		{
+			uchar center = img.at<uchar>(i, j);
+			uchar code = 0;
+			code |= (img.at<uchar>(i - 1, j - 1) >= center) << 7;
+			code |= (img.at<uchar>(i - 1, j) >= center) << 6;
+			code |= (img.at<uchar>(i - 1, j + 1) >= center) << 5;
+			code |= (img.at<uchar>(i, j + 1) >= center) << 4;
+			code |= (img.at<uchar>(i + 1, j + 1) >= center) << 3;
+			code |= (img.at<uchar>(i + 1, j) >= center) << 2;
+			code |= (img.at<uchar>(i + 1, j - 1) >= center) << 1;
+			code |= (img.at<uchar>(i, j - 1) >= center) << 0;
+			result.at<uchar>(i - 1, j - 1) = UTable[code];
+		}
+	}
+	return result;
+}
+
+cv::Mat gabor_kernal_wiki(cv::Size ksize, double theta, double sigma,
+	double lambd, double gamma, double psi, int ktype){
+
+	double sigma_x = sigma;
+	double sigma_y = sigma / gamma;
+
+	int xmin, xmax, ymin, ymax;
+
+	xmax = ksize.width / 2;
+	ymax = ksize.height / 2;
+	xmin = -xmax;
+	ymin = -ymax;
+
+	CV_Assert(ktype == CV_32F || ktype == CV_64F);
+
+	cv::Mat kernel(ymax - ymin + 1, xmax - xmin + 1, ktype);
+
+	for (int x = xmin; x <= xmax; x++)
+	{
+		for (int y = ymin; y <= ymax; y++)
+		{
+			double x_alpha = x * cos(theta) + y * sin(theta);
+			double y_alpha = -x * sin(theta) + y * cos(theta);
+			double exponent = exp(-0.5*(x_alpha*x_alpha / pow(sigma_x, 2) +
+				y_alpha * y_alpha / pow(sigma_y, 2)
+				)
+			);
+			double v = exponent * cos(2 * CV_PI / lambd * x_alpha + psi);
+			if (ktype == CV_32F)
+			{  
+				kernel.at<float>(y + ymax, x + xmax) = (float)v;
+			}
+			else
+				kernel.at<double>(y + ymax, x + xmax) = v;
+		}
+	}
+	return kernel;
+}
+
+void  gabor_filter(bool if_opencv_kernal, cv::Mat gray_img, cv::Mat& gabor_img, cv::Mat gabor_tmp, 
+                  int k, float sigma, float gamma, float lambda, float psi){
+	int ddepth = CV_8U;
+	double theta[4] = {
+		0.0,
+		CV_PI / 4,
+		CV_PI / 2,
+		CV_PI / 4 * 3,
+	};
+
+	cv::Size ksize = cv::Size(k, k); 
+	cv::Mat gabor_kernel;
+	gabor_img = cv::Mat::zeros(gray_img.size(), CV_8UC1);
+	for (int i = 0; i < 4; i++)
+	{
+		if (if_opencv_kernal)
+			gabor_kernel = cv::getGaborKernel(ksize, sigma, theta[i], lambda, gamma, psi, CV_32F);
+		else
+			gabor_kernel = gabor_kernal_wiki(ksize, theta[i], sigma, lambda, gamma, psi, CV_32F);
+
+		cv::filter2D(gray_img, gabor_tmp, ddepth, gabor_kernel);
+
+		cv::max(gabor_tmp, gabor_img, gabor_img);
+	}
+}
 
 namespace luojianet_ms {
 namespace dataset {
@@ -1676,6 +1948,3472 @@ Status ValidateImageRank(const std::string &op_name, int32_t rank) {
       err_msg = err_msg + ", may need to do Decode operation first.";
     }
     RETURN_STATUS_UNEXPECTED(err_msg);
+  }
+  return Status::OK();
+}
+
+//RS index
+//ANDWI
+Status ANDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] ANDWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("ANDWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hBlue =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hRed =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 5);
+    GDALRasterBandH hMir2 =
+        GDALGetRasterBand(m_outPoDataSet, 6);
+
+    float *blue = new float[nImgSizeX * nImgSizeY];
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *mir2 = new float[nImgSizeX * nImgSizeY];
+    float *andwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hBlue, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)blue, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)red, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r4 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r5 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r6 = GDALRasterIO(hMir2, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir2, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure || r4 == CE_Failure || r5 == CE_Failure || r6 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          andwi[i] = (blue[i] + green[i] + red[i] - nir[i] - mir1[i] - mir2[i]) / (blue[i] + green[i] + red[i] + nir[i] + mir1[i] + mir2[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, andwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("ANDWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//AWEI
+Status AWEI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] AWEI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("AWEI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    //  循环写入文件
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    float *awei = new float[nImgSizeX * nImgSizeY];
+
+    if (nBandCount == 4)
+    {
+        GDALRasterBandH hGreen =
+            GDALGetRasterBand(m_outPoDataSet, 1);
+        GDALRasterBandH hNir =
+            GDALGetRasterBand(m_outPoDataSet, 2);
+        GDALRasterBandH hMir1 =
+            GDALGetRasterBand(m_outPoDataSet, 3);
+        GDALRasterBandH hMir2 = 
+            GDALGetRasterBand(m_outPoDataSet, 4);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *mir2 = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r4 = GDALRasterIO(hMir2, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir2, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure || r4 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          awei[i] = 4 * (green[i] - mir1[i]) - (0.25 * nir[i] + 2.75 * mir2[i]);
+    }
+    }
+    else if (nBandCount == 5)
+    {
+        GDALRasterBandH hBlue =
+            GDALGetRasterBand(m_outPoDataSet, 1);
+        GDALRasterBandH hGreen =
+            GDALGetRasterBand(m_outPoDataSet, 2);
+        GDALRasterBandH hNir =
+            GDALGetRasterBand(m_outPoDataSet, 3);
+        GDALRasterBandH hMir1 =
+            GDALGetRasterBand(m_outPoDataSet, 4);
+        GDALRasterBandH hMir2 = 
+            GDALGetRasterBand(m_outPoDataSet, 5);
+
+    float *blue = new float[nImgSizeX * nImgSizeY];
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *mir2 = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hBlue, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)blue, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r4 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r5 = GDALRasterIO(hMir2, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir2, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure || r4 == CE_Failure || r5 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          awei[i] = blue[i] + 2.5 * green[i] - 1.5 * (nir[i] + mir1[i]) - 0.25 * mir2[i];
+    }
+    }
+    else
+        return Status::OK();
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, awei);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("AWEI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//BMI_SAR
+Status BMI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] BMI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("BMI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister(); 
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH HH =
+        GDALGetRasterBand(m_outPoDataSet, 1); 
+    GDALRasterBandH VV =
+        GDALGetRasterBand(m_outPoDataSet, 2); 
+
+    float *bufferhh = new float[nImgSizeX * nImgSizeY];
+    float *buffervv = new float[nImgSizeX * nImgSizeY];
+    float *bmi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(HH, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhh, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(VV, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)buffervv, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      bmi[i] = (bufferhh[i] + buffervv[i]) / 2;
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, bmi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("BMI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//CIWI
+Status CIWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &digital_C) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] CIWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("CIWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet; 
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4); 
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3); 
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *ciwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(nir[i] + red[i]) < 0.1)
+            ciwi[i] = -1;
+        else
+            ciwi[i] = (nir[i] - red[i]) / (nir[i] + red[i]) + nir[i] + digital_C;
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, ciwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("CIWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//CSI_SAR
+Status CSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] CSI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("CSI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH HH =
+        GDALGetRasterBand(m_outPoDataSet, 1); 
+    GDALRasterBandH VV =
+        GDALGetRasterBand(m_outPoDataSet, 2); 
+
+    float *bufferhh = new float[nImgSizeX * nImgSizeY];
+    float *buffervv = new float[nImgSizeX * nImgSizeY];
+    float *csi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(HH, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhh, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(VV, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)buffervv, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      csi[i] = buffervv[i] / (bufferhh[i] + buffervv[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, csi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("CSI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//EWI_W
+Status EWI_W(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &m, const float &n) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] EWI_W: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("EWI_W", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hRed =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 4);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *ewi_w = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)red, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r4 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure || r4 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          ewi_w[i] = (green[i] - mir1[i] + m) / ((green[i] + mir1[i])*((nir[i] - red[i]) / (nir[i] + red[i]) + n));
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, ewi_w);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("EWI_W: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//EWI_Y
+Status EWI_Y(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] EWI_Y: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("EWI_Y", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister(); 
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *ewi_y = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          ewi_y[i] = (green[i] - nir[i] - mir1[i]) / (green[i] + nir[i] + mir1[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, ewi_y);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("EWI_Y: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//FNDWI
+Status FNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const int &S, const int &CNIR) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] FNDWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("FNDWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 4);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *fg = new float[nImgSizeX * nImgSizeY];
+    float *fndwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          fg[i] = green[i] + S * (CNIR - nir[i]);
+          fndwi[i] = (fg[i] - nir[i]) / (fg[i] + nir[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, fndwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("FNDWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+int rotateImage(const cv::Mat &src, cv::Mat &dst, const double angle, const int mode)
+{
+    //mode = 0 ,Keep the original image size unchanged
+    //mode = 1, Change the original image size to fit the rotated scale, padding with zero
+
+    if (src.empty())
+    {
+        std::cout << "The input image is empty!\n";
+        return -1;
+    }
+
+    if (mode == 0)
+    {
+        cv::Point2f center((src.cols - 1) / 2.0, (src.rows - 1) / 2.0);
+        cv::Mat rot = cv::getRotationMatrix2D(center, angle, 1.0);
+        cv::warpAffine(src, dst, rot, src.size());//the original size
+    }
+    else {
+
+        double alpha = -angle * CV_PI / 180.0;//convert angle to radian format 
+
+        cv::Point2f srcP[3];
+        cv::Point2f dstP[3];
+        srcP[0] = cv::Point2f(0, src.rows);
+        srcP[1] = cv::Point2f(src.cols, 0);
+        srcP[2] = cv::Point2f(src.cols, src.rows);
+
+        //rotate the pixels
+        for (int i = 0; i < 3; i++)
+            dstP[i] = cv::Point2f(srcP[i].x*cos(alpha) - srcP[i].y*sin(alpha), srcP[i].y*cos(alpha) + srcP[i].x*sin(alpha));
+        double minx, miny, maxx, maxy;
+        minx = std::min(std::min(std::min(dstP[0].x, dstP[1].x), dstP[2].x), float(0.0));
+        miny = std::min(std::min(std::min(dstP[0].y, dstP[1].y), dstP[2].y), float(0.0));
+        maxx = std::max(std::max(std::max(dstP[0].x, dstP[1].x), dstP[2].x), float(0.0));
+        maxy = std::max(std::max(std::max(dstP[0].y, dstP[1].y), dstP[2].y), float(0.0));
+
+        int w = maxx - minx;
+        int h = maxy - miny;
+
+        //translation
+        for (int i = 0; i < 3; i++)
+        {
+            if (minx < 0)
+                dstP[i].x -= minx;
+            if (miny < 0)
+                dstP[i].y -= miny;
+        }
+
+        cv::Mat warpMat = cv::getAffineTransform(srcP, dstP);
+        cv::warpAffine(src, dst, warpMat, cv::Size(w, h));//extend size
+
+    }//end else
+
+    return 0;
+}
+
+//Gabor
+Status Gabor(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, bool if_opencv_kernal) {
+  try {
+    auto input_type = input->type();
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("Gabor: load image failed.");
+    }
+    if (input_cv->Rank() != 3 || input_cv->shape()[2] != 3) {
+      RETURN_STATUS_UNEXPECTED("Gabor: input tensor is not in shape of <H,W,C> or channel is not 3.");
+    }
+
+    cv::Mat input_img = input_cv->mat();
+    cv::Mat src_gray, output_img, gabor_tmp;
+    cv::cvtColor(input_img, src_gray, cv::COLOR_BGR2GRAY);
+    int k = 9;
+    float sigma = 1.0;
+    float gamma = 0.5;
+    float lambda = 5.0;
+    float psi = -CV_PI / 2;
+    gabor_filter(if_opencv_kernal, src_gray, output_img, gabor_tmp, k, sigma, gamma, lambda, psi);
+
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    return Status::OK();
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("Gabor: " + std::string(e.what()));
+  }
+}
+
+//GLCM
+Status GLCM(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const int &N) {
+  try {
+    auto input_type = input->type();
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("GLCM: load image failed.");
+    }
+    if (input_cv->Rank() != 3 || input_cv->shape()[2] != 3) {
+      RETURN_STATUS_UNEXPECTED("GLCM: input tensor is not in shape of <H,W,C> or channel is not 3.");
+    }
+
+    cv::Mat input_img = input_cv->mat();
+
+    CALGLCM glcm;
+    cv::Mat imgEnergy, imgContrast, imgHomogenity, imgEntropy;
+    cv::Mat dstChannel;
+    glcm.getOneChannel(input_img, dstChannel, CHANNEL_B);
+    glcm.GrayMagnitude(dstChannel, dstChannel, GRAY_8);
+    glcm.CalcuTextureImages(dstChannel, imgEnergy, imgContrast, imgHomogenity, imgEntropy, 5, GRAY_8, true);
+
+    cv::Mat output_img;
+    switch (N){
+    case 0:
+        output_img = imgEnergy;
+        break;
+    case 1:
+        output_img = imgContrast;
+        break;
+    case 2:
+        output_img = imgHomogenity;
+        break;
+    case 3:
+        output_img = imgEntropy;
+        break;
+    default:
+        return Status::OK();
+    }
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    return Status::OK();
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("GLCM: " + std::string(e.what()));
+  }
+}
+
+//GNDWI
+Status GNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] GNDWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("GNDWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 4);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *ndwi = new float[nImgSizeX * nImgSizeY];
+    float *gndwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    float sum = 0.0, mean, variance = 0.0, delta;
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+        ndwi[i] = (green[i] - nir[i]) / (green[i] + nir[i]);
+        sum += ndwi[i];
+    }
+    mean = sum / (nImgSizeX * nImgSizeY);
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+        ndwi[i] = (green[i] - nir[i]) / (green[i] + nir[i]);
+        variance += pow(ndwi[i] - mean, 2);
+    }
+    variance = variance / (nImgSizeX * nImgSizeY);
+    delta = sqrt(variance);
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+        ndwi[i] = (green[i] - nir[i]) / (green[i] + nir[i]);
+        gndwi[i] = (ndwi[i] - mean) / delta;
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, gndwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("GNDWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//LBP
+Status LBP(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const int &N) {
+  try {
+    auto input_type = input->type();
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("LBP: load image failed.");
+    }
+    if (input_cv->Rank() != 3 || input_cv->shape()[2] != 3) {
+      RETURN_STATUS_UNEXPECTED("LBP: input tensor is not in shape of <H,W,C> or channel is not 3.");
+    }
+
+    cv::Mat color_img = input_cv->mat();
+    cv::Mat input_img;
+    cv::cvtColor(color_img, input_img, cv::COLOR_BGR2GRAY);
+    cv::Mat output_img;
+    
+    switch (N){
+    case 0:
+        output_img = OLBP(input_img);
+        break;
+    case 1:
+        output_img = ELBP(input_img, 1 , 8);
+        break;
+    case 2:
+        output_img = RILBP(input_img);
+        break;
+    case 3:
+        output_img = UniformLBP(input_img);
+        break;
+    default:
+        return Status::OK();
+    }
+
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    return Status::OK();
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("LBP: " + std::string(e.what()));
+  }
+}
+
+//MBI
+Status MBI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, int32_t s_min,
+           int32_t s_max,  int32_t delta_s) {
+  try {
+    auto input_type = input->type();
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("MBI: load image failed.");
+    }
+    if (input_cv->Rank() != 3 || input_cv->shape()[2] != 3) {
+      RETURN_STATUS_UNEXPECTED("MBI: input tensor is not in shape of <H,W,C> or channel is not 3.");
+    }
+
+    cv::Mat input_img = input_cv->mat();
+
+    cv::Mat gray = RGB2GRAY(input_img);
+
+    cv::Mat dst_gray;
+    cv::copyMakeBorder(gray, dst_gray, s_min, s_min, s_min, s_min, cv::BORDER_REFLECT_101);
+
+    std::vector<cv::Mat> MP_MBI_list;
+    std::vector<cv::Mat> DMP_MBI_list;
+
+    for (int i = s_min; i < s_max + 1; i = i + 2 * delta_s)
+    {
+        cv::Mat in_0 = cv::Mat::zeros(i, i, CV_8U);
+        cv::Mat in_1 = cv::Mat::ones(i, i, CV_8U);
+
+        for (int row = (i - 1) / 2, col = 0; col < in_0.cols; ++col) {
+            in_0.at<char>(row, col) = 1;
+        }
+
+        cv::Mat out_1, out_2, out_3, out_4;
+        rotateImage(in_0, out_1, 0, 0);
+        rotateImage(in_0, out_2, 45, 0);
+        rotateImage(in_0, out_3, 90, 0);
+        rotateImage(in_0, out_4, 135, 0);
+
+        cv::Mat MP_MBI_1, MP_MBI_2, MP_MBI_3, MP_MBI_4;
+
+        morphologyEx(dst_gray, MP_MBI_1, cv::MORPH_TOPHAT, out_1);
+        morphologyEx(dst_gray, MP_MBI_2, cv::MORPH_TOPHAT, out_2);
+        morphologyEx(dst_gray, MP_MBI_3, cv::MORPH_TOPHAT, out_3);
+        morphologyEx(dst_gray, MP_MBI_4, cv::MORPH_TOPHAT, out_4);
+
+
+        MP_MBI_list.push_back(MP_MBI_1);
+        MP_MBI_list.push_back(MP_MBI_2);
+        MP_MBI_list.push_back(MP_MBI_3);
+        MP_MBI_list.push_back(MP_MBI_4);
+    }
+
+    for (int j = 4; j < MP_MBI_list.size(); j++)
+    {
+        auto DMP_MBI = cv::abs(MP_MBI_list[j] - MP_MBI_list[j-4]);
+        DMP_MBI_list.push_back(DMP_MBI);
+    }
+
+    cv::Mat input_;
+
+    for (int i = 0; i < DMP_MBI_list.size(); ++i) {
+        if (i == 0)
+            input_ = DMP_MBI_list[i];
+        else
+            input_ += DMP_MBI_list[i];
+    }
+
+    cv::Mat output_MBI = input_ / (4 * (((s_max - s_min) / delta_s) + 1));
+    output_MBI(cv::Rect(s_min, s_min, output_MBI.size[0]-s_min, output_MBI.size[1] - s_min));
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_MBI, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    return Status::OK();
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("MBI: " + std::string(e.what()));
+  }
+}
+
+//MCIWI
+Status MCIWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] MCIWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("MCIWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hRed =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *mciwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)red, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+        mciwi[i] = (nir[i] - red[i]) / (nir[i] + red[i]) + (mir1[i] - nir[i]) / (mir1[i] + nir[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, mciwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("MCIWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//MNDWI
+Status MNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] MNDWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("MNDWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *mndwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      if (fabs(green[i] + mir1[i]) < 0.1)
+          mndwi[i] = -1;
+      else
+          mndwi[i] = (green[i] - mir1[i]) / (green[i] + mir1[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, mndwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("MNDWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//NDPI
+Status NDPI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] NDPI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("NDPI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *ndpi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      if (fabs(green[i] + mir1[i]) < 0.1)
+          ndpi[i] = -1;
+      else
+          ndpi[i] = (mir1[i] - green[i]) / (green[i] + mir1[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, ndpi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("NDPI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//NDVI
+Status NDVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] NDVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("NDVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+    
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *ndvi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(nir[i] + red[i]) < 0.1)
+            ndvi[i] = -1;
+        else
+            ndvi[i] = (nir[i] - red[i]) / (nir[i] + red[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, ndvi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("NDVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//NDWI
+Status NDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] NDWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("NDWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hGreen = GDALGetRasterBand(m_outPoDataSet, 2);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *ndwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)green, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(green[i] + nir[i]) < 0.1)
+            ndwi[i] = -1;
+        else
+            ndwi[i] = (green[i] - nir[i]) / (green[i] + nir[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, ndwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("NDWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//NWI
+Status NWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] NWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("NWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hBlue =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+    GDALRasterBandH hMir2 = 
+        GDALGetRasterBand(m_outPoDataSet, 4);
+
+    float *blue = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *mir2 = new float[nImgSizeX * nImgSizeY];
+    float *nwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hBlue, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)blue, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r4 = GDALRasterIO(hMir2, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir2, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure || r4 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      nwi[i] = (blue[i] -(nir[i] + mir1[i] + mir2[i])) /(blue[i] + (nir[i] + mir1[i] + mir2[i]));
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, nwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("NWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//PSI_SAR
+Status PSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] PSI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("PSI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH HH =
+        GDALGetRasterBand(m_outPoDataSet, 1); 
+    GDALRasterBandH HV =
+        GDALGetRasterBand(m_outPoDataSet, 2); 
+
+    float *bufferhh = new float[nImgSizeX * nImgSizeY];
+    float *bufferhv = new float[nImgSizeX * nImgSizeY];
+    float *psi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(HH, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhh, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(HV, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhv, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      psi[i] = (pow(bufferhv[i],2) - pow(bufferhh[i], 2)) / (pow(bufferhv[i], 2) + pow(bufferhh[i], 2));
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, psi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("PSI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//RFDI_SAR
+Status RFDI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] RFDI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("RFDI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH HH =
+        GDALGetRasterBand(m_outPoDataSet, 1); 
+    GDALRasterBandH HV =
+        GDALGetRasterBand(m_outPoDataSet, 2); 
+
+    float *bufferhh = new float[nImgSizeX * nImgSizeY];
+    float *bufferhv = new float[nImgSizeX * nImgSizeY];
+    float *rfdi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(HH, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhh, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(HV, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhv, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      rfdi[i] = (bufferhh[i] - bufferhv[i]) / (bufferhh[i] + bufferhv[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, rfdi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("RFDI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//RVI
+Status RVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] RVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("RVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *rvi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (red[i] < 0.1)
+            rvi[i] = -1;
+        else
+            rvi[i] = nir[i] / red[i];
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, rvi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("RVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//SRWI
+Status SRWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] SRWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("SRWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *srwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          srwi[i] = green[i] / mir1[i];
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, srwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("SRWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+
+//DVI
+Status DVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] DVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("DVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *dvi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        dvi[i] = nir[i] - red[i];
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, dvi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("DVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//EVI
+Status EVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] EVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("EVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+    GDALRasterBandH hBlue = GDALGetRasterBand(m_outPoDataSet, 1);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *blue = new float[nImgSizeX * nImgSizeY];
+    float *evi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hBlue, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)blue, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+  if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(nir[i] + 6.0 * red[i] - 7.5 * blue[i] + 1) < 0.1)
+            evi[i] = -1;
+        else
+            evi[i] = 2.5 * (nir[i] - red[i]) / (nir[i] + 6.0 * red[i] - 7.5 * blue[i] + 1);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, evi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("EVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//MBWI
+Status MBWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] MBWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("MBWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hRed =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hMir2 =
+        GDALGetRasterBand(m_outPoDataSet, 5);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *mir2 = new float[nImgSizeX * nImgSizeY];
+    float *mbwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)red, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r4 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r5 = GDALRasterIO(hMir2, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir2, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure || r4 == CE_Failure || r5 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          mbwi[i] = 2 * green[i] - red[i] - nir[i] - mir1[i] - mir2[i];
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, mbwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("MBWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//MSAVI
+Status MSAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] MSAVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("MSAVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *msavi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        msavi[i] = (2 * nir[i] + 1 - sqrt( pow((2 * nir[i] +1),2) - 8 * (nir[i] - red[i]))) / 2;
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, msavi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("MSAVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//OSAVI
+Status OSAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float theta) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] OSAVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("OSAVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *osavi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(nir[i] + red[i] + theta) < 0.1)
+            osavi[i] = -1;
+        else
+            osavi[i] = (nir[i] - red[i]) / (nir[i] + red[i] + theta);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, osavi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("OSAVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//VSI_SAR
+Status VSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] VSI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("VSI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH HH =
+        GDALGetRasterBand(m_outPoDataSet, 1); 
+    GDALRasterBandH HV =
+        GDALGetRasterBand(m_outPoDataSet, 2); 
+    GDALRasterBandH VV =
+        GDALGetRasterBand(m_outPoDataSet, 3); 
+
+    float *bufferhh = new float[nImgSizeX * nImgSizeY];
+    float *bufferhv = new float[nImgSizeX * nImgSizeY];
+    float *buffervv = new float[nImgSizeX * nImgSizeY];
+    float *vsi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(HH, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhh, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(HV, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhv, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(VV, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)buffervv, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      vsi[i] = bufferhv[i] / (bufferhv[i] + (bufferhh[i] + buffervv[i]) / 2);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, vsi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("VSI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//WDRVI
+Status WDRVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float alpha) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] WDRVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("WDRVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *wdrvi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(alpha * nir[i] + red[i]) < 0.1)
+            wdrvi[i] = -1;
+        else
+            wdrvi[i] = (alpha * nir[i] - red[i]) / (alpha * nir[i] + red[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, wdrvi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("WDRVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//WI_F
+Status WI_F(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] WI_F: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("WI_F", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hRed =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hMir2 =
+        GDALGetRasterBand(m_outPoDataSet, 5);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *mir2 = new float[nImgSizeX * nImgSizeY];
+    float *wi_f = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)red, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r4 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r5 = GDALRasterIO(hMir2, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir2, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure || r4 == CE_Failure || r5 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          wi_f[i] = 1.7204 + 171 * green[i] + 3 * red[i] - 70 * nir[i] - 45 * mir1[i] - 71 * mir2[i];
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, wi_f);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("WI_F: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//WI_H
+Status WI_H(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] WI_H: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("WI_H", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hRed =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *wi_h = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)red, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          wi_h[i] = (1.75 * green[i] - red[i] - 1.08 * mir1[i]) / (green[i] + mir1[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, wi_h);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("WI_H: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//WNDWI
+Status WNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &alpha) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] WNDWI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("WNDWI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hGreen =
+        GDALGetRasterBand(m_outPoDataSet, 1);
+    GDALRasterBandH hNir =
+        GDALGetRasterBand(m_outPoDataSet, 2);
+    GDALRasterBandH hMir1 =
+        GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *green = new float[nImgSizeX * nImgSizeY];
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *mir1 = new float[nImgSizeX * nImgSizeY];
+    float *wndwi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hGreen, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)green, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)nir, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(hMir1, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)mir1, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+          wndwi[i] = (green[i] - alpha * nir[i] - (1-alpha)* mir1[i]) / (green[i] + alpha * nir[i] + (1 - alpha)* mir1[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, wndwi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("WNDWI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//RDVI
+Status RDVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] RDVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("RDVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *rdvi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(nir[i] + red[i]) < 0.1)
+            rdvi[i] = -1;
+        else
+            rdvi[i] = (nir[i] - red[i]) / sqrt(nir[i] + red[i]);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, rdvi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("RDVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//RVI_SAR
+Status RVI_SAR(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] RVI_SAR: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("RVI_SAR", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH HH =
+        GDALGetRasterBand(m_outPoDataSet, 1); 
+    GDALRasterBandH HV =
+        GDALGetRasterBand(m_outPoDataSet, 2); 
+    GDALRasterBandH VV =
+        GDALGetRasterBand(m_outPoDataSet, 3); 
+
+    float *bufferhh = new float[nImgSizeX * nImgSizeY];
+    float *bufferhv = new float[nImgSizeX * nImgSizeY];
+    float *buffervv = new float[nImgSizeX * nImgSizeY];
+    float *rvi_sar = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(HH, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhh, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(HV, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)bufferhv, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r3 = GDALRasterIO(VV, GDALRWFlag::GF_Read, 0, 0, nImgSizeX,
+                           nImgSizeY, (void *)buffervv, nImgSizeX, nImgSizeY,
+                           GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure || r3 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX * nImgSizeY; i++) {
+      rvi_sar[i] = bufferhv[i] / (bufferhv[i] + (bufferhh[i] + buffervv[i]) / 2);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, rvi_sar);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("RVI_SAR: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//SAVI
+Status SAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &L) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] SAVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("SAVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *savi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(nir[i] + red[i] + L) < 0.1)
+            savi[i] = -1;
+        else
+            savi[i] = (nir[i] - red[i]) / (nir[i] + red[i] + L) * (1 + L);
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, savi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("SAVI: " + std::string(e.what()));
+  }
+  return Status::OK();
+}
+
+//TVI
+Status TVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
+  try {
+    std::shared_ptr<CVTensor> input_cv = CVTensor::AsCVTensor(input);
+    if (!input_cv->mat().data) {
+      RETURN_STATUS_UNEXPECTED("[Internal ERROR] TVI: load image failed.");
+    }
+    RETURN_IF_NOT_OK(ValidateImageRank("TVI", input_cv->Rank()));
+    
+    cv::Mat input_img = input_cv->mat();
+    const int nBandCount = input_img.channels();
+    const int nImgSizeX = input_img.cols;
+    const int nImgSizeY = input_img.rows;
+    std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
+    cv::split(input_img, *imgMat);
+    
+    GDALAllRegister();
+    GDALDataset *m_outPoDataSet;
+    GDALDriver *poDriver;
+
+    int OPenCVty = imgMat->at(0).type();
+    GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
+
+    poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    if (poDriver == NULL){
+      RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
+    }
+
+    m_outPoDataSet = poDriver->Create("temp_luojianet_gdal.tif", nImgSizeX, nImgSizeY, nBandCount,
+        static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), NULL);
+    m_outPoDataSet->SetProjection(m_outPoDataSet->GetProjectionRef());
+    double dGeotransform[6];
+    m_outPoDataSet->GetGeoTransform(dGeotransform);
+    m_outPoDataSet->SetGeoTransform(dGeotransform);
+
+    GDALRasterBand *pBand = NULL;
+    void *ppafScan = static_cast<GDALOpenCV *>(nullptr)->AllocateMemory(GCty, nImgSizeX * nImgSizeY);
+    cv::Mat tmpMat;
+    for (int i = 1; i <= nBandCount; i++) {
+      pBand = m_outPoDataSet->GetRasterBand(i);
+      tmpMat = imgMat->at(i - 1);
+      static_cast<GDALOpenCV *>(nullptr)->SetMemCopy(ppafScan, (void *)tmpMat.ptr(0), GCty, nImgSizeX * nImgSizeY);
+      CPLErr err = pBand->RasterIO(GF_Write, 0, 0, nImgSizeX, nImgSizeY, ppafScan, nImgSizeX, nImgSizeY,
+                                    static_cast<GDALOpenCV *>(nullptr)->GCType2GDALType(GCty), 0, 0);
+      if (err == CE_Failure){
+            RETURN_STATUS_UNEXPECTED("[ERROR]: Failed from CV to GDAL.");
+      }
+    }
+
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4); 
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3); 
+
+    float *nir = new float[nImgSizeX * nImgSizeY];
+    float *red = new float[nImgSizeX * nImgSizeY];
+    float *tvi = new float[nImgSizeX * nImgSizeY];
+
+    CPLErr r1 = GDALRasterIO(hNir, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)nir, nImgSizeX, nImgSizeY,GDALDataType::GDT_Float32, 0, 0);
+    CPLErr r2 = GDALRasterIO(hRed, GDALRWFlag::GF_Read, 0, 0, nImgSizeX, nImgSizeY,
+                    (void *)red, nImgSizeX, nImgSizeY, GDALDataType::GDT_Float32, 0, 0);
+
+    if (r1 == CE_Failure || r2 == CE_Failure){
+          RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to read bands.");
+    }
+
+    for (int i = 0; i < nImgSizeX*nImgSizeY; i++)
+    {
+        if (fabs(nir[i] + red[i]) < 0.1)
+            tvi[i] = -1;
+        else
+            tvi[i] = sqrt((nir[i] - red[i]) / (nir[i] + red[i])) + 0.5;
+    }
+
+    cv::Mat output_img = cv::Mat(nImgSizeY, nImgSizeX, CV_32FC1, tvi);
+    std::shared_ptr<CVTensor> output_cv;
+    RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
+    RETURN_UNEXPECTED_IF_NULL(output_cv);
+    *output = std::static_pointer_cast<Tensor>(output_cv);
+    
+    imgMat->clear();
+    delete imgMat;
+    imgMat = NULL;
+    GDALClose(m_outPoDataSet);
+    GDALDestroyDriverManager();
+    remove("temp_luojianet_gdal.tif");
+  } catch (const cv::Exception &e) {
+    RETURN_STATUS_UNEXPECTED("TVI: " + std::string(e.what()));
   }
   return Status::OK();
 }

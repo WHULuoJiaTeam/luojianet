@@ -265,6 +265,7 @@ file(GLOB_RECURSE LUOJIANET_GPU_SRC_LIST RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
 # add_executable(ut_tests $<TARGET_OBJECTS:_ut_ut_obj>
         # $<TARGET_OBJECTS:_ut_luojianet_ms_obj>)
 
+list(REMOVE_ITEM LUOJIANET_GPU_SRC_LIST "../../../luojianet_ms/ccsrc/backend/kernel_compiler/akg/cpu/akg_cpu_kernel_mod.cc")
 add_executable(ut_tests ${UT_SRCS} ${LUOJIANET_GPU_SRC_LIST})
 
 # if(ENABLE_MPI)
@@ -299,6 +300,7 @@ if(USE_GLOG)
 endif()
 
 target_link_libraries(luojianet_ms luojianet_core)
+
 if(ENABLE_GE)
     target_link_libraries(ut_tests PRIVATE luojianet_ms luojianet_shared_lib securec graph error_manager)
 else()
@@ -309,15 +311,16 @@ if(ENABLE_GPU)
 	target_link_libraries(ut_tests PRIVATE gpu_cuda_lib gpu_queue)
 endif()
 
-if(ENALBE_CPU OR ENABLE_TESTCASES)
-    find_package(OpenMP)
-    if (OPENMP_FOUND)
-        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-        set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-    endif()
-    target_link_libraries(ut_tests PRIVATE  OpenMP::OpenMP_CXX)
+if(ENABLE_CPU)
+	find_package(OpenMP)
+	if (OPENMP_FOUND)
+		set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+		set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+	endif()
+  target_link_libraries(ut_tests PRIVATE "${OpenMP_CXX_FLAGS}")
 endif()
+
 
 #gdal
 if(ENABLE_RS)

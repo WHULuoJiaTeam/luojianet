@@ -24,24 +24,49 @@
 #include "minddata/dataset/include/dataset/transforms.h"
 #include "minddata/dataset/kernels/ir/vision/adjust_gamma_ir.h"
 #include "minddata/dataset/kernels/ir/vision/affine_ir.h"
+#include "minddata/dataset/kernels/ir/vision/andwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/auto_augment_ir.h"
 #include "minddata/dataset/kernels/ir/vision/auto_contrast_ir.h"
+#include "minddata/dataset/kernels/ir/vision/awei_ir.h"
+#include "minddata/dataset/kernels/ir/vision/bmi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/bounding_box_augment_ir.h"
 #include "minddata/dataset/kernels/ir/vision/center_crop_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ciwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/convert_color_ir.h"
 #include "minddata/dataset/kernels/ir/vision/crop_ir.h"
+#include "minddata/dataset/kernels/ir/vision/csi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/cutmix_batch_ir.h"
 #include "minddata/dataset/kernels/ir/vision/cutout_ir.h"
 #include "minddata/dataset/kernels/ir/vision/decode_ir.h"
+#include "minddata/dataset/kernels/ir/vision/dvi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/equalize_ir.h"
+#include "minddata/dataset/kernels/ir/vision/evi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ewi_w_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ewi_y_ir.h"
+#include "minddata/dataset/kernels/ir/vision/fndwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/gaussian_blur_ir.h"
+#include "minddata/dataset/kernels/ir/vision/gabor_ir.h"
+#include "minddata/dataset/kernels/ir/vision/glcm_ir.h"
+#include "minddata/dataset/kernels/ir/vision/gndwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/horizontal_flip_ir.h"
 #include "minddata/dataset/kernels/ir/vision/hwc_to_chw_ir.h"
 #include "minddata/dataset/kernels/ir/vision/invert_ir.h"
+#include "minddata/dataset/kernels/ir/vision/lbp_ir.h"
+#include "minddata/dataset/kernels/ir/vision/mbi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/mbwi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/mciwi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/mndwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/mixup_batch_ir.h"
+#include "minddata/dataset/kernels/ir/vision/msavi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ndpi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ndvi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/ndwi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/nwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/normalize_ir.h"
 #include "minddata/dataset/kernels/ir/vision/normalize_pad_ir.h"
+#include "minddata/dataset/kernels/ir/vision/osavi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/pad_ir.h"
+#include "minddata/dataset/kernels/ir/vision/psi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_adjust_sharpness_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_affine_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_auto_contrast_ir.h"
@@ -66,22 +91,33 @@
 #include "minddata/dataset/kernels/ir/vision/random_solarize_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_vertical_flip_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_vertical_flip_with_bbox_ir.h"
+#include "minddata/dataset/kernels/ir/vision/rdvi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rescale_ir.h"
 #include "minddata/dataset/kernels/ir/vision/resize_ir.h"
 #include "minddata/dataset/kernels/ir/vision/resize_preserve_ar_ir.h"
 #include "minddata/dataset/kernels/ir/vision/resize_with_bbox_ir.h"
+#include "minddata/dataset/kernels/ir/vision/rfdi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rgb_to_bgr_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rgb_to_gray_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rgba_to_bgr_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rgba_to_rgb_ir.h"
 #include "minddata/dataset/kernels/ir/vision/rotate_ir.h"
+#include "minddata/dataset/kernels/ir/vision/rvi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/rvi_sar_ir.h"
+#include "minddata/dataset/kernels/ir/vision/savi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/slice_patches_ir.h"
 #include "minddata/dataset/kernels/ir/vision/softdvpp_decode_random_crop_resize_jpeg_ir.h"
 #include "minddata/dataset/kernels/ir/vision/softdvpp_decode_resize_jpeg_ir.h"
+#include "minddata/dataset/kernels/ir/vision/srwi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/swap_red_blue_ir.h"
+#include "minddata/dataset/kernels/ir/vision/tvi_ir.h"
 #include "minddata/dataset/kernels/ir/vision/uniform_aug_ir.h"
 #include "minddata/dataset/kernels/ir/vision/vertical_flip_ir.h"
-
+#include "minddata/dataset/kernels/ir/vision/vsi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/wdrvi_ir.h"
+#include "minddata/dataset/kernels/ir/vision/wi_f_ir.h"
+#include "minddata/dataset/kernels/ir/vision/wi_h_ir.h"
+#include "minddata/dataset/kernels/ir/vision/wndwi_ir.h"
 #ifndef ENABLE_ANDROID
 #include "utils/log_adapter.h"
 #else
@@ -1128,6 +1164,268 @@ VerticalFlip::VerticalFlip() {}
 std::shared_ptr<TensorOperation> VerticalFlip::Parse() { return std::make_shared<VerticalFlipOperation>(); }
 #endif  // not ENABLE_ANDROID
 
+// RS index
+// ANDWI Transform Operation.
+ANDWI::ANDWI() {}
+std::shared_ptr<TensorOperation> ANDWI::Parse() { return std::make_shared<ANDWIOperation>(); }
+
+// AWEI Transform Operation.
+AWEI::AWEI() {}
+std::shared_ptr<TensorOperation> AWEI::Parse() { return std::make_shared<AWEIOperation>(); }
+
+// BMI Transform Operation.
+BMI::BMI() {}
+std::shared_ptr<TensorOperation> BMI::Parse() { return std::make_shared<BMIOperation>(); }
+
+// CSI Transform Operation.
+CSI::CSI() {}
+std::shared_ptr<TensorOperation> CSI::Parse() { return std::make_shared<CSIOperation>(); }
+
+// CIWI Transform Operation.
+struct CIWI::Data {
+  Data(float digital_C)
+      : digital_C_(digital_C) {}
+  float digital_C_;
+};
+
+CIWI::CIWI(float digital_C)
+    : data_(std::make_shared<Data>(digital_C)) {}
+
+std::shared_ptr<TensorOperation> CIWI::Parse() {
+  return std::make_shared<CIWIOperation>(data_->digital_C_);
+}
+
+// EWI_W Transform Operation.
+struct EWI_W::Data {
+  Data(float m, float n)
+      : m_(m), n_(n) {}
+  float m_;
+  float n_;
+};
+
+EWI_W::EWI_W(float m, float n)
+    : data_(std::make_shared<Data>(m, n)) {}
+
+std::shared_ptr<TensorOperation> EWI_W::Parse() {
+  return std::make_shared<EWI_WOperation>(data_->m_, data_->n_);
+}
+
+// FNDWI Transform Operation.
+struct FNDWI::Data {
+  Data(int S, int CNIR)
+      : S_(S), CNIR_(CNIR) {}
+  int S_;
+  int CNIR_;
+};
+
+FNDWI::FNDWI(int S, int CNIR)
+    : data_(std::make_shared<Data>(S, CNIR)) {}
+
+std::shared_ptr<TensorOperation> FNDWI::Parse() {
+  return std::make_shared<FNDWIOperation>(data_->S_, data_->CNIR_);
+}
+
+// Gabor Transform Operation.
+struct Gabor::Data {
+  Data(bool if_opencv_kernal)
+      : if_opencv_kernal_(if_opencv_kernal) {}
+  bool if_opencv_kernal_;
+};
+
+Gabor::Gabor(bool if_opencv_kernal)
+    : data_(std::make_shared<Data>(if_opencv_kernal)) {}
+
+std::shared_ptr<TensorOperation> Gabor::Parse() {
+  return std::make_shared<GaborOperation>(data_->if_opencv_kernal_);
+}
+
+// GLCM Transform Operation.
+struct GLCM::Data {
+  Data(int N)
+      : N_(N) {}
+  int N_;
+};
+
+GLCM::GLCM(int N)
+    : data_(std::make_shared<Data>(N)) {}
+
+std::shared_ptr<TensorOperation> GLCM::Parse() {
+  return std::make_shared<GLCMOperation>(data_->N_);
+}
+
+// GNDWI Transform Operation.
+GNDWI::GNDWI() {}
+std::shared_ptr<TensorOperation> GNDWI::Parse() { return std::make_shared<GNDWIOperation>(); }
+
+// LBP Transform Operation.
+struct LBP::Data {
+  Data(int N)
+      : N_(N) {}
+  int N_;
+};
+
+LBP::LBP(int N)
+    : data_(std::make_shared<Data>(N)) {}
+
+std::shared_ptr<TensorOperation> LBP::Parse() {
+  return std::make_shared<LBPOperation>(data_->N_);
+}
+
+// MBI Transform Operation.
+struct MBI::Data {
+  Data(int32_t s_min, int32_t s_max, int32_t delta_s)
+      : s_min_(s_min), s_max_(s_max), delta_s_(delta_s) {}
+  int32_t s_min_;
+  int32_t s_max_;
+  int32_t delta_s_;
+};
+
+MBI::MBI(int32_t s_min, int32_t s_max, int32_t delta_s)
+    : data_(std::make_shared<Data>(s_min, s_max, delta_s)) {}
+
+std::shared_ptr<TensorOperation> MBI::Parse() {
+  return std::make_shared<MBIOperation>(data_->s_min_, data_->s_max_, data_->delta_s_);
+}
+
+// MBWI Transform Operation.
+MBWI::MBWI() {}
+std::shared_ptr<TensorOperation> MBWI::Parse() { return std::make_shared<MBWIOperation>(); }
+
+// MNDWI Transform Operation.
+MNDWI::MNDWI() {}
+std::shared_ptr<TensorOperation> MNDWI::Parse() { return std::make_shared<MNDWIOperation>(); }
+
+// MCIWI Transform Operation.
+MCIWI::MCIWI() {}
+std::shared_ptr<TensorOperation> MCIWI::Parse() { return std::make_shared<MCIWIOperation>(); }
+
+// NDPI Transform Operation.
+NDPI::NDPI() {}
+std::shared_ptr<TensorOperation> NDPI::Parse() { return std::make_shared<NDPIOperation>(); }
+
+// NDVI Transform Operation.
+NDVI::NDVI() {}
+std::shared_ptr<TensorOperation> NDVI::Parse() { return std::make_shared<NDVIOperation>(); }
+
+// NDWI Transform Operation.
+NDWI::NDWI() {}
+std::shared_ptr<TensorOperation> NDWI::Parse() { return std::make_shared<NDWIOperation>(); }
+
+// NWI Transform Operation.
+NWI::NWI() {}
+std::shared_ptr<TensorOperation> NWI::Parse() { return std::make_shared<NWIOperation>(); }
+
+// PSI Transform Operation.
+PSI::PSI() {}
+std::shared_ptr<TensorOperation> PSI::Parse() { return std::make_shared<PSIOperation>(); }
+
+// RFDI Transform Operation.
+RFDI::RFDI() {}
+std::shared_ptr<TensorOperation> RFDI::Parse() { return std::make_shared<RFDIOperation>(); }
+
+// RVI Transform Operation.
+RVI::RVI() {}
+std::shared_ptr<TensorOperation> RVI::Parse() { return std::make_shared<RVIOperation>(); }
+
+// DVI Transform Operation.
+DVI::DVI() {}
+std::shared_ptr<TensorOperation> DVI::Parse() { return std::make_shared<DVIOperation>(); }
+
+// EVI Transform Operation.
+EVI::EVI() {}
+std::shared_ptr<TensorOperation> EVI::Parse() { return std::make_shared<EVIOperation>(); }
+
+// EWI_Y Transform Operation.
+EWI_Y::EWI_Y() {}
+std::shared_ptr<TensorOperation> EWI_Y::Parse() { return std::make_shared<EWI_YOperation>(); }
+
+// OSAVI Transform Operation.
+struct OSAVI::Data {
+  Data(float theta)
+      : theta_(theta) {}
+  float theta_;
+};
+
+OSAVI::OSAVI(float theta)
+    : data_(std::make_shared<Data>(theta)) {}
+
+std::shared_ptr<TensorOperation> OSAVI::Parse() {
+  return std::make_shared<OSAVIOperation>(data_->theta_);
+}
+
+// MSAVI Transform Operation.
+MSAVI::MSAVI() {}
+std::shared_ptr<TensorOperation> MSAVI::Parse() { return std::make_shared<MSAVIOperation>(); }
+
+// RDVI Transform Operation.
+RDVI::RDVI() {}
+std::shared_ptr<TensorOperation> RDVI::Parse() { return std::make_shared<RDVIOperation>(); }
+
+// RVI_SAR Transform Operation.
+RVI_SAR::RVI_SAR() {}
+std::shared_ptr<TensorOperation> RVI_SAR::Parse() { return std::make_shared<RVI_SAROperation>(); }
+
+// SAVI Transform Operation.
+struct SAVI::Data {
+  Data(float L)
+      : L_(L) {}
+  float L_;
+};
+
+SAVI::SAVI(float L)
+    : data_(std::make_shared<Data>(L)) {}
+
+std::shared_ptr<TensorOperation> SAVI::Parse() {
+  return std::make_shared<SAVIOperation>(data_->L_);
+}
+
+// SRWI Transform Operation.
+SRWI::SRWI() {}
+std::shared_ptr<TensorOperation> SRWI::Parse() { return std::make_shared<SRWIOperation>(); }
+
+// TVI Transform Operation.
+TVI::TVI() {}
+std::shared_ptr<TensorOperation> TVI::Parse() { return std::make_shared<TVIOperation>(); }
+
+// VSI Transform Operation.
+VSI::VSI() {}
+std::shared_ptr<TensorOperation> VSI::Parse() { return std::make_shared<VSIOperation>(); }
+
+// WDRVI Transform Operation.
+struct WDRVI::Data {
+  Data(float alpha)
+      : alpha_(alpha) {}
+  float alpha_;
+};
+
+WDRVI::WDRVI(float alpha)
+    : data_(std::make_shared<Data>(alpha)) {}
+
+std::shared_ptr<TensorOperation> WDRVI::Parse() {
+  return std::make_shared<WDRVIOperation>(data_->alpha_);
+}
+
+// WI_F Transform Operation.
+WI_F::WI_F() {}
+std::shared_ptr<TensorOperation> WI_F::Parse() { return std::make_shared<WI_FOperation>(); }
+
+// WI_H Transform Operation.
+WI_H::WI_H() {}
+std::shared_ptr<TensorOperation> WI_H::Parse() { return std::make_shared<WI_HOperation>(); }
+
+// WNDWI Transform Operation.
+struct WNDWI::Data {
+  Data(float alpha)
+      : alpha_(alpha) {}
+  float alpha_;
+};
+
+WNDWI::WNDWI(float alpha)
+    : data_(std::make_shared<Data>(alpha)) {}
+
+std::shared_ptr<TensorOperation> WNDWI::Parse() {
+  return std::make_shared<WNDWIOperation>(data_->alpha_);
+}
 }  // namespace vision
 }  // namespace dataset
 }  // namespace luojianet_ms

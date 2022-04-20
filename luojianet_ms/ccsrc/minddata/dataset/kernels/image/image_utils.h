@@ -390,6 +390,206 @@ Status ComputePatchSize(const std::shared_ptr<CVTensor> &input_cv,
 /// \param[in] op_name operator name.
 /// \param[in] rank refers to the rank of input image shape.
 Status ValidateImageRank(const std::string &op_name, int32_t rank);
+
+///****************************///
+///RS index
+
+/// \brief Calculate ANDWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status ANDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate AWEI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status AWEI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief CalculateBMI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status BMI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate CIWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] digital_C stands for constant and the default value is 100.0.
+Status CIWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &digital_C);
+
+/// \brief Calculate CSI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status CSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate EWI_W
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] m and n stand for constants and the default values are 0.1 and 0.5.
+Status EWI_W(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &m, const float &n);
+
+/// \brief Calculate EWI_Y
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status EWI_Y(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate FNDWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] S and CNIR stand for constants and the default values are 1 and 40.
+Status FNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const int &S, const int &CNIR);
+
+/// \brief Calculate GNDWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status GNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate MCIWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status MCIWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate MNDWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status MNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate NDPI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status NDPI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate NDVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status NDVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate NDWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status NDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate NWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status NWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate RVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status RVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate DVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status DVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate EVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status EVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate OSAVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] theta stand for constant and the default value is 0.16.
+Status OSAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, float theta);
+
+/// \brief Calculate Gabor
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] "if_opencv_kernal" indicates whether to use the opencV kernel size.
+Status Gabor(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, bool if_opencv_kernal = true);
+
+/// \brief Calculate GLCM
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] N represents the output results of different types of gray co-occurrence matrices.
+Status GLCM(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const int &N);
+
+/// \brief Calculate LBP
+/// \param[in] input Input CVTensor
+/// \param[out] N indicates different types of LBP output results.
+Status LBP(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const int &N);
+
+/// \brief CalculateMBWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status MBWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate MBI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] minimum size of a structure element
+/// \param[in] maximum structure element size
+/// \param[in] delta_s represents interval of particle determination
+Status MBI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, int32_t s_min, int32_t s_max,  int32_t delta_s);
+
+/// \brief Calculate MSAVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status MSAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate PSI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status PSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate RDVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status RDVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate RFDI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status RFDI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate RVI_SAR
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status RVI_SAR(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate SAVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] L stand for constant (0~1), the default value is 0.5.
+Status SAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &L);
+
+/// \brief Calculate SRWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status SRWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate TVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status TVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate VSI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status VSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate WDRVI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] alpha stand for constant (0.1~0.2), the default value is 0.15.
+Status WDRVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, float alpha);
+
+/// \brief Calculate WI_F
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status WI_F(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate WI_H
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+Status WI_H(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output);
+
+/// \brief Calculate WNDWI
+/// \param[in] input Input CVTensor
+/// \param[out] patch_size Size of patch
+/// \param[in] alpha stand for constant (0.45~0.55), the default value is 0.45.
+Status WNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &alpha);
 }  // namespace dataset
 }  // namespace luojianet_ms
 #endif  // LUOJIANET_MS_CCSRC_MINDDATA_DATASET_KERNELS_IMAGE_IMAGE_UTILS_H_

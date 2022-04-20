@@ -4,24 +4,49 @@ set_property(SOURCE ${_CURRENT_SRC_FILES} PROPERTY COMPILE_DEFINITIONS SUBMODULE
 set(DATASET_KERNELS_IR_VISION_SRC_FILES
         adjust_gamma_ir.cc
         affine_ir.cc
+        andwi_ir.cc
         auto_augment_ir.cc
         auto_contrast_ir.cc
+        awei_ir.cc
+        bmi_ir.cc
         bounding_box_augment_ir.cc
         center_crop_ir.cc
+        ciwi_ir.cc
         convert_color_ir.cc
         crop_ir.cc
+        csi_ir.cc
         cutmix_batch_ir.cc
         cutout_ir.cc
         decode_ir.cc
+        dvi_ir.cc
+        evi_ir.cc
+        ewi_w_ir.cc
+        ewi_y_ir.cc
         equalize_ir.cc
+        fndwi_ir.cc
+        gabor_ir.cc
         gaussian_blur_ir.cc
+        glcm_ir.cc
+        gndwi_ir.cc
         horizontal_flip_ir.cc
         hwc_to_chw_ir.cc
         invert_ir.cc
+        lbp_ir.cc
+        mbi_ir.cc
+        mbwi_ir.cc
+        mciwi_ir.cc
         mixup_batch_ir.cc
+        mndwi_ir.cc
+        msavi_ir.cc
+        ndpi_ir.cc
+        ndvi_ir.cc
+        ndwi_ir.cc
+        nwi_ir.cc
         normalize_ir.cc
         normalize_pad_ir.cc
+        osavi_ir.cc
         pad_ir.cc
+        psi_ir.cc
         random_adjust_sharpness_ir.cc
         random_affine_ir.cc
         random_auto_contrast_ir.cc
@@ -46,21 +71,33 @@ set(DATASET_KERNELS_IR_VISION_SRC_FILES
         random_solarize_ir.cc
         random_vertical_flip_ir.cc
         random_vertical_flip_with_bbox_ir.cc
+        rdvi_ir.cc
         rescale_ir.cc
         resize_ir.cc
         resize_preserve_ar_ir.cc
         resize_with_bbox_ir.cc
+        rfdi_ir.cc
         rgb_to_bgr_ir.cc
         rgb_to_gray_ir.cc
         rgba_to_bgr_ir.cc
         rgba_to_rgb_ir.cc
         rotate_ir.cc
+        rvi_ir.cc
+        rvi_sar_ir.cc
+        savi_ir.cc
         slice_patches_ir.cc
         softdvpp_decode_random_crop_resize_jpeg_ir.cc
         softdvpp_decode_resize_jpeg_ir.cc
+        srwi_ir.cc
         swap_red_blue_ir.cc
+        tvi_ir.cc
         uniform_aug_ir.cc
         vertical_flip_ir.cc
+        vsi_ir.cc
+        wdrvi_ir.cc
+        wi_f_ir.cc
+        wi_h_ir.cc
+        wndwi_ir.cc
         )
 
 if(ENABLE_ACL)

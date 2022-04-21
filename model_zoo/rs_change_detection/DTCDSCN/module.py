@@ -42,10 +42,10 @@ class Dblock_more_dilate(nn.Module):
 class Dblock(nn.Module):
     def __init__(self, channel):
         super(Dblock, self).__init__()
-        self.dilate1 = nn.Conv2d(channel, channel, kernel_size=3, dilation=1, padding=1)
-        self.dilate2 = nn.Conv2d(channel, channel, kernel_size=3, dilation=2, padding=2)
-        self.dilate3 = nn.Conv2d(channel, channel, kernel_size=3, dilation=4, padding=4)
-        self.dilate4 = nn.Conv2d(channel, channel, kernel_size=3, dilation=8, padding=8)
+        self.dilate1 = nn.Conv2d(channel, channel, kernel_size=3, dilation=1, pad_mode='pad', padding=1)
+        self.dilate2 = nn.Conv2d(channel, channel, kernel_size=3, dilation=2, pad_mode='pad', padding=2)
+        self.dilate3 = nn.Conv2d(channel, channel, kernel_size=3, dilation=4, pad_mode='pad', padding=4)
+        self.dilate4 = nn.Conv2d(channel, channel, kernel_size=3, dilation=8, pad_mode='pad', padding=8)
         # self.dilate5 = nn.Conv2d(channel, channel, kernel_size=3, dilation=16, padding=16)
         self.relu = nn.ReLU()
 
@@ -182,9 +182,9 @@ class CDNet_model(nn.Module):
 
         self.finaldeconv1_master = nn.Conv2dTranspose(filters[0], 32, 4, stride = 2)
         self.finalrelu1_master = nn.ReLU()
-        self.finalconv2_master = nn.Conv2d(32, 32, 3, padding=1)
+        self.finalconv2_master = nn.Conv2d(32, 32, 3, pad_mode='pad', padding=1)
         self.finalrelu2_master = nn.ReLU()
-        self.finalconv3_master = nn.Conv2d(32, 1, 3, padding=1)
+        self.finalconv3_master = nn.Conv2d(32, 1, 3, pad_mode='pad', padding=1)
 
         self.finaldeconv1 = nn.Conv2dTranspose(filters[0], 32, 4, stride =  2)
         self.finalrelu1 = nn.ReLU()

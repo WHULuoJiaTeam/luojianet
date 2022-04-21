@@ -148,11 +148,3 @@ def create_dataset(dataset_path, do_train, batch_size=16):
     # apply batch operations
     ds = ds.batch(batch_size, drop_remainder=True)
     return ds
-
-
-#####    测试
-# date = create_dataset('WHU-RS19/',do_train=True)
-# iterator = date.create_dict_iterator()
-# for i in iterator:
-#     print(i)
-# print(date.input_columns)

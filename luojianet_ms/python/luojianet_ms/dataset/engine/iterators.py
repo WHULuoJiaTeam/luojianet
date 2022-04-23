@@ -89,12 +89,12 @@ class Iterator:
 
         self.offload_model = None
         offload_model = offload.GetOffloadModel(consumer)
-'''
+        '''
         # See if GetOffloadModel identified any operations set to be offloaded.
         if offload_model.transform_list != []:
             offload.check_concat_zip_dataset(self.__ori_dataset)
             self.offload_model = offload_model
-'''
+        '''
 
         ITERATORS_LIST.append(weakref.ref(self))
         _unset_iterator_cleanup()

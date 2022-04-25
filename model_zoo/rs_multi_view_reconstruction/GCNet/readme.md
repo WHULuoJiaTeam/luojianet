@@ -20,20 +20,20 @@ python train.py --train_list="list/whu_training.txt" --valid_list="list/whu_vali
 ### 预测
 在LuoJiaNET环境下， 执行以下命令，进行网络的预测：
 ```
-sh train.sh
+sh predict.sh
 ```
 或
 ```
-python train.py --------参数 
+python predict.py --predict_list="list/whu_validation.txt" --crop_h=384 --crop_w=768 --max_disp=160 --dataset_type="whu" --model_path="checkpoint/checkpoint_gcnet_whu-20_8316.ckpt" --save_path="/mnt/gj/stereo/WHU_epipolar/luojia_result"
 ```
 ### 评估
 在LuoJiaNET环境下， 执行以下命令，进行网络的评估：
 ```
-sh train.sh
+sh eval.sh
 ```
 或
 ```
-python train.py --------参数 
+python eval.py --eval_list="list/whu_validation.txt" --crop_h=384 --crop_w=768 --max_disp=160 --dataset_type="whu" --model_path="checkpoint/checkpoint_gcnet_whu-20_8316.ckpt"
 ```
 
 ### 评估结果

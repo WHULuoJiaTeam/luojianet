@@ -4,7 +4,7 @@ from luojianet_ms import ops, nn
 from luojianet_ms.common.initializer import Normal
 from luojianet_ms.ops import operations as P
 
-import torch
+#import torch
 class SELayer(nn.Module):
     def __init__(self, channel, reduction=16):
         super(SELayer, self).__init__()

@@ -24,10 +24,10 @@ if __name__ == '__main__':
     context.set_context(device_target=config.device_target)
 
     # define network
-    # net = vgg11_bn(num_classes=config.class_num)
-    # net = resnet18(num_classes=config.class_num)
-    # net = se_resnet18(num_classes=config.class_num)
-    net = densenet121(num_classes=config.class_num)
+    # net = vgg11_bn(num_class=config.class_num)
+    # net = resnet18(num_class=config.class_num)
+    # net = se_resnet18(num_class=config.class_num)
+    net = densenet121(num_class=config.class_num)
     
     # define loss
     if not config.use_label_smooth:

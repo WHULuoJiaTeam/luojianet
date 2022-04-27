@@ -5,6 +5,10 @@ include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/include)
 include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/src)
 
+if(ENABLE_GPU)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas)
+endif()
+
 #message(FATAL_ERROR "${flatbuffers_LIBPATH}")
 
 SET(ENV{LD_LIBRARY_PATH} "${flatbuffers_LIBPATH}:$ENV{LD_LIBRARY_PATH}")

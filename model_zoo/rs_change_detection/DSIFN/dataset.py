@@ -69,9 +69,10 @@ def create_Dataset(data_path, aug, batch_size, shuffle):
 
     dataset = Dataset(data_path, aug)
     type_ops = C2.TypeCast(mstype.float32)
+    type_cast_op = C2.TypeCast(mstype.int32)
 
     data_set = ds.GeneratorDataset(dataset, column_names=["image","mask"], shuffle=shuffle)
     data_set = data_set.map(input_columns=["image"], operations = type_ops)
-    data_set = data_set.map(input_columns=["mask"], operations = type_ops)
+    data_set = data_set.map(input_columns=["mask"], operations = type_cast_op)
     data_set = data_set.batch(batch_size, drop_remainder=True)
     return data_set, data_set.get_dataset_size()

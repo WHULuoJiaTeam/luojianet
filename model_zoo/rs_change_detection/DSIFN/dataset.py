@@ -20,7 +20,7 @@ class Dataset:
         self.img2_paths = glob.glob(os.path.join(data_path, "B", "*"))
         self.mask_paths = glob.glob(os.path.join(data_path, "label", "*"))
         # self.aug = aug
-        self.toTensor()=py_vision.toTensor()
+        self.toTensor=py_vision.toTensor()
 
     def __getitem__(self, idx):
         img1_path = self.img1_paths[idx]

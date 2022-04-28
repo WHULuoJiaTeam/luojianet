@@ -23,7 +23,7 @@
    # mmcv
    pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.10.0/index.html
 
-### 二. 数据集
+### 二、数据集
 
 1. 将数据集组织成以下文件结构，并将标注转化成COCO标注格式（具体可参考[链接](./examples/coco_example.json)）为例，并根据实际需要在`./config/my_config_file.yaml`文件中修改路径配置：
 

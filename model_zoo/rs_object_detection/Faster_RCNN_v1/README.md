@@ -3,6 +3,7 @@
 >
 > 论文：《Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks》
 > 链接：https://arxiv.org/abs/1506.01497
+> 项目代码参考：https://gitee.com/mindspore/models/tree/master/official/cv/faster_rcnn
 
 <img src="./img/arch.png" style="zoom: 67%;" />
 

@@ -55,9 +55,9 @@ class Dataset:
         image2=pI.open(img2_path)
         mask=pI.open(mask_path)
         
-        image1 = self.toTensor(image1)
-        image2 = self.toTensor(image2)
-        mask = self.toTensor(mask)
+        image1 = np.array(image1.convert('RGB'))
+        image2 = np.array(image2.convert('RGB'))
+        mask = np.array(mask)
 
         return [image1, image2], mask
 

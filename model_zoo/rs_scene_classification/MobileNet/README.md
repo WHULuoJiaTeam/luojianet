@@ -2,7 +2,8 @@
 论文：《MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications》
 链接：[https://arxiv.org/abs/1704.04861](https://arxiv.org/abs/1704.04861)
 &emsp;
-![DenseNet](image.png)
+![mobilenet](image.png)
+![duibi](image2.png)
 &emsp;
 1. 下载常用的遥感分类影像数据集，如WHU-RS19、UCMD以及NWPU DataSet等
 2. 将数据集整理成如下格式：

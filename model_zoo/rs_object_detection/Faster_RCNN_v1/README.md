@@ -106,7 +106,7 @@
    instance_set: "train.json"  # 标注json文件名称
    coco_classes: ['background', 'ap',]  # 类别名称，主要需要添加background类别
    num_classes: 2  # 类别数目
-   prefix: "ReDet.record_"  # MindRecord文件前缀
+   prefix: "faster_rcnn.record_"  # MindRecord文件前缀
    
    # train.py FasterRcnn training
    run_distribute: False  # 是否分布式训练

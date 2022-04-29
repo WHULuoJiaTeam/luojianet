@@ -1,4 +1,4 @@
-# 目标检测网络 Faster-RCNN
+# 遥感影像目标检测 Faster-RCNN 网络模型
 > Faster-RCNN是Kaiming He等人在2016年提出的端到端的两阶段目标检测算法，也是目前落地最成功的深度学习模型之一，是目标检测领域最经典的模型之一。Faster-RCNN将目标检测任务分成了两个阶段，首先第一阶段，利用深度网络找出图像中共可能存在物体的区域，产生Region Proposal；第二阶段，对Region Proposal内的物体进行分类，并对第一阶段检测的anchor框进行回归。网络损失主要有三部分构成，包括RPN分类、回归损失，以及Bounding Box Head和Classification Head的损失。
 >
 > 论文：《Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks》

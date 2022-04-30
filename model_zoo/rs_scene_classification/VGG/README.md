@@ -3,6 +3,11 @@
 论文：《Very Deep Convolutional Networks for Large-Scale Image Recognition》
 链接：[https://arxiv.org/abs/1409.1556](https://arxiv.org/abs/1409.1556)
 ![VGG网络](image.png)
+
+> 训练后模型下载：
+>- [vgg16](https://whu.obs.cn-central-221.ovaijisuan.com/trained_model/vgg16.ckpt)
+>- [vgg19](https://whu.obs.cn-central-221.ovaijisuan.com/trained_model/vgg19.ckpt)
+
 &emsp;
 1. 下载常用的遥感分类影像数据集，如WHU-RS19、UCMD以及NWPU DataSet等
 2. 将数据集整理成如下格式：

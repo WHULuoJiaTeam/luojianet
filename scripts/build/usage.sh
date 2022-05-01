@@ -65,3 +65,4 @@ usage()
   echo "    -y Compile the symbol table switch and save the symbol table to the directory output"
   echo "    -F Use fast hash table in luojianet_ms compiler, default on"
 }
+

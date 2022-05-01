@@ -6,7 +6,7 @@ include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/include)
 include_directories(${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindrt/src)
 
 if(ENABLE_GPU)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas")
 endif()
 
 #message(FATAL_ERROR "${flatbuffers_LIBPATH}")

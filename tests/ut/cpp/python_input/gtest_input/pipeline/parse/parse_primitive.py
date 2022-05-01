@@ -62,26 +62,26 @@ def test_ops_f2(x, y):
 
 
 # use method3: use the ops primitive instance on method
-class ResNet(nn.Cell):
+class ResNet(nn.Module):
     def __init__(self, tensor):
         super(ResNet, self).__init__()
         self.weight = Parameter(tensor, name="weight")
         self.conv = Conv_test(3, 5)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return x + y * self.weight + self.conv(x)
 
     def get_params(self):
         return None
 
 
-class SimpleNet(nn.Cell):
+class SimpleNet(nn.Module):
     def __init__(self, network, tensor):
         super(SimpleNet, self).__init__()
         self.weight = Parameter(tensor, name="weight")
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.network(x) + self.weight * y
 
     def get_params(self):
@@ -104,12 +104,12 @@ def test_primitive_obj():
 
 
 # use method4: call primitive ops with parameters
-class SimpleNet_1(nn.Cell):
+class SimpleNet_1(nn.Module):
     def __init__(self):
         super(SimpleNet_1, self).__init__()
         self.conv = Conv_test(2, 3)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.conv(x, y)
 
     def get_params(self):
@@ -122,11 +122,11 @@ def test_primitive_obj_parameter():
 
 
 # use method4: call primitive ops with parameters
-class SimpleNet_2(nn.Cell):
+class SimpleNet_2(nn.Module):
     def __init__(self):
         super(SimpleNet_2, self).__init__()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return F.scalar_add(x, y)
 
     def get_params(self):

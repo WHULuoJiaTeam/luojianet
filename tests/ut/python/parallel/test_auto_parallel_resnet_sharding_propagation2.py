@@ -70,7 +70,7 @@ def _fused_bn(channels, momentum=0.9):
     return nn.BatchNorm2d(channels, momentum=momentum)
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     expansion = 4
 
     def __init__(self,
@@ -102,7 +102,7 @@ class ResidualBlock(nn.Cell):
 
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -128,7 +128,7 @@ class ResidualBlock(nn.Cell):
         return out
 
 
-class ResNet(nn.Cell):
+class ResNet(nn.Module):
     def __init__(self,
                  block,
                  layer_nums,
@@ -194,7 +194,7 @@ class ResNet(nn.Cell):
 
         return nn.SequentialCell(layers)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -241,7 +241,7 @@ class SoftmaxCrossEntropyExpand(_Loss):
         self.sub = P.Sub().shard(((8, 1), (1, 1)))
         self.cast1 = P.Cast()
 
-    def construct(self, logit, label):
+    def call(self, logit, label):
         logit = self.cast1(logit, mstype.float32)
         logit_max = self.max(logit)
         exp = self.exp(self.sub(logit, logit_max))

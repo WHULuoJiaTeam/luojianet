@@ -23,13 +23,13 @@ from luojianet_ms import Tensor, ms_function
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net_l1_regularizer(nn.Cell):
+class Net_l1_regularizer(nn.Module):
     def __init__(self, scale):
         super(Net_l1_regularizer, self).__init__()
         self.l1_regularizer = nn.L1Regularizer(scale)
 
     @ms_function
-    def construct(self, weights):
+    def call(self, weights):
         return self.l1_regularizer(weights)
 
 

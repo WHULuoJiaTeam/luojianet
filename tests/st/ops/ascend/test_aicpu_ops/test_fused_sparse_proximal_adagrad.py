@@ -23,7 +23,7 @@ from luojianet_ms.common.parameter import Parameter
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.fused_sparse_proximal_adagrad = P.FusedSparseProximalAdagrad()
@@ -33,7 +33,7 @@ class Net(nn.Cell):
         self.l1 = 0.0
         self.l2 = 0.0
 
-    def construct(self, grad, indices):
+    def call(self, grad, indices):
         return self.fused_sparse_proximal_adagrad(self.var, self.accum, self.lr, self.l1, self.l2,
                                                   grad, indices)
 

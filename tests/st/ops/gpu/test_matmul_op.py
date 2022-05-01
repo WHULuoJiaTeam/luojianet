@@ -24,33 +24,33 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class MatMulNet(nn.Cell):
+class MatMulNet(nn.Module):
     def __init__(self):
         super(MatMulNet, self).__init__()
         self.matmul = P.MatMul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.matmul(x, y)
 
 
-class MatMul_d(nn.Cell):
+class MatMul_d(nn.Module):
     def __init__(self):
         super(MatMul_d, self).__init__()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
         self.matmul = P.MatMul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.test_dynamic(x)
         y = self.test_dynamic(y)
         return self.matmul(x, y)
 
 
-class MatMulComposite(nn.Cell):
+class MatMulComposite(nn.Module):
     def __init__(self):
         super(MatMulComposite, self).__init__()
         self.matmul = C.matmul
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.matmul(x, y)
 
 

@@ -92,7 +92,7 @@ def test_var_parameter_case1():
     log.debug("end test_var_parameter_case1")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self, value1):
@@ -104,7 +104,7 @@ class Net(nn.Cell):
         self.value = value1
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = self.get_test_value(x)
         return x
 
@@ -142,7 +142,7 @@ def test_call_method_on_construct():
     z = np.array([[3, 5, 7], [2, 3, 5]]).astype(np.int32)
 
     net = Net(y)
-    output = net.construct(x)
+    output = net.call(x)
     result = output.asnumpy()
     print(result)
     assert np.all(result == z)
@@ -151,7 +151,7 @@ def test_call_method_on_construct():
 
 
 # Test: call method on parse graph code
-class Net1(nn.Cell):
+class Net1(nn.Module):
     """ Net1 definition """
 
     def __init__(self, v1, v2):
@@ -163,7 +163,7 @@ class Net1(nn.Cell):
         self.value = v2
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = x + self.TC.get_value(self.value)
         return x
 
@@ -180,7 +180,7 @@ def test_call_other_object_method():
 
     net = Net1(y, y1)
     with pytest.raises(TypeError):
-        output = net.construct(x)
+        output = net.call(x)
         result = output.asnumpy()
         print(result)
         assert np.all(result == z)
@@ -193,7 +193,7 @@ value = Tensor(np.array([[3, 4, 5], [1, 1, 2]]).astype(np.int32))
 TC = ClassTest("test_class", value)
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """ Net2 definition """
 
     def __init__(self, value1):
@@ -201,7 +201,7 @@ class Net2(nn.Cell):
         self.value = value1
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = x + TC.get_value(self.value)
         return x
 
@@ -222,7 +222,7 @@ def test_call_no_self_other_object_method():
 
     net = Net2(y)
     with pytest.raises(TypeError):
-        output = net.construct(x)
+        output = net.call(x)
         result = output.asnumpy()
         print(result)
         assert np.all(result == z)

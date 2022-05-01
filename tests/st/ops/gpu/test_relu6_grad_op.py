@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class NetReLU6Grad(nn.Cell):
+class NetReLU6Grad(nn.Module):
     def __init__(self):
         super(NetReLU6Grad, self).__init__()
         self.relu6_grad = G.ReLU6Grad()
 
-    def construct(self, x, dy):
+    def call(self, x, dy):
         return self.relu6_grad(dy, x)
 
 

@@ -75,13 +75,13 @@ def _match_array(actual, expected, error=0):
         onp.testing.assert_equal(actual, expected)
 
 
-class QRNet(nn.Cell):
+class QRNet(nn.Module):
     def __init__(self, mode: str = "full"):
         super(QRNet, self).__init__()
         self.mode = mode
         self.qr = QR(mode=self.mode)
 
-    def construct(self, a):
+    def call(self, a):
         q, r = self.qr(a)
         if self.mode == 'r':
             return (r,)

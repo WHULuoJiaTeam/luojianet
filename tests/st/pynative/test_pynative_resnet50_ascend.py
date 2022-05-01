@@ -31,7 +31,7 @@ import luojianet_ms.ops.functional as F
 from luojianet_ms import Tensor
 from luojianet_ms import context
 from luojianet_ms import ParameterTuple
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import composite as CP
 from luojianet_ms.nn.optim.momentum import Momentum
@@ -136,7 +136,7 @@ def fc_with_initialize(input_channels, out_channels):
     return nn.Dense(input_channels, out_channels, weight_init='XavierUniform', bias_init='Uniform')
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     expansion = 4
 
     def __init__(self,
@@ -158,7 +158,7 @@ class ResidualBlock(nn.Cell):
         self.relu = P.ReLU()
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -178,7 +178,7 @@ class ResidualBlock(nn.Cell):
         return out
 
 
-class ResidualBlockWithDown(nn.Cell):
+class ResidualBlockWithDown(nn.Module):
     expansion = 4
 
     def __init__(self,
@@ -205,7 +205,7 @@ class ResidualBlockWithDown(nn.Cell):
         self.bn_down_sample = bn_with_initialize(out_channels)
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -228,7 +228,7 @@ class ResidualBlockWithDown(nn.Cell):
         return out
 
 
-class MakeLayer0(nn.Cell):
+class MakeLayer0(nn.Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer0, self).__init__()
@@ -236,7 +236,7 @@ class MakeLayer0(nn.Cell):
         self.b = block(out_channels, out_channels, stride=stride)
         self.c = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -244,7 +244,7 @@ class MakeLayer0(nn.Cell):
         return x
 
 
-class MakeLayer1(nn.Cell):
+class MakeLayer1(nn.Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer1, self).__init__()
@@ -253,7 +253,7 @@ class MakeLayer1(nn.Cell):
         self.c = block(out_channels, out_channels, stride=1)
         self.d = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -262,7 +262,7 @@ class MakeLayer1(nn.Cell):
         return x
 
 
-class MakeLayer2(nn.Cell):
+class MakeLayer2(nn.Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer2, self).__init__()
@@ -273,7 +273,7 @@ class MakeLayer2(nn.Cell):
         self.e = block(out_channels, out_channels, stride=1)
         self.f = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -284,7 +284,7 @@ class MakeLayer2(nn.Cell):
         return x
 
 
-class MakeLayer3(nn.Cell):
+class MakeLayer3(nn.Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer3, self).__init__()
@@ -292,7 +292,7 @@ class MakeLayer3(nn.Cell):
         self.b = block(out_channels, out_channels, stride=1)
         self.c = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -300,7 +300,7 @@ class MakeLayer3(nn.Cell):
         return x
 
 
-class ResNet(nn.Cell):
+class ResNet(nn.Module):
 
     def __init__(self, block, num_classes=100, batch_size=32):
         super(ResNet, self).__init__()
@@ -322,7 +322,7 @@ class ResNet(nn.Cell):
         self.squeeze = P.Squeeze(axis=(2, 3))
         self.fc = fc_with_initialize(512 * block.expansion, num_classes)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -387,7 +387,7 @@ def create_dataset(repeat_num=1, training=True, batch_size=32, num_samples=1600)
     return data_set
 
 
-class CrossEntropyLoss(nn.Cell):
+class CrossEntropyLoss(nn.Module):
     def __init__(self):
         super(CrossEntropyLoss, self).__init__()
         self.cross_entropy = P.SoftmaxCrossEntropyWithLogits()
@@ -396,14 +396,14 @@ class CrossEntropyLoss(nn.Cell):
         self.one = Tensor(1.0, mstype.float32)
         self.zero = Tensor(0.0, mstype.float32)
 
-    def construct(self, logits, label):
+    def call(self, logits, label):
         label = self.one_hot(label, F.shape(logits)[1], self.one, self.zero)
         loss = self.cross_entropy(logits, label)[0]
         loss = self.mean(loss, (-1,))
         return loss
 
 
-class GradWrap(Cell):
+class GradWrap(Module):
     """ GradWrap definition """
 
     def __init__(self, network):
@@ -411,7 +411,7 @@ class GradWrap(Cell):
         self.network = network
         self.weights = ParameterTuple(network.trainable_params())
 
-    def construct(self, x, label):
+    def call(self, x, label):
         weights = self.weights
         return grad_by_list(self.network, weights)(x, label)
 

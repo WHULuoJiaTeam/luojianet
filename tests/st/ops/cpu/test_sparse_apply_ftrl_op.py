@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 import luojianet_ms.common.dtype as mstype
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.sparse_apply_ftrl = P.FusedSparseFtrl(lr=0.001, l1=0.0, l2=0.0, lr_power=-0.5)
@@ -32,7 +32,7 @@ class Net(nn.Cell):
         self.accum = Parameter(Tensor(np.ones([3, 3, 3]).astype(np.float32)), name="accum")
         self.linear = Parameter(Tensor(np.ones([3, 3, 3]).astype(np.float32)), name="linear")
 
-    def construct(self, grad, indices):
+    def call(self, grad, indices):
         out = self.sparse_apply_ftrl(self.var, self.accum, self.linear, grad, indices)
         return out
 

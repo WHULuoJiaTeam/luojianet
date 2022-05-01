@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.nn import Dense, Flatten
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, weight1, weight2, axis=0, strategy1=None, strategy2=None, is_parameter=True):
         super(Net, self).__init__()
         self.pack = P.Stack(axis=axis).shard(strategy1)
@@ -35,13 +35,13 @@ class Net(nn.Cell):
             self.weight1 = weight1
         self.weight2 = Parameter(weight2, "w2")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.pack([self.weight1, self.weight2])
         out = self.mul(x, out)
         return out
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self, weight1, weight2, axis=0, strategy1=None, strategy2=None):
         super(Net1, self).__init__()
         self.pack = P.Stack(axis=axis).shard(strategy1)
@@ -49,13 +49,13 @@ class Net1(nn.Cell):
         self.weight1 = Parameter(weight1, "w1")
         self.weight2 = Parameter(weight2, "w2")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.mul(x, self.weight1)
         out = self.pack([out, self.weight2])
         return out
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self, weight1, weight2, weight3, axis=0, strategy1=None, strategy2=None, is_parameter=True):
         super(Net2, self).__init__()
         self.pack = P.Stack(axis=axis).shard(strategy1)
@@ -67,13 +67,13 @@ class Net2(nn.Cell):
         self.weight2 = Parameter(weight2, "w2")
         self.weight3 = Parameter(weight2, "w3")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.pack([self.weight1, self.weight2, self.weight3])
         out = self.mul(x, out)
         return out
 
 
-class PackConstantNet1(nn.Cell):
+class PackConstantNet1(nn.Module):
     def __init__(self, dense_in_channel, dense_out_channel, axis=0, shape=None, strategy=None):
         super().__init__()
         weight_np = np.full((dense_out_channel, dense_in_channel), 0.01, dtype=np.float32)
@@ -90,7 +90,7 @@ class PackConstantNet1(nn.Cell):
         if strategy is not None:
             self.pack.shard(strategy)
 
-    def construct(self, inputs):
+    def call(self, inputs):
         x = self.pack([self.pack_con, self.pack_con, self.pack_con, self.pack_con,
                        self.pack_con, self.pack_con, self.pack_con, self.pack_con])
         x1 = self.flat(x)
@@ -100,7 +100,7 @@ class PackConstantNet1(nn.Cell):
         return x
 
 
-class PackConstantNet2(nn.Cell):
+class PackConstantNet2(nn.Module):
     def __init__(self, dense_in_channel, dense_out_channel, axis=0, shape=None, strategy=None):
         super().__init__()
         weight_np = np.full((dense_out_channel, dense_in_channel), 0.01, dtype=np.float32)
@@ -117,7 +117,7 @@ class PackConstantNet2(nn.Cell):
         if strategy is not None:
             self.pack.shard(strategy)
 
-    def construct(self, inputs):
+    def call(self, inputs):
         x = self.pack((self.pack_con, self.pack_con, self.pack_con, self.pack_con,
                        self.pack_con, self.pack_con, self.pack_con, self.pack_con))
         x1 = self.flat(x)

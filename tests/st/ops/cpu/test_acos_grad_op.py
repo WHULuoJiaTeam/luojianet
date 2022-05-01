@@ -25,12 +25,12 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetACosGrad(nn.Cell):
+class NetACosGrad(nn.Module):
     def __init__(self):
         super(NetACosGrad, self).__init__()
         self.acosGrad = G.ACosGrad()
 
-    def construct(self, x, dy):
+    def call(self, x, dy):
         return self.acosGrad(x, dy)
 
 

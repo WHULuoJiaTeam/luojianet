@@ -27,7 +27,7 @@ from luojianet_ms import Tensor
 from luojianet_ms import amp
 from luojianet_ms.nn import Dense
 from luojianet_ms.nn import TrainOneStepCell, WithLossCell
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer.basic import Flatten
 from luojianet_ms.nn.layer.conv import Conv2d
 from luojianet_ms.nn.layer.normalization import BatchNorm2d
@@ -114,7 +114,7 @@ def fc_with_initialize(input_channels, out_channels):
     return Dense(input_channels, out_channels, weight, bias)
 
 
-class ResidualBlock(Cell):
+class ResidualBlock(Module):
     expansion = 4
 
     def __init__(self,
@@ -137,7 +137,7 @@ class ResidualBlock(Cell):
         self.relu = P.ReLU()
         self.add = Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -157,7 +157,7 @@ class ResidualBlock(Cell):
         return out
 
 
-class ResidualBlockWithDown(Cell):
+class ResidualBlockWithDown(Module):
     expansion = 4
 
     def __init__(self,
@@ -185,7 +185,7 @@ class ResidualBlockWithDown(Cell):
         self.bn_down_sample = bn_with_initialize(out_channels)
         self.add = Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -208,7 +208,7 @@ class ResidualBlockWithDown(Cell):
         return out
 
 
-class MakeLayer0(Cell):
+class MakeLayer0(Module):
 
     def __init__(self, block, layer_num, in_channels, out_channels, stride):
         super(MakeLayer0, self).__init__()
@@ -217,7 +217,7 @@ class MakeLayer0(Cell):
         self.b = block(out_channels, out_channels, stride=stride)
         self.c = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -225,7 +225,7 @@ class MakeLayer0(Cell):
         return x
 
 
-class MakeLayer1(Cell):
+class MakeLayer1(Module):
 
     def __init__(self, block, layer_num, in_channels, out_channels, stride):
         super(MakeLayer1, self).__init__()
@@ -235,7 +235,7 @@ class MakeLayer1(Cell):
         self.c = block(out_channels, out_channels, stride=1)
         self.d = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -244,7 +244,7 @@ class MakeLayer1(Cell):
         return x
 
 
-class MakeLayer2(Cell):
+class MakeLayer2(Module):
 
     def __init__(self, block, layer_num, in_channels, out_channels, stride):
         super(MakeLayer2, self).__init__()
@@ -256,7 +256,7 @@ class MakeLayer2(Cell):
         self.e = block(out_channels, out_channels, stride=1)
         self.f = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -267,7 +267,7 @@ class MakeLayer2(Cell):
         return x
 
 
-class MakeLayer3(Cell):
+class MakeLayer3(Module):
 
     def __init__(self, block, layer_num, in_channels, out_channels, stride):
         super(MakeLayer3, self).__init__()
@@ -276,7 +276,7 @@ class MakeLayer3(Cell):
         self.b = block(out_channels, out_channels, stride=1)
         self.c = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -284,7 +284,7 @@ class MakeLayer3(Cell):
         return x
 
 
-class ResNet(Cell):
+class ResNet(Module):
 
     def __init__(self, block, layer_num, num_classes=100):
         super(ResNet, self).__init__()
@@ -308,7 +308,7 @@ class ResNet(Cell):
         self.fc = fc_with_initialize(512 * block.expansion, num_classes)
         self.flatten = Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)

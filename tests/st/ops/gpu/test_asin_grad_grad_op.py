@@ -25,24 +25,24 @@ from luojianet_ms.ops.operations import _grad_ops as G
 from luojianet_ms.ops.composite import GradOperation
 
 
-class NetAsinGrad(nn.Cell):
+class NetAsinGrad(nn.Module):
     def __init__(self):
         super(NetAsinGrad, self).__init__()
         self.asin_grad = G.AsinGrad()
 
     @ms_function
-    def construct(self, x, dy):
+    def call(self, x, dy):
         return self.asin_grad(x, dy)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
     @ms_function
-    def construct(self, x, grad, dout):
+    def call(self, x, grad, dout):
         return self.grad(self.network)(x, grad, dout)
 
 

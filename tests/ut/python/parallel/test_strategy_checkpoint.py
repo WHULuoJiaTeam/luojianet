@@ -31,25 +31,25 @@ grad_all = C.GradOperation(get_all=True)
 
 # model_parallel test
 def test_six_matmul_save():
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network):
             super(NetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x1, x6):
+        def call(self, x1, x6):
             predict = self.network(x1, x6)
             return self.loss(predict)
 
-    class GradWrap(nn.Cell):
+    class GradWrap(nn.Module):
         def __init__(self, network):
             super(GradWrap, self).__init__()
             self.network = network
 
-        def construct(self, x1, x6):
+        def call(self, x1, x6):
             return grad_all(self.network)(x1, x6)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3, strategy4, strategy5, strategy6):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
@@ -65,7 +65,7 @@ def test_six_matmul_save():
             self.weight5 = Parameter(Tensor(np.ones([64, 128]), dtype=ms.float32), name="weight5")
             self.weight6 = Parameter(Tensor(np.ones([32, 128]), dtype=ms.float32), name="weight6")
 
-        def construct(self, x1, x6):
+        def call(self, x1, x6):
             out = self.matmul1(x1, self.weight1)
             out = self.matmul2(out, self.weight2)
             out = self.matmul3(out, self.weight3)
@@ -95,25 +95,25 @@ def test_six_matmul_save():
 
 # remove matmul2, add matmul7
 def six_matmul_load():
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network):
             super(NetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x1, x6, x7):
+        def call(self, x1, x6, x7):
             predict = self.network(x1, x6, x7)
             return self.loss(predict)
 
-    class GradWrap(nn.Cell):
+    class GradWrap(nn.Module):
         def __init__(self, network):
             super(GradWrap, self).__init__()
             self.network = network
 
-        def construct(self, x1, x6, x7):
+        def call(self, x1, x6, x7):
             return grad_all(self.network)(x1, x6, x7)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy3, strategy4, strategy5, strategy6, strategy7):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
@@ -128,7 +128,7 @@ def six_matmul_load():
             self.weight5 = Parameter(Tensor(np.ones([64, 128]), dtype=ms.float32), name="weight5")
             self.weight6 = Parameter(Tensor(np.ones([32, 128]), dtype=ms.float32), name="weight6")
 
-        def construct(self, x1, x6, x7):
+        def call(self, x1, x6, x7):
             out = self.matmul1(x1, self.weight1)
             out = self.matmul3(out, self.weight3)
             out = self.matmul4(out, self.weight4)
@@ -159,25 +159,25 @@ def six_matmul_load():
 
 # model_parallel test
 def test_six_matmul_save_auto():
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network):
             super(NetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x1, x6):
+        def call(self, x1, x6):
             predict = self.network(x1, x6)
             return self.loss(predict)
 
-    class GradWrap(nn.Cell):
+    class GradWrap(nn.Module):
         def __init__(self, network):
             super(GradWrap, self).__init__()
             self.network = network
 
-        def construct(self, x1, x6):
+        def call(self, x1, x6):
             return grad_all(self.network)(x1, x6)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -193,7 +193,7 @@ def test_six_matmul_save_auto():
             self.weight5 = Parameter(Tensor(np.ones([64, 128]), dtype=ms.float32), name="weight5")
             self.weight6 = Parameter(Tensor(np.ones([32, 128]), dtype=ms.float32), name="weight6")
 
-        def construct(self, x1, x6):
+        def call(self, x1, x6):
             out = self.matmul1(x1, self.weight1)
             out = self.matmul2(out, self.weight2)
             out = self.matmul3(out, self.weight3)
@@ -216,25 +216,25 @@ def test_six_matmul_save_auto():
 
 # remove matmul2, add matmul7
 def six_matmul_load_auto():
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network):
             super(NetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x1, x6, x7):
+        def call(self, x1, x6, x7):
             predict = self.network(x1, x6, x7)
             return self.loss(predict)
 
-    class GradWrap(nn.Cell):
+    class GradWrap(nn.Module):
         def __init__(self, network):
             super(GradWrap, self).__init__()
             self.network = network
 
-        def construct(self, x1, x6, x7):
+        def call(self, x1, x6, x7):
             return grad_all(self.network)(x1, x6, x7)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy3, strategy4, strategy5):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
@@ -249,7 +249,7 @@ def six_matmul_load_auto():
             self.weight5 = Parameter(Tensor(np.ones([64, 128]), dtype=ms.float32), name="weight5")
             self.weight6 = Parameter(Tensor(np.ones([32, 128]), dtype=ms.float32), name="weight6")
 
-        def construct(self, x1, x6, x7):
+        def call(self, x1, x6, x7):
             out = self.matmul1(x1, self.weight1)
             out = self.matmul3(out, self.weight3)
             out = self.matmul4(out, self.weight4)

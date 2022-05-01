@@ -17,19 +17,19 @@ import numpy as np
 
 from luojianet_ms import context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 from luojianet_ms.train.model import Model
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.batchmatmul = P.BatchMatMul()
 
-    def construct(self, inputa, inputb):
+    def call(self, inputa, inputb):
         x = self.batchmatmul(inputa, inputb)
         return x
 

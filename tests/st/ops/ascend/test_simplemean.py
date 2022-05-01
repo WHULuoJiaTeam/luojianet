@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.simplemean = P.ReduceMean(keep_dims=True)
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         return self.simplemean(x, (-2, -1))
 
 

@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetAtan2(nn.Cell):
+class NetAtan2(nn.Module):
     def __init__(self):
         super(NetAtan2, self).__init__()
         self.atan2 = P.Atan2()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.atan2(x, y)
 
 

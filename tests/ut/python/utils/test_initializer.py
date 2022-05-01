@@ -308,14 +308,14 @@ def test_conv2d_abnormal_kernel_truncated_normal():
     model.predict(input_data)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.Add()
         self.t1 = Parameter(init.initializer('uniform', [5, 4], ms.float32), name="w1")
         self.t2 = Parameter(init.initializer(init.TruncatedNormal(), [5, 4], ms.float32), name="w2")
 
-    def construct(self, x):
+    def call(self, x):
         z = self.add(x, self.t1)
         z = self.add(z, self.t2)
         return z

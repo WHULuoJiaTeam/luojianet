@@ -52,7 +52,7 @@ def fc_with_initialize(input_channels, out_channels):
     return nn.Dense(input_channels, out_channels, weight, bias)
 
 
-class LeNet(nn.Cell):
+class LeNet(nn.Module):
     """
     Lenet network
     Args:
@@ -76,7 +76,7 @@ class LeNet(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.reshape = P.Reshape()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)
@@ -92,7 +92,7 @@ class LeNet(nn.Cell):
         return x
 
 
-class CrossEntropyLoss(nn.Cell):
+class CrossEntropyLoss(nn.Module):
     """
     Define loss for network
     """
@@ -106,14 +106,14 @@ class CrossEntropyLoss(nn.Cell):
         self.off_value = Tensor(0.0, mstype.float32)
         self.num = Tensor(32.0, mstype.float32)
 
-    def construct(self, logits, label):
+    def call(self, logits, label):
         label = self.one_hot(label, F.shape(logits)[1], self.on_value, self.off_value)
         loss = self.cross_entropy(logits, label)[0]
         loss = P.RealDiv()(P.ReduceSum()(loss, -1), self.num)
         return loss
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     """
     GradWrap definition
     """
@@ -123,7 +123,7 @@ class GradWrap(nn.Cell):
         self.network = network
         self.weights = ParameterTuple(filter(lambda x: x.requires_grad, network.get_parameters()))
 
-    def construct(self, x, label):
+    def call(self, x, label):
         weights = self.weights
         return grad_by_list(self.network, weights)(x, label)
 

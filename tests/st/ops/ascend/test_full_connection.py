@@ -22,14 +22,14 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.matmul = P.MatMul(transpose_b=True)
         self.bias_add = P.BiasAdd()
 
     @ms_function
-    def construct(self, x, w, b):
+    def call(self, x, w, b):
         return self.bias_add(self.matmul(x, w), b)
 
 # def test_net():

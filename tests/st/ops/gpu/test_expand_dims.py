@@ -23,22 +23,22 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.expand_dims = P.ExpandDims()
 
-    def construct(self, tensor):
+    def call(self, tensor):
         return self.expand_dims(tensor, -1)
 
 
-class NetDynamic(nn.Cell):
+class NetDynamic(nn.Module):
     def __init__(self):
         super(NetDynamic, self).__init__()
         self.conv = inner.GpuConvertToDynamicShape()
         self.expand_dims = P.ExpandDims()
 
-    def construct(self, x):
+    def call(self, x):
         x_conv = self.conv(x)
         return self.expand_dims(x_conv, -1)
 

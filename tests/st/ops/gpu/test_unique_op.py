@@ -23,24 +23,24 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class NetUnique(nn.Cell):
+class NetUnique(nn.Module):
     def __init__(self):
         super(NetUnique, self).__init__()
         self.unique = P.Unique()
 
-    def construct(self, x):
+    def call(self, x):
         x_unique, x_idx = self.unique(x)
         return x_unique, x_idx
 
 
-class NetUniqueDynamic(nn.Cell):
+class NetUniqueDynamic(nn.Module):
     def __init__(self):
         super(NetUniqueDynamic, self).__init__()
         self.convert = inner.GpuConvertToDynamicShape()
         self.unique = P.Unique()
         self.split = P.Split(0, 2)
 
-    def construct(self, x):
+    def call(self, x):
         x_convert = self.convert(x)
         x_unique, x_idx = self.unique(x_convert)
         x_split = self.split(x_unique)

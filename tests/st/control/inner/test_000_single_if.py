@@ -22,8 +22,8 @@ from luojianet_ms.common import dtype as mstype
 grad_all = C.GradOperation(get_all=True)
 
 
-class SingleIfNet(nn.Cell):
-    def construct(self, x, y):
+class SingleIfNet(nn.Module):
+    def call(self, x, y):
         x += 1
         if x < y:
             y += x
@@ -33,8 +33,8 @@ class SingleIfNet(nn.Cell):
         return y
 
 
-class SingleIfNet1(nn.Cell):
-    def construct(self, x, y):
+class SingleIfNet1(nn.Module):
+    def call(self, x, y):
         x += 1
         out = self.func(x, y)
         out *= 2
@@ -49,12 +49,12 @@ class SingleIfNet1(nn.Cell):
         return y
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super(GradNet, self).__init__()
         self.net = net
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         return grad_all(self.net)(*inputs)
 
 

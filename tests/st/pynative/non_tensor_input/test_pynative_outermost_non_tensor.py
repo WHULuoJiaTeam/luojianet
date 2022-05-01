@@ -26,13 +26,13 @@ from luojianet_ms import context
 context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.TensorAdd()
         self.sub = P.Sub()
 
-    def construct(self, tensor_x, tuple_a, list_b, tensor_y, tensor_z, dict_c):
+    def call(self, tensor_x, tuple_a, list_b, tensor_y, tensor_z, dict_c):
         out = self.add(tensor_x, tuple_a[0])
         out = self.sub(out, list_b[1][1]["y"])
         out = self.add(out, tensor_y)
@@ -41,14 +41,14 @@ class Net(nn.Cell):
         return out
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net, get_all):
         super(GradNet, self).__init__()
         self.forward_net = net
         self.sens = Tensor(np.ones((2, 2), np.float32) * 5)
         self.grad_all = C.GradOperation(get_all=get_all)
 
-    def construct(self, tuple_a, tensor_x, list_b, tensor_y, tensor_z, dict_c):
+    def call(self, tuple_a, tensor_x, list_b, tensor_y, tensor_z, dict_c):
         return self.grad_all(self.forward_net)(tuple_a, tensor_x, list_b, tensor_y, tensor_z, dict_c)
 
 

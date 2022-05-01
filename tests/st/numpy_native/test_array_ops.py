@@ -22,7 +22,7 @@ import numpy as onp
 
 import luojianet_ms.numpy as mnp
 from luojianet_ms import context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 from .utils import rand_int, run_non_kw_test, check_all_results, match_array, \
     rand_bool, match_res, run_multi_test, to_tensor, match_all_arrays
@@ -1273,22 +1273,22 @@ def test_choose():
     match_all_arrays(mnp.choose(*mnp_arrays, mode='clip'), onp.choose(*onp_arrays, mode='clip'))
 
 
-class ReshapeExpandSqueeze(Cell):
+class ReshapeExpandSqueeze(Module):
     def __init__(self):
         super(ReshapeExpandSqueeze, self).__init__()
 
-    def construct(self, x):
+    def call(self, x):
         x = mnp.expand_dims(x, 2)
         x = mnp.reshape(x, (1, 2, 3, 4, 1, 1))
         x = mnp.squeeze(x)
         return x
 
 
-class TransposeConcatRavel(Cell):
+class TransposeConcatRavel(Module):
     def __init__(self):
         super(TransposeConcatRavel, self).__init__()
 
-    def construct(self, x1, x2, x3):
+    def call(self, x1, x2, x3):
         x1 = mnp.transpose(x1, [0, 2, 1])
         x2 = x2.transpose(0, 2, 1)
         x = mnp.concatenate((x1, x2, x3), -1)
@@ -1296,11 +1296,11 @@ class TransposeConcatRavel(Cell):
         return x
 
 
-class RollSwap(Cell):
+class RollSwap(Module):
     def __init__(self):
         super(RollSwap, self).__init__()
 
-    def construct(self, x):
+    def call(self, x):
         x = mnp.rollaxis(x, 2)
         x = mnp.swapaxes(x, 0, 1)
         return x

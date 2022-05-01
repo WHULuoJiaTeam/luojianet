@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetCos(nn.Cell):
+class NetCos(nn.Module):
     def __init__(self):
         super(NetCos, self).__init__()
         self.cos = P.Cos()
 
-    def construct(self, x):
+    def call(self, x):
         return self.cos(x)
 
 

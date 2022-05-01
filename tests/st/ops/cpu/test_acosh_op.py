@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetAcosh(nn.Cell):
+class NetAcosh(nn.Module):
     def __init__(self):
         super(NetAcosh, self).__init__()
         self.acosh = P.Acosh()
 
-    def construct(self, x):
+    def call(self, x):
         return self.acosh(x)
 
 

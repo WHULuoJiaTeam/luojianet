@@ -56,19 +56,19 @@ def test_mirror_pad():
     np.testing.assert_equal(np.array(test2_arr_exp), y_test_2)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
-    def construct(self, input_, output_grad):
+    def call(self, input_, output_grad):
         return self.grad(self.network)(input_, output_grad)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, pads, mode_):
         super(Net, self).__init__()
         self.pad = nn.Pad(mode=mode_, paddings=pads)
-    def construct(self, x):
+    def call(self, x):
         return self.pad(x)
 
 

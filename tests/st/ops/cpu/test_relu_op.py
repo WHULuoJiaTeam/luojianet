@@ -27,7 +27,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class NetRelu(nn.Cell):
+class NetRelu(nn.Module):
     def __init__(self):
         super(NetRelu, self).__init__()
         self.relu = P.ReLU()
@@ -35,7 +35,7 @@ class NetRelu(nn.Cell):
                                                           [1, -1, 1],
                                                           [10, 1, -1]]]]).astype(np.float32)), [1, 1, 3, 3]), name='x')
 
-    def construct(self):
+    def call(self):
         return self.relu(self.x)
 
 

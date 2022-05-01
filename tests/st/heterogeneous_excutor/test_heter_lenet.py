@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class LeNet(nn.Cell):
+class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
         self.relu = P.ReLU()
@@ -46,7 +46,7 @@ class LeNet(nn.Cell):
         self.fc3.matmul.add_prim_attr("primitive_target", "CPU")
         self.fc3.bias_add.add_prim_attr("primitive_target", "CPU")
 
-    def construct(self, input_x):
+    def call(self, input_x):
         output = self.conv1(input_x)
         output = self.relu(output)
         output = self.pool(output)

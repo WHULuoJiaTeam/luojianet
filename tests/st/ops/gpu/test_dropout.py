@@ -22,12 +22,12 @@ import luojianet_ms.context as context
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, keep_prob):
         super(Net, self).__init__()
         self.drop = P.Dropout(keep_prob)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.drop(x_)
 
 
@@ -57,13 +57,13 @@ def test_dropout():
     assert abs(mask_sum - nonzero_count)/nonzero_count < 0.1
 
 
-class DropoutDynamic(nn.Cell):
+class DropoutDynamic(nn.Module):
     def __init__(self, keep_prob):
         super(DropoutDynamic, self).__init__()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
         self.drop = P.Dropout(keep_prob)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.test_dynamic(x)
         return self.drop(x)
 

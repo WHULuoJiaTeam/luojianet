@@ -25,7 +25,7 @@ from luojianet_ms.ops.operations import _quant_ops as Q
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU', device_id=0)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self,
                  num_bits=8,
                  quant_delay=0,
@@ -39,7 +39,7 @@ class Net(nn.Cell):
                                               narrow_range=narrow_range,
                                               training=training)
 
-    def construct(self, x, minq, maxq):
+    def call(self, x, minq, maxq):
         return self.fake_quant(x, minq, maxq)
 
 

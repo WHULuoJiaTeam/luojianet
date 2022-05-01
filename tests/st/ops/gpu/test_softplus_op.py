@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class SoftplusNet(nn.Cell):
+class SoftplusNet(nn.Module):
     def __init__(self):
         super(SoftplusNet, self).__init__()
         self.softplus = P.Softplus()
 
-    def construct(self, x):
+    def call(self, x):
         return self.softplus(x)
 
 

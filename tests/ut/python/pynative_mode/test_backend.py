@@ -31,7 +31,7 @@ def setup_module():
     context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -41,7 +41,7 @@ class Net(nn.Cell):
         self.y = Parameter(initializer('normal', [1, 3, 3, 4]), name='y')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.add(self.x, self.y)
 
 

@@ -27,17 +27,17 @@ from luojianet_ms.ops.operations import _quant_ops as Q
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.op = Q.BatchNormFold2(100000)
 
     @ms_function
-    def construct(self, x, beta, gamma, batch_std, batch_mean, running_std, running_mean, current_step):
+    def call(self, x, beta, gamma, batch_std, batch_mean, running_std, running_mean, current_step):
         return self.op(x, beta, gamma, batch_std, batch_mean, running_std, running_mean, current_step)
 
 
-class Net_gnd(nn.Cell):
+class Net_gnd(nn.Module):
     def __init__(self):
         super(Net_gnd, self).__init__()
         self.conv_mul = P.ConvMul(freeze_bn=100000)
@@ -45,7 +45,7 @@ class Net_gnd(nn.Cell):
         self.add_fold = P.AddFold()
 
     @ms_function
-    def construct(self, x, beta, gamma, batch_std, batch_mean, running_std, running_mean, current_step):
+    def call(self, x, beta, gamma, batch_std, batch_mean, running_std, running_mean, current_step):
         out = self.conv_mul(x, batch_std, running_std, current_step)
         out = self.correct_add(out, gamma, batch_std, batch_mean,
                                running_std, running_mean, current_step)

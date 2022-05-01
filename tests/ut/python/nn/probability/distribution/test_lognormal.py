@@ -68,7 +68,7 @@ def test_arguments():
     assert isinstance(n, msd.Distribution)
 
 
-class LogNormalProb(nn.Cell):
+class LogNormalProb(nn.Module):
     """
     LogNormal distribution: initialize with mean/sd.
     """
@@ -77,7 +77,7 @@ class LogNormalProb(nn.Cell):
         super(LogNormalProb, self).__init__()
         self.lognormal = msd.LogNormal(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self, value):
+    def call(self, value):
         prob = self.lognormal.prob(value)
         log_prob = self.lognormal.log_prob(value)
         cdf = self.lognormal.cdf(value)
@@ -90,7 +90,7 @@ class LogNormalProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_lognormal_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through call.
     """
     net = LogNormalProb()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -99,7 +99,7 @@ def test_lognormal_prob():
 
 
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
-class LogNormalProb1(nn.Cell):
+class LogNormalProb1(nn.Module):
     """
     LogNormal distribution: initialize without mean/sd.
     """
@@ -108,7 +108,7 @@ class LogNormalProb1(nn.Cell):
         super(LogNormalProb1, self).__init__()
         self.lognormal = msd.LogNormal()
 
-    def construct(self, value, mean, sd):
+    def call(self, value, mean, sd):
         prob = self.lognormal.prob(value, mean, sd)
         log_prob = self.lognormal.log_prob(value, mean, sd)
         cdf = self.lognormal.cdf(value, mean, sd)
@@ -121,7 +121,7 @@ class LogNormalProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_lognormal_prob1():
     """
-    Test probability functions: passing mean/sd, value through construct.
+    Test probability functions: passing mean/sd, value through call.
     """
     net = LogNormalProb1()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -131,7 +131,7 @@ def test_lognormal_prob1():
     assert isinstance(ans, Tensor)
 
 
-class LogNormalKl(nn.Cell):
+class LogNormalKl(nn.Module):
     """
     Test class: kl_loss of LogNormal distribution.
     """
@@ -141,7 +141,7 @@ class LogNormalKl(nn.Cell):
         self.n1 = msd.LogNormal(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
         self.n2 = msd.LogNormal(dtype=dtype.float32)
 
-    def construct(self, mean_b, sd_b, mean_a, sd_a):
+    def call(self, mean_b, sd_b, mean_a, sd_a):
         kl1 = self.n1.kl_loss('LogNormal', mean_b, sd_b)
         kl2 = self.n2.kl_loss('LogNormal', mean_b, sd_b, mean_a, sd_a)
         return kl1 + kl2
@@ -161,7 +161,7 @@ def test_kl():
     assert isinstance(ans, Tensor)
 
 
-class LogNormalCrossEntropy(nn.Cell):
+class LogNormalCrossEntropy(nn.Module):
     """
     Test class: cross_entropy of LogNormal distribution.
     """
@@ -171,7 +171,7 @@ class LogNormalCrossEntropy(nn.Cell):
         self.n1 = msd.LogNormal(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
         self.n2 = msd.LogNormal(dtype=dtype.float32)
 
-    def construct(self, mean_b, sd_b, mean_a, sd_a):
+    def call(self, mean_b, sd_b, mean_a, sd_a):
         h1 = self.n1.cross_entropy('LogNormal', mean_b, sd_b)
         h2 = self.n2.cross_entropy('LogNormal', mean_b, sd_b, mean_a, sd_a)
         return h1 + h2
@@ -191,7 +191,7 @@ def test_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class LogNormalBasics(nn.Cell):
+class LogNormalBasics(nn.Module):
     """
     Test class: basic mean/sd function.
     """
@@ -200,7 +200,7 @@ class LogNormalBasics(nn.Cell):
         super(LogNormalBasics, self).__init__()
         self.n = msd.LogNormal(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self):
+    def call(self):
         mean = self.n.mean()
         mode = self.n.mode()
         entropy = self.n.entropy()
@@ -218,9 +218,9 @@ def test_bascis():
     assert isinstance(ans, Tensor)
 
 
-class LogNormalConstruct(nn.Cell):
+class LogNormalConstruct(nn.Module):
     """
-    LogNormal distribution: going through construct.
+    LogNormal distribution: going through call.
     """
 
     def __init__(self):
@@ -228,7 +228,7 @@ class LogNormalConstruct(nn.Cell):
         self.lognormal = msd.LogNormal(3.0, 4.0)
         self.lognormal1 = msd.LogNormal()
 
-    def construct(self, value, mean, sd):
+    def call(self, value, mean, sd):
         prob = self.lognormal('prob', value)
         prob1 = self.lognormal('prob', value, mean, sd)
         prob2 = self.lognormal1('prob', value, mean, sd)
@@ -238,7 +238,7 @@ class LogNormalConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_lognormal_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through call.
     """
     net = LogNormalConstruct()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)

@@ -24,22 +24,22 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.composite import GradOperation
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_x, dout):
+    def call(self, input_x, dout):
         return self.grad(self.network)(input_x, dout)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.hswish = P.HSwish()
 
-    def construct(self, x):
+    def call(self, x):
         return self.hswish(x)
 
 

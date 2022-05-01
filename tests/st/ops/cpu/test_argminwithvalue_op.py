@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetArgminWithValue(nn.Cell):
+class NetArgminWithValue(nn.Module):
     def __init__(self, axis=0, keep_dims=False):
         super(NetArgminWithValue, self).__init__()
         self.argmin = P.ArgMinWithValue(axis=axis, keep_dims=keep_dims)
 
-    def construct(self, x):
+    def call(self, x):
         return self.argmin(x)
 
 

@@ -101,7 +101,7 @@ class BertConfig:
         self.enable_fused_layernorm = enable_fused_layernorm
 
 
-class EmbeddingLookup(nn.Cell):
+class EmbeddingLookup(nn.Module):
     """
     A embeddings lookup table with a fixed dictionary and size.
 
@@ -136,7 +136,7 @@ class EmbeddingLookup(nn.Cell):
         self.reshape = P.Reshape()
         self.shape = tuple(embedding_shape)
 
-    def construct(self, input_ids):
+    def call(self, input_ids):
         extended_ids = self.expand(input_ids, -1)
         flat_ids = self.reshape(extended_ids, self.shape_flat)
         if self.use_one_hot_embeddings:
@@ -149,7 +149,7 @@ class EmbeddingLookup(nn.Cell):
         return output, self.embedding_table
 
 
-class EmbeddingPostprocessor(nn.Cell):
+class EmbeddingPostprocessor(nn.Module):
     """
     Postprocessors apply positional and token type embeddings to word embeddings.
 
@@ -204,7 +204,7 @@ class EmbeddingPostprocessor(nn.Cell):
                                                     embedding_size]),
                                                   name='full_position_embeddings')
 
-    def construct(self, token_type_ids, word_embeddings):
+    def call(self, token_type_ids, word_embeddings):
         output = word_embeddings
         if self.use_token_type:
             flat_ids = self.reshape(token_type_ids, self.shape_flat)
@@ -227,7 +227,7 @@ class EmbeddingPostprocessor(nn.Cell):
         return output
 
 
-class BertOutput(nn.Cell):
+class BertOutput(nn.Module):
     """
     Apply a linear computation to hidden status and a residual computation to input.
 
@@ -254,7 +254,7 @@ class BertOutput(nn.Cell):
         self.layernorm = nn.LayerNorm((out_channels,)).to_float(compute_type)
         self.cast = P.Cast()
 
-    def construct(self, hidden_status, input_tensor):
+    def call(self, hidden_status, input_tensor):
         output = self.dense(hidden_status)
         output = self.dropout(output)
         output = self.add(output, input_tensor)
@@ -262,7 +262,7 @@ class BertOutput(nn.Cell):
         return output
 
 
-class RelaPosMatrixGenerator(nn.Cell):
+class RelaPosMatrixGenerator(nn.Module):
     """
     Generates matrix of relative positions between inputs.
 
@@ -283,7 +283,7 @@ class RelaPosMatrixGenerator(nn.Cell):
         self.expanddims = P.ExpandDims()
         self.cast = P.Cast()
 
-    def construct(self):
+    def call(self):
         range_vec_row_out = self.cast(F.tuple_to_array(F.make_range(self._length)), mstype.int32)
         range_vec_col_out = self.range_mat(range_vec_row_out, (self._length, -1))
         tile_row_out = self.tile(range_vec_row_out, (self._length,))
@@ -302,7 +302,7 @@ class RelaPosMatrixGenerator(nn.Cell):
         return final_mat
 
 
-class RelaPosEmbeddingsGenerator(nn.Cell):
+class RelaPosEmbeddingsGenerator(nn.Module):
     """
     Generates tensor of size [length, length, depth].
 
@@ -337,7 +337,7 @@ class RelaPosEmbeddingsGenerator(nn.Cell):
         self.gather = P.Gather()  # index_select
         self.matmul = P.BatchMatMul()
 
-    def construct(self):
+    def call(self):
         relative_positions_matrix_out = self.relative_positions_matrix()
 
         # Generate embedding for each relative position of dimension depth.
@@ -354,7 +354,7 @@ class RelaPosEmbeddingsGenerator(nn.Cell):
         return embeddings
 
 
-class SaturateCast(nn.Cell):
+class SaturateCast(nn.Module):
     """
     Performs a safe saturating cast. This operation applies proper clamping before casting to prevent
     the danger that the value will overflow or underflow.
@@ -377,13 +377,13 @@ class SaturateCast(nn.Cell):
         self.cast = P.Cast()
         self.dst_type = dst_type
 
-    def construct(self, x):
+    def call(self, x):
         out = self.max_op(x, self.tensor_min_type)
         out = self.min_op(out, self.tensor_max_type)
         return self.cast(out, self.dst_type)
 
 
-class BertAttention(nn.Cell):
+class BertAttention(nn.Module):
     """
     Apply multi-headed attention from "from_tensor" to "to_tensor".
 
@@ -492,7 +492,7 @@ class BertAttention(nn.Cell):
                                            initializer_range=initializer_range,
                                            use_one_hot_embeddings=use_one_hot_embeddings)
 
-    def construct(self, from_tensor, to_tensor, attention_mask):
+    def call(self, from_tensor, to_tensor, attention_mask):
         # reshape 2d/3d input tensors to 2d
         from_tensor_2d = self.reshape(from_tensor, self.shape_from_2d)
         to_tensor_2d = self.reshape(to_tensor, self.shape_to_2d)
@@ -583,7 +583,7 @@ class BertAttention(nn.Cell):
         return context_layer
 
 
-class BertSelfAttention(nn.Cell):
+class BertSelfAttention(nn.Module):
     """
     Apply self-attention.
 
@@ -644,14 +644,14 @@ class BertSelfAttention(nn.Cell):
         self.reshape = P.Reshape()
         self.shape = (-1, hidden_size)
 
-    def construct(self, input_tensor, attention_mask):
+    def call(self, input_tensor, attention_mask):
         input_tensor = self.reshape(input_tensor, self.shape)
         attention_output = self.attention(input_tensor, input_tensor, attention_mask)
         output = self.output(attention_output, input_tensor)
         return output
 
 
-class BertEncoderCell(nn.Cell):
+class BertEncoderCell(nn.Module):
     """
     Encoder cells used in BertTransformer.
 
@@ -708,17 +708,17 @@ class BertEncoderCell(nn.Cell):
                                  compute_type=compute_type,
                                  enable_fused_layernorm=enable_fused_layernorm)
 
-    def construct(self, hidden_states, attention_mask):
+    def call(self, hidden_states, attention_mask):
         # self-attention
         attention_output = self.attention(hidden_states, attention_mask)
-        # feed construct
+        # feed call
         intermediate_output = self.intermediate(attention_output)
         # add and normalize
         output = self.output(intermediate_output, attention_output)
         return output
 
 
-class BertTransformer(nn.Cell):
+class BertTransformer(nn.Module):
     """
     Multi-layer bert transformer.
 
@@ -781,7 +781,7 @@ class BertTransformer(nn.Cell):
         self.shape = (-1, hidden_size)
         self.out_shape = (batch_size, seq_length, hidden_size)
 
-    def construct(self, input_tensor, attention_mask):
+    def call(self, input_tensor, attention_mask):
         prev_output = self.reshape(input_tensor, self.shape)
 
         all_encoder_layers = ()
@@ -799,7 +799,7 @@ class BertTransformer(nn.Cell):
         return all_encoder_layers
 
 
-class CreateAttentionMaskFromInputMask(nn.Cell):
+class CreateAttentionMaskFromInputMask(nn.Module):
     """
     Create attention mask according to input mask.
 
@@ -822,7 +822,7 @@ class CreateAttentionMaskFromInputMask(nn.Cell):
             "ones", [config.batch_size, config.seq_length, 1], mstype.float32).init_data()
         self.batch_matmul = P.BatchMatMul()
 
-    def construct(self, input_mask):
+    def call(self, input_mask):
         if not self.input_mask_from_dataset:
             input_mask = self.input_mask
 
@@ -831,7 +831,7 @@ class CreateAttentionMaskFromInputMask(nn.Cell):
         return attention_mask
 
 
-class BertModel(nn.Cell):
+class BertModel(nn.Module):
     """
     Bidirectional Encoder Representations from Transformers.
 
@@ -913,7 +913,7 @@ class BertModel(nn.Cell):
                               weight_init=TruncatedNormal(config.initializer_range)).to_float(config.compute_type)
         self._create_attention_mask_from_input_mask = CreateAttentionMaskFromInputMask(config)
 
-    def construct(self, input_ids, token_type_ids, input_mask):
+    def call(self, input_ids, token_type_ids, input_mask):
 
         # embedding
         if not self.token_type_ids_from_dataset:

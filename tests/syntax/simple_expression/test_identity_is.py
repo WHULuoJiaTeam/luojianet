@@ -21,13 +21,13 @@ from luojianet_ms import context
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class IdentityIs(nn.Cell):
+class IdentityIs(nn.Module):
     def __init__(self, x, y):
         super(IdentityIs, self).__init__()
         self.x = x
         self.y = y
 
-    def construct(self):
+    def call(self):
         in_v = self.x is self.y
         return in_v
 

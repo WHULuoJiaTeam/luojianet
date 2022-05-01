@@ -82,7 +82,7 @@ def test_arguments():
     assert isinstance(g, msd.Distribution)
 
 
-class GammaProb(nn.Cell):
+class GammaProb(nn.Module):
     """
     Gamma distribution: initialize with concentration1/concentration0.
     """
@@ -90,7 +90,7 @@ class GammaProb(nn.Cell):
         super(GammaProb, self).__init__()
         self.gamma = msd.Gamma([3.0, 4.0], [1.0, 1.0], dtype=dtype.float32)
 
-    def construct(self, value):
+    def call(self, value):
         prob = self.gamma.prob(value)
         log_prob = self.gamma.log_prob(value)
         return prob + log_prob
@@ -99,7 +99,7 @@ class GammaProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU and GPU")
 def test_gamma_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through call.
     """
     net = GammaProb()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -107,7 +107,7 @@ def test_gamma_prob():
     assert isinstance(ans, Tensor)
 
 
-class GammaProb1(nn.Cell):
+class GammaProb1(nn.Module):
     """
     Gamma distribution: initialize without concentration1/concentration0.
     """
@@ -115,7 +115,7 @@ class GammaProb1(nn.Cell):
         super(GammaProb1, self).__init__()
         self.gamma = msd.Gamma()
 
-    def construct(self, value, concentration1, concentration0):
+    def call(self, value, concentration1, concentration0):
         prob = self.gamma.prob(value, concentration1, concentration0)
         log_prob = self.gamma.log_prob(value, concentration1, concentration0)
         return prob + log_prob
@@ -124,7 +124,7 @@ class GammaProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU and GPU")
 def test_gamma_prob1():
     """
-    Test probability functions: passing concentration1/concentration0, value through construct.
+    Test probability functions: passing concentration1/concentration0, value through call.
     """
     net = GammaProb1()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -134,7 +134,7 @@ def test_gamma_prob1():
     assert isinstance(ans, Tensor)
 
 
-class GammaKl(nn.Cell):
+class GammaKl(nn.Module):
     """
     Test class: kl_loss of Gamma distribution.
     """
@@ -143,7 +143,7 @@ class GammaKl(nn.Cell):
         self.g1 = msd.Gamma(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
         self.g2 = msd.Gamma(dtype=dtype.float32)
 
-    def construct(self, concentration1_b, concentration0_b, concentration1_a, concentration0_a):
+    def call(self, concentration1_b, concentration0_b, concentration1_a, concentration0_a):
         kl1 = self.g1.kl_loss('Gamma', concentration1_b, concentration0_b)
         kl2 = self.g2.kl_loss('Gamma', concentration1_b, concentration0_b, concentration1_a, concentration0_a)
         return kl1 + kl2
@@ -163,7 +163,7 @@ def test_kl():
     assert isinstance(ans, Tensor)
 
 
-class GammaCrossEntropy(nn.Cell):
+class GammaCrossEntropy(nn.Module):
     """
     Test class: cross_entropy of Gamma distribution.
     """
@@ -172,7 +172,7 @@ class GammaCrossEntropy(nn.Cell):
         self.g1 = msd.Gamma(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
         self.g2 = msd.Gamma(dtype=dtype.float32)
 
-    def construct(self, concentration1_b, concentration0_b, concentration1_a, concentration0_a):
+    def call(self, concentration1_b, concentration0_b, concentration1_a, concentration0_a):
         h1 = self.g1.cross_entropy('Gamma', concentration1_b, concentration0_b)
         h2 = self.g2.cross_entropy('Gamma', concentration1_b, concentration0_b, concentration1_a, concentration0_a)
         return h1 + h2
@@ -192,7 +192,7 @@ def test_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class GammaBasics(nn.Cell):
+class GammaBasics(nn.Module):
     """
     Test class: basic mean/sd function.
     """
@@ -200,7 +200,7 @@ class GammaBasics(nn.Cell):
         super(GammaBasics, self).__init__()
         self.g = msd.Gamma(np.array([3.0, 4.0]), np.array([4.0, 6.0]), dtype=dtype.float32)
 
-    def construct(self):
+    def call(self):
         mean = self.g.mean()
         sd = self.g.sd()
         mode = self.g.mode()
@@ -217,16 +217,16 @@ def test_bascis():
     assert isinstance(ans, Tensor)
 
 
-class GammaConstruct(nn.Cell):
+class GammaConstruct(nn.Module):
     """
-    Gamma distribution: going through construct.
+    Gamma distribution: going through call.
     """
     def __init__(self):
         super(GammaConstruct, self).__init__()
         self.gamma = msd.Gamma([3.0], [4.0])
         self.gamma1 = msd.Gamma()
 
-    def construct(self, value, concentration1, concentration0):
+    def call(self, value, concentration1, concentration0):
         prob = self.gamma('prob', value)
         prob1 = self.gamma('prob', value, concentration1, concentration0)
         prob2 = self.gamma1('prob', value, concentration1, concentration0)
@@ -236,7 +236,7 @@ class GammaConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU and GPU")
 def test_gamma_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through call.
     """
     net = GammaConstruct()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)

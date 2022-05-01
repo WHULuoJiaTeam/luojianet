@@ -27,7 +27,7 @@ import luojianet_ms.context as context
 context.set_context(mode=context.PYNATIVE_MODE, device_target='CPU')
 
 
-class Transpose(nn.Cell):
+class Transpose(nn.Module):
     def __init__(self):
         super(Transpose, self).__init__()
         self.transpose = P.Transpose()
@@ -52,7 +52,7 @@ class Transpose(nn.Cell):
         self.perm_5D = (1, 0, 3, 4, 2)
 
     @ms_function
-    def construct(self):
+    def call(self):
         return (self.transpose(self.x_2D, self.perm_2D), self.transpose(self.x_3D, self.perm_3D),
                 self.transpose(self.x_4D, self.perm_4D), self.transpose(self.x_5D, self.perm_5D))
 
@@ -149,7 +149,7 @@ def test_transpose():
 test_transpose()
 
 
-class Transpose_int64(nn.Cell):
+class Transpose_int64(nn.Module):
     def __init__(self):
         super(Transpose_int64, self).__init__()
         self.transpose = P.Transpose()
@@ -174,7 +174,7 @@ class Transpose_int64(nn.Cell):
         self.perm_5D = (1, 0, 3, 4, 2)
 
     @ms_function
-    def construct(self):
+    def call(self):
         return (self.transpose(self.x_2D, self.perm_2D), self.transpose(self.x_3D, self.perm_3D),
                 self.transpose(self.x_4D, self.perm_4D), self.transpose(self.x_5D, self.perm_5D))
 
@@ -271,7 +271,7 @@ def test_transpose_int64():
 test_transpose_int64()
 
 
-class Transpose_uint8(nn.Cell):
+class Transpose_uint8(nn.Module):
     def __init__(self):
         super(Transpose_uint8, self).__init__()
         self.transpose = P.Transpose()
@@ -296,7 +296,7 @@ class Transpose_uint8(nn.Cell):
         self.perm_5D = (1, 0, 3, 4, 2)
 
     @ms_function
-    def construct(self):
+    def call(self):
         return (self.transpose(self.x_2D, self.perm_2D), self.transpose(self.x_3D, self.perm_3D),
                 self.transpose(self.x_4D, self.perm_4D), self.transpose(self.x_5D, self.perm_5D))
 

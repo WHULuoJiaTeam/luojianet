@@ -25,22 +25,22 @@ from luojianet_ms.ops import operations as P
 def test_reduce_sum_grad():
     context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.op = P.ReduceMax()
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             return self.op(x1, x2)
 
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, network):
             super(GradNet, self).__init__()
             self.grad = C.GradOperation(get_all=True, sens_param=True)
             self.network = network
 
-        def construct(self, x1, x2, dy):
+        def call(self, x1, x2, dy):
             return self.grad(self.network)(x1, x2, dy)
 
     net = Net()

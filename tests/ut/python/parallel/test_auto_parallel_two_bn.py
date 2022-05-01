@@ -27,23 +27,23 @@ from luojianet_ms.parallel._utils import _reset_op_id as reset_op_id
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         predict = self.network(x)
         return self.loss(predict)
 
 
-class Blockcell(nn.Cell):
+class Blockcell(nn.Module):
     def __init__(self):
         super(Blockcell, self).__init__()
         self.bn = nn.BatchNorm1d(64, momentum=0.9)
 
-    def construct(self, x):
+    def call(self, x):
         out = self.bn(x)
         return out
 
@@ -53,7 +53,7 @@ def get_block():
 
 
 def test_two_bn():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.block1 = get_block()
@@ -62,7 +62,7 @@ def test_two_bn():
             self.add = P.Add()
             self.bias = Tensor(np.ones([64, 64]), dtype=ms.float32)
 
-        def construct(self, x):
+        def call(self, x):
             out = self.block1(x)
             out = self.relu(out)
             out = self.add(out, self.bias)

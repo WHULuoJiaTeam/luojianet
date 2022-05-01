@@ -20,7 +20,7 @@ from luojianet_ms.communication.management import init
 from luojianet_ms.communication.management import release
 from luojianet_ms.communication.management import get_rank
 from luojianet_ms.communication.management import get_group_size
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import Conv2d
 from luojianet_ms.nn import ReLU
 from luojianet_ms.nn import Dense
@@ -179,7 +179,7 @@ class FakeData:
         raise StopIteration
 
 
-class ParallelStrategySearchNet(Cell):
+class ParallelStrategySearchNet(Module):
     def __init__(self, in_channel, out_channel, axis, input_shape, mul_size,
                  test_size, prelu_size, transpose_b, matmul_size, num_class):
         super().__init__()
@@ -224,7 +224,7 @@ class ParallelStrategySearchNet(Cell):
                            bias_init='ones',
                            has_bias=True)
 
-    def construct(self, inputs):
+    def call(self, inputs):
         x = self.conv(inputs)
         x = self.softmax(x)
         x = self.relu(x)

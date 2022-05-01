@@ -25,13 +25,13 @@ import luojianet_ms.ops.operations._grad_ops as G
 from luojianet_ms.ops.composite import GradOperation
 from luojianet_ms import Tensor
 
-class GatherDNet(nn.Cell):
+class GatherDNet(nn.Module):
     def __init__(self, dim=0):
         super(GatherDNet, self).__init__()
         self.gather_d = P.GatherD()
         self.dim = dim
 
-    def construct(self, x, index):
+    def call(self, x, index):
         return self.gather_d(x, self.dim, index)
 
 @pytest.mark.level0

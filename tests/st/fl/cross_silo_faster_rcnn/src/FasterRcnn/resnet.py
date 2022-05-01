@@ -48,12 +48,12 @@ def _BatchNorm2dInit(out_chls, momentum=0.1, affine=True, use_batch_statistics=T
                           moving_var_init=moving_var_init, use_batch_statistics=use_batch_statistics)
 
 
-class ResNetFea(nn.Cell):
+class ResNetFea(nn.Module):
     """
     ResNet architecture.
 
     Args:
-        block (Cell): Block for network.
+        block (Module): Block for network.
         layer_nums (list): Numbers of block in different layers.
         in_channels (list): Input channel in each layer.
         out_channels (list): Output channel in each layer.
@@ -139,9 +139,9 @@ class ResNetFea(nn.Cell):
 
         return nn.SequentialCell(layers)
 
-    def construct(self, x):
+    def call(self, x):
         """
-        construct the ResNet Network
+        call the ResNet Network
 
         Args:
             x: input feature data.
@@ -165,7 +165,7 @@ class ResNetFea(nn.Cell):
         return identity, c3, c4, c5
 
 
-class ResidualBlockUsing(nn.Cell):
+class ResidualBlockUsing(nn.Module):
     """
     ResNet V1 residual block definition.
 
@@ -230,9 +230,9 @@ class ResidualBlockUsing(nn.Cell):
                 self.conv_down_sample.weight.requires_grad = False
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         """
-        construct the ResNet V1 residual block
+        call the ResNet V1 residual block
 
         Args:
             x: input feature data.

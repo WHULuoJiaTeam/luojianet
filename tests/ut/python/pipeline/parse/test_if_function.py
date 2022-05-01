@@ -23,12 +23,12 @@ from luojianet_ms import context
 context.set_context(mode=context.GRAPH_MODE)
 
 def test_if_function():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, func):
             super(Net, self).__init__()
             self.func = func
 
-        def construct(self, x, y):
+        def call(self, x, y):
             if self.func:
                 return self.func(x, y)
             return x - y

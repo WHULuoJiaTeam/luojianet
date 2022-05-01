@@ -23,12 +23,12 @@ from luojianet_ms.ops.operations import _inner_ops as inner
 from luojianet_ms.ops import operations as P
 
 
-class GatherNet(nn.Cell):
+class GatherNet(nn.Module):
     def __init__(self):
         super(GatherNet, self).__init__()
         self.gather = P.Gather()
 
-    def construct(self, x, indices):
+    def call(self, x, indices):
         return self.gather(x, indices, 1)
 
 
@@ -847,12 +847,12 @@ def test_gather0():
     assert np.all(-diff < error)
 
 
-class GatherNet1(nn.Cell):
+class GatherNet1(nn.Module):
     def __init__(self):
         super(GatherNet1, self).__init__()
         self.gather = P.Gather()
 
-    def construct(self, x, indices):
+    def call(self, x, indices):
         return self.gather(x, indices, -1)
 
 
@@ -901,12 +901,12 @@ def test_gather1():
     assert np.all(-diff < error)
 
 
-class GatherNet2(nn.Cell):
+class GatherNet2(nn.Module):
     def __init__(self):
         super(GatherNet2, self).__init__()
         self.gather = P.Gather()
 
-    def construct(self, x, indices):
+    def call(self, x, indices):
         return self.gather(x, indices, 0)
 
 
@@ -941,7 +941,7 @@ def test_gather2():
 
 
 # Dynamic Shape testing ahead
-class GatherNetDynamic(nn.Cell):
+class GatherNetDynamic(nn.Module):
     def __init__(self, axis=0, dyn_a=True, dyn_b=True):
         super(GatherNetDynamic, self).__init__()
         self.gather = P.Gather()
@@ -950,7 +950,7 @@ class GatherNetDynamic(nn.Cell):
         self.to_dyn_2 = dyn_b
         self.axis = axis
 
-    def construct(self, x, indices):
+    def call(self, x, indices):
         # testing selective inputs being dynamic
         if self.to_dyn_1:
             x = self.gpu_convert_to_dynamic_shape(x)

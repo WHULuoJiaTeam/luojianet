@@ -22,40 +22,40 @@ from luojianet_ms import Tensor
 from luojianet_ms import context
 from luojianet_ms.ops import operations as P
 
-class Layer1(nn.Cell):
+class Layer1(nn.Module):
     def __init__(self):
         super(Layer1, self).__init__()
         self.net = nn.Conv2d(3, 1, 3, pad_mode='same')
         self.pad = nn.Pad(
             paddings=((0, 0), (0, 2), (0, 0), (0, 0)), mode="CONSTANT")
 
-    def construct(self, x):
+    def call(self, x):
         y = self.net(x)
         return self.pad(y)
 
 
-class Layer2(nn.Cell):
+class Layer2(nn.Module):
     def __init__(self):
         super(Layer2, self).__init__()
         self.net = nn.Conv2d(3, 1, 7, pad_mode='same')
         self.pad = nn.Pad(
             paddings=((0, 0), (0, 2), (0, 0), (0, 0)), mode="CONSTANT")
 
-    def construct(self, x):
+    def call(self, x):
         y = self.net(x)
         return self.pad(y)
 
 
-class Layer3(nn.Cell):
+class Layer3(nn.Module):
     def __init__(self):
         super(Layer3, self).__init__()
         self.net = nn.Conv2d(3, 3, 3, pad_mode='same')
 
-    def construct(self, x):
+    def call(self, x):
         return self.net(x)
 
 
-class SwitchNet(nn.Cell):
+class SwitchNet(nn.Module):
     def __init__(self):
         super(SwitchNet, self).__init__()
         self.layer1 = Layer1()
@@ -64,12 +64,12 @@ class SwitchNet(nn.Cell):
         self.layers = (self.layer1, self.layer2, self.layer3)
         self.fill = P.Fill()
 
-    def construct(self, x, index):
+    def call(self, x, index):
         y = self.layers[index](x)
         return y
 
 
-class MySwitchNet(nn.Cell):
+class MySwitchNet(nn.Module):
     def __init__(self):
         super(MySwitchNet, self).__init__()
         self.layer1 = Layer1()
@@ -78,7 +78,7 @@ class MySwitchNet(nn.Cell):
         self.layers = (self.layer1, self.layer2, self.layer3)
         self.fill = P.Fill()
 
-    def construct(self, x, index):
+    def call(self, x, index):
         y = self.layers[0](x)
         for i in range(len(self.layers)):
             if i == index:
@@ -93,7 +93,7 @@ def test_layer_switch():
     index = Tensor(0, dtype=luojianet_ms.int32)
     net(x, index)
 
-class MySwitchNetPynative(nn.Cell):
+class MySwitchNetPynative(nn.Module):
     def __init__(self):
         super(MySwitchNetPynative, self).__init__()
         self.layer1 = Layer1()
@@ -102,7 +102,7 @@ class MySwitchNetPynative(nn.Cell):
         self.layers = (self.layer1, self.layer2, self.layer3)
         self.fill = P.Fill()
 
-    def construct(self, x, index):
+    def call(self, x, index):
         return self.layers[index](x)
 
 

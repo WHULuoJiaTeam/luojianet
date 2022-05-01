@@ -21,30 +21,30 @@ from luojianet_ms.common.api import _cell_graph_executor
 from luojianet_ms.ops import operations as P
 
 
-class NetMul(nn.Cell):
+class NetMul(nn.Module):
     def __init__(self, strategy=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.mul(x, y)
 
 
-class NetMatMul(nn.Cell):
+class NetMatMul(nn.Module):
     def __init__(self, strategy=None):
         super().__init__()
         self.matmul = P.MatMul().shard(strategy)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.matmul(x, y)
 
-class NetRecursive(nn.Cell):
+class NetRecursive(nn.Module):
     def __init__(self):
         super().__init__()
         self.mul_net = NetMul()
         self.matmul_net = NetMatMul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out1 = self.matmul_net(x, y)
         out2 = self.matmul_net(x, y)
         return self.mul_net(out1, out2)

@@ -23,23 +23,23 @@ from luojianet_ms.ops.composite import GradOperation
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.resize = P.ResizeBilinear((2, 4), False)
 
-    def construct(self, x):
+    def call(self, x):
         return self.resize(x)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
         self.network.set_train()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.grad(self.network)(x, y)
 
 

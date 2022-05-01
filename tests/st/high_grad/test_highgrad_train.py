@@ -27,7 +27,7 @@ from luojianet_ms.common import ParameterTuple
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class _Grad(nn.Cell):
+class _Grad(nn.Module):
     def __init__(self, grad, network, wrt_params=False, real_inputs_count=None):
         super().__init__()
         self.network = network
@@ -38,7 +38,7 @@ class _Grad(nn.Cell):
         if self.wrt_params:
             self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         if self.real_inputs_count is None or self.sens_param is False:
             if self.wrt_params:
                 return self.grad(self.network, self.params)(*inputs)
@@ -61,7 +61,7 @@ class GradOfFirstInput(_Grad):
                          network=network, real_inputs_count=real_inputs_count)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.mul = ops.Mul()
@@ -73,19 +73,19 @@ class Net(nn.Cell):
         self.bias = Parameter(Tensor(bias_np),
                               name="bias", requires_grad=True)
 
-    def construct(self, x):
+    def call(self, x):
         xw = self.mul(x, self.weight)
         output = self.add(xw, self.bias)
         return output
 
 
-class WithLossCellLocal(nn.Cell):
+class WithLossCellLocal(nn.Module):
     def __init__(self, grad, loss):
         super(WithLossCellLocal, self).__init__(auto_prefix=False)
         self.grad = grad
         self.loss = loss
 
-    def construct(self, data, label):
+    def call(self, data, label):
         out = self.grad(data)
         return self.loss(out, label)
 

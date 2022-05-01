@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.slice = P.Slice()
 
-    def construct(self, x, begin, size):
+    def call(self, x, begin, size):
         return self.slice(x, begin, size)
 
 

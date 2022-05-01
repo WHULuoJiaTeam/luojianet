@@ -28,14 +28,14 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_hypermap_specialize_param():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
             super(Net, self).__init__()
             self.mul = P.Mul()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             ret = self.mul(x, y)
             return ret
 

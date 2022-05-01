@@ -24,12 +24,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, sigma=1.0):
         super(Net, self).__init__()
         self.SmoothL1Loss = P.SmoothL1Loss(sigma)
 
-    def construct(self, pred, gt):
+    def call(self, pred, gt):
         return self.SmoothL1Loss(pred, gt)
 
 

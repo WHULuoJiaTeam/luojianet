@@ -45,7 +45,7 @@ def weight_variable():
     return TruncatedNormal(0.02)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     def __init__(self, num_class=10, channel=3):
         super(LeNet5, self).__init__()
         self.num_class = num_class
@@ -58,7 +58,7 @@ class LeNet5(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)
@@ -74,23 +74,23 @@ class LeNet5(nn.Cell):
         return x
 
 
-class StartFLJob(nn.Cell):
+class StartFLJob(nn.Module):
     def __init__(self, data_size):
         super(StartFLJob, self).__init__()
         self.start_fl_job = P.StartFLJob(data_size)
 
-    def construct(self):
+    def call(self):
         return self.start_fl_job()
 
 
-class UpdateAndGetModel(nn.Cell):
+class UpdateAndGetModel(nn.Module):
     def __init__(self, weights):
         super(UpdateAndGetModel, self).__init__()
         self.update_model = P.UpdateModel()
         self.get_model = P.GetModel()
         self.weights = weights
 
-    def construct(self):
+    def call(self):
         self.update_model(self.weights)
         get_model = self.get_model(self.weights)
         return get_model

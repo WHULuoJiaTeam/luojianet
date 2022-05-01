@@ -85,14 +85,14 @@ class Model:
     `Model` groups layers into an object with training and inference features.
 
     Args:
-        network (Cell): The training or testing network.
-        loss_fn (Cell): Objective function, if loss_fn is None, the
+        network (Module): The training or testing network.
+        loss_fn (Module): Objective function, if loss_fn is None, the
                              network should contain the logic of loss and grads calculation, and the logic
                              of parallel if needed. Default: None.
-        optimizer (Cell): Optimizer for updating the weights. Default: None.
+        optimizer (Module): Optimizer for updating the weights. Default: None.
         metrics (Union[dict, set]): Dict or set of metrics to be evaluated by the model during
                         training and testing. eg: {'accuracy', 'recall'}. Default: None.
-        eval_network (Cell): Network for evaluation. If not defined, `network` and `loss_fn` would be wrapped as
+        eval_network (Module): Network for evaluation. If not defined, `network` and `loss_fn` would be wrapped as
                              `eval_network`. Default: None.
         eval_indexes (list): In case of defining the `eval_network`, if `eval_indexes` is None, all outputs of
                              `eval_network` would be passed to metrics, otherwise `eval_indexes` must contain three
@@ -111,7 +111,7 @@ class Model:
         keep_batchnorm_fp32 (bool): Keep Batchnorm run in `float32`. If set, overwrite the level setting. Default: True.
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         >>>     def __init__(self):
         >>>         super(Net, self).__init__()
         >>>         self.conv = nn.Conv2d(3, 64, 3, has_bias=False, weight_init='normal')
@@ -120,7 +120,7 @@ class Model:
         >>>         self.flatten = nn.Flatten()
         >>>         self.fc = nn.Dense(64*224*224, 12) # padding=0
         >>>
-        >>>     def construct(self, x):
+        >>>     def call(self, x):
         >>>         x = self.conv(x)
         >>>         x = self.bn(x)
         >>>         x = self.relu(x)

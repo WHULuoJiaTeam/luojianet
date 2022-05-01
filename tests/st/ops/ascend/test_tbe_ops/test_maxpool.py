@@ -22,13 +22,13 @@ from luojianet_ms.common.api import ms_function
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.maxpool = P.MaxPool(pad_mode="SAME", kernel_size=3, strides=2)
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         output = self.maxpool(x)
         return output
 

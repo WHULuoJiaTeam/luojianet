@@ -35,7 +35,7 @@ logging.basicConfig(level=logging.WARNING)
 
 
 # pylint: disable=abstract-method
-class NetMissConstruct(nn.Cell):
+class NetMissConstruct(nn.Module):
     """ NetMissConstruct definition """
 
     def __init__(self):
@@ -49,7 +49,7 @@ class NetMissConstruct(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2)
         self.flatten = P.Flatten()
 
-    # TestCase: Mis-spelled 'construct' to 'construtc'
+    # TestCase: Mis-spelled 'call' to 'construtc'
     def construtc(self, x):
         x = self.max_pool2d(self.relu(self.conv1(x)))
         x = self.max_pool2d(self.relu(self.conv2(x)))
@@ -67,16 +67,16 @@ def test_net_without_construct():
     _cell_graph_executor.compile(net, inp)
 
 
-class NetWithRaise(nn.Cell):
+class NetWithRaise(nn.Module):
     """ NetWithRaise definition """
 
     def __init__(self):
         super(NetWithRaise, self).__init__()
         self.conv1 = nn.Conv2d(1, 6, 5, pad_mode='valid')
 
-    # raise exception in method 'construct'
-    def construct(self, x):
-        raise 'exception in construct'
+    # raise exception in method 'call'
+    def call(self, x):
+        raise 'exception in call'
 
 
 def test_net_with_raise():
@@ -88,36 +88,36 @@ def test_net_with_raise():
     assert "Unsupported statement 'Raise'." in str(err.value)
 
 
-class NetAddN(nn.Cell):
+class NetAddN(nn.Module):
     """net for test AddN"""
 
     def __init__(self):
         super(NetAddN, self).__init__()
         self.net = P.AddN()
 
-    def construct(self, x):
+    def call(self, x):
         return self.net(x)
 
 
-class NetSplit(nn.Cell):
+class NetSplit(nn.Module):
     "net for test Split"
 
     def __init__(self):
         super(NetSplit, self).__init__()
         self.net = P.Split(1, 2)
 
-    def construct(self, x):
+    def call(self, x):
         return self.net(x)
 
 
-class NetBatchMatMul(nn.Cell):
+class NetBatchMatMul(nn.Module):
     """net for test BatchMatMul"""
 
     def __init__(self):
         super(NetBatchMatMul, self).__init__()
         self.op = P.BatchMatMul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.op(x, y)
 
 

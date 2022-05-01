@@ -23,14 +23,14 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, axis=0):
         super(Net, self).__init__()
         self.unique = P.Unique()
         self.reshape = P.Reshape()
         self.concat = P.Concat(axis=axis)
 
-    def construct(self, x1, x2):
+    def call(self, x1, x2):
         out1_unique, _ = self.unique(x1)
         out2_unique, _ = self.unique(x2)
         out1_shape = self.reshape(out1_unique, (1, -1, 2))

@@ -42,9 +42,9 @@ class MyExponential(msd.Distribution):
         super(MyExponential, self).__init__(seed, dtype, name, param)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """
-    Test Net: function called through construct.
+    Test Net: function called through call.
     """
 
     def __init__(self, func_name):
@@ -52,7 +52,7 @@ class Net(nn.Cell):
         self.dist = MyExponential()
         self.name = func_name
 
-    def construct(self, *args, **kwargs):
+    def call(self, *args, **kwargs):
         return self.dist(self.name, *args, **kwargs)
 
 
@@ -79,7 +79,7 @@ def test_raise_not_implemented_error_construct_graph_mode():
             net(value)
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     """
     Test Net: function called directly.
     """
@@ -89,7 +89,7 @@ class Net1(nn.Cell):
         self.dist = MyExponential()
         self.func = getattr(self.dist, func_name)
 
-    def construct(self, *args, **kwargs):
+    def call(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
 

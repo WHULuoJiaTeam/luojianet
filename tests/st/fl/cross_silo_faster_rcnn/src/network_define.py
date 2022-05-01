@@ -80,26 +80,26 @@ class LossCallBack(Callback):
             self.loss_sum = 0
 
 
-class LossNet(nn.Cell):
+class LossNet(nn.Module):
     """FasterRcnn loss method"""
-    def construct(self, x1, x2, x3, x4, x5, x6):
+    def call(self, x1, x2, x3, x4, x5, x6):
         return x1 + x2
 
 
-class WithLossCell(nn.Cell):
+class WithLossCell(nn.Module):
     """
     Wrap the network with loss function to compute loss.
 
     Args:
-        backbone (Cell): The target network to wrap.
-        loss_fn (Cell): The loss function used to compute loss.
+        backbone (Module): The target network to wrap.
+        loss_fn (Module): The loss function used to compute loss.
     """
     def __init__(self, backbone, loss_fn):
         super(WithLossCell, self).__init__(auto_prefix=False)
         self._backbone = backbone
         self._loss_fn = loss_fn
 
-    def construct(self, x, img_shape, gt_bboxe, gt_label, gt_num):
+    def call(self, x, img_shape, gt_bboxe, gt_label, gt_num):
         loss1, loss2, loss3, loss4, loss5, loss6 = self._backbone(x, img_shape, gt_bboxe, gt_label, gt_num)
         return self._loss_fn(loss1, loss2, loss3, loss4, loss5, loss6)
 
@@ -109,21 +109,21 @@ class WithLossCell(nn.Cell):
         Get the backbone network.
 
         Returns:
-            Cell, return backbone network.
+            Module, return backbone network.
         """
         return self._backbone
 
 
-class TrainOneStepCell(nn.Cell):
+class TrainOneStepCell(nn.Module):
     """
     Network training package class.
 
-    Append an optimizer to the training network after that the construct function
+    Append an optimizer to the training network after that the call function
     can be called to create the backward graph.
 
     Args:
-        network (Cell): The training network.
-        optimizer (Cell): Optimizer for updating the weights.
+        network (Module): The training network.
+        optimizer (Module): Optimizer for updating the weights.
         sens (Number): The adjust parameter. Default value is 1.0.
         reduce_flag (bool): The reduce flag. Default value is False.
         mean (bool): Allreduce method. Default value is False.
@@ -142,7 +142,7 @@ class TrainOneStepCell(nn.Cell):
         if reduce_flag:
             self.grad_reducer = DistributedGradReducer(optimizer.parameters, mean, degree)
 
-    def construct(self, x, img_shape, gt_bboxe, gt_label, gt_num):
+    def call(self, x, img_shape, gt_bboxe, gt_label, gt_num):
         weights = self.weights
         loss = self.network(x, img_shape, gt_bboxe, gt_label, gt_num)
         grads = self.grad(self.network, weights)(x, img_shape, gt_bboxe, gt_label, gt_num, self.sens)

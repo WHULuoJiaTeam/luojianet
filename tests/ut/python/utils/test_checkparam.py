@@ -23,7 +23,7 @@ from luojianet_ms import Model, context
 from luojianet_ms.common.tensor import Tensor
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """ LeNet5 definition """
 
     def __init__(self):
@@ -37,7 +37,7 @@ class LeNet5(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2)
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.max_pool2d(self.relu(self.conv1(x)))
         x = self.max_pool2d(self.relu(self.conv2(x)))
         x = self.flatten(x)

@@ -23,7 +23,7 @@ from luojianet_ms.nn import TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, mul_weight, axis=0, out_nums=1, strategy1=None, strategy2=None, strategy3=None):
         super(Net, self).__init__()
         self.split = P.Split(axis, out_nums).shard(strategy1)
@@ -32,7 +32,7 @@ class Net(nn.Cell):
         self.matmul2 = P.MatMul().shard(strategy3)
         self.weight = Parameter(mul_weight, "w1")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.mul(x, self.weight)
         out1, out2, out3 = self.split(out)
         out = self.matmul(out1, out2)
@@ -40,28 +40,28 @@ class Net(nn.Cell):
         return out
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self, mul_weight, axis=0, out_nums=1, strategy1=None, strategy2=None):
         super(Net1, self).__init__()
         self.split = P.Split(axis, out_nums).shard(strategy1)
         self.mul = P.Mul().shard(strategy2)
         self.weight = Parameter(mul_weight, "w1")
 
-    def construct(self, x):
+    def call(self, x):
         out1, out2 = self.split(self.weight)
         out = self.mul(x, out1)
         out = self.mul(out, out2)
         return out
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self, mul_weight, axis=0, out_nums=1, strategy1=None, strategy2=None):
         super(Net2, self).__init__()
         self.split = P.Split(axis, out_nums).shard(strategy1)
         self.mul = P.Mul().shard(strategy2)
         self.weight = Parameter(mul_weight, "w1")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.mul(x, self.weight)
         out1, _ = self.split(out)
         return out1

@@ -23,7 +23,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.apply_momentum = P.ApplyMomentum(gradient_scale=1024.0)
@@ -38,7 +38,7 @@ class Net(nn.Cell):
         self.momentum = Parameter(initializer(
             'normal', [1,]), name='momentum')
 
-    def construct(self):
+    def call(self):
         return self.apply_momentum(self.variable, self.accumulation, self.learning_rate, self.gradient, self.momentum)
 
 

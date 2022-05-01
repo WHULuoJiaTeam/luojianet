@@ -57,10 +57,10 @@ def test_ms_function():
 
 @security_off_wrap
 def test_cell_ms_function():
-    class Net(nn.Cell):
+    class Net(nn.Module):
 
         @ms_function
-        def construct(self, x):
+        def call(self, x):
             return x
 
     context.set_context(mode=context.GRAPH_MODE)
@@ -79,8 +79,8 @@ def test_parse_slice_location():
     Description: Test Slice node will be parsed with correct location.
     Expectation: TypeError.
     """
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             return x[1.2:]
 
     context.set_context(mode=context.GRAPH_MODE)

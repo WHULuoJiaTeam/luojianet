@@ -30,14 +30,14 @@ os.environ['GLOG_v'] = str(2)
 context.set_context(mode=context.PYNATIVE_MODE, device_target="GPU")
 init()
 
-class AllReduceNet(nn.Cell):
+class AllReduceNet(nn.Module):
     def __init__(self):
         super(AllReduceNet, self).__init__()
         self.mul = P.Mul()
         self.all_reduce = P.AllReduce()
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.mul(x, 2)
         y1 = Tensor(np.array([[2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]])).astype(np.float32)
         z = self.add(x, y1)

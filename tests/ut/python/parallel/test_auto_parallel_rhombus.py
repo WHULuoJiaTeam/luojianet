@@ -28,23 +28,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -55,7 +55,7 @@ def compile_net(net, x, y, b):
 
 
 def test_rhombus1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
@@ -63,7 +63,7 @@ def test_rhombus1():
             self.tadd2 = P.Add()
             self.weight = Parameter(Tensor(np.ones([128, 128]).astype(np.float32) * 0.01), "w", requires_grad=True)
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             mm_out = self.matmul(x, self.weight)
             ta1_out = self.tadd1(y, z)
             out = self.tadd2(ta1_out, mm_out)
@@ -81,7 +81,7 @@ def test_rhombus1():
 
 
 def test_rhombus2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -92,7 +92,7 @@ def test_rhombus2():
             self.weight1 = Parameter(Tensor(np.ones([128, 128]).astype(np.float32) * 0.01), "w", requires_grad=True)
             self.weight2 = Parameter(Tensor(np.ones([128, 128]).astype(np.float32) * 0.01), "w", requires_grad=True)
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             mm1_out = self.matmul1(x, self.weight1)
             ta1_out = self.tadd1(y, z)
             ta2_out = self.tadd2(mm1_out, ta1_out)
@@ -112,7 +112,7 @@ def test_rhombus2():
 
 
 def test_rhombus3():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -123,7 +123,7 @@ def test_rhombus3():
             self.weight1 = Parameter(Tensor(np.ones([128, 128]).astype(np.float32) * 0.01), "w", requires_grad=True)
             self.t = Tensor(np.ones([128, 128]).astype(np.float32) * 0.01)
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             mm1_out = self.matmul1(x, self.weight1)
             ta1_out = self.tadd1(y, z)
             ta2_out = self.tadd2(mm1_out, ta1_out)

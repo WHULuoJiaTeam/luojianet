@@ -29,7 +29,7 @@ IMAGE_SHAPE = (-1, 1, 32, 32)
 image_path = os.path.join('/home/workspace/luojianet_ms_dataset/mnist', "train")
 
 
-class Encoder(nn.Cell):
+class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
         self.fc1 = nn.Dense(1024, 800)
@@ -37,7 +37,7 @@ class Encoder(nn.Cell):
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.flatten(x)
         x = self.fc1(x)
         x = self.relu(x)
@@ -46,14 +46,14 @@ class Encoder(nn.Cell):
         return x
 
 
-class Decoder(nn.Cell):
+class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
         self.fc1 = nn.Dense(400, 1024)
         self.sigmoid = nn.Sigmoid()
         self.reshape = ops.Reshape()
 
-    def construct(self, z):
+    def call(self, z):
         z = self.fc1(z)
         z = self.reshape(z, IMAGE_SHAPE)
         z = self.sigmoid(z)

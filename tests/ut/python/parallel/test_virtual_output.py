@@ -26,7 +26,7 @@ from luojianet_ms.common.parameter import Parameter
 
 context.set_context(mode=context.GRAPH_MODE)
 
-class DenseMutMulNet(nn.Cell):
+class DenseMutMulNet(nn.Module):
     def __init__(self):
         super(DenseMutMulNet, self).__init__()
         self.fc1 = nn.Dense(128, 768)
@@ -40,7 +40,7 @@ class DenseMutMulNet(nn.Cell):
         self.matmul2 = P.MatMul()
         self.fc4.matmul.shard(((1, 1), (8, 1)))
 
-    def construct(self, x):
+    def call(self, x):
         q = self.fc1(x)
         k = self.fc2(x)
         v = self.fc3(x)
@@ -50,55 +50,55 @@ class DenseMutMulNet(nn.Cell):
         s = self.fc4(s)
         return s
 
-class MulNegTwoOutputNet(nn.Cell):
+class MulNegTwoOutputNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.mul = P.Mul().shard(((2, 4), (2, 4)))
         self.neg = P.Neg().shard(((2, 4),))
         self.mul_weight = Parameter(Tensor(np.ones([32, 128]), dtype=ms.float32), name="weight")
 
-    def construct(self, x):
+    def call(self, x):
         out1 = self.mul(x, self.mul_weight)
         out2 = self.neg(out1)
         return out1, out2
 
-class ReshapeMatMulNet(nn.Cell):
+class ReshapeMatMulNet(nn.Module):
     def __init__(self, strategy1, strategy2):
         super().__init__()
         self.reshape = P.Reshape()
         self.matmul = P.MatMul().shard(strategy2)
         self.matmul_weight = Parameter(Tensor(np.ones([28, 64]), dtype=ms.float32), name="weight")
     # x (64, 4, 7)
-    def construct(self, x):
+    def call(self, x):
         out = self.reshape(x, (64, 28))
         out = self.matmul(out, self.matmul_weight)
         return out
 
-class MatMulReshapeNet(nn.Cell):
+class MatMulReshapeNet(nn.Module):
     def __init__(self, strategy1, strategy2):
         super().__init__()
         self.reshape = P.Reshape()
         self.matmul = P.MatMul().shard(strategy1)
         self.matmul_weight = Parameter(Tensor(np.ones([28, 64]), dtype=ms.float32), name="weight")
     # x (128, 28)
-    def construct(self, x):
+    def call(self, x):
         out = self.matmul(x, self.matmul_weight)
         out = self.reshape(out, (64, -1))
         return out
 
-class ReshapeMulNet(nn.Cell):
+class ReshapeMulNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.reshape = P.Reshape()
         self.mul = P.Mul().shard(((1, 2, 4), (2, 4)))
         self.mul_weight = Parameter(Tensor(np.ones([128, 96]), dtype=ms.float32), name="weight")
 
-    def construct(self, x):
+    def call(self, x):
         weight = self.reshape(self.mul_weight, (1, 128, 96))
         out = self.mul(weight, self.mul_weight)
         return out
 
-class ParallelMulNet(nn.Cell):
+class ParallelMulNet(nn.Module):
     def __init__(self, dense_in_channel=2048, dense_out_channel=250):
         super().__init__()
         weight_np = np.full((dense_out_channel, dense_in_channel), 0.01, dtype=np.float32)
@@ -110,7 +110,7 @@ class ParallelMulNet(nn.Cell):
                               bias_init=Tensor(bias_np),
                               has_bias=True)
         self.mul = P.Mul()
-    def construct(self, inputs):
+    def call(self, inputs):
         x = self.flat(inputs)
         x = self.dense(x)
         x = self.mul(x, x)

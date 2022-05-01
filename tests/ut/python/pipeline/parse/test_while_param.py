@@ -18,16 +18,16 @@ import numpy as np
 
 import luojianet_ms as ms
 from luojianet_ms import Tensor, context, nn, ms_function
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
-class WhileSubGraphParam(Cell):
+class WhileSubGraphParam(Module):
     def __init__(self):
         super().__init__()
         self.update = ms.Parameter(Tensor(1, ms.float32), "update")
 
-    def construct(self, x, y, z):
+    def call(self, x, y, z):
         out1 = z
         while x < y:
             self.update = self.update + 1
@@ -45,12 +45,12 @@ def test_while_loop_phi():
     net = WhileSubGraphParam()
     net(x, y, z)
 
-class WhileSubGraphParam2(Cell):
+class WhileSubGraphParam2(Module):
     def __init__(self):
         super().__init__()
         self.update = ms.Parameter(Tensor(1, ms.float32), "update")
 
-    def construct(self, x, y, z):
+    def call(self, x, y, z):
         out1 = z
         i = self.update
         while x < y:
@@ -70,14 +70,14 @@ def test_while_loop_phi_2():
     net(x, y, z)
 
 
-class WhileSubGraphParam3(Cell):
+class WhileSubGraphParam3(Module):
     def __init__(self, initial_input_x):
         super().__init__()
         self.initial_input_x = initial_input_x
         self.X = ms.Parameter(initial_input_x, name="parameter_x")
         self.Y = ms.Parameter(self.initial_input_x, name="parameter_y")
 
-    def construct(self):
+    def call(self):
         a = 0
         while a < 3:
             self.X = self.X + self.Y
@@ -92,14 +92,14 @@ def test_while_loop_phi_3():
     net = WhileSubGraphParam3(x)
     net()
 
-class ControlMixedWhileIf(nn.Cell):
+class ControlMixedWhileIf(nn.Module):
     def __init__(self):
         super().__init__()
         self.assign = P.Assign()
         self.var = ms.Parameter(ms.Tensor([1], ms.float32), name="var")
 
     @ms_function
-    def construct(self, x, y, z, c2, c4):
+    def call(self, x, y, z, c2, c4):
         out = self.assign(self.var, c4)
         while x < c2:
             y = self.assign(self.var, c4)

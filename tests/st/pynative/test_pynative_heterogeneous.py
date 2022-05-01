@@ -18,18 +18,18 @@ import numpy as np
 import pytest
 
 from luojianet_ms import context, Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 
 
-class MulRelu(Cell):
+class MulRelu(Module):
     def __init__(self):
         super(MulRelu, self).__init__()
         self.relu1 = ops.ReLU()
         self.relu2 = ops.ReLU()
         self.mul = ops.Mul()
 
-    def construct(self, inp1, inp2):
+    def call(self, inp1, inp2):
         x1 = self.relu1(inp1)
         x2 = self.relu2(inp2)
         y = self.mul(x1, x2)

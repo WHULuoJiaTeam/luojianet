@@ -24,12 +24,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetBoundingBoxEncode(nn.Cell):
+class NetBoundingBoxEncode(nn.Module):
     def __init__(self, means=(0.0, 0.0, 0.0, 0.0), stds=(1.0, 1.0, 1.0, 1.0)):
         super(NetBoundingBoxEncode, self).__init__()
         self.encode = P.BoundingBoxEncode(means=means, stds=stds)
 
-    def construct(self, anchor, groundtruth):
+    def call(self, anchor, groundtruth):
         return self.encode(anchor, groundtruth)
 
 def bbox2delta(proposals, gt, means, stds):

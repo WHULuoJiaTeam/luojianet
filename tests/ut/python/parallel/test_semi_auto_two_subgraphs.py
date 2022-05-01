@@ -25,7 +25,7 @@ from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.mul = P.Mul()
@@ -33,39 +33,39 @@ class Net(nn.Cell):
         self.param1 = Parameter(Tensor(np.ones([8, 8, 8, 8]).astype(np.float32)), name="wide")
         self.param2 = Parameter(Tensor(np.ones([8, 8, 8, 8]).astype(np.float32)), name="deep")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.mul(x, self.param1)
         out = self.mul(out, self.param2)
         out = self.relu(out)
         return out
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.sum = P.ReduceSum(keep_dims=False).shard(((4, 1, 1, 1),))
         self.mean = P.ReduceMean(keep_dims=False).shard(((8, 1, 1, 1),))
         self.net = network
 
-    def construct(self, x):
+    def call(self, x):
         net_out = self.net(x)
         loss1 = self.sum(net_out, -1)
         loss2 = self.mean(net_out, -1)
         return loss1, loss2
 
 
-class IthOutputCell(nn.Cell):
+class IthOutputCell(nn.Module):
     def __init__(self, network, output_index):
         super(IthOutputCell, self).__init__()
         self.network = network
         self.output_index = output_index
 
-    def construct(self, x1):
+    def call(self, x1):
         predict = self.network(x1)[self.output_index]
         return predict
 
 
-class TrainStepWrap(nn.Cell):
+class TrainStepWrap(nn.Module):
     def __init__(self, network, sens=1000.0):
         super(TrainStepWrap, self).__init__()
         self.network = network
@@ -92,7 +92,7 @@ class TrainStepWrap(nn.Cell):
         self.loss_net_w = IthOutputCell(network, output_index=0)
         self.loss_net_d = IthOutputCell(network, output_index=1)
 
-    def construct(self, x):
+    def call(self, x):
         weights_w = self.weights_w
         weights_d = self.weights_d
         loss_w, loss_d = self.network(x)

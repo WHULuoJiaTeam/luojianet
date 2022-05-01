@@ -52,7 +52,7 @@ def test_call_single_func():
     assert np.allclose(out_grad[0][0][0][0][0][0].asnumpy(), 1.99998, 0.0001, 0.0001)
 
 
-class CellConvBnReLU(nn.Cell):
+class CellConvBnReLU(nn.Module):
     def __init__(self):
         super(CellConvBnReLU, self).__init__()
         self.conv = nn.Conv2d(1, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
@@ -60,7 +60,7 @@ class CellConvBnReLU(nn.Cell):
         self.relu = nn.ReLU()
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)
@@ -95,20 +95,20 @@ def test_call_single_cell():
     assert np.allclose(grad_second[1][2][0].asnumpy(), 1.00000, 0.0001, 0.0001)
 
 
-class AddMulMul(nn.Cell):
+class AddMulMul(nn.Module):
     def __init__(self):
         super(AddMulMul, self).__init__()
         self.param = Parameter(Tensor(0.5, ms.float32))
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = x + x
         x = x * self.param
         x = x * x
         return x
 
 
-class CellCallSingleCell(nn.Cell):
+class CellCallSingleCell(nn.Module):
     def __init__(self):
         super(CellCallSingleCell, self).__init__()
         self.conv = nn.Conv2d(1, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
@@ -116,7 +116,7 @@ class CellCallSingleCell(nn.Cell):
         self.relu = nn.ReLU()
         self.add_mul_mul = AddMulMul()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.add_mul_mul(x)
@@ -154,24 +154,24 @@ def test_cell_call_cell():
     assert np.allclose(grad_second[1][3].asnumpy(), -1289, 1, 1)
 
 
-class Mul(nn.Cell):
+class Mul(nn.Module):
     def __init__(self):
         super(Mul, self).__init__()
         self.param = Parameter(Tensor(1.5, ms.float32))
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = x * self.param
         return x
 
 
-class CallSameFunc(nn.Cell):
+class CallSameFunc(nn.Module):
     def __init__(self):
         super(CallSameFunc, self).__init__()
         self.conv_bn_relu = CellConvBnReLU()
         self.mul = Mul()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.mul(x)
         x = self.mul(x)
         x = self.mul(x)
@@ -216,32 +216,32 @@ def test_call_same_func():
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_pynative_ms_function():
-    class MsFunctionCell(nn.Cell):
+    class MsFunctionCell(nn.Module):
         def __init__(self):
             super().__init__()
             self.param = Parameter(Tensor(1, ms.float32))
 
         @ms_function
-        def construct(self, x):
+        def call(self, x):
             x = self.param * x
             return x
 
-    class NetA(nn.Cell):
+    class NetA(nn.Module):
         def __init__(self):
             super().__init__()
             self.param = Parameter(Tensor(1, ms.float32))
 
-        def construct(self, x):
+        def call(self, x):
             x = self.param * x
             x = x + x
             return x
 
-    class NetB(nn.Cell):
+    class NetB(nn.Module):
         def __init__(self):
             super().__init__()
             self.ms_function_net = MsFunctionCell()
 
-        def construct(self, x):
+        def call(self, x):
             x = self.ms_function_net(x)
             x = x + x
             return x

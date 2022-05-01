@@ -32,7 +32,7 @@ func_map = {
 }
 
 
-class TestScatterFuncNet(nn.Cell):
+class TestScatterFuncNet(nn.Module):
     def __init__(self, func, lock, inputx, indices, updates):
         super(TestScatterFuncNet, self).__init__()
 
@@ -41,7 +41,7 @@ class TestScatterFuncNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def call(self):
         out = self.scatter_func(self.inputx, self.indices, self.updates)
         return out
 
@@ -58,7 +58,7 @@ def scatter_func_use_locking_false_net(func, inputx, indices, updates):
     return net()
 
 
-class TestScatterFuncDynamicNet(nn.Cell):
+class TestScatterFuncDynamicNet(nn.Module):
     def __init__(self, func, inputx, indices, updates):
         super(TestScatterFuncDynamicNet, self).__init__()
         self.scatter_func = func_map[func]()
@@ -67,7 +67,7 @@ class TestScatterFuncDynamicNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def call(self):
         indices = self.test_dynamic(self.indices)
         updates = self.test_dynamic(self.updates)
         out = self.scatter_func(self.inputx, indices, updates)
@@ -80,14 +80,14 @@ def scatter_func_d_net(func, inputx, indices, updates):
     return net()
 
 
-class TestScatterFuncDynamicNet2(nn.Cell):
+class TestScatterFuncDynamicNet2(nn.Module):
     def __init__(self, func, inputx):
         super(TestScatterFuncDynamicNet2, self).__init__()
         self.scatter_func = func_map[func]()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
         self.inputx = Parameter(inputx, name="inputx")
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         indices = self.test_dynamic(indices)
         updates = self.test_dynamic(updates)
         out = self.scatter_func(self.inputx, indices, updates)

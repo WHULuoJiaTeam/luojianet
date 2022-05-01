@@ -24,24 +24,24 @@ from luojianet_ms.common.tensor import Tensor
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class MemberIn(nn.Cell):
+class MemberIn(nn.Module):
     def __init__(self):
         super(MemberIn, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def call(self, x, y):
         in_v = x in y
         return in_v
 
 
-class MemberInSpec(nn.Cell):
+class MemberInSpec(nn.Module):
     def __init__(self, x, y):
         super(MemberInSpec, self).__init__()
         self.x = x
         self.y = y
 
 
-    def construct(self, x, y):
+    def call(self, x, y):
         in_v = self.x in self.y
         return in_v
 

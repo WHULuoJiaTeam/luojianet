@@ -20,8 +20,8 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 
 
-class Net(nn.Cell):
-    def construct(self, input_x, update, slice_tuple):
+class Net(nn.Module):
+    def call(self, input_x, update, slice_tuple):
         input_x[slice_tuple] = update
         return input_x
 

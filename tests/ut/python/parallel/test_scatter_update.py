@@ -22,7 +22,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms import context
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
     def __init__(self, strategy1=None, strategy2=None):
         super(Net, self).__init__()
@@ -33,7 +33,7 @@ class Net(nn.Cell):
         self.add = P.TensorAdd().shard(strategy2)
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         out = self.scatter_update(self.inputs, self.indices, self.updates)
         out = self.add(x, out)
         out = self.relu(out)

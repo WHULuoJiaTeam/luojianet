@@ -31,13 +31,13 @@ def test_clip_by_norm():
 
 @non_graph_engine
 def test_clip_by_norm_const():
-    class Network(nn.Cell):
+    class Network(nn.Module):
         def __init__(self):
             super(Network, self).__init__()
             self.norm_value = Tensor(np.array([1]).astype(np.float32))
             self.clip = nn.ClipByNorm()
 
-        def construct(self, x):
+        def call(self, x):
             return self.clip(x, self.norm_value)
 
     net = Network()

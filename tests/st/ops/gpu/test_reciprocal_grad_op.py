@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class NetReciprocalGrad(nn.Cell):
+class NetReciprocalGrad(nn.Module):
     def __init__(self):
         super(NetReciprocalGrad, self).__init__()
         self.grad = G.ReciprocalGrad()
 
-    def construct(self, y, dy):
+    def call(self, y, dy):
         return self.grad(y, dy)
 
 

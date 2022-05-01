@@ -23,39 +23,39 @@ from luojianet_ms import Tensor, context
 from luojianet_ms import ParameterTuple, Parameter
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.mul = ops.Mul()
         weight_np = np.array([2, 2]).astype(np.float32)
         self.weight = Parameter(Tensor(weight_np), name="weight", requires_grad=True)
 
-    def construct(self, x):
+    def call(self, x):
         x_square = self.mul(x, x)
         x_square_z = self.mul(x_square, self.weight)
         output = self.mul(x_square_z, self.weight)
         return output
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = ops.GradOperation(get_by_list=True, sens_param=False)
         self.network = network
         self.params = ParameterTuple(network.trainable_params())
 
-    def construct(self, x):
+    def call(self, x):
         output = self.grad(self.network, self.params)(x)
         return output
 
 
-class GradSec(nn.Cell):
+class GradSec(nn.Module):
     def __init__(self, network):
         super(GradSec, self).__init__()
         self.grad = ops.GradOperation(get_all=True, sens_param=False)
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         output = self.grad(self.network)(x)
         return output
 

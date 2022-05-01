@@ -26,19 +26,19 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE)
 grad_by_list = C.GradOperation(get_by_list=True)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, channel=1, w=0.25, strategy1=None, strategy2=None):
         super().__init__()
         self.norm = P.L2Normalize().shard(strategy1)
         self.prelu = P.PReLU().shard(strategy2)
         self.w = Parameter(initializer(w, [channel,]), name='w')
 
-    def construct(self, data):
+    def call(self, data):
         x = self.norm(data)
         x = self.prelu(x, self.w)
         return x
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network, types, shapes, output_num, strategy3=None, strategy4=None, axis=-1):
         super(NetWithLoss, self).__init__()
         self.get_next = P.GetNext(types, shapes, output_num, "")
@@ -48,20 +48,20 @@ class NetWithLoss(nn.Cell):
         self.loss = P.SoftmaxCrossEntropyWithLogits().shard(strategy4)
         self.network = network
 
-    def construct(self):
+    def call(self):
         data, label = self.get_next()
         predict = self.network(data)
         label = self.one_hot(label, 64, self.on_value, self.off_value)
         return self.loss(predict, label)[0]
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
         self.weights = ParameterTuple(network.trainable_params())
 
-    def construct(self):
+    def call(self):
         return grad_by_list(self.network, self.weights)()
 
 
@@ -132,12 +132,12 @@ def test_only_one_get_next():
     Description: semi-auto parallel, only getnext.
     Expectation: compile well done.
     """
-    class Net1(nn.Cell):
+    class Net1(nn.Module):
         def __init__(self):
             super().__init__()
             self.get_next = P.GetNext([ms.float32, ms.int32], [[32, 64], [32]], 2, "")
 
-        def construct(self):
+        def call(self):
             return self.get_next()
 
     context.set_auto_parallel_context(device_num=4, global_rank=0)

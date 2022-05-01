@@ -26,12 +26,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_triu():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        def construct(self):
+        def call(self):
             triu = nn.Triu()
             return triu(self.value, 0)
 
@@ -41,12 +41,12 @@ def test_triu():
 
 
 def test_triu_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        def construct(self):
+        def call(self):
             triu = nn.Triu()
             return triu(self.value, 1)
 
@@ -56,12 +56,12 @@ def test_triu_1():
 
 
 def test_triu_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        def construct(self):
+        def call(self):
             triu = nn.Triu()
             return triu(self.value, -1)
 
@@ -71,11 +71,11 @@ def test_triu_2():
 
 
 def test_triu_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             triu = nn.Triu()
             return triu(x, 0)
 
@@ -84,11 +84,11 @@ def test_triu_parameter():
 
 
 def test_triu_parameter_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             triu = nn.Triu()
             return triu(x, 1)
 
@@ -97,11 +97,11 @@ def test_triu_parameter_1():
 
 
 def test_triu_parameter_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             triu = nn.Triu()
             return triu(x, -1)
 

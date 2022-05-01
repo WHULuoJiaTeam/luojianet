@@ -22,12 +22,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_mean():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.value = ms.Tensor([[1, 2, 3], [4, 5, 6]], dtype=ms.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.mean()
 
     net = Net()
@@ -35,12 +35,12 @@ def test_mean():
 
 
 def test_mean_axis():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.value = ms.Tensor([[1, 2, 3], [4, 5, 6]], dtype=ms.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.mean(axis=1)
 
     net = Net()
@@ -48,11 +48,11 @@ def test_mean_axis():
 
 
 def test_mean_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x):
+        def call(self, x):
             return x.mean()
 
     x = ms.Tensor([[1, 2, 3], [1, 2, 3]], dtype=ms.float32)
@@ -61,11 +61,11 @@ def test_mean_parameter():
 
 
 def test_mean_parameter_axis():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x):
+        def call(self, x):
             return x.mean(axis=1)
 
     x = ms.Tensor([[1, 2, 3], [1, 2, 3]], dtype=ms.float32)

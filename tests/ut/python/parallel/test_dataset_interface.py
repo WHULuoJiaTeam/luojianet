@@ -52,14 +52,14 @@ class Dataset(MindData):
         self.index = 0
 
 
-class AllToAllNet(nn.Cell):
+class AllToAllNet(nn.Module):
     def __init__(self, strategy1):
         super(AllToAllNet, self).__init__()
         self.matmul = P.MatMul().shard(((1, 1), (1, 8)))
         self.matmul_weight = Parameter(Tensor(np.ones([128, 256]), dtype=ms.float32), name="weight")
         self.transpose1 = P.Transpose().shard(strategy1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.matmul(x, self.matmul_weight)
         x = self.transpose1(x, (1, 0))
         return x
@@ -101,7 +101,7 @@ def fixme_test_dataset_interface_sens_scalar():
     loss_scale_manager_common(strategy1)
 
 
-class TrainOneStepCell(nn.Cell):
+class TrainOneStepCell(nn.Module):
 
     def __init__(self, network, optimizer):
         super(TrainOneStepCell, self).__init__(auto_prefix=False)
@@ -111,7 +111,7 @@ class TrainOneStepCell(nn.Cell):
         self.optimizer = optimizer
         self.grad = C.GradOperation(get_by_list=True, sens_param=True)
 
-    def construct(self, data, sens):
+    def call(self, data, sens):
         weights = self.weights
         loss = self.network(data)
         grads = self.grad(self.network, weights)(data, sens)
@@ -153,14 +153,14 @@ def test_dataset_interface_sens_shape_equal_loss():
 
 
 def test_input_not_in_parameter_layotu_dict():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1):
             super(Net, self).__init__()
             self.matmul = P.MatMul().shard(((1, 1), (1, 8)))
             self.matmul_weight = Parameter(Tensor(np.ones([128, 256]), dtype=ms.float32), name="weight")
             self.transpose1 = P.Transpose().shard(strategy1)
 
-        def construct(self, x):
+        def call(self, x):
             x = self.matmul(x, self.matmul_weight)
             x = self.transpose1(x, (1, 0))
             return x

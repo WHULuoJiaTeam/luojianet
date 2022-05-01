@@ -66,7 +66,7 @@ def test_prob():
         msd.Bernoulli([1.0], dtype=dtype.int32)
 
 
-class BernoulliProb(nn.Cell):
+class BernoulliProb(nn.Module):
     """
     Bernoulli distribution: initialize with probs.
     """
@@ -75,7 +75,7 @@ class BernoulliProb(nn.Cell):
         super(BernoulliProb, self).__init__()
         self.b = msd.Bernoulli(0.5, dtype=dtype.int32)
 
-    def construct(self, value):
+    def call(self, value):
         prob = self.b.prob(value)
         log_prob = self.b.log_prob(value)
         cdf = self.b.cdf(value)
@@ -88,7 +88,7 @@ class BernoulliProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_bernoulli_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through call.
     """
     net = BernoulliProb()
     value = Tensor([0, 0, 0, 0, 0], dtype=dtype.float32)
@@ -96,7 +96,7 @@ def test_bernoulli_prob():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliProb1(nn.Cell):
+class BernoulliProb1(nn.Module):
     """
     Bernoulli distribution: initialize without probs.
     """
@@ -105,7 +105,7 @@ class BernoulliProb1(nn.Cell):
         super(BernoulliProb1, self).__init__()
         self.b = msd.Bernoulli(dtype=dtype.int32)
 
-    def construct(self, value, probs):
+    def call(self, value, probs):
         prob = self.b.prob(value, probs)
         log_prob = self.b.log_prob(value, probs)
         cdf = self.b.cdf(value, probs)
@@ -118,7 +118,7 @@ class BernoulliProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_bernoulli_prob1():
     """
-    Test probability functions: passing value/probs through construct.
+    Test probability functions: passing value/probs through call.
     """
     net = BernoulliProb1()
     value = Tensor([0, 0, 0, 0, 0], dtype=dtype.float32)
@@ -127,7 +127,7 @@ def test_bernoulli_prob1():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliKl(nn.Cell):
+class BernoulliKl(nn.Module):
     """
     Test class: kl_loss between Bernoulli distributions.
     """
@@ -137,7 +137,7 @@ class BernoulliKl(nn.Cell):
         self.b1 = msd.Bernoulli(0.7, dtype=dtype.int32)
         self.b2 = msd.Bernoulli(dtype=dtype.int32)
 
-    def construct(self, probs_b, probs_a):
+    def call(self, probs_b, probs_a):
         kl1 = self.b1.kl_loss('Bernoulli', probs_b)
         kl2 = self.b2.kl_loss('Bernoulli', probs_b, probs_a)
         return kl1 + kl2
@@ -155,7 +155,7 @@ def test_kl():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliCrossEntropy(nn.Cell):
+class BernoulliCrossEntropy(nn.Module):
     """
     Test class: cross_entropy of Bernoulli distribution.
     """
@@ -165,7 +165,7 @@ class BernoulliCrossEntropy(nn.Cell):
         self.b1 = msd.Bernoulli(0.7, dtype=dtype.int32)
         self.b2 = msd.Bernoulli(dtype=dtype.int32)
 
-    def construct(self, probs_b, probs_a):
+    def call(self, probs_b, probs_a):
         h1 = self.b1.cross_entropy('Bernoulli', probs_b)
         h2 = self.b2.cross_entropy('Bernoulli', probs_b, probs_a)
         return h1 + h2
@@ -183,9 +183,9 @@ def test_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliConstruct(nn.Cell):
+class BernoulliConstruct(nn.Module):
     """
-    Bernoulli distribution: going through construct.
+    Bernoulli distribution: going through call.
     """
 
     def __init__(self):
@@ -193,7 +193,7 @@ class BernoulliConstruct(nn.Cell):
         self.b = msd.Bernoulli(0.5, dtype=dtype.int32)
         self.b1 = msd.Bernoulli(dtype=dtype.int32)
 
-    def construct(self, value, probs):
+    def call(self, value, probs):
         prob = self.b('prob', value)
         prob1 = self.b('prob', value, probs)
         prob2 = self.b1('prob', value, probs)
@@ -203,7 +203,7 @@ class BernoulliConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_bernoulli_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through call.
     """
     net = BernoulliConstruct()
     value = Tensor([0, 0, 0, 0, 0], dtype=dtype.float32)
@@ -212,7 +212,7 @@ def test_bernoulli_construct():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliMean(nn.Cell):
+class BernoulliMean(nn.Module):
     """
     Test class: basic mean/sd/var/mode/entropy function.
     """
@@ -221,7 +221,7 @@ class BernoulliMean(nn.Cell):
         super(BernoulliMean, self).__init__()
         self.b = msd.Bernoulli([0.3, 0.5], dtype=dtype.int32)
 
-    def construct(self):
+    def call(self):
         mean = self.b.mean()
         return mean
 
@@ -236,7 +236,7 @@ def test_mean():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliSd(nn.Cell):
+class BernoulliSd(nn.Module):
     """
     Test class: basic mean/sd/var/mode/entropy function.
     """
@@ -245,7 +245,7 @@ class BernoulliSd(nn.Cell):
         super(BernoulliSd, self).__init__()
         self.b = msd.Bernoulli([0.3, 0.5], dtype=dtype.int32)
 
-    def construct(self):
+    def call(self):
         sd = self.b.sd()
         return sd
 
@@ -260,7 +260,7 @@ def test_sd():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliVar(nn.Cell):
+class BernoulliVar(nn.Module):
     """
     Test class: basic mean/sd/var/mode/entropy function.
     """
@@ -269,7 +269,7 @@ class BernoulliVar(nn.Cell):
         super(BernoulliVar, self).__init__()
         self.b = msd.Bernoulli([0.3, 0.5], dtype=dtype.int32)
 
-    def construct(self):
+    def call(self):
         var = self.b.var()
         return var
 
@@ -284,7 +284,7 @@ def test_var():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliMode(nn.Cell):
+class BernoulliMode(nn.Module):
     """
     Test class: basic mean/sd/var/mode/entropy function.
     """
@@ -293,7 +293,7 @@ class BernoulliMode(nn.Cell):
         super(BernoulliMode, self).__init__()
         self.b = msd.Bernoulli([0.3, 0.5], dtype=dtype.int32)
 
-    def construct(self):
+    def call(self):
         mode = self.b.mode()
         return mode
 
@@ -308,7 +308,7 @@ def test_mode():
     assert isinstance(ans, Tensor)
 
 
-class BernoulliEntropy(nn.Cell):
+class BernoulliEntropy(nn.Module):
     """
     Test class: basic mean/sd/var/mode/entropy function.
     """
@@ -317,7 +317,7 @@ class BernoulliEntropy(nn.Cell):
         super(BernoulliEntropy, self).__init__()
         self.b = msd.Bernoulli([0.3, 0.5], dtype=dtype.int32)
 
-    def construct(self):
+    def call(self):
         entropy = self.b.entropy()
         return entropy
 

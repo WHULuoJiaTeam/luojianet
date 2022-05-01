@@ -23,13 +23,13 @@ from luojianet_ms.ops.operations import _inner_ops as inner
 import luojianet_ms.nn as nn
 import luojianet_ms.context as context
 
-class DynamicShapeNet(nn.Cell):
+class DynamicShapeNet(nn.Module):
     def __init__(self):
         super(DynamicShapeNet, self).__init__()
         self.convert_to_dynamic_shape_op = inner.GpuConvertToDynamicShape()
         self.dynamic_shape_op = P.DynamicShape()
 
-    def construct(self, x):
+    def call(self, x):
         x_dynamic_shape = self.convert_to_dynamic_shape_op(x)
         return self.dynamic_shape_op(x_dynamic_shape)
 

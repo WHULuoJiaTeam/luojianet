@@ -22,13 +22,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(Net, self).__init__()
         self.uniformreal = P.UniformReal(seed=seed)
         self.shape = shape
 
-    def construct(self):
+    def call(self):
         return self.uniformreal(self.shape)
 
 @pytest.mark.level0

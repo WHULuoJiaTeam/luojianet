@@ -23,7 +23,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, begin, end, strides):
         super(Net, self).__init__()
         self.strided_slice = P.StridedSlice()
@@ -31,7 +31,7 @@ class Net(nn.Cell):
         self.end = end
         self.strides = strides
 
-    def construct(self, input):
+    def call(self, input):
         return self.strided_slice(input, self.begin, self.end, self.strides)
 
 

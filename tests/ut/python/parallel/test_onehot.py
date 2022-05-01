@@ -30,7 +30,7 @@ context.set_context(mode=context.GRAPH_MODE)
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network, strategy3, strategy4, axis):
         super(NetWithLoss, self).__init__()
         self.one_hot = P.OneHot(axis=axis).shard(strategy3)
@@ -39,28 +39,28 @@ class NetWithLoss(nn.Cell):
         self.loss = P.SoftmaxCrossEntropyWithLogits().shard(strategy4)
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y)
         label = self.one_hot(b, 64, self.on_value, self.off_value)
         return self.loss(predict, label)[0]
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy1, strategy2):
         super().__init__()
         self.matmul = P.MatMul().shard(strategy1)
         self.gelu = P.GeLU().shard(strategy2)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.matmul(x, y)
         out = self.gelu(out)
         return out

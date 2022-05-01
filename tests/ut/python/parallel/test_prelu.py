@@ -27,30 +27,30 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 grad_all = C.GradOperation(get_all=True)
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return grad_all(self.network)(x, y)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy=None):
         super().__init__()
         self.prelu = P.PReLU().shard(strategy)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.prelu(x, y)
         return out
 
@@ -114,31 +114,31 @@ def test_matmul_prelu_parallel_success():
     Description: matmul-prelu net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class NetWithLoss3(nn.Cell):
+    class NetWithLoss3(nn.Module):
         def __init__(self, network):
             super(NetWithLoss3, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x, y, w):
+        def call(self, x, y, w):
             predict = self.network(x, y, w)
             return self.loss(predict)
 
-    class GradWrap3(nn.Cell):
+    class GradWrap3(nn.Module):
         def __init__(self, network):
             super(GradWrap3, self).__init__()
             self.network = network
 
-        def construct(self, x, y, w):
+        def call(self, x, y, w):
             return grad_all(self.network)(x, y, w)
 
-    class Net3(nn.Cell):
+    class Net3(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.prelu = P.PReLU().shard(strategy2)
 
-        def construct(self, x, y, w):
+        def call(self, x, y, w):
             out = self.matmul(x, y)
             out = self.prelu(out, w)
             return out

@@ -24,7 +24,7 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
-class SpaceToDepthNet(nn.Cell):
+class SpaceToDepthNet(nn.Module):
     def __init__(self, nptype):
         super(SpaceToDepthNet, self).__init__()
         self.SpaceToDepth = P.SpaceToDepth(2)
@@ -39,7 +39,7 @@ class SpaceToDepthNet(nn.Cell):
         self.x = Parameter(initializer(Tensor(self.data_np), (1, 3, 2, 2)), name='x')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.SpaceToDepth(self.x)
 
 

@@ -19,12 +19,12 @@ import numpy as np
 import luojianet_ms as ms
 import luojianet_ms.ops.operations as op
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import LayerNorm, Cell
+from luojianet_ms.nn import LayerNorm, Module
 from luojianet_ms.common import ParameterTuple
 from luojianet_ms.ops.composite import GradOperation
 from luojianet_ms.train.model import Model
 
-class _Grad(Cell):
+class _Grad(Module):
     def __init__(self, grad, network, wrt_params=False, real_inputs_count=None):
         super().__init__()
         self.network = network
@@ -35,7 +35,7 @@ class _Grad(Cell):
         if self.wrt_params:
             self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         if self.wrt_params:
             if self.real_inputs_count is None or self.sens_param is False:
                 return self.grad(self.network, self.params)(*inputs)
@@ -146,12 +146,12 @@ class LayerNormFactory(OpsFactory):
         allclose_nparray(graph_grad2, pynative_grad2, self.loss, self.loss)
         allclose_nparray(graph_grad3, pynative_grad3, self.loss, self.loss)
 
-class ArgMaxWithValue(Cell):
+class ArgMaxWithValue(Module):
     def __init__(self, axis, keep_dims):
         super().__init__()
         self.op = op.ArgMaxWithValue(axis=axis, keep_dims=keep_dims)
 
-    def construct(self, input_value):
+    def call(self, input_value):
         return self.op(input_value)
 
 class GradOfFirstInput(_Grad):

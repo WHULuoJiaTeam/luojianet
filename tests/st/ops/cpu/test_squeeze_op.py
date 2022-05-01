@@ -18,18 +18,18 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class SqueezeNet(Cell):
+class SqueezeNet(Module):
     def __init__(self):
         super(SqueezeNet, self).__init__()
         self.squeeze = P.Squeeze()
 
-    def construct(self, x):
+    def call(self, x):
         return self.squeeze(x)
 
 

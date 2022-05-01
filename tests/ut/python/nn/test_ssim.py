@@ -25,12 +25,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.common.api import _cell_graph_executor
 
 
-class SSIMNet(nn.Cell):
+class SSIMNet(nn.Module):
     def __init__(self, max_val=1.0, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03):
         super(SSIMNet, self).__init__()
         self.net = nn.SSIM(max_val, filter_size, filter_sigma, k1, k2)
 
-    def construct(self, img1, img2):
+    def call(self, img1, img2):
         return self.net(img1, img2)
 
 

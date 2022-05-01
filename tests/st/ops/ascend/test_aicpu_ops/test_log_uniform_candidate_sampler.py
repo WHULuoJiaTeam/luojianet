@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, num_true=1, num_sampled=5, unique=True, range_max=5, seed=0):
         super(Net, self).__init__()
         self.sampler = P.LogUniformCandidateSampler(num_true, num_sampled, unique, range_max, seed)
 
-    def construct(self, x):
+    def call(self, x):
         return self.sampler(x)
 
 

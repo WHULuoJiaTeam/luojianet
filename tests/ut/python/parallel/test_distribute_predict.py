@@ -23,7 +23,7 @@ from luojianet_ms import context
 from luojianet_ms.parallel._utils import _infer_rank_list
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
     def __init__(self):
         super(Net, self).__init__()
@@ -37,7 +37,7 @@ class Net(nn.Cell):
         self.matmul1 = P.MatMul()
         self.matmul2 = P.MatMul()
 
-    def construct(self, x):
+    def call(self, x):
         q = self.fc1(x)
         k = self.fc2(x)
         v = self.fc3(x)

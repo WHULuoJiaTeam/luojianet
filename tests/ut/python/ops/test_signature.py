@@ -26,23 +26,23 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 import luojianet_ms as ms
 
-class AssignW(nn.Cell):
+class AssignW(nn.Module):
     def __init__(self):
         super(AssignW, self).__init__()
         self.assign = P.Assign()
 
-    def construct(self, x, w):
+    def call(self, x, w):
         self.assign(x, w)
         return x
 
 
-class AssignOp(nn.Cell):
+class AssignOp(nn.Module):
     def __init__(self):
         super(AssignOp, self).__init__()
         self.b = Parameter(initializer('ones', [5]), name='b')
 
 
-    def construct(self, w):
+    def call(self, w):
         self.b = w
         return w
 
@@ -55,13 +55,13 @@ def test_assign_by_operator():
     net(input_data)
 
 
-class NetScatterNdUpdate(nn.Cell):
+class NetScatterNdUpdate(nn.Module):
     def __init__(self):
         super(NetScatterNdUpdate, self).__init__()
         self.b = Parameter(initializer('ones', [5, 5]), name='b')
         self.scatter = P.ScatterNdUpdate()
 
-    def construct(self, idx, x):
+    def call(self, idx, x):
         return self.scatter(self.b, idx, x)
 
 

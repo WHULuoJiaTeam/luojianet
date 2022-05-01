@@ -40,7 +40,7 @@ def if_compile_test(x_init, y_init):
     Description: if compile test
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             """"""
             super(Net, self).__init__()
@@ -51,7 +51,7 @@ def if_compile_test(x_init, y_init):
             self.merge = P.Merge()
             self.less = P.Less()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             cond = self.less(x, y)
             ret = self.value
             if cond:
@@ -74,14 +74,14 @@ def test_if_nested_compile():
     Description: if nested compile test
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, auto_prefix=True):
             """"""
             super().__init__(auto_prefix=auto_prefix)
             self.squre = P.Square()
             self.value = Tensor(3, dtype=ms.float32)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             res = self.value
             if x <= y:
                 res = x + res
@@ -105,7 +105,7 @@ def test_if_inside_for():
     Description: if inside test
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, auto_prefix=True):
             """"""
             super().__init__(auto_prefix=auto_prefix)
@@ -113,7 +113,7 @@ def test_if_inside_for():
             self.value = Tensor(3, dtype=ms.float32)
             self.count = 4
 
-        def construct(self, x, y):
+        def call(self, x, y):
             res = 0
             for i in range(self.count):
                 if i == x:
@@ -134,13 +134,13 @@ def test_while_with_weight_in_condition():
     Description: while with weight in condition test
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             """"""
             super(Net, self).__init__()
             self.loop = Parameter(Tensor(1, dtype=ms.float32), name="loop")
 
-        def construct(self, x):
+        def call(self, x):
             while self.loop < 5:
                 self.loop += 1
                 x += 1
@@ -157,7 +157,7 @@ def test_while_add():
     Description: while add test
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, data):
             """"""
             super(Net, self).__init__()
@@ -166,7 +166,7 @@ def test_while_add():
             self.out = Tensor(np.zeros([2, 3], dtype=np.float32))
             self.add = P.Add()
 
-        def construct(self, inputs):
+        def call(self, inputs):
             idx = self.start
             end = self.end
             out = self.out
@@ -183,18 +183,18 @@ def test_while_add():
 
 def test_tensor_all_construct_lack_branch():
     """
-    Feature: tensor all construct lack test.
-    Description: tensor all construct lack test
+    Feature: tensor all call lack test.
+    Description: tensor all call lack test
     Expectation: compile done without error.
     """
-    class NetConditionLackBranch(nn.Cell):
+    class NetConditionLackBranch(nn.Module):
         def __init__(self):
             """"""
             super(NetConditionLackBranch, self).__init__()
             self.logicaland = P.LogicalAnd()
             self.logicalor = P.LogicalOr()
 
-        def construct(self, input1, input2):
+        def call(self, input1, input2):
             if input1.all():
                 return self.logicaland(input1, input2)
             while input1.any():
@@ -216,13 +216,13 @@ def test_parser_switch_layer_func_primitive():
     Description: parser switch layer func primitive test
     Expectation: compile done without error.
     """
-    class FinalNet(nn.Cell):
+    class FinalNet(nn.Module):
         def __init__(self, funcs):
             """"""
             super().__init__()
             self.funcs = funcs
 
-        def construct(self, i, input1):
+        def call(self, i, input1):
             x = self.funcs[i](input1)
             return x
 
@@ -244,13 +244,13 @@ def test_large_for_loop():
     Description: large for loop test
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             """"""
             super(Net, self).__init__()
             self.flatten = P.ReLU()  # nn.Flatten()
 
-        def construct(self, x):
+        def call(self, x):
             for elem in range(1, 1900):
                 x = self.flatten(x + elem)
             return x
@@ -273,13 +273,13 @@ def test_large_for_loop_with_continue_break():
     Description: large for loop with continue break test
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             """"""
             super(Net, self).__init__()
             self.flatten = P.ReLU()  # nn.Flatten()
 
-        def construct(self, x):
+        def call(self, x):
             idx = 0
             for elem1 in range(200):
                 idx = idx + 1
@@ -307,7 +307,7 @@ def test_recursive_call():
     Description: recursive call test
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
         def __init__(self):
             """"""
@@ -315,19 +315,19 @@ def test_recursive_call():
             self.fc = nn.Dense(10, 10)  # padding=0
             # self.net2 = Net2()
 
-        def construct(self, x):
+        def call(self, x):
             net2 = Net2()
             x = net2(x)
             out = self.fc(x)
             return out
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.net = Net()
             self.fc = nn.Dense(10, 10)
 
-        def construct(self, x):
+        def call(self, x):
             x = self.net(x)
             out = self.fc(x)
             return out

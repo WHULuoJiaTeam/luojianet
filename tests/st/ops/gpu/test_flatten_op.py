@@ -23,21 +23,21 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetFlatten(nn.Cell):
+class NetFlatten(nn.Module):
     def __init__(self):
         super(NetFlatten, self).__init__()
         self.flatten = P.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         return self.flatten(x)
 
 
-class NetAllFlatten(nn.Cell):
+class NetAllFlatten(nn.Module):
     def __init__(self):
         super(NetAllFlatten, self).__init__()
         self.flatten = P.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         loop_count = 4
         while loop_count > 0:
             x = self.flatten(x)
@@ -45,13 +45,13 @@ class NetAllFlatten(nn.Cell):
         return x
 
 
-class NetFirstFlatten(nn.Cell):
+class NetFirstFlatten(nn.Module):
     def __init__(self):
         super(NetFirstFlatten, self).__init__()
         self.flatten = P.Flatten()
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         loop_count = 4
         while loop_count > 0:
             x = self.flatten(x)
@@ -60,13 +60,13 @@ class NetFirstFlatten(nn.Cell):
         return x
 
 
-class NetLastFlatten(nn.Cell):
+class NetLastFlatten(nn.Module):
     def __init__(self):
         super(NetLastFlatten, self).__init__()
         self.flatten = P.Flatten()
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         loop_count = 4
         x = self.relu(x)
         while loop_count > 0:
@@ -141,4 +141,3 @@ def test_last_flatten():
     flatten = NetLastFlatten()
     output = flatten(x)
     assert (output.asnumpy() == expect).all()
-    

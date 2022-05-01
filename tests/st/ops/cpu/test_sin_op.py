@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetSin(nn.Cell):
+class NetSin(nn.Module):
     def __init__(self):
         super(NetSin, self).__init__()
         self.sin = P.Sin()
 
-    def construct(self, x):
+    def call(self, x):
         return self.sin(x)
 
 

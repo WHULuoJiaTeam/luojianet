@@ -26,27 +26,27 @@ from luojianet_ms.ops.operations.comm_ops import _VirtualDataset
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super().__init__()
         self.virtual_dataset = _VirtualDataset()
@@ -54,13 +54,13 @@ class Net1(nn.Cell):
         self.matmul2 = P.MatMul().shard(strategy2)
         self.gelu = P.GeLU().shard(strategy3)
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         x, y, b = self.virtual_dataset(x, y, b)
         out = self.gelu(self.matmul1(x, y))
         out = self.matmul2(out, b)
         return out
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super().__init__()
         self.virtual_dataset = _VirtualDataset()
@@ -69,7 +69,7 @@ class Net2(nn.Cell):
         self.biasadd = P.BiasAdd().shard(strategy2)
         self.gelu = P.GeLU().shard(strategy3)
 
-    def construct(self, a, b, c):
+    def call(self, a, b, c):
         x, y, b = self.get_next()
         x, y, b = self.virtual_dataset(x, y, b)
         out = self.gelu(self.matmul1(x, y))

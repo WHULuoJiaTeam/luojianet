@@ -26,7 +26,7 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 
 
-class UnstackNet(nn.Cell):
+class UnstackNet(nn.Module):
     def __init__(self, nptype):
         super(UnstackNet, self).__init__()
 
@@ -50,7 +50,7 @@ class UnstackNet(nn.Cell):
         self.x1 = Parameter(initializer(Tensor(self.data_np), [2, 2, 2, 2, 2]), name='x1')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.unstack(self.x1)
 
 

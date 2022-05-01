@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Slice(nn.Cell):
+class Slice(nn.Module):
     def __init__(self):
         super(Slice, self).__init__()
 
@@ -36,7 +36,7 @@ class Slice(nn.Cell):
                 np.float32)), [3, 2, 3]), name='x1')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.cat(self.x1, (0, 1, 0), (2, 1, 3))
 
 

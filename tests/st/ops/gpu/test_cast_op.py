@@ -20,25 +20,25 @@ import pytest
 import luojianet_ms.common.dtype as mstype
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, type0, type1):
         super(Net, self).__init__()
         self.Cast = P.Cast()
         self.type0 = type0
         self.type1 = type1
 
-    def construct(self, x0, x1):
+    def call(self, x0, x1):
         output = (self.Cast(x0, self.type0),
                   self.Cast(x1, self.type1))
         return output
 
 
-class NetDynamic(Cell):
+class NetDynamic(Module):
     def __init__(self, type0, type1):
         super(NetDynamic, self).__init__()
         self.conv = inner.GpuConvertToDynamicShape()
@@ -46,7 +46,7 @@ class NetDynamic(Cell):
         self.type0 = type0
         self.type1 = type1
 
-    def construct(self, x0, x1):
+    def call(self, x0, x1):
         x0_conv = self.conv(x0)
         x1_conv = self.conv(x1)
         output = (self.Cast(x0_conv, self.type0),

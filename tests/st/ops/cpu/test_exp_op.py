@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetExp(nn.Cell):
+class NetExp(nn.Module):
     def __init__(self):
         super(NetExp, self).__init__()
         self.exp = P.Exp()
 
-    def construct(self, x):
+    def call(self, x):
         return self.exp(x)
 
 

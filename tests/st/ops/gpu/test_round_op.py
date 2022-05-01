@@ -22,12 +22,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor, ops
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.round = ops.Round()
 
-    def construct(self, x):
+    def call(self, x):
         return self.round(x)
 
 

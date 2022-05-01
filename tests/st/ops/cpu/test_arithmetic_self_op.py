@@ -24,57 +24,57 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class SquareNet(nn.Cell):
+class SquareNet(nn.Module):
     def __init__(self):
         super(SquareNet, self).__init__()
         self.square = P.Square()
 
-    def construct(self, x):
+    def call(self, x):
         return self.square(x)
 
 
-class FloorNet(nn.Cell):
+class FloorNet(nn.Module):
     def __init__(self):
         super(FloorNet, self).__init__()
         self.floor = P.Floor()
 
-    def construct(self, x):
+    def call(self, x):
         return self.floor(x)
 
 
-class RoundNet(nn.Cell):
+class RoundNet(nn.Module):
     def __init__(self):
         super(RoundNet, self).__init__()
         self.round = P.Round()
 
-    def construct(self, x):
+    def call(self, x):
         return self.round(x)
 
 
-class ReciprocalNet(nn.Cell):
+class ReciprocalNet(nn.Module):
     def __init__(self):
         super(ReciprocalNet, self).__init__()
         self.reciprocal = P.Reciprocal()
 
-    def construct(self, x):
+    def call(self, x):
         return self.reciprocal(x)
 
 
-class RintNet(nn.Cell):
+class RintNet(nn.Module):
     def __init__(self):
         super(RintNet, self).__init__()
         self.rint = P.Rint()
 
-    def construct(self, x):
+    def call(self, x):
         return self.rint(x)
 
 
-class IdentityNet(nn.Cell):
+class IdentityNet(nn.Module):
     def __init__(self):
         super(IdentityNet, self).__init__()
         self.identity = P.Identity()
 
-    def construct(self, x):
+    def call(self, x):
         return self.identity(x)
 
 

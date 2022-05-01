@@ -28,12 +28,12 @@ import luojianet_ms.ops as ops
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetArgmax(nn.Cell):
+class NetArgmax(nn.Module):
     def __init__(self, axis=0):
         super(NetArgmax, self).__init__()
         self.argmax = ops.Argmax(axis=axis, output_type=mstype.int32)
 
-    def construct(self, x):
+    def call(self, x):
         return self.argmax(x)
 
 

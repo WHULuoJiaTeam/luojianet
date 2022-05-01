@@ -3,7 +3,7 @@ import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
 from luojianet_ms.common.parameter import Parameter
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
@@ -14,7 +14,7 @@ context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if_by_if_basic():
-    class SubNet(Cell):
+    class SubNet(Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -24,7 +24,7 @@ def test_if_by_if_basic():
             b = np.full((1,), 4, dtype=np.float32)
             self.b = Parameter(Tensor(b), name='b')
 
-        def construct(self, x):
+        def call(self, x):
             if self.a > self.b:
                 x = self.mul(x, 1)
                 while self.b < 6:
@@ -32,7 +32,7 @@ def test_if_by_if_basic():
                     self.b += 1
             return x
 
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.subnet = SubNet()
@@ -50,7 +50,7 @@ def test_if_by_if_basic():
                 x = self.add(x, 0)
             return x
 
-        def construct(self, x):
+        def call(self, x):
             if self.a > self.b:
                 x = self.subnet(x)
             else:

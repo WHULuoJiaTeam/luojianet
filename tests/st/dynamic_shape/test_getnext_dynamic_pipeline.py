@@ -51,12 +51,12 @@ def dataset_generator():
             np.ones((32,), dtype=np.float32),
             np.ones((32, i, 8), dtype=np.float32), np.ones((32, 8, 8), dtype=np.float32))
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.relu = P.ReLU()
 
-    def construct(self, x1, x2, x3, x4, x5):
+    def call(self, x1, x2, x3, x4, x5):
         x1 = self.relu(x1)
         x1 = self.relu(x1)
 

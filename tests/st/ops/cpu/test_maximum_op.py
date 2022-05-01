@@ -19,26 +19,26 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
-class ConstScalarAndTensorMaximum(Cell):
+class ConstScalarAndTensorMaximum(Module):
     def __init__(self):
         super(ConstScalarAndTensorMaximum, self).__init__()
         self.max = P.Maximum()
         self.x = 20
 
-    def construct(self, y):
+    def call(self, y):
         return self.max(self.x, y)
 
 
-class TwoTensorsMaximum(Cell):
+class TwoTensorsMaximum(Module):
     def __init__(self):
         super(TwoTensorsMaximum, self).__init__()
         self.max = P.Maximum()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.max(x, y)
 
 

@@ -27,14 +27,14 @@ from luojianet_ms.common.parameter import Parameter
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class ForwardNet(nn.Cell):
+class ForwardNet(nn.Module):
     def __init__(self, max_cycles=10):
         super(ForwardNet, self).__init__()
         self.max_cycles = max_cycles
         self.zero = Tensor(np.array(0), mstype.int32)
         self.weight = Parameter(Tensor(np.array(0), mstype.int32))
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.zero
         for _ in range(0, self.max_cycles):
             while x < y:
@@ -47,13 +47,13 @@ class ForwardNet(nn.Cell):
         return out
 
 
-class BackwardNet(nn.Cell):
+class BackwardNet(nn.Module):
     def __init__(self, net):
         super(BackwardNet, self).__init__(auto_prefix=False)
         self.forward_net = net
         self.grad = C.GradOperation(get_all=True)
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         grads = self.grad(self.forward_net)(*inputs)
         return grads
 
@@ -91,14 +91,14 @@ def test_backward():
     assert graph_mode_grads == (Tensor(np.array(6), mstype.int32), Tensor(np.array(3), mstype.int32))
 
 
-class ForwardNetNoAssign(nn.Cell):
+class ForwardNetNoAssign(nn.Module):
     def __init__(self, max_cycles=10):
         super(ForwardNetNoAssign, self).__init__()
         self.max_cycles = max_cycles
         self.zero = Tensor(np.array(0), mstype.int32)
         self.weight = Parameter(Tensor(np.array(0), mstype.int32))
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.zero
         for _ in range(0, self.max_cycles):
             while x < y:
@@ -111,13 +111,13 @@ class ForwardNetNoAssign(nn.Cell):
         return out, self.weight
 
 
-class BackwardNetNoAssign(nn.Cell):
+class BackwardNetNoAssign(nn.Module):
     def __init__(self, net):
         super(BackwardNetNoAssign, self).__init__(auto_prefix=False)
         self.forward_net = net
         self.grad = C.GradOperation(get_all=True)
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         grads = self.grad(self.forward_net)(*inputs)
         return grads
 

@@ -24,41 +24,41 @@ from luojianet_ms.ops import functional as F
 import luojianet_ms.context as context
 
 
-class TensorIntAutoCast(nn.Cell):
+class TensorIntAutoCast(nn.Module):
     def __init__(self,):
         super(TensorIntAutoCast, self).__init__()
         self.i = 2
 
-    def construct(self, t):
+    def call(self, t):
         z = F.tensor_mul(t, self.i)
         return z
 
 
-class TensorFPAutoCast(nn.Cell):
+class TensorFPAutoCast(nn.Module):
     def __init__(self,):
         super(TensorFPAutoCast, self).__init__()
         self.f = 1.2
 
-    def construct(self, t):
+    def call(self, t):
         z = F.tensor_mul(t, self.f)
         return z
 
 
-class TensorBoolAutoCast(nn.Cell):
+class TensorBoolAutoCast(nn.Module):
     def __init__(self,):
         super(TensorBoolAutoCast, self).__init__()
         self.f = True
 
-    def construct(self, t):
+    def call(self, t):
         z = F.tensor_mul(t, self.f)
         return z
 
 
-class TensorAutoCast(nn.Cell):
+class TensorAutoCast(nn.Module):
     def __init__(self,):
         super(TensorAutoCast, self).__init__()
 
-    def construct(self, t1, t2):
+    def call(self, t1, t2):
         z = F.tensor_mul(t1, t2)
         return z
 

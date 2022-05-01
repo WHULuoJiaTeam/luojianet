@@ -24,39 +24,39 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class RCWM_count_in(nn.Cell):
+class RCWM_count_in(nn.Module):
     def __init__(self):
         super(RCWM_count_in, self).__init__()
         self.RCWM_count_in = P.RandomChoiceWithMask(count=4, seed=1)
 
-    def construct(self, x):
+    def call(self, x):
         return self.RCWM_count_in(x)
 
 
-class RCWM_count_out(nn.Cell):
+class RCWM_count_out(nn.Module):
     def __init__(self):
         super(RCWM_count_out, self).__init__()
         self.RCWM_count_out = P.RandomChoiceWithMask(count=10, seed=1)
 
-    def construct(self, x):
+    def call(self, x):
         return self.RCWM_count_out(x)
 
 
-class RCWM_3D(nn.Cell):
+class RCWM_3D(nn.Module):
     def __init__(self):
         super(RCWM_3D, self).__init__()
         self.RCWM_3D = P.RandomChoiceWithMask(count=10, seed=1)
 
-    def construct(self, x):
+    def call(self, x):
         return self.RCWM_3D(x)
 
 
-class RCWM_1D(nn.Cell):
+class RCWM_1D(nn.Module):
     def __init__(self):
         super(RCWM_1D, self).__init__()
         self.RCWM_1D = P.RandomChoiceWithMask(count=10, seed=9)
 
-    def construct(self, x):
+    def call(self, x):
         return self.RCWM_1D(x)
 
 

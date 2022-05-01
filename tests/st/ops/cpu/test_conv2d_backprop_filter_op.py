@@ -28,7 +28,7 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net4(nn.Cell):
+class Net4(nn.Module):
     def __init__(self):
         super(Net4, self).__init__()
         out_channel = 4
@@ -58,7 +58,7 @@ class Net4(nn.Cell):
             [-3, -2, -3, -16]]]]).astype(np.float32)), [1, 1, 4, 4]), name='y')
         self.get_shape = P.Shape()
 
-    def construct(self):
+    def call(self):
         return self.conv_filter(self.out, self.x, self.get_shape(self.w))
 
 

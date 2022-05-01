@@ -46,7 +46,7 @@ def cum_sum(nptype):
     x6 = np.random.rand(1, 1, 1, 1).astype(nptype)
     axis6 = 0
 
-    class CumSum(nn.Cell):
+    class CumSum(nn.Module):
         def __init__(self, nptype):
             super(CumSum, self).__init__()
 
@@ -72,7 +72,7 @@ def cum_sum(nptype):
             self.axis6 = axis6
 
         @ms_function
-        def construct(self):
+        def call(self):
             return (P.CumSum()(self.x0, self.axis0),
                     P.CumSum()(self.x1, self.axis1),
                     P.CumSum()(self.x2, self.axis2),

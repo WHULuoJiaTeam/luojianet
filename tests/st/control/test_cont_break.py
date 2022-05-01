@@ -18,7 +18,7 @@ import numpy as np
 import pytest
 
 from luojianet_ms import Tensor, Model, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 
 def run_test(netclass, count, dev):
@@ -28,13 +28,13 @@ def run_test(netclass, count, dev):
     for _ in range(count):
         input_np = np.random.randn(2, 3).astype(np.float32)
         input_ms = Tensor(input_np)
-        output_np = net.construct(input_np)  # run python
+        output_np = net.call(input_np)  # run python
         output_ms = model.predict(input_ms)  # run graph
         np.testing.assert_array_almost_equal(output_np, output_ms.asnumpy(), decimal=3)
 
 
-class ForLoopWithBreak(Cell):
-    def construct(self, x):
+class ForLoopWithBreak(Module):
+    def call(self, x):
         for i in range(8):
             if i > 5:
                 x *= 3
@@ -43,8 +43,8 @@ class ForLoopWithBreak(Cell):
         return x
 
 
-class ForLoopWithContinue(Cell):
-    def construct(self, x):
+class ForLoopWithContinue(Module):
+    def call(self, x):
         for i in range(8):
             if i > 5:
                 x *= 3
@@ -53,8 +53,8 @@ class ForLoopWithContinue(Cell):
         return x
 
 
-class ForLoopWithContBreak(Cell):
-    def construct(self, x):
+class ForLoopWithContBreak(Module):
+    def call(self, x):
         for i in range(8):
             if i < 3:
                 i *= 2
@@ -66,8 +66,8 @@ class ForLoopWithContBreak(Cell):
         return x
 
 
-class ForNestedLoopWithBreak(Cell):
-    def construct(self, x):
+class ForNestedLoopWithBreak(Module):
+    def call(self, x):
         for _ in range(3):
             for j in range(5):
                 if j > 3:
@@ -77,8 +77,8 @@ class ForNestedLoopWithBreak(Cell):
         return x
 
 
-class WhileWithBreak(Cell):
-    def construct(self, x):
+class WhileWithBreak(Module):
+    def call(self, x):
         i = 0
         while i < 5:
             if i > 3:
@@ -89,8 +89,8 @@ class WhileWithBreak(Cell):
         return x
 
 
-class WhileWithContinue(Cell):
-    def construct(self, x):
+class WhileWithContinue(Module):
+    def call(self, x):
         i = 0
         while i < 5:
             if i > 3:
@@ -102,8 +102,8 @@ class WhileWithContinue(Cell):
         return x
 
 
-class WhileForNested(Cell):
-    def construct(self, x):
+class WhileForNested(Module):
+    def call(self, x):
         i = 0
         while i < 5:
             if i > 3:
@@ -118,8 +118,8 @@ class WhileForNested(Cell):
         return x
 
 
-class PassBranch(Cell):
-    def construct(self, x):
+class PassBranch(Module):
+    def call(self, x):
         i = 0
         while i < 5:
             if i > 3:

@@ -35,7 +35,7 @@ def multisteplr(total_steps, milestone, base_lr=0.9, gamma=0.1, dtype=mstype.flo
     return Tensor(np.array(lr), dtype)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.weight = Parameter(Tensor(np.ones([64, 10]).astype(np.float32)), name="weight")
@@ -43,7 +43,7 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         return x
 

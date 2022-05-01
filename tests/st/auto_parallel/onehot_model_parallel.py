@@ -21,7 +21,7 @@ import luojianet_ms as ms
 import luojianet_ms.communication.management as distributedTool
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 device_num = 2
@@ -46,7 +46,7 @@ def teardown_module():
     distributedTool.release()
 
 
-class Onehot(Cell):
+class Onehot(Module):
     def __init__(self, axis=-1, depth=1, on_value=1.0, off_value=0.0, strategy=None):
         super(Onehot, self).__init__()
         trans_stra = None
@@ -60,7 +60,7 @@ class Onehot(Cell):
         self.sub = P.Sub().shard(strategy=((1, 1), (1, 1)))
         self.axis = axis
 
-    def construct(self, input_, indices):
+    def call(self, input_, indices):
         x = self.onehot(indices, self.depth, self.on_value, self.off_value)
         x = self.transpose(x, (1, 0))
         x = self.sub(input_, x)

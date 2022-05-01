@@ -24,33 +24,33 @@ from luojianet_ms.ops import composite as C
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class InnerInNet(nn.Cell):
+class InnerInNet(nn.Module):
     def __init__(self, init_data, const):
         super(InnerInNet, self).__init__()
         self.weight = Parameter(init_data, name="weight_s")
         self.t = init_data
         self.const = const
 
-    def construct(self, input_x):
+    def call(self, input_x):
         if self.const:
             return input_x * self.t
         return input_x * self.weight
 
 
-class InnerNet(nn.Cell):
+class InnerNet(nn.Module):
     def __init__(self, init_data, const):
         super(InnerNet, self).__init__()
         self.inner_in_net = InnerInNet(init_data, const)
         self.t = init_data
         self.const = const
 
-    def construct(self, input_x):
+    def call(self, input_x):
         if self.const:
             return self.inner_in_net.t / self.inner_in_net(input_x)
         return self.inner_in_net.weight / self.inner_in_net(input_x)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, init_data, const):
         super(Net, self).__init__()
         self.inner_net = InnerNet(init_data, const)
@@ -59,29 +59,29 @@ class Net(nn.Cell):
         self.const = const
         self.weight = Parameter(init_data, name="weight_s")
 
-    def construct(self, input_x, input_y):
+    def call(self, input_x, input_y):
         if self.const:
             return self.inner_net.t + self.inner_net(self.x) - self.y
         return self.inner_net.t + self.inner_net(input_x) - input_y
 
 
-class OuterMostNet(nn.Cell):
+class OuterMostNet(nn.Module):
     def __init__(self, init_data, const):
         super(OuterMostNet, self).__init__()
         self.net = Net(init_data, const)
 
-    def construct(self, input_x, input_y):
+    def call(self, input_x, input_y):
         return self.net.inner_net.inner_in_net.t
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super(GradNet, self).__init__()
         self.forward_net = net
         self.sens = Tensor(np.ones((2, 2), np.float32) * 5)
         self.grad_all = C.GradOperation(get_all=True)
 
-    def construct(self, input_x, input_y):
+    def call(self, input_x, input_y):
         return self.grad_all(self.forward_net)(input_x, input_y)
 
 

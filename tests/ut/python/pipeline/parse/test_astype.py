@@ -25,12 +25,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_astype():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.astype("float16")
 
     net = Net()
@@ -39,12 +39,12 @@ def test_astype():
 
 
 def test_astype_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.int64)
 
-        def construct(self):
+        def call(self):
             return self.value.astype(mstype.bool_)
 
     net = Net()
@@ -53,12 +53,12 @@ def test_astype_1():
 
 
 def test_astype_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float64)
 
-        def construct(self):
+        def call(self):
             return self.value.astype(mstype.uint64)
 
     net = Net()
@@ -67,12 +67,12 @@ def test_astype_2():
 
 
 def test_astype_error_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.astype("float88")
 
     net = Net()

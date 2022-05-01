@@ -46,12 +46,12 @@ def test_zero_dimension_with_zero_shape():
 
 
 def test_zero_dimension_with_operator():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.strided_slice = P.StridedSlice()
 
-        def construct(self, x):
+        def call(self, x):
             a = self.strided_slice(x, (2, 4, 4), (-1, 2, 1), (1, 1, 1))
             return a
 

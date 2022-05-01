@@ -24,21 +24,21 @@ import luojianet_ms.ops.operations as P
 from luojianet_ms import Tensor
 
 
-class Net_Pool(nn.Cell):
+class Net_Pool(nn.Module):
     def __init__(self):
         super(Net_Pool, self).__init__()
         self.maxpool_fun = nn.MaxPool2d(kernel_size=2, stride=2, pad_mode="VALID")
 
-    def construct(self, x):
+    def call(self, x):
         return self.maxpool_fun(x)
 
 
-class Net_Pool2(nn.Cell):
+class Net_Pool2(nn.Module):
     def __init__(self):
         super(Net_Pool2, self).__init__()
         self.maxpool_fun = nn.MaxPool2d(kernel_size=3, stride=2, pad_mode="SAME")
 
-    def construct(self, x):
+    def call(self, x):
         return self.maxpool_fun(x)
 
 

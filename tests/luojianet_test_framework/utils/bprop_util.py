@@ -19,11 +19,11 @@
 from luojianet_ms import context
 from luojianet_ms.common import ParameterTuple
 from luojianet_ms.common.api import ms_function
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops.composite.base import GradOperation
 
 
-class Bprop(Cell):
+class Bprop(Module):
     """
     The gradient wraper.
     """
@@ -41,7 +41,7 @@ class Bprop(Cell):
         if sens is not None:
             self.with_sens = True
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         # pylint: disable=no-else-return
         if self.wrt_params:
             if self.with_sens:
@@ -68,7 +68,7 @@ def bprop(func, *inputs, grads_wrt_outputs=None, wrt: list = None, params: list 
     Returns:
         Tuple, gradients of function.
     """
-    assert isinstance(func, Cell)
+    assert isinstance(func, Module)
     func.set_train()
 
     with_sens_param = False

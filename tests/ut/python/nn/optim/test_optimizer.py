@@ -42,7 +42,7 @@ class TestOptimizer():
     def test_construct(self):
         opt_2 = Optimizer(0.5, params)
         with pytest.raises(NotImplementedError):
-            opt_2.construct()
+            opt_2.call()
 
 
 class TestAdam():

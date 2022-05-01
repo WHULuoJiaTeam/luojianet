@@ -24,7 +24,7 @@ from luojianet_ms.common import dtype as mstype
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class NpuFloatNet(nn.Cell):
+class NpuFloatNet(nn.Module):
     """ NpuFloat definition, base on the related code in test_math_ops.py."""
 
     def __init__(self):
@@ -43,7 +43,7 @@ class NpuFloatNet(nn.Cell):
         self.sub = P.Sub()
         self.neg = P.Neg()
 
-    def construct(self, x):
+    def call(self, x):
         init = self.alloc_status()
         clear_status = self.clear_status(init)
         x = F.depend(x, clear_status)  # let x depend on clear_status

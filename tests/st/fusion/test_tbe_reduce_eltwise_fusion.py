@@ -25,14 +25,14 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.cast = P.Cast()
         self.relu = P.ReLU()
         self.biasaddgrad = G.BiasAddGrad()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.relu(x)
         x = self.relu(x)
         x = self.relu(x)

@@ -29,13 +29,13 @@ import luojianet_ms.context as context
 def test_gpu_convert_to_dyanamic_shape_confirm_dynamic():
     context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-    class AssertDynamicShapeNet(nn.Cell):
+    class AssertDynamicShapeNet(nn.Module):
         def __init__(self):
             super(AssertDynamicShapeNet, self).__init__()
             self.gpu_convert_to_dynamic_shape = inner.GpuConvertToDynamicShape()
             self.error_on_dynamic_shape_input = inner.ErrorOnDynamicShapeInput()
 
-        def construct(self, x):
+        def call(self, x):
             output = self.gpu_convert_to_dynamic_shape(x)
             self.error_on_dynamic_shape_input(output)
             return output
@@ -48,12 +48,12 @@ def test_gpu_convert_to_dyanamic_shape_confirm_dynamic():
     assert "Input is dynamically shaped" in str(info.value)
 
 def gpu_convert_to_dynamic_shape(x):
-    class GpuConvertToDynamicShapeNet(nn.Cell):
+    class GpuConvertToDynamicShapeNet(nn.Module):
         def __init__(self):
             super(GpuConvertToDynamicShapeNet, self).__init__()
             self.gpu_convert_to_dynamic_shape = inner.GpuConvertToDynamicShape()
 
-        def construct(self, x):
+        def call(self, x):
             return self.gpu_convert_to_dynamic_shape(x)
 
     gpu_convert_to_dynamic_shape_net = GpuConvertToDynamicShapeNet()

@@ -39,18 +39,18 @@ def _test_context():
     context.reset_auto_parallel_context()
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         return grad_all(self.network)(x)
 
 def test_bprop_with_sparse_feature_allreduce(test_context):
     context.set_auto_parallel_context(device_num=8, global_rank=0, parallel_mode="hybrid_parallel")
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, axis=0, shape=None):
             super(Net, self).__init__()
             if shape is None:
@@ -60,7 +60,7 @@ def test_bprop_with_sparse_feature_allreduce(test_context):
             self.index = Tensor(np.ones(shape), dtype=ms.int32)
             self.axis = axis
 
-        def construct(self, x):
+        def call(self, x):
             out = self.all_reduce(x)
             out = self.gatherv2(out, self.index, self.axis)
 
@@ -76,7 +76,7 @@ def test_bprop_with_sparse_feature_allreduce(test_context):
 def test_bprop_with_sparse_feature_mirror(test_context):
     context.set_auto_parallel_context(device_num=8, global_rank=0, parallel_mode="semi_auto_parallel")
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, shape=None):
             super(Net, self).__init__()
             if shape is None:
@@ -85,7 +85,7 @@ def test_bprop_with_sparse_feature_mirror(test_context):
             self.embeddinglookup = nn.EmbeddingLookup(64, 64, param_init='ones')
             self.embeddinglookup.embeddinglookup.shard(((1, 1), (8, 1)))
 
-        def construct(self, x, b):
+        def call(self, x, b):
             out = self.embeddinglookup(self.index)
 
             return out
@@ -106,7 +106,7 @@ def test_bprop_with_sparse_feature_mirror(test_context):
 def test_bprop_with_sparse_feature_dataparallel(test_context):
     context.set_auto_parallel_context(device_num=8, global_rank=0, parallel_mode="data_parallel")
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, axis=0, shape=None):
             super(Net, self).__init__()
             if shape is None:
@@ -117,7 +117,7 @@ def test_bprop_with_sparse_feature_dataparallel(test_context):
             self.axis = axis
             self.gatherv2 = P.SparseGatherV2()
 
-        def construct(self, x, b):
+        def call(self, x, b):
             out = self.gatherv2(self.weight, self.index, self.axis)
 
             return out

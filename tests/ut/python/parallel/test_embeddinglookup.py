@@ -27,25 +27,25 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return grad_all(self.network)(x, y)
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, shape, offset, strategy1=None, strategy2=None, target="Device"):
         super().__init__()
         self.index = Tensor(np.ones(shape), dtype=ms.int32)
@@ -53,7 +53,7 @@ class Net(nn.Cell):
         self.elu = P.EmbeddingLookup().shard(strategy1).add_prim_attr("primitive_target", target)
         self.mm = P.BatchMatMul().shard(strategy2)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.elu(x, self.index, self.offset)
         out = self.mm(out, y)
         return out

@@ -27,7 +27,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetEqualCount(nn.Cell):
+class NetEqualCount(nn.Module):
     def __init__(self):
         super(NetEqualCount, self).__init__()
         self.equalcount = P.EqualCount()
@@ -36,7 +36,7 @@ class NetEqualCount(nn.Cell):
         self.x = Parameter(initializer(x, x.shape), name='x')
         self.y = Parameter(initializer(y, y.shape), name='y')
 
-    def construct(self):
+    def call(self):
         return self.equalcount(self.x, self.y)
 
 

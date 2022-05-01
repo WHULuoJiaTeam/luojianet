@@ -39,22 +39,22 @@ def test_maskedselect():
     assert (y.asnumpy() == expect).all()
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, x, mask, grad):
+    def call(self, x, mask, grad):
         gout = self.grad(self.network)(x, mask, grad)
         return gout
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.op = P.MaskedSelect()
 
-    def construct(self, x, mask):
+    def call(self, x, mask):
         return self.op(x, mask)
 
 def masked_select_grad():

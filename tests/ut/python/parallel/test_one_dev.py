@@ -56,14 +56,14 @@ class Dataset(MindData):
         self.index = 0
 
 
-class AllToAllNet(nn.Cell):
+class AllToAllNet(nn.Module):
     def __init__(self):
         super(AllToAllNet, self).__init__()
         self.matmul = P.MatMul()
         self.matmul_weight = Parameter(Tensor(np.ones([128, 32]), dtype=ms.float32), name="weight")
         self.transpose1 = P.Transpose()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.matmul(x, self.matmul_weight)
         x = self.transpose1(x, (1, 0))
         return x
@@ -85,7 +85,7 @@ class SoftmaxCrossEntropyWithLogits(LossBase):
         if self.is_cpugpu:
             self.sparse_softmax_cross_entropy = P.SparseSoftmaxCrossEntropyWithLogits()
 
-    def construct(self, logits, labels):
+    def call(self, logits, labels):
         if self.is_cpugpu and self.sparse and self.reduction == 'mean':
             x = self.sparse_softmax_cross_entropy(logits, labels)
             return x

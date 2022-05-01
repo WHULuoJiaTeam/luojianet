@@ -53,7 +53,7 @@ log.setLevel(level=logging.ERROR)
 context.set_context(mode=context.GRAPH_MODE)
 
 # Test case: use the parse obj interface use default parameter
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self, dim):
@@ -61,7 +61,7 @@ class Net(nn.Cell):
         self.softmax1 = nn.Softmax(dim)
         self.softmax2 = nn.Softmax(dim + 1)
 
-    def construct(self, input_data, input1=1+2+3+4):
+    def call(self, input_data, input1=1+2+3+4):
         return self.softmax1(input_data)
 
 
@@ -83,13 +83,13 @@ def test_parse_defalut_parameter_case2():
 
 
 # Test case: use the variable parameter for parse object
-class Net1(nn.Cell):
+class Net1(nn.Module):
     """ Net1 definition """
 
     def __init__(self):
         super(Net1, self).__init__()
 
-    def construct(self, *args):
+    def call(self, *args):
         x = args[0]
         return x
 
@@ -132,7 +132,7 @@ def test_global_flag():
     log.debug("finished test_global_flag, ret = %r", res)
 
 
-class NetWithNDarray(nn.Cell):
+class NetWithNDarray(nn.Module):
     """ NetWithNDarray definition """
 
     def __init__(self, dim):
@@ -140,7 +140,7 @@ class NetWithNDarray(nn.Cell):
         self.softmax = nn.Softmax(dim)
         self.x = ms.Tensor(np.ones(shape=(1)).astype(np.float32))
 
-    def construct(self, input_data):
+    def call(self, input_data):
         return self.softmax(input_data) * self.x
 
 
@@ -177,11 +177,11 @@ def test_bprop_with_wrong_output_num(enable_check_bprop):
 
         return bprop
 
-    class BpropWithWrongOutputNumCell(nn.Cell):
+    class BpropWithWrongOutputNumCell(nn.Module):
         def __init__(self):
             super(BpropWithWrongOutputNumCell, self).__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return BpropWithWrongOutputNum()(x, y)
 
     with pytest.raises(ValueError):
@@ -212,11 +212,11 @@ def test_bprop_with_wrong_output_type(enable_check_bprop):
 
         return bprop
 
-    class BpropWithWrongOutputTypeCell(nn.Cell):
+    class BpropWithWrongOutputTypeCell(nn.Module):
         def __init__(self):
             super(BpropWithWrongOutputTypeCell, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             return BpropWithWrongOutputType()(x)
 
     with pytest.raises(TypeError):
@@ -248,11 +248,11 @@ def test_bprop_with_wrong_output_shape(enable_check_bprop):
 
         return bprop
 
-    class BpropWithWrongOutputShapeCell(nn.Cell):
+    class BpropWithWrongOutputShapeCell(nn.Module):
         def __init__(self):
             super(BpropWithWrongOutputShapeCell, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             return BpropWithWrongOutputShape()(x)
 
     with pytest.raises(ValueError):
@@ -260,7 +260,7 @@ def test_bprop_with_wrong_output_shape(enable_check_bprop):
         net.set_grad()
         grad_all(net)(Tensor(np.ones([64, 10]).astype(np.int32)))
 
-class AssignWhenInsertGrad(nn.Cell):
+class AssignWhenInsertGrad(nn.Module):
     """ NetWithNDarray definition """
 
     def __init__(self):
@@ -275,7 +275,7 @@ class AssignWhenInsertGrad(nn.Cell):
         self.cov_step = self.cov_step + self.freq
         return dout
 
-    def construct(self, x):
+    def call(self, x):
         self.gather(self.damping, self.cov_step, 0)
         out = P.ReLU()(x)
         out = self.getG(out)
@@ -283,12 +283,12 @@ class AssignWhenInsertGrad(nn.Cell):
 
 grad_all = C.GradOperation(get_all=True)
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super(GradNet, self).__init__()
         self.net = net
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         out = self.net(*inputs)
         return out, grad_all(self.net)(*inputs)
 
@@ -299,14 +299,14 @@ def test_assign_in_insert_grad():
     net_back = GradNet(net)
     net_back(ms.Tensor(input_data))
 
-class Assign(nn.Cell):
+class Assign(nn.Module):
     """ NetWithNDarray definition """
 
     def __init__(self):
         super(Assign, self).__init__()
         self.cov_step = ms.Parameter(0.0, name="cov_step", requires_grad=False)
 
-    def construct(self, x):
+    def call(self, x):
         self.cov_step = self.cov_step + x
         return self.cov_step
 
@@ -318,14 +318,14 @@ def test_assign(enable_check_bprop):
     net_back = GradNet(net)
     net_back(input_data)
 
-class AssignCheck(nn.Cell):
+class AssignCheck(nn.Module):
     """ NetWithNDarray definition """
 
     def __init__(self):
         super(AssignCheck, self).__init__()
         self.cov_step = ms.Parameter(0.0, name="cov_step", requires_grad=False)
 
-    def construct(self, x):
+    def call(self, x):
         self.cov_step = x
         return self.cov_step
 

@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, var, accum, lr, l1, l2):
         super(Net, self).__init__()
         self.sparse_apply_proximal_adagrad = P.SparseApplyProximalAdagrad()
@@ -34,7 +34,7 @@ class Net(nn.Cell):
         self.l1 = l1
         self.l2 = l2
 
-    def construct(self, grad, indices):
+    def call(self, grad, indices):
         out = self.sparse_apply_proximal_adagrad(self.var, self.accum, self.lr, self.l1, self.l2, grad, indices)
         return out
 

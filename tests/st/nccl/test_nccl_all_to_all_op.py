@@ -30,12 +30,12 @@ size = get_group_size()
 x = np.asarray([1, 1, 1, 1, 1, 1, 1, 1]).astype(np.float32) * (rank + 1)
 x1 = np.asarray([1, 2, 3, 4, 5, 6, 7, 8]).astype(np.float32)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.alltoall = P.comm_ops.AlltoAll(split_count=8, split_dim=0, concat_dim=0)
 
-    def construct(self, inputs):
+    def call(self, inputs):
         return self.alltoall(inputs)
 
 

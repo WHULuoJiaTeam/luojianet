@@ -25,25 +25,25 @@ from luojianet_ms.common.tensor import Tensor
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class ChooseOneParam(nn.Cell):
+class ChooseOneParam(nn.Module):
     def __init__(self, flag):
         super(ChooseOneParam, self).__init__()
         self.flag = flag
 
-    def construct(self, x, y):
+    def call(self, x, y):
         if self.flag == 0:
             return x
         return y
 
 
-class ChooseOneConst(nn.Cell):
+class ChooseOneConst(nn.Module):
     def __init__(self, flag, x, y):
         super(ChooseOneConst, self).__init__()
         self.flag = flag
         self.x = x
         self.y = y
 
-    def construct(self):
+    def call(self):
         if self.flag == 0:
             return self.x
         return self.y

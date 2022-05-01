@@ -88,7 +88,7 @@ def _fc(in_channel, out_channel, use_se=False):
     return nn.Dense(in_channel, out_channel, has_bias=True, weight_init=weight, bias_init=0)
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     """
     ResNet V1 residual block definition.
 
@@ -156,7 +156,7 @@ class ResidualBlock(nn.Cell):
                                                                      use_se=self.use_se), _bn(out_channel)])
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -189,12 +189,12 @@ class ResidualBlock(nn.Cell):
         return out
 
 
-class ResNet(nn.Cell):
+class ResNet(nn.Module):
     """
     ResNet architecture.
 
     Args:
-        block (Cell): Block for network.
+        block (Module): Block for network.
         layer_nums (list): Numbers of block in different layers.
         in_channels (list): Input channel in each layer.
         out_channels (list): Output channel in each layer.
@@ -278,7 +278,7 @@ class ResNet(nn.Cell):
         Make stage network of ResNet.
 
         Args:
-            block (Cell): Resnet block.
+            block (Module): Resnet block.
             layer_num (int): Layer number.
             in_channel (int): Input channel.
             out_channel (int): Output channel.
@@ -306,7 +306,7 @@ class ResNet(nn.Cell):
                 layers.append(resnet_block)
         return nn.SequentialCell(layers)
 
-    def construct(self, x):
+    def call(self, x):
         if self.use_se:
             x = self.conv1_0(x)
             x = self.bn1_0(x)
@@ -341,7 +341,7 @@ def resnet50(class_num=10):
         class_num (int): Class number.
 
     Returns:
-        Cell, cell instance of ResNet50 neural network.
+        Module, cell instance of ResNet50 neural network.
 
     Examples:
         >>> net = resnet50(10)
@@ -361,7 +361,7 @@ def se_resnet50(class_num=1001):
         class_num (int): Class number.
 
     Returns:
-        Cell, cell instance of SE-ResNet50 neural network.
+        Module, cell instance of SE-ResNet50 neural network.
 
     Examples:
         >>> net = se-resnet50(1001)
@@ -382,7 +382,7 @@ def resnet101(class_num=1001):
         class_num (int): Class number.
 
     Returns:
-        Cell, cell instance of ResNet101 neural network.
+        Module, cell instance of ResNet101 neural network.
 
     Examples:
         >>> net = resnet101(1001)

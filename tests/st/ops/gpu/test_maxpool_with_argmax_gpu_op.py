@@ -19,21 +19,21 @@ import pytest
 
 import luojianet_ms.ops.operations as P
 from luojianet_ms import context, Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import composite as C
 
 
-class MaxPoolWithArgMax_Net(Cell):
+class MaxPoolWithArgMax_Net(Module):
     def __init__(self, padding, ksize, strides):
         super(MaxPoolWithArgMax_Net, self).__init__()
         self.maxpool_with_argmax = P.MaxPoolWithArgmax(pad_mode=padding, kernel_size=ksize, strides=strides)
 
-    def construct(self, input_data):
+    def call(self, input_data):
         output, argmax = self.maxpool_with_argmax(input_data)
         return output, argmax
 
 
-class Grad(Cell):
+class Grad(Module):
     def __init__(self, network, argmax):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
@@ -41,7 +41,7 @@ class Grad(Cell):
         self.sens = (Tensor(np.ones(argmax.shape).astype(np.float32)),
                      Tensor(np.ones(argmax.shape).astype(np.int32)))
 
-    def construct(self, input_data):
+    def call(self, input_data):
         gout = self.grad(self.network)(input_data, self.sens)
         return gout
 

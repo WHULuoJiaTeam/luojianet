@@ -28,23 +28,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -56,14 +56,14 @@ def compile_net(net, x, y, b):
 
 # it has not redistribution
 def test_tensoradd_reshape_matmul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.add = P.Add().shard(strategy1)
             self.reshape = P.Reshape()
             self.matmul = P.MatMul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.add(x, y)
             out = self.reshape(out, (256, 16))
             out = self.matmul(out, b)
@@ -83,13 +83,13 @@ def test_tensoradd_reshape_matmul():
 
 
 def test_two_matmul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
             self.matmul2 = P.MatMul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul1(x, y)
             out = self.matmul2(out, b)
             return out

@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class EqualCount(nn.Cell):
+class EqualCount(nn.Module):
     def __init__(self):
         super(EqualCount, self).__init__()
         self.op = P.EqualCount()
 
-    def construct(self, *inp):
+    def call(self, *inp):
         return self.op(*inp)
 
 def get_output(*inp, enable_graph_kernel=False):

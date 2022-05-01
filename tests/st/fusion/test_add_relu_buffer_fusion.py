@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_id=5, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.softmax = P.Softmax(axis=1)
@@ -33,7 +33,7 @@ class Net(nn.Cell):
         self.relu = P.ReLU()
         self.reduce_mean = P.ReduceMean()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.cast(x, mstype.float16)
         y = self.cast(y, mstype.float16)
         x = self.add(x, y)

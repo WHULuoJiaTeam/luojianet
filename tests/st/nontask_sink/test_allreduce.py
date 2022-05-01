@@ -29,7 +29,7 @@ os.environ['GRAPH_OP_RUN'] = str(1)
 os.environ['HCCL_WHITELIST_DISABLE'] = str(1)
 init()
 
-class AllReduceNet(nn.Cell):
+class AllReduceNet(nn.Module):
     def __init__(self):
         super(AllReduceNet, self).__init__()
         self.mul = P.Mul()
@@ -39,7 +39,7 @@ class AllReduceNet(nn.Cell):
         self.y2 = Tensor(np.array([[-16, -16, -16, -16], [-16, -16, -16, -16], \
                                    [-16, -16, -16, -16]])).astype(np.float32)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.mul(x, 2)
         z = self.add(x, self.y1)
         z = self.all_reduce(z)

@@ -49,7 +49,7 @@ def make_fake_data():
     return data, label
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     """
     build net with loss
     """
@@ -58,13 +58,13 @@ class NetWithLoss(nn.Cell):
         self.network = network
         self.loss = nn.MSELoss(reduction='sum')
 
-    def construct(self, x, label):
+    def call(self, x, label):
         out = self.network(x)
         loss = self.loss(out, label)
         return loss
 
 
-class FakeNet(nn.Cell):
+class FakeNet(nn.Module):
     """
     build fake net
     """
@@ -75,7 +75,7 @@ class FakeNet(nn.Cell):
         self.relu = nn.ReLU()
         self.reducemean = P.ReduceMean()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.relu(self.fc1(x))
         x = self.fc2(x)
         return x

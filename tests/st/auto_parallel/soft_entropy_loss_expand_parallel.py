@@ -24,7 +24,7 @@ from luojianet_ms import context
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn.optim.momentum import Momentum
 from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
@@ -133,7 +133,7 @@ class ModelCallback(Callback):
         self.loss_list.append(result.asnumpy().mean())
 
 
-class SoftmaxCrossEntropyExpand(Cell):
+class SoftmaxCrossEntropyExpand(Module):
     def __init__(self, sparse=False, stra_list=None):
         super(SoftmaxCrossEntropyExpand, self).__init__()
         if stra_list is None:
@@ -156,7 +156,7 @@ class SoftmaxCrossEntropyExpand(Cell):
         self.reduce_max = P.ReduceMax(keep_dims=True).shard(strategy=stra_list[9])
         self.sub = P.Sub().shard(strategy=stra_list[10])
 
-    def construct(self, logit, label):
+    def call(self, logit, label):
         logit_max = self.reduce_max(logit, -1)
         exp = self.exp(self.sub(logit, logit_max))
         exp_sum = self.reduce_sum(exp, -1)
@@ -170,7 +170,7 @@ class SoftmaxCrossEntropyExpand(Cell):
         return loss
 
 
-class MatmulNet(Cell):
+class MatmulNet(Module):
     def __init__(self, matmul_stra=None, loss_stra_list=None):
         super(MatmulNet, self).__init__()
         if loss_stra_list is None:
@@ -179,7 +179,7 @@ class MatmulNet(Cell):
         self.loss = SoftmaxCrossEntropyExpand(sparse=True, stra_list=loss_stra_list)
         self.weight = Parameter(Tensor(np.ones(MatmulParamShape), dtype=ms.float32), name="weight")
 
-    def construct(self, x, label):
+    def call(self, x, label):
         loss_input = self.matmul(x, self.weight)
         out = self.loss(loss_input, label)
         return out

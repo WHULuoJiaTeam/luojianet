@@ -26,12 +26,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_view():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]])
 
-        def construct(self):
+        def call(self):
             return self.value.view(-1)
 
     net = Net()
@@ -39,12 +39,12 @@ def test_view():
 
 
 def test_view_initializer():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = init.initializer('normal', [2, 3], ms.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.view(-1)
 
     net = Net()
@@ -52,12 +52,12 @@ def test_view_initializer():
 
 
 def test_view_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]])
 
-        def construct(self):
+        def call(self):
             return self.value.view((3, 2))
 
     net = Net()
@@ -65,12 +65,12 @@ def test_view_1():
 
 
 def test_view_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]])
 
-        def construct(self):
+        def call(self):
             return self.value.view(3, 2)
 
     net = Net()
@@ -78,11 +78,11 @@ def test_view_2():
 
 
 def test_view_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             return x.view(-1)
 
     net = Net()
@@ -90,11 +90,11 @@ def test_view_parameter():
 
 
 def test_view_parameter_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             return x.view((3, 2))
 
     net = Net()
@@ -102,11 +102,11 @@ def test_view_parameter_1():
 
 
 def test_view_parameter_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             return x.view(3, 2)
 
     net = Net()
@@ -114,12 +114,12 @@ def test_view_parameter_2():
 
 
 def test_view_shape_error():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]])
 
-        def construct(self):
+        def call(self):
             return self.value.view()
 
     net = Net()
@@ -129,12 +129,12 @@ def test_view_shape_error():
 
 
 def test_view_shape_error_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]])
 
-        def construct(self):
+        def call(self):
             return self.value.view((2, 3), (4, 5))
 
     net = Net()

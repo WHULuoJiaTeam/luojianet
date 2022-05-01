@@ -18,7 +18,7 @@ import numpy as np
 
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
-from luojianet_ms.nn import Cell, Momentum
+from luojianet_ms.nn import Module, Momentum
 from luojianet_ms.ops import operations as P
 from luojianet_ms.train import Model
 from luojianet_ms.train.callback import CheckpointConfig, ModelCheckpoint
@@ -46,7 +46,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, weight, w2, begin, end, strides, strategy1=None, strategy2=None, mask=0):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -58,7 +58,7 @@ class Net(Cell):
         self.end = end
         self.strides = strides
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.strided_slice(
             self.weight, self.begin, self.end, self.strides)
         out = self.mul(x, out)

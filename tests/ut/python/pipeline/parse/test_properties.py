@@ -26,13 +26,13 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_ndim():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor(np.random.random(
                 (2, 3, 4, 5)), dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.ndim
 
     net = Net()
@@ -41,13 +41,13 @@ def test_ndim():
 
 
 def test_nbytes():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor(np.random.random(
                 (2, 3, 4, 5)), dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.nbytes
 
     net = Net()
@@ -56,13 +56,13 @@ def test_nbytes():
 
 
 def test_size():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor(np.random.random(
                 (2, 3, 4, 5)), dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.size
 
     net = Net()
@@ -71,13 +71,13 @@ def test_size():
 
 
 def test_strides():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor(np.random.random(
                 (2, 3, 4, 5)), dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.strides
 
     net = Net()
@@ -86,7 +86,7 @@ def test_strides():
 
 
 def test_itemsize():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value1 = Tensor(np.random.random(
@@ -96,7 +96,7 @@ def test_itemsize():
             self.value3 = Tensor(np.random.random(
                 (2, 3, 4, 5)), dtype=mstype.bool_)
 
-        def construct(self):
+        def call(self):
             return (self.value1.itemsize, self.value2.itemsize, self.value3.itemsize)
 
     net = Net()

@@ -17,16 +17,16 @@
 import numpy as np
 
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net1(Cell):
+class Net1(Module):
     def __init__(self):
         super().__init__()
 
-    def construct(self, x):
+    def call(self, x):
         dic = {'x': 0, 'y': 1}
         output = []
         for i in dic.keys():
@@ -36,11 +36,11 @@ class Net1(Cell):
         return output
 
 
-class Net2(Cell):
+class Net2(Module):
     def __init__(self):
         super().__init__()
 
-    def construct(self, x):
+    def call(self, x):
         dic = {'x': x, 'y': 1}
         output = []
         for i in dic.keys():
@@ -50,11 +50,11 @@ class Net2(Cell):
         return output
 
 
-class Net3(Cell):
+class Net3(Module):
     def __init__(self):
         super().__init__()
 
-    def construct(self, x):
+    def call(self, x):
         dic = {'x': 0}
         dic['y'] = (0, 1)
         output = []
@@ -89,11 +89,11 @@ def test_dict3():
 
 
 def test_dict4():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, tuple_x):
+        def call(self, tuple_x):
             output = tuple_x + tuple_x
             return output
 

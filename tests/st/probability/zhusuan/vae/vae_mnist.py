@@ -32,7 +32,7 @@ from luojianet_ms.common import dtype as mstype
 import zhusuan as zs
 
 class ReduceMeanLoss(nn.L1Loss):
-    def construct(self, base, target):
+    def call(self, base, target):
         # return self.get_loss(x)
         return base
 
@@ -59,8 +59,8 @@ class Generator(zs.BayesianNet):
     def zeros(self, shape):
         return self.fill(mstype.float32, shape, 0.)
 
-    def construct(self, x, z, y):
-        """ construct """
+    def call(self, x, z, y):
+        """ call """
         assert y is None ## we have no conditional information
 
         if not x is None:
@@ -102,8 +102,8 @@ class Variational(zs.BayesianNet):
     def zeros(self, shape):
         return self.fill(mstype.float32, shape, 0.)
 
-    def construct(self, x, z, y):
-        """ construct """
+    def call(self, x, z, y):
+        """ call """
         assert y is None ## we have no conditional information
         x = self.reshape_op(x, (32, 32*32))
         z_logit = self.act2(self.fc2(self.act1(self.fc1(x))))

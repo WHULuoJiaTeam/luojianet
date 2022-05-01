@@ -24,12 +24,12 @@ import luojianet_ms.context as context
 from luojianet_ms.ops import composite as C
 
 
-class NetBatchDot(nn.Cell):
+class NetBatchDot(nn.Module):
     def __init__(self, axes):
         super(NetBatchDot, self).__init__()
         self.axes = axes
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return C.batch_dot(x, y, self.axes)
 
 

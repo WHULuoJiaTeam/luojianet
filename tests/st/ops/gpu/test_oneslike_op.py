@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.PYNATIVE_MODE, device_target="GPU")
 
 
-class NetOnesLike(nn.Cell):
+class NetOnesLike(nn.Module):
     def __init__(self):
         super(NetOnesLike, self).__init__()
         self.ones_like = P.OnesLike()
 
-    def construct(self, x):
+    def call(self, x):
         return self.ones_like(x)
 
 

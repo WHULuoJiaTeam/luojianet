@@ -15,7 +15,7 @@
 # ============================================================================
 """ test_filter """
 
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 
 def is_odd(x):
@@ -26,14 +26,14 @@ def is_odd(x):
     return False
 
 
-class NetWork(Cell):
+class NetWork(Module):
     """ NetWork definition """
 
     def __init__(self):
         super(NetWork, self).__init__()
         self.func = is_odd
 
-    def construct(self, list_):
+    def call(self, list_):
         set_func = filter
         ret = set_func(self.func, list_)
         return ret

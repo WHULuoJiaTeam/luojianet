@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.unique = P.Unique()
@@ -32,7 +32,7 @@ class Net(nn.Cell):
         self.param = Parameter(
             Tensor(np.zeros((5,), np.int32)), name="assign_x")
 
-    def construct(self, y):
+    def call(self, y):
         y, _ = self.unique(y)
         return self.dynamic_assign(self.param, y)
 

@@ -19,7 +19,7 @@ Test util functions used in distribution classes.
 import numpy as np
 import pytest
 
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms import context
 from luojianet_ms import dtype
 from luojianet_ms import Tensor
@@ -104,7 +104,7 @@ def test_cast_to_tensor():
     ans6 = cast_to_tensor(1, dtype.float32)
     assert isinstance(ans6, Tensor)
 
-class Net(Cell):
+class Net(Module):
     """
     Test class: CheckTuple.
     """
@@ -113,7 +113,7 @@ class Net(Cell):
         self.checktuple = CheckTuple()
         self.value = value
 
-    def construct(self, value=None):
+    def call(self, value=None):
         if value is None:
             return self.checktuple(self.value, 'input')
         return self.checktuple(value, 'input')
@@ -139,7 +139,7 @@ def test_check_tuple():
         net4 = Net('tuple')
         net4()
 
-class Net1(Cell):
+class Net1(Module):
     """
     Test class: CheckTensor.
     """
@@ -149,7 +149,7 @@ class Net1(Cell):
         self.value = value
         self.context = context.get_context('mode')
 
-    def construct(self, value=None):
+    def call(self, value=None):
         value = self.value if value is None else value
         if self.context == 0:
             self.checktensor(value, 'input')

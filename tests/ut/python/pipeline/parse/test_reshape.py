@@ -25,12 +25,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_reshape():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.reshape(-1)
 
     net = Net()
@@ -38,12 +38,12 @@ def test_reshape():
 
 
 def test_reshape_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.reshape([3, 2, 1])
 
     net = Net()
@@ -51,12 +51,12 @@ def test_reshape_1():
 
 
 def test_reshape_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.reshape((-1, 2))
 
     net = Net()
@@ -64,12 +64,12 @@ def test_reshape_2():
 
 
 def test_reshape_error():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.reshape(1, 2, 4)
 
     net = Net()
@@ -78,12 +78,12 @@ def test_reshape_error():
 
 
 def test_reshape_error_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def call(self):
             return self.value.reshape((1, 2, 3.5))
 
     net = Net()

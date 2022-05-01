@@ -32,7 +32,7 @@ from tests.security_utils import security_off_wrap
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class SummaryNet(nn.Cell):
+class SummaryNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.scalar_summary = P.ScalarSummary()
@@ -40,7 +40,7 @@ class SummaryNet(nn.Cell):
         self.tensor_summary = P.TensorSummary()
         self.histogram_summary = P.HistogramSummary()
 
-    def construct(self, image_tensor):
+    def call(self, image_tensor):
         self.image_summary("image", image_tensor)
         self.tensor_summary("tensor", image_tensor)
         self.histogram_summary("histogram", image_tensor)

@@ -22,7 +22,7 @@ from luojianet_ms import context, Tensor
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class AutoEncoderTrainNetwork(nn.Cell):
+class AutoEncoderTrainNetwork(nn.Module):
     def __init__(self):
         super(AutoEncoderTrainNetwork, self).__init__()
         self.loss_fun = nn.MSELoss()
@@ -35,7 +35,7 @@ class AutoEncoderTrainNetwork(nn.Cell):
             x = self.relu(x)
         return x
 
-    def construct(self, x: Tensor):
+    def call(self, x: Tensor):
         recon_x = self.reconstruct_sample(x)
         return self.loss_fun(recon_x, x)
 

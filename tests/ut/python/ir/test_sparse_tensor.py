@@ -36,11 +36,11 @@ def setup_teardown():
 
 grad_op = C.GradOperation(get_all=True)
 
-class MakeSparseTensor(nn.Cell):
+class MakeSparseTensor(nn.Module):
     def __init__(self, dense_shape):
         super(MakeSparseTensor, self).__init__()
         self.dense_shape = dense_shape
-    def construct(self, indices, values):
+    def call(self, indices, values):
         ret = (SparseTensor(indices, values, self.dense_shape),)
         return ret[0]
 
@@ -52,11 +52,11 @@ def test_sparse_tensor_make_sparse_tensor():
 
 
 def test_sparse_tensor_attr():
-    class SparseTensorGetAttr(nn.Cell):
+    class SparseTensorGetAttr(nn.Module):
         def __init__(self):
             super(SparseTensorGetAttr, self).__init__()
             self.dense_shape = (3, 4)
-        def construct(self, indices, values):
+        def call(self, indices, values):
             x = SparseTensor(indices, values, self.dense_shape)
             return x.values, x.indices, x.dense_shape
 
@@ -83,12 +83,12 @@ def test_sparse_tensor_indices_dim_less_than_dense_shape_dim():
 
 
 def test_sparse_tensor_to_tensor():
-    class SparseToDenseCell(nn.Cell):
+    class SparseToDenseCell(nn.Module):
         def __init__(self, dense_shape):
             super(SparseToDenseCell, self).__init__()
             self.dense_shape = dense_shape
             self.sparse_to_dense = nn.SparseToDense()
-        def construct(self, indices, values):
+        def call(self, indices, values):
             sparse = SparseTensor(indices, values, self.dense_shape)
             return self.sparse_to_dense(sparse)
 

@@ -18,7 +18,7 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms import context, Tensor, Parameter
-from luojianet_ms.nn import Cell, Momentum
+from luojianet_ms.nn import Module, Momentum
 from luojianet_ms.ops import operations as P
 from luojianet_ms.train import Model
 from tests.dataset_mock import MindData
@@ -45,7 +45,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, weight, start, limit, delta, strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -61,7 +61,7 @@ class Net(Cell):
         self.mul2 = P.Mul().shard(strategy3)
         self.weight = Parameter(weight, "w")
 
-    def construct(self, x, b):
+    def call(self, x, b):
         r_out = self.range(self.start, self.limit, self.delta)
         out = self.mul(x, self.weight)
         out = self.mul2(out, r_out)

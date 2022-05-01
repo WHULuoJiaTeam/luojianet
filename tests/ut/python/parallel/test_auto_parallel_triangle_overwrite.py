@@ -25,26 +25,26 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 grad_all = C.GradOperation(get_all=True)
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         predict = self.network(x)
         return self.loss(predict)
 
-class GradWarp(nn.Cell):
+class GradWarp(nn.Module):
     def __init__(self, network):
         super(GradWarp, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         return grad_all(self.network)(x)
 
 def test_triangle_strategy_consistency():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(((2, 4), (2, 4)))
@@ -55,7 +55,7 @@ def test_triangle_strategy_consistency():
             self.add = P.Add().shard(((1, 8), (1, 8)))
             self.relu = P.ReLU()
 
-        def construct(self, x):
+        def call(self, x):
             out = self.mul1(x, self.weight)
             mul_out = self.mul2(out, self.weight)
             ba_out = self.ba1(out, self.bias)

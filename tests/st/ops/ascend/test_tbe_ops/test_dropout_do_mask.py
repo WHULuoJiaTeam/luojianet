@@ -24,12 +24,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.dropoutdomask = P.DropoutDoMask()
 
-    def construct(self, x, mask, keep_prob):
+    def call(self, x, mask, keep_prob):
         return self.dropoutdomask(x, mask, keep_prob)
 
 

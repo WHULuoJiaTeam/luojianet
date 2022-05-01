@@ -23,14 +23,14 @@ from luojianet_ms.nn import TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, mul_weight, strategy=None):
         super(Net, self).__init__()
         self.reluv2 = P.ReLUV2().shard(strategy)
         self.mul = P.Mul()
         self.weight = Parameter(mul_weight, "w1")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.mul(x, self.weight)
         output, _ = self.reluv2(out)
         return output

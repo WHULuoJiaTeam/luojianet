@@ -439,7 +439,7 @@ class THOR_Ascend(Optimizer):
                 new_grads = new_grads + (g, gradients[i + 1], gradients[i + 2])
         return new_grads
 
-    def construct(self, gradients):
+    def call(self, gradients):
         params = self.params
         moments = self.moments
         damping_step = self.gather(self.damping, self.cov_step, self.axis)

@@ -28,34 +28,34 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, vectors, index):
+    def call(self, vectors, index):
         predict = self.network(vectors, index)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, vectors, index):
+    def call(self, vectors, index):
         return grad_all(self.network)(vectors, index)
 
 
 def test_auto_parallel_unsortedsegmentmin():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, num_segments):
             super().__init__()
             self.merge_op = P.UnsortedSegmentMin()
             self.num_segments = num_segments
 
-        def construct(self, vectors, index):
+        def call(self, vectors, index):
             out = self.merge_op(vectors, index, self.num_segments)
             return out
 

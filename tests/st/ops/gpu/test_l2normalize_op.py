@@ -19,15 +19,15 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, axis=0, epsilon=1e-4):
         super(Net, self).__init__()
         self.norm = P.L2Normalize(axis=axis, epsilon=epsilon)
 
-    def construct(self, x):
+    def call(self, x):
         return self.norm(x)
 
 

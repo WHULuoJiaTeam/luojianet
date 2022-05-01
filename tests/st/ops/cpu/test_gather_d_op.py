@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
-class NetGatherD(nn.Cell):
+class NetGatherD(nn.Module):
     def __init__(self, dim=1):
         super(NetGatherD, self).__init__()
         self.gatherd = P.GatherD()
         self.dim = int(dim)
 
-    def construct(self, x, index):
+    def call(self, x, index):
         return self.gatherd(x, self.dim, index)
 
 

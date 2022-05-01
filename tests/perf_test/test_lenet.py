@@ -37,7 +37,7 @@ weight = 32
 num_class = 10
 
 
-class LeNetGrad(nn.Cell):
+class LeNetGrad(nn.Module):
     """Backward of LeNet"""
 
     def __init__(self, network):
@@ -45,7 +45,7 @@ class LeNetGrad(nn.Cell):
         self.grad_op = grad_all_with_sens
         self.network = network
 
-    def construct(self, x, sens):
+    def call(self, x, sens):
         grad_op = self.grad_op(self.network)(x, sens)
 
         return grad_op

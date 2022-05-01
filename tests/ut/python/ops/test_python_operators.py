@@ -29,11 +29,11 @@ from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class ComparisonOpsNet(nn.Cell):
+class ComparisonOpsNet(nn.Module):
     def __init__(self):
         super(ComparisonOpsNet, self).__init__()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         a = x <= y
         b = x <= 1.0
         c = y >= 1.0
@@ -50,22 +50,22 @@ class ComparisonOpsNet(nn.Cell):
         return a or b or c or d or e or f or g or h or i or j or m
 
 
-class MathOpsNet(nn.Cell):
+class MathOpsNet(nn.Module):
     def __init__(self):
         super(MathOpsNet, self).__init__()
         self.relu = P.ReLU()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = x - (-1)
         return self.relu(x)
 
 
-class ScalarCompareNet(nn.Cell):
+class ScalarCompareNet(nn.Module):
     def __init__(self):
         super(ScalarCompareNet, self).__init__()
         self.relu = P.ReLU()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         t = 0
         if 3 > 3.2:
             t = x + y
@@ -84,26 +84,26 @@ class ScalarCompareNet(nn.Cell):
         return t
 
 
-class LogicalNumberOpsNet(nn.Cell):
+class LogicalNumberOpsNet(nn.Module):
     def __init__(self):
         super(LogicalNumberOpsNet, self).__init__()
         self.cond = True
         self.one = 0
         self.zero = 0.0
 
-    def construct(self, x, y):
+    def call(self, x, y):
         if self.cond and self.one or self.zero and not self.one:
             return x + y
         return x - y
 
 
-class LogicalTensorOpsNet(nn.Cell):
+class LogicalTensorOpsNet(nn.Module):
     def __init__(self):
         """"""
         super(LogicalTensorOpsNet, self).__init__()
         self.const_true = Tensor(True, dtype=mstype.bool_)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         ret = x and y and (y or self.const_true) and (not y)
         return ret
 

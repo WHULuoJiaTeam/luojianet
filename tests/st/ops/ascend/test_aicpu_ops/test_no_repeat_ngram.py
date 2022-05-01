@@ -25,12 +25,12 @@ FLT_MAX = 3.4028235e+38
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, ngram_size):
         super(Net, self).__init__()
         self.no_repeat_ngram = P.NoRepeatNGram(ngram_size)
 
-    def construct(self, state_seq, log_probs):
+    def call(self, state_seq, log_probs):
         return self.no_repeat_ngram(state_seq, log_probs)
 
 

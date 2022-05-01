@@ -18,7 +18,7 @@ import pytest
 
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
-from luojianet_ms.nn import Cell, Momentum
+from luojianet_ms.nn import Module, Momentum
 from luojianet_ms.ops import operations as P
 from luojianet_ms.train import Model
 from tests.dataset_mock import MindData
@@ -45,7 +45,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, w1_shape, indices_shape, strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -54,14 +54,14 @@ class Net(Cell):
         self.gathernd = P.GatherNd().shard(strategy2)
         self.relu = P.ReLU().shard(strategy3)
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.mul(x, self.w1)
         out = self.gathernd(out, self.indices)
         out = self.relu(out)
         return out
 
 
-class Net2(Cell):
+class Net2(Module):
     def __init__(self, w1_shape, indices_shape, strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -70,13 +70,13 @@ class Net2(Cell):
         self.gathernd = P.GatherNd().shard(strategy2)
         self.relu = P.ReLU().shard(strategy3)
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.mul(x, self.w1)
         out = self.gathernd(out, self.indices)
         return out
 
 
-class Net3(Cell):
+class Net3(Module):
     def __init__(self, w1_shape, indices_shape, strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -85,7 +85,7 @@ class Net3(Cell):
         self.gathernd = P.GatherNd().shard(strategy2)
         self.relu = P.ReLU().shard(strategy3)
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.gathernd(x, self.indices)
         out = self.relu(out)
         out = self.mul(out, self.w1)

@@ -28,23 +28,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -56,14 +56,14 @@ def compile_net(net, x, y, b):
 
 # model_parallel test
 def test_sum_mul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul1 = P.Mul()
             self.reduce_sum = P.ReduceSum(keep_dims=False)
             self.mul2 = P.Mul()
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, (0,))
             out = self.mul2(out, b)
@@ -80,14 +80,14 @@ def test_sum_mul():
 
 
 def test_sum_mul2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul1 = P.Mul()
             self.reduce_sum = P.ReduceSum(keep_dims=False)
             self.mul2 = P.Mul()
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, (0, 1))
             out = self.mul2(out, b)
@@ -104,14 +104,14 @@ def test_sum_mul2():
 
 
 def test_sum_mul3():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul1 = P.Mul()
             self.reduce_sum = P.ReduceSum(keep_dims=False)
             self.mul2 = P.Mul()
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, -1)
             out = self.mul2(out, b)

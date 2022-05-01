@@ -92,22 +92,22 @@ def test_sequence_mask_maxlen_1():
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_sequence_mask_dynamic():
-    class SequenceMaskDynamicNet1(nn.Cell):
+    class SequenceMaskDynamicNet1(nn.Module):
         def __init__(self, maxlen):
             super(SequenceMaskDynamicNet1, self).__init__()
             self.maxlen = maxlen
             self.convert_to_dynamic_shape = inner.GpuConvertToDynamicShape()
 
-        def construct(self, x):
+        def call(self, x):
             converted_to_dynamic_shape = self.convert_to_dynamic_shape(x)
             return C.sequence_mask(converted_to_dynamic_shape, self.maxlen)
 
-    class SequenceMaskDynamicNet2(nn.Cell):
+    class SequenceMaskDynamicNet2(nn.Module):
         def __init__(self):
             super(SequenceMaskDynamicNet2, self).__init__()
             self.convert_to_dynamic_shape = inner.GpuConvertToDynamicShape()
 
-        def construct(self, x):
+        def call(self, x):
             converted_to_dynamic_shape = self.convert_to_dynamic_shape(x)
             return C.sequence_mask(converted_to_dynamic_shape)
 

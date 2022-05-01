@@ -28,7 +28,7 @@ grad_all = C.GradOperation(get_all=True)
 
 @pytest.mark.skip(reason="not supported for in while")
 def test_for_in_while_01():
-    class ForInWhileNet(nn.Cell):
+    class ForInWhileNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -40,7 +40,7 @@ def test_for_in_while_01():
             param_b = np.full((1,), 2, dtype=np.float32)
             self.param_b = Parameter(Tensor(param_b), name='b')
 
-        def construct(self, x):
+        def call(self, x):
             self.assign(self.param_a, x + self.param_a)
             while self.param_a > self.param_b:
                 x = self.mul(x, 2)
@@ -51,12 +51,12 @@ def test_for_in_while_01():
             self.assign(self.param_a, y)
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([2], mstype.int32)
@@ -79,7 +79,7 @@ def test_for_in_while_01():
 @pytest.mark.skip(reason="not supported for in while")
 @security_off_wrap
 def test_for_in_while_02():
-    class ForInWhileNet(nn.Cell):
+    class ForInWhileNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -89,7 +89,7 @@ def test_for_in_while_02():
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(7, mstype.int32), name='b')
 
-        def construct(self, x):
+        def call(self, x):
             self.assign(self.param_a, x + self.param_a)
             while self.param_a > self.param_b:
                 for _ in range(0, 3):
@@ -99,12 +99,12 @@ def test_for_in_while_02():
             self.assign(self.param_a, y)
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([2], mstype.int32)

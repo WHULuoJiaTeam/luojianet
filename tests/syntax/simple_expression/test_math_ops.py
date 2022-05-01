@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Add(nn.Cell):
+class Add(nn.Module):
     def __init__(self):
         super(Add, self).__init__()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.add(x, y)
         return z
 
@@ -215,12 +215,12 @@ def test_list_add_list():
     assert result == expect
 
 
-class Sub(nn.Cell):
+class Sub(nn.Module):
     def __init__(self):
         super(Sub, self).__init__()
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.sub(x, y)
         return z
 
@@ -269,12 +269,12 @@ def test_number_sub_tensor():
     assert np.all(result2.asnumpy() == expect.asnumpy())
 
 
-class Mul(nn.Cell):
+class Mul(nn.Module):
     def __init__(self):
         super(Mul, self).__init__()
         self.mul = P.Mul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.mul(x, y)
         return z
 
@@ -328,12 +328,12 @@ def test_number_mul_tensor():
     assert np.all(result2.asnumpy() == expect.asnumpy())
 
 
-class Div(nn.Cell):
+class Div(nn.Module):
     def __init__(self):
         super(Div, self).__init__()
         self.div = P.Div()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.div(x, y)
         return z
 
@@ -382,12 +382,12 @@ def test_number_div_tensor():
     assert np.all(result2.asnumpy() == expect.asnumpy())
 
 
-class Mod(nn.Cell):
+class Mod(nn.Module):
     def __init__(self):
         super(Mod, self).__init__()
         self.mod = P.Mod()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.mod(x, y)
         return z
 
@@ -436,12 +436,12 @@ def test_number_mod_tensor():
     assert np.all(result2.asnumpy() == expect.asnumpy())
 
 
-class Pow(nn.Cell):
+class Pow(nn.Module):
     def __init__(self):
         super(Pow, self).__init__()
         self.pow = P.Pow()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.pow(x, y)
         return z
 
@@ -490,12 +490,12 @@ def test_number_pow_tensor():
     assert np.all(result2.asnumpy() == expect.asnumpy())
 
 
-class FloorDiv(nn.Cell):
+class FloorDiv(nn.Module):
     def __init__(self):
         super(FloorDiv, self).__init__()
         self.floordiv = P.FloorDiv()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.floordiv(x, y)
         return z
 

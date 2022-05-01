@@ -30,13 +30,13 @@ from tests.security_utils import security_off_wrap
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class AssignAddNet(nn.Cell):
+class AssignAddNet(nn.Module):
     def __init__(self, para):
         super(AssignAddNet, self).__init__()
         self.para = Parameter(para, name="para")
         self.assign_add = P.AssignAdd()
 
-    def construct(self, value):
+    def call(self, value):
         self.assign_add(self.para, value)
         return self.para
 
@@ -54,13 +54,13 @@ def test_assign_add():
     np.testing.assert_array_equal(out.asnumpy(), expect.asnumpy())
 
 
-class AssignSubNet(nn.Cell):
+class AssignSubNet(nn.Module):
     def __init__(self, para):
         super(AssignSubNet, self).__init__()
         self.para = Parameter(para, name="para")
         self.assign_sub = P.AssignSub()
 
-    def construct(self, value):
+    def call(self, value):
         self.assign_sub(self.para, value)
         return self.para
 
@@ -78,13 +78,13 @@ def test_assign_sub():
     np.testing.assert_array_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterAddNet(nn.Cell):
+class ScatterAddNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterAddNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_add = P.ScatterAdd()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_add(self.input_x, indices, updates)
         return self.input_x
 
@@ -103,13 +103,13 @@ def test_scatter_add():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterSubNet(nn.Cell):
+class ScatterSubNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterSubNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_sub = P.ScatterSub()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_sub(self.input_x, indices, updates)
         return self.input_x
 
@@ -128,13 +128,13 @@ def test_scatter_sub():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterMulNet(nn.Cell):
+class ScatterMulNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterMulNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_mul = P.ScatterMul()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_mul(self.input_x, indices, updates)
         return self.input_x
 
@@ -153,13 +153,13 @@ def test_scatter_mul():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterDivNet(nn.Cell):
+class ScatterDivNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterDivNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_div = P.ScatterDiv()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_div(self.input_x, indices, updates)
         return self.input_x
 
@@ -178,13 +178,13 @@ def test_scatter_div():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterMaxNet(nn.Cell):
+class ScatterMaxNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterMaxNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_max = P.ScatterMax()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_max(self.input_x, indices, updates)
         return self.input_x
 
@@ -203,13 +203,13 @@ def test_scatter_max():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterMinNet(nn.Cell):
+class ScatterMinNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterMinNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_min = P.ScatterMin()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_min(self.input_x, indices, updates)
         return self.input_x
 
@@ -228,13 +228,13 @@ def test_scatter_min():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterUpdateNet(nn.Cell):
+class ScatterUpdateNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterUpdateNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_update = P.ScatterUpdate()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_update(self.input_x, indices, updates)
         return self.input_x
 
@@ -253,13 +253,13 @@ def test_scatter_update():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterNdAddNet(nn.Cell):
+class ScatterNdAddNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterNdAddNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_nd_add = P.ScatterNdAdd()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_nd_add(self.input_x, indices, updates)
         return self.input_x
 
@@ -278,13 +278,13 @@ def test_scatter_nd_add():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterNdSubNet(nn.Cell):
+class ScatterNdSubNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterNdSubNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_nd_sub = P.ScatterNdSub()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_nd_sub(self.input_x, indices, updates)
         return self.input_x
 
@@ -303,13 +303,13 @@ def test_scatter_nd_sub():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterNdUpdateNet(nn.Cell):
+class ScatterNdUpdateNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterNdUpdateNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_nd_update = P.ScatterNdUpdate()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         self.scatter_nd_update(self.input_x, indices, updates)
         return self.input_x
 
@@ -328,13 +328,13 @@ def test_scatter_nd_update():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class ScatterNonAliasingAddNet(nn.Cell):
+class ScatterNonAliasingAddNet(nn.Module):
     def __init__(self, input_x):
         super(ScatterNonAliasingAddNet, self).__init__()
         self.input_x = Parameter(input_x, name="para")
         self.scatter_non_aliasing_add = P.ScatterNonAliasingAdd()
 
-    def construct(self, indices, updates):
+    def call(self, indices, updates):
         out = self.scatter_non_aliasing_add(self.input_x, indices, updates)
         return out
 
@@ -353,7 +353,7 @@ def test_scatter_non_aliasing_add():
     np.testing.assert_almost_equal(out.asnumpy(), expect.asnumpy())
 
 
-class SummaryNet(nn.Cell):
+class SummaryNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.scalar_summary = P.ScalarSummary()
@@ -361,7 +361,7 @@ class SummaryNet(nn.Cell):
         self.tensor_summary = P.TensorSummary()
         self.histogram_summary = P.HistogramSummary()
 
-    def construct(self, image_tensor):
+    def call(self, image_tensor):
         self.image_summary("image", image_tensor)
         self.tensor_summary("tensor", image_tensor)
         self.histogram_summary("histogram", image_tensor)
@@ -406,12 +406,12 @@ def test_summary():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_igamma():
-    class IGammaTest(nn.Cell):
+    class IGammaTest(nn.Module):
         def __init__(self):
             super().__init__()
             self.igamma = nn.IGamma()
 
-        def construct(self, x, a):
+        def call(self, x, a):
             return self.igamma(a=a, x=x)
 
     x = 4.22

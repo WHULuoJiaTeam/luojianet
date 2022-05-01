@@ -61,7 +61,7 @@ def _clip_grad(clip_type, clip_value, grad):
     return new_grad
 
 
-class GetMaskedLMOutput(nn.Cell):
+class GetMaskedLMOutput(nn.Module):
     """
     Get masked lm output.
 
@@ -99,7 +99,7 @@ class GetMaskedLMOutput(nn.Cell):
         self.compute_type = config.compute_type
         self.dtype = config.dtype
 
-    def construct(self,
+    def call(self,
                   input_tensor,
                   output_weights,
                   positions):
@@ -119,7 +119,7 @@ class GetMaskedLMOutput(nn.Cell):
         return log_probs
 
 
-class GetNextSentenceOutput(nn.Cell):
+class GetNextSentenceOutput(nn.Module):
     """
     Get next sentence output.
 
@@ -138,14 +138,14 @@ class GetNextSentenceOutput(nn.Cell):
         self.dtype = config.dtype
         self.cast = P.Cast()
 
-    def construct(self, input_tensor):
+    def call(self, input_tensor):
         logits = self.dense(input_tensor)
         logits = self.cast(logits, self.dtype)
         log_prob = self.log_softmax(logits)
         return log_prob
 
 
-class BertPreTraining(nn.Cell):
+class BertPreTraining(nn.Module):
     """
     Bert pretraining network.
 
@@ -163,7 +163,7 @@ class BertPreTraining(nn.Cell):
         self.cls1 = GetMaskedLMOutput(config)
         self.cls2 = GetNextSentenceOutput(config)
 
-    def construct(self, input_ids, input_mask, token_type_id,
+    def call(self, input_ids, input_mask, token_type_id,
                   masked_lm_positions):
         sequence_output, pooled_output, embedding_table = \
             self.bert(input_ids, token_type_id, input_mask)
@@ -174,7 +174,7 @@ class BertPreTraining(nn.Cell):
         return prediction_scores, seq_relationship_score
 
 
-class BertPretrainingLoss(nn.Cell):
+class BertPretrainingLoss(nn.Module):
     """
     Provide bert pre-training loss.
 
@@ -197,7 +197,7 @@ class BertPretrainingLoss(nn.Cell):
         self.neg = P.Neg()
         self.cast = P.Cast()
 
-    def construct(self, prediction_scores, seq_relationship_score, masked_lm_ids,
+    def call(self, prediction_scores, seq_relationship_score, masked_lm_ids,
                   masked_lm_weights, next_sentence_labels):
         """Defines the computation performed."""
         label_ids = self.reshape(masked_lm_ids, self.last_idx)
@@ -222,7 +222,7 @@ class BertPretrainingLoss(nn.Cell):
         return total_loss
 
 
-class BertNetworkWithLoss(nn.Cell):
+class BertNetworkWithLoss(nn.Module):
     """
     Provide bert pre-training loss through network.
 
@@ -240,7 +240,7 @@ class BertNetworkWithLoss(nn.Cell):
         self.loss = BertPretrainingLoss(config)
         self.cast = P.Cast()
 
-    def construct(self,
+    def call(self,
                   input_ids,
                   input_mask,
                   token_type_id,
@@ -255,15 +255,15 @@ class BertNetworkWithLoss(nn.Cell):
         return self.cast(total_loss, mstype.float32)
 
 
-class BertTrainOneStepCell(nn.Cell):
+class BertTrainOneStepCell(nn.Module):
     """
     Encapsulation class of bert network training.
 
-    Append an optimizer to the training network after that the construct
+    Append an optimizer to the training network after that the call
     function can be called to create the backward graph.
 
     Args:
-        network (Cell): The training network. Note that loss function should have been added.
+        network (Module): The training network. Note that loss function should have been added.
         optimizer (Optimizer): Optimizer for updating the weights.
         sens (Number): The adjust parameter. Default: 1.0.
     """
@@ -290,7 +290,7 @@ class BertTrainOneStepCell(nn.Cell):
     def set_sens(self, value):
         self.sens = value
 
-    def construct(self,
+    def call(self,
                   input_ids,
                   input_mask,
                   token_type_id,
@@ -335,17 +335,17 @@ def tensor_grad_scale(scale, grad):
     return grad * reciprocal(scale)
 
 
-class BertTrainOneStepWithLossScaleCell(nn.Cell):
+class BertTrainOneStepWithLossScaleCell(nn.Module):
     """
     Encapsulation class of bert network training.
 
-    Append an optimizer to the training network after that the construct
+    Append an optimizer to the training network after that the call
     function can be called to create the backward graph.
 
     Args:
-        network (Cell): The training network. Note that loss function should have been added.
+        network (Module): The training network. Note that loss function should have been added.
         optimizer (Optimizer): Optimizer for updating the weights.
-        scale_update_cell (Cell): Cell to do the loss scale. Default: None.
+        scale_update_cell (Module): Module to do the loss scale. Default: None.
     """
     def __init__(self, network, optimizer, scale_update_cell=None):
         super(BertTrainOneStepWithLossScaleCell, self).__init__(auto_prefix=False)
@@ -379,7 +379,7 @@ class BertTrainOneStepWithLossScaleCell(nn.Cell):
             self.loss_scale = Parameter(Tensor(scale_update_cell.get_loss_scale(), dtype=mstype.float32),
                                         name="loss_scale")
 
-    def construct(self,
+    def call(self,
                   input_ids,
                   input_mask,
                   token_type_id,

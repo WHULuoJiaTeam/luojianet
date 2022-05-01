@@ -18,18 +18,18 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 from luojianet_ms.common import dtype as mstype
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.matmul = P.MatMul(transpose_a=True, transpose_b=True)
         self.add = P.BiasAdd()
         self.cast = P.Cast()
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         xy = self.matmul(x, y)
         b16 = self.cast(b, mstype.float16)
         res = self.add(xy, b16)

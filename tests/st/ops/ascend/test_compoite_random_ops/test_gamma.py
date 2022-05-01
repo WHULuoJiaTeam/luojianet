@@ -25,13 +25,13 @@ from luojianet_ms.common import set_seed
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 set_seed(20)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, shape, seed=0):
         super(Net, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, alpha, beta):
+    def call(self, alpha, beta):
         return C.gamma(self.shape, alpha, beta, self.seed)
 
 

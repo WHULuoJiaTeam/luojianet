@@ -26,12 +26,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Slice(nn.Cell):
+class Slice(nn.Module):
     def __init__(self):
         super(Slice, self).__init__()
         self.slice = P.Slice()
 
-    def construct(self, x):
+    def call(self, x):
         return self.slice(x, (0, 1, 0), (2, 1, 3))
 
 
@@ -49,12 +49,12 @@ def test_slice():
     assert (output.asnumpy() == expect).all()
 
 
-class Slice2(nn.Cell):
+class Slice2(nn.Module):
     def __init__(self):
         super(Slice2, self).__init__()
         self.slice = P.Slice()
 
-    def construct(self, x):
+    def call(self, x):
         return self.slice(x, (1, 0, 0), (1, 2, 3))
 
 
@@ -79,12 +79,12 @@ def test_slice_float64():
     expect = [[[3.0, 3.0, 3.0]]]
     assert (output.asnumpy() == expect).all()
 
-class Slice3(nn.Cell):
+class Slice3(nn.Module):
     def __init__(self):
         super(Slice3, self).__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         return (x[..., -1], x[..., 2:1:-1], x[1:3:1, 0, ...], x[-1, 0, ...])
 
 
@@ -102,12 +102,12 @@ def test_slice3():
     assert (output[3].asnumpy() == inputx[-1, 0, ...]).all()
 
 
-class Slice4(nn.Cell):
+class Slice4(nn.Module):
     def __init__(self):
         super(Slice4, self).__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         return x[:10:1, :, 2:3:1]
 
 
@@ -122,7 +122,7 @@ def test_slice4():
     assert (output.asnumpy() == inputx[:10:1, :, 2:3:1]).all()
 
 
-class Slice5(nn.Cell):
+class Slice5(nn.Module):
     def __init__(self, begin, size):
         super(Slice5, self).__init__()
         self.relu = nn.ReLU()
@@ -130,7 +130,7 @@ class Slice5(nn.Cell):
         self.begin = begin
         self.size = size
 
-    def construct(self, x):
+    def call(self, x):
         return self.slice(x, self.begin, self.size)
 
 
@@ -147,12 +147,12 @@ def test_slice5():
     assert (output.asnumpy() == inputx[0:3:1, 1:5:1, 0:4:1]).all()
 
 
-class Slice6(nn.Cell):
+class Slice6(nn.Module):
     def __init__(self):
         super(Slice6, self).__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         return (x[-10:], x[-5:10:2, :, :], x[-10:10:1, :, -10:10:1])
 
 
@@ -169,7 +169,7 @@ def test_slice6():
     assert (output[2].asnumpy() == inputx[-10:10:1, :, -10:10:1]).all()
 
 
-class StridedSlice(nn.Cell):
+class StridedSlice(nn.Module):
     def __init__(self, begin, end, stride):
         super(StridedSlice, self).__init__()
         self.begin = begin
@@ -177,7 +177,7 @@ class StridedSlice(nn.Cell):
         self.stride = stride
         self.stride_slice = P.StridedSlice()
 
-    def construct(self, x):
+    def call(self, x):
         return self.stride_slice(x, self.begin, self.end, self.stride)
 
 @pytest.mark.level0

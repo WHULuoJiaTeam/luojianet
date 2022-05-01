@@ -19,47 +19,47 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
 
-class NetEqual(Cell):
+class NetEqual(Module):
     def __init__(self):
         super(NetEqual, self).__init__()
         self.Equal = P.Equal()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.Equal(x, y)
 
 
-class NetEqualDynamic(Cell):
+class NetEqualDynamic(Module):
     def __init__(self):
         super(NetEqualDynamic, self).__init__()
         self.conv = inner.GpuConvertToDynamicShape()
         self.Equal = P.Equal()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x_conv = self.conv(x)
         y_conv = self.conv(y)
         return self.Equal(x_conv, y_conv)
 
 
-class NetNotEqual(Cell):
+class NetNotEqual(Module):
     def __init__(self):
         super(NetNotEqual, self).__init__()
         self.NotEqual = P.NotEqual()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.NotEqual(x, y)
 
 
-class NetGreaterEqual(Cell):
+class NetGreaterEqual(Module):
     def __init__(self):
         super(NetGreaterEqual, self).__init__()
         self.GreaterEqual = P.GreaterEqual()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.GreaterEqual(x, y)
 
 @pytest.mark.level0

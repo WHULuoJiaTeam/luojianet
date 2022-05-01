@@ -24,12 +24,12 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
 
-class ReduceMin(nn.Cell):
+class ReduceMin(nn.Module):
     def __init__(self, keep_dims):
         super(ReduceMin, self).__init__()
         self.reduce_min = P.ReduceMin(keep_dims=keep_dims)
 
-    def construct(self, x, axis):
+    def call(self, x, axis):
         return self.reduce_min(x, axis)
 
 
@@ -62,7 +62,7 @@ def test_reduce_min(dtype, shape, axis, keep_dims):
     assert output.shape == expect.shape
 
 
-class ReduceMinDynamic(nn.Cell):
+class ReduceMinDynamic(nn.Module):
     def __init__(self, x, axis):
         super(ReduceMinDynamic, self).__init__()
         self.reduce_min = P.ReduceMin(False)
@@ -70,7 +70,7 @@ class ReduceMinDynamic(nn.Cell):
         self.x = x
         self.axis = axis
 
-    def construct(self):
+    def call(self):
         dynamic_x = self.test_dynamic(self.x)
         return self.reduce_min(dynamic_x, self.axis)
 

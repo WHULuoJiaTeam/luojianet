@@ -24,23 +24,23 @@ from luojianet_ms.nn.grad import Jvp
 
 context.set_context(mode=context.PYNATIVE_MODE)
 
-class SingleInputSingleOutputNet(nn.Cell):
-    def construct(self, x):
+class SingleInputSingleOutputNet(nn.Module):
+    def call(self, x):
         return x**3
 
 
-class SingleInputMultipleOutputNet(nn.Cell):
-    def construct(self, x):
+class SingleInputMultipleOutputNet(nn.Module):
+    def call(self, x):
         return x**3, 2*x
 
 
-class MultipleInputSingleOutputNet(nn.Cell):
-    def construct(self, x, y):
+class MultipleInputSingleOutputNet(nn.Module):
+    def call(self, x, y):
         return 2*x + 3*y
 
 
-class MultipleInputMultipleOutputNet(nn.Cell):
-    def construct(self, x, y):
+class MultipleInputMultipleOutputNet(nn.Module):
+    def call(self, x, y):
         return 2*x, y**3
 
 

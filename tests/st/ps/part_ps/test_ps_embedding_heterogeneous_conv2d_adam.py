@@ -24,7 +24,7 @@ import luojianet_ms.dataset.vision.c_transforms as CV
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.dataset.vision import Inter
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import Flatten
 from luojianet_ms.nn import Conv2d
 from luojianet_ms.nn import BatchNorm2d
@@ -48,7 +48,7 @@ context.set_context(mode=context.GRAPH_MODE, device_target=device_target, enable
 context.set_ps_context(enable_ps=True)
 
 
-class Menet(Cell):
+class Menet(Module):
     def __init__(self, in_channels, out_channels, kernel_size, vocab_size, embedding_size,
                  output_channels, target, sparse):
         super().__init__()
@@ -66,7 +66,7 @@ class Menet(Cell):
         self.biasadd = op.BiasAdd()
         self.type = luojianet_ms.int32
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv(x)
         x = self.batchnorm(x)
         x = self.flatten(x)

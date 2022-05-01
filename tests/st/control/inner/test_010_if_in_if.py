@@ -23,13 +23,13 @@ from luojianet_ms.common.parameter import Parameter
 grad_all = C.GradOperation(get_all=True)
 
 
-class IfInIfNet(nn.Cell):
+class IfInIfNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def call(self, x):
         if self.param_a > self.param_b:
             x += 10
             if x > self.param_a:
@@ -38,13 +38,13 @@ class IfInIfNet(nn.Cell):
         return x
 
 
-class IfInIfNet1(nn.Cell):
+class IfInIfNet1(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def call(self, x):
         if self.param_a > self.param_b:
             out = self.func(x)
         else:
@@ -60,13 +60,13 @@ class IfInIfNet1(nn.Cell):
         return x
 
 
-class IfInIfNet2(nn.Cell):
+class IfInIfNet2(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def call(self, x):
         if self.check(self.param_a, self.param_b):
             out = self.func(x)
         else:
@@ -89,13 +89,13 @@ class IfInIfNet2(nn.Cell):
         return False
 
 
-class IfInIfNet3(nn.Cell):
+class IfInIfNet3(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def call(self, x):
         if self.func(x) > self.param_a:
             out = x
         else:
@@ -112,13 +112,13 @@ class IfInIfNet3(nn.Cell):
 
 
 # add a while to test if_in_if run with vm.Only should run in ascend.
-class IfInIfNet4(nn.Cell):
+class IfInIfNet4(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def call(self, x):
         while x < 1:
             x = x + 1
         if self.param_a > self.param_b:
@@ -129,12 +129,12 @@ class IfInIfNet4(nn.Cell):
         return out
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super(GradNet, self).__init__()
         self.net = net
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         return grad_all(self.net)(*inputs)
 
 

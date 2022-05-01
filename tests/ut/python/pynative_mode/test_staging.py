@@ -79,7 +79,7 @@ def tensor_add_test(x, y):
     return z
 
 
-class TensorAddMulNet(nn.Cell):
+class TensorAddMulNet(nn.Module):
     """ TensorAddMulNet definition """
 
     def __init__(self):
@@ -98,7 +98,7 @@ class TensorAddMulNet(nn.Cell):
         z = self.add(x, z)
         return z
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.add(x, y)  # PyNative mode
         z = self.add_stage0(x, z)  # Graph mode
         z = self.add(x, z)  # PyNative mode
@@ -106,7 +106,7 @@ class TensorAddMulNet(nn.Cell):
         return z
 
 
-class TensorAddNet(nn.Cell):
+class TensorAddNet(nn.Module):
     """ TensorAddNet definition """
 
     def __init__(self):
@@ -117,7 +117,7 @@ class TensorAddNet(nn.Cell):
     def compute(self, x, y):
         return self.add(x, y)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.compute(x, y)
         return z
 
@@ -149,7 +149,7 @@ def test_class_method_staging():
     x = Tensor(np.ones([1, 1, 3, 3]).astype(np.float32))
     y = Tensor(np.ones([1, 1, 3, 3]).astype(np.float32))
     net = TensorAddNet()
-    output = net.construct(x, y)
+    output = net.call(x, y)
     assert (output.asnumpy() == (np.ones([1, 1, 3, 3]) * 2)).all()
 
 
@@ -159,7 +159,7 @@ def test_class_method_composite_staging():
     x = Tensor(np.ones([3, 3]).astype(np.float32))
     y = Tensor(np.ones([3, 3]).astype(np.float32))
     net = TensorAddMulNet()
-    output = net.construct(x, y)
+    output = net.call(x, y)
     assert (output.asnumpy() == (np.ones([3, 3]) * 7)).astype(np.float32).all()
 
 

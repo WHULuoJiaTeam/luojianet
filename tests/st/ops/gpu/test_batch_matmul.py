@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
 
-class BatchMatMulNet(nn.Cell):
+class BatchMatMulNet(nn.Module):
     def __init__(self, transpose_a=False, transpose_b=False):
         super(BatchMatMulNet, self).__init__()
         self.batch_matmul = P.BatchMatMul(transpose_a, transpose_b)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.batch_matmul(x, y)
 
 @pytest.mark.level0
@@ -165,13 +165,13 @@ def test_4D_fp16():
     assert (output.asnumpy() == expect).all()
 
 
-class BatchMatMul_d(nn.Cell):
+class BatchMatMul_d(nn.Module):
     def __init__(self, transpose_a=False, transpose_b=False):
         super(BatchMatMul_d, self).__init__()
         self.batch_matmul = P.BatchMatMul(transpose_a, transpose_b)
         self.test_dynamic = inner.GpuConvertToDynamicShape()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.test_dynamic(x)
         y = self.test_dynamic(y)
         return self.batch_matmul(x, y)

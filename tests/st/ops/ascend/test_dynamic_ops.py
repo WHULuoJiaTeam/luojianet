@@ -61,59 +61,59 @@ def dataset_generator(data_list):
         yield data
 
 
-class GradNetWrtX(nn.Cell):
+class GradNetWrtX(nn.Module):
     def __init__(self, net):
         super(GradNetWrtX, self).__init__()
         self.net = net
         self.grad_op = ops.GradOperation(get_all=True, get_by_list=True, sens_param=True)
         self.params = ParameterTuple(net.trainable_params())
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         gradient_function = self.grad_op(self.net, self.params)
         return gradient_function(*inputs)
 
 
-class LayerNormNet(nn.Cell):
+class LayerNormNet(nn.Module):
     def __init__(self, last_dim):
         super(LayerNormNet, self).__init__()
         self.layernorm = nn.LayerNorm([last_dim])
 
-    def construct(self, x):
+    def call(self, x):
         return self.layernorm(x)
 
 
-class Conv2dNet(nn.Cell):
+class Conv2dNet(nn.Module):
     def __init__(self):
         super(Conv2dNet, self).__init__()
         self.conv = nn.Conv2d(3, 10, 4, pad_mode="valid", has_bias=False, weight_init='normal')
 
-    def construct(self, x):
+    def call(self, x):
         return self.conv(x)
 
 
-class DropoutNet(nn.Cell):
+class DropoutNet(nn.Module):
     def __init__(self):
         super(DropoutNet, self).__init__()
         self.drop = nn.Dropout(0.5)
         self.relu = ops.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.relu(x)
         return self.relu(self.drop(x))
 
 
-class ReduceSumNet(nn.Cell):
+class ReduceSumNet(nn.Module):
     def __init__(self, axis=()):
         super(ReduceSumNet, self).__init__()
         self.reduce = ops.ReduceSum()
         self.axis = axis
 
-    def construct(self, x):
+    def call(self, x):
         return self.reduce(x, self.axis)
 
 
-class AddNet(nn.Cell):
-    def construct(self, x, y):
+class AddNet(nn.Module):
+    def call(self, x, y):
         return ops.add(x, y)
 
 

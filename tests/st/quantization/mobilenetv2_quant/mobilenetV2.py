@@ -34,7 +34,7 @@ def _make_divisible(v, divisor, min_value=None):
     return new_v
 
 
-class GlobalAvgPooling(nn.Cell):
+class GlobalAvgPooling(nn.Module):
     """
     Global avg pooling definition.
 
@@ -51,12 +51,12 @@ class GlobalAvgPooling(nn.Cell):
         super(GlobalAvgPooling, self).__init__()
         self.mean = P.ReduceMean(keep_dims=False)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.mean(x, (2, 3))
         return x
 
 
-class ConvBNReLU(nn.Cell):
+class ConvBNReLU(nn.Module):
     """
     Convolution/Depthwise fused with Batchnorm and ReLU block definition.
 
@@ -85,12 +85,12 @@ class ConvBNReLU(nn.Cell):
                                    has_bn=True,
                                    activation='relu')
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv(x)
         return x
 
 
-class InvertedResidual(nn.Cell):
+class InvertedResidual(nn.Module):
     """
     Mobilenetv2 residual block definition.
 
@@ -128,19 +128,19 @@ class InvertedResidual(nn.Cell):
         self.conv = nn.SequentialCell(layers)
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         out = self.conv(x)
         if self.use_res_connect:
             out = self.add(out, x)
         return out
 
 
-class mobilenetV2(nn.Cell):
+class mobilenetV2(nn.Module):
     """
     mobilenetV2 fusion architecture.
 
     Args:
-        class_num (Cell): number of classes.
+        class_num (Module): number of classes.
         width_mult (int): Channels multiplier for round to 8/16 and others. Default is 1.
         has_dropout (bool): Is dropout used. Default is false
         inverted_residual_setting (list): Inverted residual settings. Default is None
@@ -208,7 +208,7 @@ class mobilenetV2(nn.Cell):
         self.init_parameters_data()
         self._initialize_weights()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.features(x)
         x = self.head(x)
         return x

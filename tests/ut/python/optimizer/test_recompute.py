@@ -22,12 +22,12 @@ context.set_context(mode=context.GRAPH_MODE)
 recompute_prefix = 'recompute_'
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
-    def construct(self, input_x):
+    def call(self, input_x):
         output = self.pool(input_x)
         return output
 

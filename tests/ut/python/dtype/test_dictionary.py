@@ -21,14 +21,14 @@ import numpy as np
 import pytest
 
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE)
 
 
 def Xtest_arg_dict():
-    class DictNet(Cell):
+    class DictNet(Module):
         """DictNet definition"""
 
         def __init__(self):
@@ -36,7 +36,7 @@ def Xtest_arg_dict():
             self.max = P.Maximum()
             self.min = P.Minimum()
 
-        def construct(self, dictionary):
+        def call(self, dictionary):
             a = self.max(dictionary["x"], dictionary["y"])
             b = self.min(dictionary["x"], dictionary["y"])
             return a + b
@@ -49,7 +49,7 @@ def Xtest_arg_dict():
 
 
 def test_const_dict():
-    class DictNet(Cell):
+    class DictNet(Module):
         """DictNet1 definition"""
 
         def __init__(self):
@@ -58,7 +58,7 @@ def test_const_dict():
             self.min = P.Minimum()
             self.dictionary = {"x": Tensor(np.ones([3, 2, 3], np.float32)), "y": Tensor(np.ones([1, 2, 3], np.float32))}
 
-        def construct(self):
+        def call(self):
             a = self.max(self.dictionary["x"], self.dictionary["y"])
             b = self.min(self.dictionary["x"], self.dictionary["y"])
             return a + b
@@ -68,7 +68,7 @@ def test_const_dict():
 
 
 def test_dict_set_or_get_item():
-    class DictNet(Cell):
+    class DictNet(Module):
         """DictNet1 definition"""
 
         def __init__(self):
@@ -77,7 +77,7 @@ def test_dict_set_or_get_item():
             self.tuple_1 = (1, 2, 3)
             self.tuple_2 = (4, 5, 6)
 
-        def construct(self):
+        def call(self):
             ret_1 = (88, 99)
             ret_2 = (88, 99)
             self.dict_["x"] = 3
@@ -96,13 +96,13 @@ def test_dict_set_or_get_item():
 
 
 def test_dict_set_or_get_item_2():
-    class DictNet(Cell):
+    class DictNet(Module):
         """DictNet1 definition"""
 
         def __init__(self):
             super(DictNet, self).__init__()
 
-        def construct(self):
+        def call(self):
             tuple_1 = (1, 2, 3)
             tuple_2 = (4, 5, 6)
             ret_1 = (88, 99)
@@ -123,7 +123,7 @@ def test_dict_set_or_get_item_2():
 
 
 def test_dict_set_or_get_item_3():
-    class DictNet(Cell):
+    class DictNet(Module):
         """DictNet1 definition"""
 
         def __init__(self):
@@ -131,7 +131,7 @@ def test_dict_set_or_get_item_3():
             self.dict_ = {"x": Tensor(np.ones([2, 2, 3], np.float32)), "y": 1}
             self.tensor = Tensor(np.ones([4, 2, 3], np.float32))
 
-        def construct(self):
+        def call(self):
             self.dict_["y"] = 3
             if self.dict_["y"] == 3:
                 self.dict_["x"] = self.tensor
@@ -143,12 +143,12 @@ def test_dict_set_or_get_item_3():
 
 
 def test_dict_set_item():
-    class DictSetNet(Cell):
+    class DictSetNet(Module):
         def __init__(self):
             super(DictSetNet, self).__init__()
             self.attrs = ("abc", "edf", "ghi", "jkl")
 
-        def construct(self, x):
+        def call(self, x):
             my_dict = {"def": x, "abc": x, "edf": x, "ghi": x, "jkl": x}
             for i in range(len(self.attrs)):
                 my_dict[self.attrs[i]] = x - i
@@ -161,11 +161,11 @@ def test_dict_set_item():
 
 # if the dictionary item does not exist, create a new one
 def test_dict_set_item_create_new():
-    class DictSetNet(Cell):
+    class DictSetNet(Module):
         def __init__(self):
             super(DictSetNet, self).__init__()
             self.attrs = ("abc", "edf", "ghi", "jkl")
-        def construct(self, x):
+        def call(self, x):
             my_dict = {"def": x}
             for i in range(len(self.attrs)):
                 my_dict[self.attrs[i]] = x - i
@@ -181,11 +181,11 @@ def test_dict_items():
     Expectation: the results are as expected
     """
 
-    class DictItemsNet(Cell):
+    class DictItemsNet(Module):
         def __init__(self):
             super(DictItemsNet, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             return x.items()
     x = {"1": Tensor(1), "2": {"test": (1, 2)}}
     net = DictItemsNet()

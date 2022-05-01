@@ -23,12 +23,12 @@ from luojianet_ms import nn
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class NetResizeBilinear(nn.Cell):
+class NetResizeBilinear(nn.Module):
     def __init__(self, size=None, align_corner=False):
         super(NetResizeBilinear, self).__init__()
         self.op = P.ResizeBilinear(size=size, align_corners=align_corner)
 
-    def construct(self, inputs):
+    def call(self, inputs):
         return self.op(inputs)
 
 

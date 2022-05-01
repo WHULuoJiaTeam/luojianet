@@ -59,7 +59,7 @@ def InitialLstmWeight(input_size, hidden_size, num_layers, bidirectional, has_bi
     return h, c, w
 
 
-class SentimentNet(nn.Cell):
+class SentimentNet(nn.Module):
     def __init__(self, vocab_size, embed_size, num_hiddens, num_layers,
                  bidirectional, weight, labels, batch_size):
         super(SentimentNet, self).__init__()
@@ -90,7 +90,7 @@ class SentimentNet(nn.Cell):
         if bidirectional:
             self.num_direction = 2
 
-    def construct(self, inputs):
+    def call(self, inputs):
         embeddings = self.embedding(inputs)
         embeddings = self.trans(embeddings, self.perm)
         output, hidden = self.encoder(embeddings, self.h, self.c, self.w)

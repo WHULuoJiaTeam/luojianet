@@ -25,12 +25,12 @@ from luojianet_ms.train.model import Model
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Min(nn.Cell):
+class Min(nn.Module):
     def __init__(self, dtype):
         super(Min, self).__init__()
         self.min = P.Minimum()
 
-    def construct(self, inputa, inputb):
+    def call(self, inputa, inputb):
         return self.min(inputa, inputb)
 
 

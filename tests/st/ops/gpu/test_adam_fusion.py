@@ -29,7 +29,7 @@ from luojianet_ms.common.parameter import Parameter
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, decay_flag=True):
         super(Net, self).__init__()
         self.decay_flag = decay_flag
@@ -44,7 +44,7 @@ class Net(nn.Cell):
         self.v = Parameter(Tensor(np.array([0.1, 0.3, 0.5]).astype(np.float32)), name='v')
 
     @ms_function
-    def construct(self, beta1, beta2, gradient, eps, weight_decay_tensor, lr):
+    def call(self, beta1, beta2, gradient, eps, weight_decay_tensor, lr):
         param_fp32 = self.op_cast(self.param, mstype.float32)
         m_fp32 = self.op_cast(self.m, mstype.float32)
         v_fp32 = self.op_cast(self.v, mstype.float32)

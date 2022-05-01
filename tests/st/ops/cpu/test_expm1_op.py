@@ -26,12 +26,12 @@ from luojianet_ms import dtype
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetExpm1(nn.Cell):
+class NetExpm1(nn.Module):
     def __init__(self):
         super(NetExpm1, self).__init__()
         self.expm1 = P.Expm1()
 
-    def construct(self, x):
+    def call(self, x):
         return self.expm1(x)
 
 

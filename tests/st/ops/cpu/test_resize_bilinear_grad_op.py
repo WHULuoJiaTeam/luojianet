@@ -23,22 +23,22 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class ResizeBilinearGradAlignCornerT(nn.Cell):
+class ResizeBilinearGradAlignCornerT(nn.Module):
     def __init__(self):
         super(ResizeBilinearGradAlignCornerT, self).__init__()
         self.ResizeBilinearGradAlignCornerT = G.ResizeBilinearGrad(
             align_corners=True)
 
-    def construct(self, dy, size):
+    def call(self, dy, size):
         return self.ResizeBilinearGradAlignCornerT(dy, size)
 
 
-class ResizeBilinearGradAlignCornerF(nn.Cell):
+class ResizeBilinearGradAlignCornerF(nn.Module):
     def __init__(self):
         super(ResizeBilinearGradAlignCornerF, self).__init__()
         self.ResizeBilinearGradAlignCornerF = G.ResizeBilinearGrad(align_corners=False)
 
-    def construct(self, dy, size):
+    def call(self, dy, size):
         return self.ResizeBilinearGradAlignCornerF(dy, size)
 
 

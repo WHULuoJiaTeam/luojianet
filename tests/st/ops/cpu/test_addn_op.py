@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net2Inputs(nn.Cell):
+class Net2Inputs(nn.Module):
     def __init__(self):
         super(Net2Inputs, self).__init__()
         self.addn = P.AddN()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.addn((x, y))
 
 
@@ -54,12 +54,12 @@ def test_two_tensors_add():
         assert np.array_equal(output.asnumpy(), expect_result)
 
 
-class Net4Inputs(nn.Cell):
+class Net4Inputs(nn.Module):
     def __init__(self):
         super(Net4Inputs, self).__init__()
         self.addn = P.AddN()
 
-    def construct(self, x, y, m, n):
+    def call(self, x, y, m, n):
         return self.addn((x, y, m, n))
 
 

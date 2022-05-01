@@ -66,14 +66,14 @@ def test_mindir_export_split():
     """
     ms.train.serialization.TOTAL_SAVE = 0
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.addn = ops.AddN()
             self.y = Parameter(Tensor(np.array([2, 3, 3, 4]).astype(np.float32)), name="w")
             self.z = Parameter(Tensor(np.array([2, 3, 3, 4])).astype(np.float32), name="z")
 
-        def construct(self, x):
+        def call(self, x):
             return self.addn((x, self.y, self.z))
 
     x = Tensor(np.array([2, 3, 3, 4]).astype(np.float32))
@@ -101,13 +101,13 @@ def test_mindir_export_larger_error():
     ms.train.serialization.TOTAL_SAVE = 0
     ms.train.serialization.PARAMETER_SPLIT_SIZE = 0
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.add = ops.Add()
             self.y = Parameter(Tensor(np.array([2, 3, 3, 4]).astype(np.float32)), name="w")
 
-        def construct(self, x):
+        def call(self, x):
             return self.add(x, self.y)
 
     x = Tensor(np.array([2, 3, 3, 4]).astype(np.float32))
@@ -128,14 +128,14 @@ def test_mindir_export_larger_parameter_exceed_1t_mock():
     ms.train.serialization.TOTAL_SAVE = 0
     ms.train.serialization.PARAMETER_SPLIT_SIZE = 129 / 1024
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.addn = ops.AddN()
             self.y = Parameter(Tensor(np.array([2, 3, 3, 4]).astype(np.float32)), name="w")
             self.z = Parameter(Tensor(np.array([2, 3, 3, 4])).astype(np.float32), name="z")
 
-        def construct(self, x):
+        def call(self, x):
             return self.addn((x, self.y, self.z))
 
     x = Tensor(np.array([2, 3, 3, 4]).astype(np.float32))
@@ -151,7 +151,7 @@ def test_mindir_export_larger_parameter_exceed_1t_mock():
     assert export_data == correct_data
 
 
-class AddNet(nn.Cell):
+class AddNet(nn.Module):
     def __init__(self, parameter1, parameter2):
         super().__init__()
         self.parameter1 = parameter1
@@ -160,7 +160,7 @@ class AddNet(nn.Cell):
         self.add = ops.Add()
         self.relu = ops.ReLU()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.mul(x, self.parameter1)
         y = self.mul(y, self.parameter2)
         result = self.add(x, y)

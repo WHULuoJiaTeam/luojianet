@@ -23,14 +23,14 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class Net_Pool_Grad(nn.Cell):
+class Net_Pool_Grad(nn.Module):
     def __init__(self):
         super(Net_Pool_Grad, self).__init__()
         self.maxpool_grad_fun = G.MaxPoolGrad(pad_mode="VALID",
                                               kernel_size=2,
                                               strides=2)
 
-    def construct(self, x, a, d):
+    def call(self, x, a, d):
         return self.maxpool_grad_fun(x, a, d)
 
 

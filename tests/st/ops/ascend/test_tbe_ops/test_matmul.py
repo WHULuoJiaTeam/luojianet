@@ -22,13 +22,13 @@ from luojianet_ms.common.api import ms_function
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.matmul = P.MatMul()
 
     @ms_function
-    def construct(self, x1_, x2_):
+    def call(self, x1_, x2_):
         return self.matmul(x1_, x2_)
 
 

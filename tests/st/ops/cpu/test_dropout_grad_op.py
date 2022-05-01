@@ -27,12 +27,12 @@ from luojianet_ms.ops.operations import _grad_ops as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, keep_prob=0.5):
         super(Net, self).__init__()
         self.dropout_grad = P.DropoutGrad(keep_prob)
 
-    def construct(self, output, mask):
+    def call(self, output, mask):
         return self.dropout_grad(output, mask)
 
 

@@ -23,13 +23,13 @@ from luojianet_ms import Tensor, Parameter
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, param):
         super(Net, self).__init__()
         self.var = Parameter(param, name="var")
         self.assign = P.Assign()
 
-    def construct(self, param):
+    def call(self, param):
         return self.assign(self.var, param)
 
 

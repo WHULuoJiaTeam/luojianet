@@ -25,13 +25,13 @@ from luojianet_ms.nn.optim import Momentum, LARS
 from luojianet_ms.ops import operations as P
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network, strategy3):
         super(NetWithLoss, self).__init__()
         self.loss = P.SoftmaxCrossEntropyWithLogits().shard(strategy3)
         self.network = network
 
-    def construct(self, x, b):
+    def call(self, x, b):
         predict = self.network(x)
         return self.loss(predict, b)[0]
 
@@ -43,14 +43,14 @@ def compile_net(net, x, b):
 
 
 def test_momentum():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, weight):
             super().__init__()
             self.weight = Parameter(weight, "w1")
             self.matmul = P.MatMul(transpose_a=False, transpose_b=True).shard(strategy1)
             self.relu = P.ReLU().shard(strategy2)
 
-        def construct(self, x):
+        def call(self, x):
             out = self.matmul(x, self.weight)
             out = self.relu(out)
             return out
@@ -77,14 +77,14 @@ def test_momentum():
 
 
 def test_momentum_with_loss_scale():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, weight):
             super().__init__()
             self.weight = Parameter(weight, "w1")
             self.matmul = P.MatMul(transpose_a=False, transpose_b=True).shard(strategy1)
             self.relu = P.ReLU().shard(strategy2)
 
-        def construct(self, x):
+        def call(self, x):
             out = self.matmul(x, self.weight)
             out = self.relu(out)
             return out
@@ -111,14 +111,14 @@ def test_momentum_with_loss_scale():
 
 
 def test_momentum_with_dynamic_lr():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, weight):
             super().__init__()
             self.weight = Parameter(weight, "w1")
             self.matmul = P.MatMul(transpose_a=False, transpose_b=True).shard(strategy1)
             self.relu = P.ReLU().shard(strategy2)
 
-        def construct(self, x):
+        def call(self, x):
             out = self.matmul(x, self.weight)
             out = self.relu(out)
             return out
@@ -146,14 +146,14 @@ def test_momentum_with_dynamic_lr():
 
 
 def test_momentum_with_loss_scale_and_dynamic_lr():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, weight):
             super().__init__()
             self.weight = Parameter(weight, "w1")
             self.matmul = P.MatMul(transpose_a=False, transpose_b=True).shard(strategy1)
             self.relu = P.ReLU().shard(strategy2)
 
-        def construct(self, x):
+        def call(self, x):
             out = self.matmul(x, self.weight)
             out = self.relu(out)
             return out
@@ -182,14 +182,14 @@ def test_momentum_with_loss_scale_and_dynamic_lr():
 
 
 def test_lars():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, weight):
             super().__init__()
             self.weight = Parameter(weight, "w1")
             self.matmul = P.MatMul(transpose_a=False, transpose_b=True).shard(strategy1)
             self.relu = P.ReLU().shard(strategy2)
 
-        def construct(self, x):
+        def call(self, x):
             out = self.matmul(x, self.weight)
             out = self.relu(out)
             return out

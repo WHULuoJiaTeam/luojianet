@@ -21,13 +21,13 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms import nn
 
 
-class NetCropAndResize(nn.Cell):
+class NetCropAndResize(nn.Module):
     def __init__(self, method_="bilinear", extrapolation_value_=0.0):
         super(NetCropAndResize, self).__init__()
         self.op = P.CropAndResize(
             method=method_, extrapolation_value=extrapolation_value_)
 
-    def construct(self, image, boxes, box_index, channel):
+    def call(self, image, boxes, box_index, channel):
         return self.op(image, boxes, box_index, channel)
 
 

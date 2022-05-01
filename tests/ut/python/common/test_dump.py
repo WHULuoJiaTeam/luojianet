@@ -27,17 +27,17 @@ from luojianet_ms import set_dump
 def test_set_dump_on_cell():
     """
     Feature: Python API set_dump.
-    Description: Use set_dump API on Cell instance.
+    Description: Use set_dump API on Module instance.
     Expectation: Success.
     """
 
-    class MyNet(nn.Cell):
+    class MyNet(nn.Module):
         def __init__(self):
             super(MyNet, self).__init__()
             self.conv1 = nn.Conv2d(5, 6, 5, pad_mode='valid')
             self.relu1 = nn.ReLU()
 
-        def construct(self, x):
+        def call(self, x):
             x = self.conv1(x)
             x = self.relu1(x)
             return x

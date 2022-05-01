@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class LayerNormNet(nn.Cell):
+class LayerNormNet(nn.Module):
     def __init__(self, begin_norm_axis, begin_params_axis):
         super(LayerNormNet, self).__init__()
         self.norm = P.LayerNorm(begin_norm_axis, begin_params_axis)
 
-    def construct(self, x, gamma, beta):
+    def call(self, x, gamma, beta):
         return self.norm(x, gamma, beta)
 
 

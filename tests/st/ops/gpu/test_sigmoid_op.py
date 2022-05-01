@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetSigmoid(nn.Cell):
+class NetSigmoid(nn.Module):
     def __init__(self):
         super(NetSigmoid, self).__init__()
         self.sigmoid = P.Sigmoid()
 
-    def construct(self, x):
+    def call(self, x):
         return self.sigmoid(x)
 
 

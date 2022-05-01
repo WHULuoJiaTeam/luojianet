@@ -24,14 +24,14 @@ context.set_context(mode=context.GRAPH_MODE,
                     device_target="Ascend")
 
 
-class EditDistance(nn.Cell):
+class EditDistance(nn.Module):
     def __init__(self, hypothesis_shape, truth_shape, normalize=True):
         super(EditDistance, self).__init__()
         self.edit_distance = P.EditDistance(normalize)
         self.hypothesis_shape = hypothesis_shape
         self.truth_shape = truth_shape
 
-    def construct(self, hypothesis_indices, hypothesis_values, truth_indices, truth_values):
+    def call(self, hypothesis_indices, hypothesis_values, truth_indices, truth_values):
         return self.edit_distance(hypothesis_indices, hypothesis_values, self.hypothesis_shape,
                                   truth_indices, truth_values, self.truth_shape)
 

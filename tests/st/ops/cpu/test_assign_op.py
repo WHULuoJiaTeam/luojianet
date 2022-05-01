@@ -26,14 +26,14 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Assign(nn.Cell):
+class Assign(nn.Module):
     def __init__(self, x, y):
         super(Assign, self).__init__()
         self.x = Parameter(initializer(x, x.shape), name="x")
         self.y = Parameter(initializer(y, y.shape), name="y")
         self.assign = P.Assign()
 
-    def construct(self):
+    def call(self):
         self.assign(self.y, self.x)
         return self.y
 

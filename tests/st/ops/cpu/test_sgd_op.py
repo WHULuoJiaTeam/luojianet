@@ -27,7 +27,7 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
-class NetSGD(nn.Cell):
+class NetSGD(nn.Module):
     def __init__(self):
         super(NetSGD, self).__init__()
         self.batch_size = 1
@@ -35,7 +35,7 @@ class NetSGD(nn.Cell):
         weight = Tensor(np.ones([10, 16]).astype(np.float32) * 0.01)
         self.fc1 = Dense(16, 10, weight_init=weight)
 
-    def construct(self, input_x):
+    def call(self, input_x):
         output = self.reshape(input_x, (self.batch_size, -1))
         output = self.fc1(output)
         return output

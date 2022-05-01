@@ -24,23 +24,23 @@ from luojianet_ms.common.tensor import Tensor
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class MemberNotIn(nn.Cell):
+class MemberNotIn(nn.Module):
     def __init__(self):
         super(MemberNotIn, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def call(self, x, y):
         not_in_v = x not in y
         return not_in_v
 
 
-class MemberNotInSpec(nn.Cell):
+class MemberNotInSpec(nn.Module):
     def __init__(self, x, y):
         super(MemberNotInSpec, self).__init__()
         self.x = x
         self.y = y
 
-    def construct(self, x, y):
+    def call(self, x, y):
         not_in_v = self.x not in self.y
         return not_in_v
 

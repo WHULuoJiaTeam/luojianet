@@ -30,31 +30,31 @@ from luojianet_ms._c_expression import load_mindir
 import luojianet_ms.ops._grad as g
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, op):
         super(Net, self).__init__()
         self.op = op
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         return self.op(*inputs)
 
 
-class TupleInputNet(nn.Cell):
+class TupleInputNet(nn.Module):
     def __init__(self, op):
         super(TupleInputNet, self).__init__()
         self.op = op
 
-    def construct(self, x):
+    def call(self, x):
         return self.op((x,))
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, network):
         super(GradNet, self).__init__()
         self.grad = ops.GradOperation(get_all=True)
         self.network = network
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         gout = self.grad(self.network)(*inputs)
         return gout
 
@@ -198,13 +198,13 @@ def test_onehot():
 
 
 def test_assign():
-    class AssignNet(nn.Cell):
+    class AssignNet(nn.Module):
         def __init__(self):
             super(AssignNet, self).__init__()
             self.assign = P.Assign()
             self.variable = Parameter(Tensor([1.0], mstype.float32), name="variable")
 
-        def construct(self, x):
+        def call(self, x):
             return self.assign(self.variable, x)
 
     value = Tensor([2.0], mstype.float32)
@@ -214,13 +214,13 @@ def test_assign():
 
 
 def test_assign_add():
-    class AssignAddNet(nn.Cell):
+    class AssignAddNet(nn.Module):
         def __init__(self):
             super(AssignAddNet, self).__init__()
             self.assign_add = P.AssignAdd()
             self.variable = Parameter(initializer(1, [1], mstype.int64), name="global_step")
 
-        def construct(self, x):
+        def call(self, x):
             return self.assign_add(self.variable, x)
 
     value = Tensor(np.ones([1]).astype(np.int64) * 100)
@@ -230,13 +230,13 @@ def test_assign_add():
 
 
 def test_assign_sub():
-    class AssignSubNet(nn.Cell):
+    class AssignSubNet(nn.Module):
         def __init__(self):
             super(AssignSubNet, self).__init__()
             self.assign = P.AssignSub()
             self.variable = Parameter(initializer(1, [1], mstype.int32), name="global_step")
 
-        def construct(self, x):
+        def call(self, x):
             return self.assign(self.variable, x)
 
     value = Tensor(np.ones([1]).astype(np.int32) * 100)
@@ -368,14 +368,14 @@ def test_scatter_max():
     Expectation: Load the bprop mindir successfully.
     """
 
-    class ScatterMaxNet(nn.Cell):
+    class ScatterMaxNet(nn.Module):
         def __init__(self):
             super(ScatterMaxNet, self).__init__()
             self.scatter_max = P.ScatterMax()
             self.input_x = Parameter(Tensor(np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]), mstype.float32),
                                      name="input_x")
 
-        def construct(self, indices, updates):
+        def call(self, indices, updates):
             return self.scatter_max(self.input_x, indices, updates)
 
     indices = Tensor(np.array([[0, 0], [1, 1]]), mstype.int32)
@@ -407,12 +407,12 @@ def test_tuple_getitem():
     Expectation: Load the bprop mindir successfully.
     """
 
-    class TupleGetitemNet(nn.Cell):
+    class TupleGetitemNet(nn.Module):
         def __init__(self):
             super(TupleGetitemNet, self).__init__()
             self.maxpool_arg = P.MaxPoolWithArgmax(pad_mode="VALID", kernel_size=2, strides=1)
 
-        def construct(self, x):
+        def call(self, x):
             output = self.maxpool_arg(x)
             return output[0]
 
@@ -429,13 +429,13 @@ def test_depend():
     Expectation: Load the bprop mindir successfully.
     """
 
-    class DependNet(nn.Cell):
+    class DependNet(nn.Module):
         def __init__(self):
             super(DependNet, self).__init__()
             self.softmax = P.Softmax()
             self.depend = ops.Depend()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             mul = x * y
             y = self.depend(y, mul)
             output = self.softmax(y)
@@ -455,11 +455,11 @@ def test_stop_gradient():
     Expectation: Load the bprop mindir successfully.
     """
 
-    class StopGradientNet(nn.Cell):
+    class StopGradientNet(nn.Module):
         def __init__(self):
             super(StopGradientNet, self).__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             c = x * y
             c_s = F.stop_gradient(c)
             return c_s
@@ -478,11 +478,11 @@ def test_switch():
     Expectation: Load the bprop mindir successfully.
     """
 
-    class SwitchNet(nn.Cell):
+    class SwitchNet(nn.Module):
         def __init__(self):
             super(SwitchNet, self).__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             if x > y:
                 return x
             return y
@@ -501,13 +501,13 @@ def test_update_state():
     Expectation: Load the bprop mindir successfully.
     """
 
-    class UpdateStateNet(nn.Cell):
+    class UpdateStateNet(nn.Module):
         def __init__(self):
             super(UpdateStateNet, self).__init__()
             self.assign_add = P.AssignAdd()
             self.variable = Parameter(initializer(1, [1], mstype.int64), name="global_step")
 
-        def construct(self, x):
+        def call(self, x):
             return self.assign_add(self.variable, x)
 
     value = Tensor(np.ones([1]).astype(np.int64) * 100)
@@ -523,13 +523,13 @@ def test_load():
     Expectation: Load the bprop mindir successfully.
     """
 
-    class LoadNet(nn.Cell):
+    class LoadNet(nn.Module):
         def __init__(self):
             super(LoadNet, self).__init__()
             self.add = P.Add()
             self.variable = Parameter(initializer(1, [1], mstype.int64), name="global_step")
 
-        def construct(self, x):
+        def call(self, x):
             return self.add(self.variable, x)
 
     value = Tensor(np.ones([1]).astype(np.int64) * 100)

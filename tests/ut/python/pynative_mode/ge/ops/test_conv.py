@@ -30,7 +30,7 @@ def get_me_conv_output(input_data, weight, in_channel, out_channel, kernel_size,
                        stride=1, padding=0, has_bias=False, bias=None):
     """ get_me_conv_output """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self, weight, in_channel, out_channel, kernel_size,
@@ -45,11 +45,11 @@ def get_me_conv_output(input_data, weight, in_channel, out_channel, kernel_size,
                                   weight_init=weight,
                                   bias_init=bias)
 
-        def construct(self, input_x):
+        def call(self, input_x):
             return self.conv(input_x)
 
     net = Net(weight, in_channel, out_channel, kernel_size, stride, padding, has_bias, bias)
-    out = net.construct(input_data)
+    out = net.call(input_data)
     return out.asnumpy()
 
 

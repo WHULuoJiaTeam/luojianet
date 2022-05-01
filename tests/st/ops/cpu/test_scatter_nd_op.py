@@ -21,13 +21,13 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, _shape):
         super(Net, self).__init__()
         self.shape = _shape
         self.scatternd = P.ScatterNd()
 
-    def construct(self, indices, update):
+    def call(self, indices, update):
         return self.scatternd(indices, update, self.shape)
 
 

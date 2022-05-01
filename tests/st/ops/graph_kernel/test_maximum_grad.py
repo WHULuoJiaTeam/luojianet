@@ -18,16 +18,16 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations._grad_ops as G
 
 
-class MaxmumGradNet(Cell):
+class MaxmumGradNet(Module):
     def __init__(self):
         super(MaxmumGradNet, self).__init__()
         self.maximum_grad = G.MaximumGrad()
 
-    def construct(self, x, y, dy):
+    def call(self, x, y, dy):
         return self.maximum_grad(x, y, dy)
 
 

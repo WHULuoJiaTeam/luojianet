@@ -24,13 +24,13 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetBoundingBoxDecode(nn.Cell):
+class NetBoundingBoxDecode(nn.Module):
     def __init__(self, means=(0.0, 0.0, 0.0, 0.0), stds=(1.0, 1.0, 1.0, 1.0)):
         super(NetBoundingBoxDecode, self).__init__()
         self.decode = P.BoundingBoxDecode(max_shape=(768, 1280), means=means, stds=stds,
                                           wh_ratio_clip=0.016)
 
-    def construct(self, anchor, groundtruth):
+    def call(self, anchor, groundtruth):
         return self.decode(anchor, groundtruth)
 
 @pytest.mark.level0

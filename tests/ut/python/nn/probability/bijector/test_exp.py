@@ -34,7 +34,7 @@ def test_type():
         msb.Exp(name=0.1)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """
     Test class: forward and inverse pass of bijector.
     """
@@ -44,7 +44,7 @@ class Net(nn.Cell):
         self.b1 = msb.Exp()
         self.b2 = msb.Exp()
 
-    def construct(self, x_):
+    def call(self, x_):
         forward = self.b1.forward(x_)
         inverse = self.b1.inverse(forward)
         return x_ - inverse
@@ -61,7 +61,7 @@ def test1():
     assert isinstance(ans, Tensor)
 
 
-class Jacobian(nn.Cell):
+class Jacobian(nn.Module):
     """
     Test class: forward and inverse pass of bijector.
     """
@@ -71,7 +71,7 @@ class Jacobian(nn.Cell):
         self.b1 = msb.Exp()
         self.b2 = msb.Exp()
 
-    def construct(self, x_):
+    def call(self, x_):
         ans1 = self.b1.forward_log_jacobian(x_)
         ans2 = self.b1.inverse_log_jacobian(x_)
         return ans1 + ans2

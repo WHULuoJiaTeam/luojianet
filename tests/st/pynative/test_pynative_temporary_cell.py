@@ -23,14 +23,14 @@ from luojianet_ms.nn.optim import Momentum
 from luojianet_ms.common import ParameterTuple
 
 
-class GradofParams(nn.Cell):
+class GradofParams(nn.Module):
     def __init__(self, net, sens=False):
         super().__init__()
         self.grad = P.GradOperation(get_all=False, get_by_list=True, sens_param=sens)
         self.net = net
         self.params = ParameterTuple(self.net.trainable_params())
 
-    def construct(self, *x):
+    def call(self, *x):
         out = self.grad(self.net, self.params)(*x)
         return out
 
@@ -42,26 +42,26 @@ class GradofParams(nn.Cell):
 def test_pynative_temporary_cell_variables():
     context.set_context(mode=context.PYNATIVE_MODE)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.add = P.Add()
             self.conv = nn.Conv2d(1, 1, 3, weight_init='ones', pad_mode='pad')
             self.relu = nn.ReLU()
 
-        def construct(self, x):
+        def call(self, x):
             x = self.conv(x)
             x = self.relu(x)
             x = self.add(x, x)
             return x
 
-    class TempCellNet(nn.Cell):
+    class TempCellNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.add = P.Add()
             self.conv = nn.Conv2d(1, 1, 3, weight_init='ones', pad_mode='pad')
 
-        def construct(self, x):
+        def call(self, x):
             x = self.conv(x)
             x = nn.ReLU()(x)
             x = self.add(x, x)

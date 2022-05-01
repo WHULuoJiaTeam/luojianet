@@ -17,7 +17,7 @@ import numpy as np
 
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import operations as P
 
@@ -25,22 +25,22 @@ context.set_context(device_target="Ascend")
 grad = C.GradOperation(get_all=True, sens_param=True)
 
 
-class MaxNetMe(Cell):
+class MaxNetMe(Module):
     def __init__(self):
         super(MaxNetMe, self).__init__()
         self.max = P.Maximum()
 
-    def construct(self, inputA, inputB):
+    def call(self, inputA, inputB):
         x = self.max(inputA, inputB)
         return x
 
 
-class GradWrap(Cell):
+class GradWrap(Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, inputA, inputB, sens):
+    def call(self, inputA, inputB, sens):
         gout = grad(self.network)(inputA, inputB, sens)
         return gout
 

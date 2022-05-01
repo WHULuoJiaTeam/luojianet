@@ -25,48 +25,48 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class SubNet(nn.Cell):
+class SubNet(nn.Module):
     def __init__(self):
         super(SubNet, self).__init__()
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.sub(x, y)
 
 
-class DivNet(nn.Cell):
+class DivNet(nn.Module):
     def __init__(self):
         super(DivNet, self).__init__()
         self.div = P.Div()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.div(x, y)
 
 
-class FloorDivNet(nn.Cell):
+class FloorDivNet(nn.Module):
     def __init__(self):
         super(FloorDivNet, self).__init__()
         self.floor_div = P.FloorDiv()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.floor_div(x, y)
 
 
-class ModNet(nn.Cell):
+class ModNet(nn.Module):
     def __init__(self):
         super(ModNet, self).__init__()
         self.mod = P.Mod()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.mod(x, y)
 
 
-class FloorModNet(nn.Cell):
+class FloorModNet(nn.Module):
     def __init__(self):
         super(FloorModNet, self).__init__()
         self.floor_mod = P.FloorMod()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.floor_mod(x, y)
 
 

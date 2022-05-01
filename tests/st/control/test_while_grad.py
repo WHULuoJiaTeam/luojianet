@@ -20,20 +20,20 @@ import luojianet_ms.nn as nn
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
 
-class Net(nn.Cell):
-    def construct(self, x, y):
+class Net(nn.Module):
+    def call(self, x, y):
         while x < y:
             x = x * x + 1
         return x
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super().__init__()
         self.net = net
         self.grad_op = C.GradOperation(get_all=True)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         gradient_function = self.grad_op(self.net)
         return gradient_function(x, y)
 

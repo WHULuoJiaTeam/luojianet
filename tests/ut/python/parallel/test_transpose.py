@@ -48,7 +48,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class TransposeNet(nn.Cell):
+class TransposeNet(nn.Module):
     def __init__(self, strategy1, strategy2):
         super(TransposeNet, self).__init__()
         self.matmul = P.MatMul().shard(((8, 1), (1, 1)))
@@ -56,7 +56,7 @@ class TransposeNet(nn.Cell):
         self.transpose1 = P.Transpose().shard(strategy1)
         self.transpose2 = P.Transpose().shard(strategy2)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.matmul(x, self.matmul_weight)
         x = self.transpose1(x, (1, 0))
         x = self.transpose2(x, (1, 0))

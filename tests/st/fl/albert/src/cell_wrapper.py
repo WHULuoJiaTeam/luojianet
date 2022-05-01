@@ -23,7 +23,7 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.parameter import ParameterTuple
 
 
-class ClipByNorm(nn.Cell):
+class ClipByNorm(nn.Module):
     """
     Clips tensor values to a maximum :math:`L_2`-norm.
     """
@@ -42,7 +42,7 @@ class ClipByNorm(nn.Cell):
         self.expand_dims = P.ExpandDims()
         self.dtype = P.DType()
 
-    def construct(self, x, clip_norm):
+    def call(self, x, clip_norm):
         """add ms_function decorator for pynative mode"""
         mul_x = F.square(x)
         if mul_x.shape == (1,):
@@ -99,7 +99,7 @@ def tensor_grad_scale(scale, grad):
     return grad * reciprocal(scale)
 
 
-class ClipGradients(nn.Cell):
+class ClipGradients(nn.Module):
     """
     Clip gradients.
 
@@ -117,7 +117,7 @@ class ClipGradients(nn.Cell):
         self.cast = P.Cast()
         self.dtype = P.DType()
 
-    def construct(self,
+    def call(self,
                   grads,
                   clip_type,
                   clip_value):
@@ -136,7 +136,7 @@ class ClipGradients(nn.Cell):
         return new_grads
 
 
-class CrossEntropy(nn.Cell):
+class CrossEntropy(nn.Module):
     """
     Cross Entropy loss
     """
@@ -153,7 +153,7 @@ class CrossEntropy(nn.Cell):
         self.cast = P.Cast()
         self.num_labels = num_labels
 
-    def construct(self, logits, label_ids):
+    def call(self, logits, label_ids):
         label_ids = self.reshape(label_ids, self.last_idx)
         one_hot_labels = self.onehot(label_ids, self.num_labels, self.on_value, self.off_value)
         per_example_loss = self.neg(self.reduce_sum(one_hot_labels * logits, self.last_idx))
@@ -162,19 +162,19 @@ class CrossEntropy(nn.Cell):
         return return_value
 
 
-class NetworkWithCLSLoss(nn.Cell):
+class NetworkWithCLSLoss(nn.Module):
     def __init__(self, network):
         super(NetworkWithCLSLoss, self).__init__(auto_prefix=False)
         self.cls_network = network
         self.loss_fct = nn.SoftmaxCrossEntropyWithLogits(sparse=True, reduction='mean')
 
-    def construct(self, input_ids, input_mask, token_type_id, label_ids):
+    def call(self, input_ids, input_mask, token_type_id, label_ids):
         logits = self.cls_network(input_ids, input_mask, token_type_id)
         cls_loss = self.loss_fct(logits, label_ids)
         return cls_loss
 
 
-class NetworkWithMLMLoss(nn.Cell):
+class NetworkWithMLMLoss(nn.Module):
     def __init__(self, network, vocab_size=21128):
         super(NetworkWithMLMLoss, self).__init__(auto_prefix=False)
         self.mlm_network = network
@@ -182,7 +182,7 @@ class NetworkWithMLMLoss(nn.Cell):
         self.reshape = P.Reshape()
         self.loss_fct = nn.SoftmaxCrossEntropyWithLogits(sparse=True, reduction='mean')
 
-    def construct(self, input_ids, input_mask, token_type_id, label_ids):
+    def call(self, input_ids, input_mask, token_type_id, label_ids):
         prediction_scores = self.mlm_network(input_ids, input_mask, token_type_id)
         prediction_scores = self.reshape(prediction_scores, (-1, self.vocab_size))
         label_ids = self.reshape(label_ids, (-1,))
@@ -190,7 +190,7 @@ class NetworkWithMLMLoss(nn.Cell):
         return mlm_loss
 
 
-class NetworkTrainCell(nn.Cell):
+class NetworkTrainCell(nn.Module):
     def __init__(self, network, optimizer, sens=1.0):
         super(NetworkTrainCell, self).__init__(auto_prefix=False)
         self.network = network
@@ -253,7 +253,7 @@ class NetworkTrainCell(nn.Cell):
             index += 1
         return ParameterTuple(filtered_weights), tuple(weight_names), tuple(weight_indices)
 
-    def construct(self, input_ids, input_mask, token_type_id, label_ids):
+    def call(self, input_ids, input_mask, token_type_id, label_ids):
         weights = self.weights
         res = self._communication_with_server_1(self.get_weights_by_key_input_1)
         input_ids = F.depend(input_ids, res)
@@ -271,7 +271,7 @@ class NetworkTrainCell(nn.Cell):
         return loss
 
 
-class NetworkNoClientTrainCell(nn.Cell):
+class NetworkNoClientTrainCell(nn.Module):
     def __init__(self, network, optimizer, sens=1.0):
         super(NetworkNoClientTrainCell, self).__init__(auto_prefix=False)
         self.network = network
@@ -286,7 +286,7 @@ class NetworkNoClientTrainCell(nn.Cell):
         self.cast = P.Cast()
         self.hyper_map = C.HyperMap()
 
-    def construct(self, input_ids, input_mask, token_type_id, label_ids):
+    def call(self, input_ids, input_mask, token_type_id, label_ids):
         weights = self.weights
         loss = self.network(input_ids, input_mask, token_type_id, label_ids)
         grads = self.grad(self.network, weights)(input_ids,

@@ -153,23 +153,23 @@ def test_pad_3d_pad():
 
 
 # For testing backprop
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_, output_grad):
+    def call(self, input_, output_grad):
         return self.grad(self.network)(input_, output_grad)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.pad = nn.Pad(mode="CONSTANT", paddings=(
             (0, 0), (4, 3), (1, 1), (0, 2)))
 
-    def construct(self, x):
+    def call(self, x):
         return self.pad(x)
 
 

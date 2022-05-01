@@ -18,16 +18,16 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 import luojianet_ms.common.dtype as mstype
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.oneslike = P.OnesLike()
 
-    def construct(self, shape, dtype, x):
+    def call(self, shape, dtype, x):
         return self.oneslike(x)
 
 def get_output(shape, dtype, nptype, enable_graph_kernel=False):

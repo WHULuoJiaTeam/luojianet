@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class ReduceProd(nn.Cell):
+class ReduceProd(nn.Module):
     def __init__(self, keep_dims):
         super(ReduceProd, self).__init__()
         self.reduce_prod = P.ReduceProd(keep_dims=keep_dims)
 
-    def construct(self, x, axis):
+    def call(self, x, axis):
         return self.reduce_prod(x, axis)
 
 

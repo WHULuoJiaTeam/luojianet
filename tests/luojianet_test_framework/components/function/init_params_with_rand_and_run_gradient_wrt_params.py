@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 
-"""Component that construct function that init params with random function and return gradients wrt params."""
+"""Component that call function that init params with random function and return gradients wrt params."""
 
 from luojianet_ms.ops.composite import GradOperation
 from ...components.icomponent import IBuilderComponent

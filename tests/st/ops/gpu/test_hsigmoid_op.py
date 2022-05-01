@@ -24,32 +24,32 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.composite import GradOperation
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_x, dout):
+    def call(self, input_x, dout):
         return self.grad(self.network)(input_x, dout)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.HSigmoid = P.HSigmoid()
 
-    def construct(self, x):
+    def call(self, x):
         return self.HSigmoid(x)
 
 
-class DynamicNet(nn.Cell):
+class DynamicNet(nn.Module):
     def __init__(self):
         super(DynamicNet, self).__init__()
         self.HSigmoid = P.HSigmoid()
         self.d = inner.GpuConvertToDynamicShape()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.d(x)
         return self.HSigmoid(x)
 

@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class NetRsqrtGrad(nn.Cell):
+class NetRsqrtGrad(nn.Module):
     def __init__(self):
         super(NetRsqrtGrad, self).__init__()
         self.rsqrt_grad = G.RsqrtGrad()
 
-    def construct(self, x, dx):
+    def call(self, x, dx):
         return self.rsqrt_grad(x, dx)
 
 

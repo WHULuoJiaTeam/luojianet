@@ -48,14 +48,14 @@ def teardown_module():
             os.remove(filename)
 
 
-class BatchNormTester(nn.Cell):
+class BatchNormTester(nn.Module):
     """used to test exporting network in training mode in onnx format"""
 
     def __init__(self, num_features):
         super(BatchNormTester, self).__init__()
         self.bn = nn.BatchNorm2d(num_features)
 
-    def construct(self, x):
+    def call(self, x):
         return self.bn(x)
 
 
@@ -78,7 +78,7 @@ def test_batchnorm_train_onnx_export():
     os.remove(file_name)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """LeNet5 definition"""
 
     def __init__(self):
@@ -92,7 +92,7 @@ class LeNet5(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.flatten = P.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.max_pool2d(self.relu(self.conv1(x)))
         x = self.max_pool2d(self.relu(self.conv2(x)))
         x = self.flatten(x)
@@ -102,7 +102,7 @@ class LeNet5(nn.Cell):
         return x
 
 
-class DefinedNet(nn.Cell):
+class DefinedNet(nn.Module):
     """simple Net definition with maxpoolwithargmax."""
 
     def __init__(self, num_classes=10):
@@ -114,7 +114,7 @@ class DefinedNet(nn.Cell):
         self.flatten = nn.Flatten()
         self.fc = nn.Dense(int(56 * 56 * 64), num_classes)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -124,7 +124,7 @@ class DefinedNet(nn.Cell):
         return x
 
 
-class DepthwiseConv2dAndReLU6(nn.Cell):
+class DepthwiseConv2dAndReLU6(nn.Module):
     """Net for testing DepthwiseConv2d and ReLU6"""
     def __init__(self, input_channel, kernel_size):
         super(DepthwiseConv2dAndReLU6, self).__init__()
@@ -134,13 +134,13 @@ class DepthwiseConv2dAndReLU6(nn.Cell):
         self.depthwise_conv = P.DepthwiseConv2dNative(channel_multiplier=1, kernel_size=(kernel_size, kernel_size))
         self.relu6 = nn.ReLU6()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.depthwise_conv(x, self.weight)
         x = self.relu6(x)
         return x
 
 
-class DeepFMOpNet(nn.Cell):
+class DeepFMOpNet(nn.Module):
     """Net definition with Gatherv2 and Tile and Square."""
     def __init__(self):
         super(DeepFMOpNet, self).__init__()
@@ -148,7 +148,7 @@ class DeepFMOpNet(nn.Cell):
         self.square = P.Square()
         self.tile = P.Tile()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.tile(x, (1000, 1))
         x = self.square(x)
         x = self.gather(x, y, 0)

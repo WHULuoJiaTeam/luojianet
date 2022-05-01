@@ -84,7 +84,7 @@ def create_dataset(repeat_num=1, training=True, batch_size=32):
     return data_set
 
 
-class CrossEntropyLoss(nn.Cell):
+class CrossEntropyLoss(nn.Module):
     def __init__(self):
         super(CrossEntropyLoss, self).__init__()
         self.cross_entropy = P.SoftmaxCrossEntropyWithLogits()
@@ -93,7 +93,7 @@ class CrossEntropyLoss(nn.Cell):
         self.one = Tensor(1.0, mstype.float32)
         self.zero = Tensor(0.0, mstype.float32)
 
-    def construct(self, logits, label):
+    def call(self, logits, label):
         label = self.one_hot(label, F.shape(logits)[1], self.one, self.zero)
         loss = self.cross_entropy(logits, label)[0]
         loss = self.mean(loss, (-1,))

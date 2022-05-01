@@ -121,7 +121,7 @@ def test_stop5():
     print("test_stop5:", grad_stop_test5(2, 3))
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     """ GradWrap definition """
 
     def __init__(self, network):
@@ -130,7 +130,7 @@ class GradWrap(nn.Cell):
         self.weights = ParameterTuple(network.get_parameters())
 
     @ms_function
-    def construct(self, x, label):
+    def call(self, x, label):
         weights = self.weights
         return grad_by_list(self.network, weights)(x, label)
 
@@ -139,7 +139,7 @@ class GradWrap(nn.Cell):
 def test_softmaxloss_grad():
     """ test_softmaxloss_grad """
 
-    class NetWithLossClass(nn.Cell):
+    class NetWithLossClass(nn.Module):
         """ NetWithLossClass definition """
 
         def __init__(self, network):
@@ -148,11 +148,11 @@ def test_softmaxloss_grad():
             self.network = network
 
         @ms_function
-        def construct(self, x, label):
+        def call(self, x, label):
             predict = self.network(x)
             return self.loss(predict, label)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
@@ -166,7 +166,7 @@ def test_softmaxloss_grad():
             self.cast = P.Cast()
 
         @ms_function
-        def construct(self, x):
+        def call(self, x):
             x = self.fc(x, self.weight)
             x = self.cast(x, mstype.float32)
             x = self.relu(self.fc2(x))
@@ -185,12 +185,12 @@ def test_softmaxloss_grad():
 
 
 def test_stop_gradient_1():
-    class Mul(nn.Cell):
+    class Mul(nn.Module):
         def __init__(self):
             super(Mul, self).__init__()
 
         @ms_function
-        def construct(self, x, y):
+        def call(self, x, y):
             ret = x * y
             ret = stop_gradient(ret)
             return ret
@@ -203,23 +203,23 @@ def test_stop_gradient_1():
 
 
 def test_stop_gradient_2():
-    class Mul(nn.Cell):
+    class Mul(nn.Module):
         def __init__(self):
             super(Mul, self).__init__()
 
         @ms_function
-        def construct(self, x, y):
+        def call(self, x, y):
             c = x * y
             z = x * y
             return c, z
 
-    class MulAdd(nn.Cell):
+    class MulAdd(nn.Module):
         def __init__(self):
             super(MulAdd, self).__init__()
             self.mul = Mul()
 
         @ms_function
-        def construct(self, x, y):
+        def call(self, x, y):
             u = x + y
             v = x - y
             c, z = self.mul(u, v)
@@ -235,12 +235,12 @@ def test_stop_gradient_2():
 
 
 def test_stop_gradient_3():
-    class TupleGetItem(nn.Cell):
+    class TupleGetItem(nn.Module):
         def __init__(self):
             super(TupleGetItem, self).__init__()
 
         @ms_function
-        def construct(self, x1, x2, x3, x4, x5):
+        def call(self, x1, x2, x3, x4, x5):
             z1 = x1 + x1
             z2 = x1 * x2
             t = (z1, z2, x3, x4, x5)
@@ -307,13 +307,13 @@ class PrimWithMultiOutputs(PrimitiveWithInfer):
 
 
 def test_stop_gradient_7():
-    class PrimWithMultiOutputs_(nn.Cell):
+    class PrimWithMultiOutputs_(nn.Module):
         def __init__(self):
             super(PrimWithMultiOutputs_, self).__init__()
             self.prim_with_multi_outputs = PrimWithMultiOutputs()
 
         @ms_function
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             x1, x2 = self.prim_with_multi_outputs(x1, x2)
             x1 = stop_gradient(x1)
             return x1, x2
@@ -327,13 +327,13 @@ def test_stop_gradient_7():
 
 
 def test_stop_gradient_8():
-    class PrimWithMultiOutputs_(nn.Cell):
+    class PrimWithMultiOutputs_(nn.Module):
         def __init__(self):
             super(PrimWithMultiOutputs_, self).__init__()
             self.prim_with_multi_output = PrimWithMultiOutputs()
 
         @ms_function
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             x1, x2 = stop_gradient(self.prim_with_multi_output(x1, x2))
             return x1, x2
 
@@ -346,23 +346,23 @@ def test_stop_gradient_8():
 
 
 def test_stop_gradient_9():
-    class Mul(nn.Cell):
+    class Mul(nn.Module):
         def __init__(self):
             super(Mul, self).__init__()
 
         @ms_function
-        def construct(self, x, y):
+        def call(self, x, y):
             c = x * y
             z = x * y
             return c, z
 
-    class MulAdd(nn.Cell):
+    class MulAdd(nn.Module):
         def __init__(self):
             super(MulAdd, self).__init__()
             self.mul = Mul()
 
         @ms_function
-        def construct(self, x, y):
+        def call(self, x, y):
             u = x + y
             v = x - y
             c, z = self.mul(u, v)
@@ -395,13 +395,13 @@ class PrimWithNoBprop(PrimitiveWithInfer):
 
 
 def test_stop_gradient_10():
-    class PrimWithNoBprop_(nn.Cell):
+    class PrimWithNoBprop_(nn.Module):
         def __init__(self):
             super(PrimWithNoBprop_, self).__init__()
             self.prim_with_no_bprop = PrimWithNoBprop()
 
         @ms_function
-        def construct(self, x, y):
+        def call(self, x, y):
             x = x * y
             x, y = self.prim_with_no_bprop(x, y)
             x = stop_gradient(x)
@@ -415,13 +415,13 @@ def test_stop_gradient_10():
 
 
 def test_stop_gradient_11():
-    class PrimWithNoBprop_(nn.Cell):
+    class PrimWithNoBprop_(nn.Module):
         def __init__(self):
             super(PrimWithNoBprop_, self).__init__()
             self.prim_with_no_bprop = PrimWithNoBprop()
 
         @ms_function
-        def construct(self, x, y):
+        def call(self, x, y):
             x, y = self.prim_with_no_bprop(x, y)
             x = stop_gradient(x)
             return x, y
@@ -433,12 +433,12 @@ def test_stop_gradient_11():
 
 @security_off_wrap
 def test_stop_print():
-    class StopPrint(nn.Cell):
+    class StopPrint(nn.Module):
         def __init__(self):
             super(StopPrint, self).__init__()
             self.printm = P.Print()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             self.printm("StopPrint", x)
             self.printm(y)
             return x, y

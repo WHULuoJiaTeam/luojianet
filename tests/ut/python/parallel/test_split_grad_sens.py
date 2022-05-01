@@ -29,40 +29,40 @@ grad_all = C.GradOperation(get_all=True)
 grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b, sens):
+    def call(self, x, y, b, sens):
         return grad_all_with_sens(self.network)(x, y, b, sens)
 
 
-class GradWrap2(nn.Cell):
+class GradWrap2(nn.Module):
     def __init__(self, network):
         super(GradWrap2, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         loss = self.network(x, y, b)
         sens = P.Fill()(mstype.float32, P.Shape()(loss), 1.0)
         return grad_all_with_sens(self.network)(x, y, b, sens)
 
 
-class GradWrap3(nn.Cell):
+class GradWrap3(nn.Module):
     def __init__(self, network):
         super(GradWrap3, self).__init__()
         self.network = network
 
-    def construct(self, x, y, bias):
+    def call(self, x, y, bias):
         return grad_all(self.network)(x, y, bias)
 
-class GradWrap4(nn.Cell):
+class GradWrap4(nn.Module):
     def __init__(self, network):
         super(GradWrap4, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return grad_all(self.network)(x, y)
 
 def compile_net(net, x, y, b):
@@ -76,13 +76,13 @@ def compile_net_no_bias(net, x, y):
     _cell_graph_executor.compile(net, x, y)
 
 def test_no_grad():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
             self.matmul2 = P.MatMul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul1(x, y)
             out = self.matmul2(out, b)
             return out
@@ -101,13 +101,13 @@ def test_no_grad():
 
 
 def test_grad_sens_parameter_type():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
             self.matmul2 = P.MatMul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul1(x, y)
             out = self.matmul2(out, b)
             return out
@@ -134,13 +134,13 @@ def test_grad_sens_parameter_type():
 
 
 def test_grad_sens_tensor_type():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
             self.matmul2 = P.MatMul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul1(x, y)
             out = self.matmul2(out, b)
             return out
@@ -159,13 +159,13 @@ def test_grad_sens_tensor_type():
 
 
 def test_grad_sens_scalar_broadcast():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy0, strategy1):
             super().__init__()
             self.fc_nobias = P.MatMul(transpose_b=True).shard(strategy0)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy1)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.fc_nobias(x, y)
             out = self.reduce_sum(out, (0, 1))
             return out

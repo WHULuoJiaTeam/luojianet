@@ -21,12 +21,12 @@ import luojianet_ms.context as context
 import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 
-class TensorArrayNet(nn.Cell):
+class TensorArrayNet(nn.Module):
     def __init__(self, dtype, element_shape):
         super(TensorArrayNet, self).__init__()
         self.ta = nn.TensorArray(dtype, element_shape)
 
-    def construct(self, index, value):
+    def call(self, index, value):
         self.ta.write(index, value)
         v = self.ta.read(index)
         s = self.ta.stack()

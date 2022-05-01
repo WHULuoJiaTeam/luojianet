@@ -26,22 +26,22 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class GeluNet(nn.Cell):
+class GeluNet(nn.Module):
     def __init__(self):
         super(GeluNet, self).__init__()
         self.gelu = P.GeLU()
 
-    def construct(self, x):
+    def call(self, x):
         return self.gelu(x)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_data, sens):
+    def call(self, input_data, sens):
         gout = self.grad(self.network)(input_data, sens)
         return gout
 

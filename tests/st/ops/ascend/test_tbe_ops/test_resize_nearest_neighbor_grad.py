@@ -25,24 +25,24 @@ from luojianet_ms.ops.composite import GradOperation
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.upsample = P.ResizeNearestNeighbor((2, 2))
 
     @ms_function
-    def construct(self, images):
+    def call(self, images):
         return self.upsample(images)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
     @ms_function
-    def construct(self, images, grads):
+    def call(self, images, grads):
         return self.grad(self.network)(images, grads)
 
 

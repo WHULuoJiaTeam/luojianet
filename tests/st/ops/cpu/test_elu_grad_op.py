@@ -25,12 +25,12 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class NetEluGrad(nn.Cell):
+class NetEluGrad(nn.Module):
     def __init__(self):
         super(NetEluGrad, self).__init__()
         self.elu_grad = G.EluGrad()
 
-    def construct(self, dy, y):
+    def call(self, dy, y):
         return self.elu_grad(dy, y)
 
 

@@ -88,12 +88,12 @@ def test_sqrt():
     assert np.all(result.asnumpy() == expect)
 
 
-class PowNet(nn.Cell):
+class PowNet(nn.Module):
     def __init__(self):
         super(PowNet, self).__init__()
         self.pow = P.Pow()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.pow(x, y)
 
 
@@ -184,7 +184,7 @@ class VirtualLoss(PrimitiveWithInfer):
         return x_dtype
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     """ NetWithLoss definition """
 
     def __init__(self, network):
@@ -192,23 +192,23 @@ class NetWithLoss(nn.Cell):
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     """ GradWrap definition """
 
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad(self.network)(x, y, b)
 
 
-class MatMulNet(nn.Cell):
+class MatMulNet(nn.Module):
     """ MatMulNet definition """
 
     def __init__(self):
@@ -216,11 +216,11 @@ class MatMulNet(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return self.biasAdd(self.matmul(x, y), b)
 
 
-class NetWithLossSub(nn.Cell):
+class NetWithLossSub(nn.Module):
     """ NetWithLossSub definition """
 
     def __init__(self, network):
@@ -228,34 +228,34 @@ class NetWithLossSub(nn.Cell):
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
 
-class GradWrapSub(nn.Cell):
+class GradWrapSub(nn.Module):
     """ GradWrapSub definition """
 
     def __init__(self, network):
         super(GradWrapSub, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return grad(self.network)(x, y)
 
 
-class SubNet(nn.Cell):
+class SubNet(nn.Module):
     """ SubNet definition """
 
     def __init__(self):
         super(SubNet, self).__init__()
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.sub(x, y)
 
 
-class NpuFloatNet(nn.Cell):
+class NpuFloatNet(nn.Module):
     """ NpuFloat definition """
 
     def __init__(self):
@@ -274,7 +274,7 @@ class NpuFloatNet(nn.Cell):
         self.sub = P.Sub()
         self.neg = P.Neg()
 
-    def construct(self, x):
+    def call(self, x):
         init = self.alloc_status()
         clear_status = self.clear_status(init)
         x = F.depend(x, clear_status) # let x depend on clear_status
@@ -289,7 +289,7 @@ class NpuFloatNet(nn.Cell):
         return out
 
 
-class DiagNet(nn.Cell):
+class DiagNet(nn.Module):
     """ DiagNet definition """
 
     def __init__(self):
@@ -297,11 +297,11 @@ class DiagNet(nn.Cell):
         self.fill = P.Fill()
         self.diag = P.Diag()
 
-    def construct(self, x):
+    def call(self, x):
         return x - self.diag(self.fill(mstype.float32, (3,), 1.0))
 
 
-class NetWithLossCumSum(nn.Cell):
+class NetWithLossCumSum(nn.Module):
     """ NetWithLossCumSum definition """
 
     def __init__(self, network):
@@ -309,23 +309,23 @@ class NetWithLossCumSum(nn.Cell):
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, input_):
+    def call(self, input_):
         predict = self.network(input_)
         return self.loss(predict)
 
 
-class GradWrapCumSum(nn.Cell):
+class GradWrapCumSum(nn.Module):
     """ GradWrap definition """
 
     def __init__(self, network):
         super(GradWrapCumSum, self).__init__()
         self.network = network
 
-    def construct(self, input_):
+    def call(self, input_):
         return grad(self.network)(input_)
 
 
-class NetCumSum(nn.Cell):
+class NetCumSum(nn.Module):
     """ NetCumSum definition """
 
     def __init__(self):
@@ -333,54 +333,54 @@ class NetCumSum(nn.Cell):
         self.cumsum = P.CumSum()
         self.axis = 1
 
-    def construct(self, input_):
+    def call(self, input_):
         return self.cumsum(input_, self.axis)
 
 
-class SignNet(nn.Cell):
+class SignNet(nn.Module):
     def __init__(self):
         super(SignNet, self).__init__()
         self.sign = P.Sign()
 
-    def construct(self, x):
+    def call(self, x):
         return self.sign(x)
 
 
-class AssignAdd(nn.Cell):
+class AssignAdd(nn.Module):
     def __init__(self):
         super().__init__()
         self.op = P.AssignAdd()
         self.inputdata = Parameter(initializer(1, [1], ms.float32), name="global_step")
 
-    def construct(self, input_):
+    def call(self, input_):
         self.inputdata = input_
         return self.op(self.inputdata, input_)
 
 
-class FloorNet(nn.Cell):
+class FloorNet(nn.Module):
     def __init__(self):
         super(FloorNet, self).__init__()
         self.floor = P.Floor()
 
-    def construct(self, x):
+    def call(self, x):
         return self.floor(x)
 
 
-class Log1pNet(nn.Cell):
+class Log1pNet(nn.Module):
     def __init__(self):
         super(Log1pNet, self).__init__()
         self.log1p = P.Log1p()
 
-    def construct(self, x):
+    def call(self, x):
         return self.log1p(x)
 
 
-class ErfcNet(nn.Cell):
+class ErfcNet(nn.Module):
     def __init__(self):
         super(ErfcNet, self).__init__()
         self.erfc = P.Erfc()
 
-    def construct(self, x):
+    def call(self, x):
         return self.erfc(x)
 
 

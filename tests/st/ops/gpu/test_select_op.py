@@ -22,12 +22,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.select = P.Select()
 
-    def construct(self, cond_op, input_x, input_y):
+    def call(self, cond_op, input_x, input_y):
         return self.select(cond_op, input_x, input_y)
 
 

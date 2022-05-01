@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, is_grad=False):
         super(Net, self).__init__()
         self.SparseSoftmaxCrossEntropyWithLogits = P.SparseSoftmaxCrossEntropyWithLogits(is_grad=is_grad)
 
     @ms_function
-    def construct(self, features, labels):
+    def call(self, features, labels):
         return self.SparseSoftmaxCrossEntropyWithLogits(features, labels)
 
 

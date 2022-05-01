@@ -19,17 +19,17 @@ from luojianet_ms import context, nn, dtype, Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Actor(nn.Cell):
+class Actor(nn.Module):
     def act(self, x, y):
         return x + y
 
 
-class Trainer(nn.Cell):
+class Trainer(nn.Module):
     def __init__(self, net_list):
         super(Trainer, self).__init__()
         self.net_list = net_list
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.net_list[0].act(x, y)
 
 
@@ -50,14 +50,14 @@ def test_list_item_getattr():
     assert np.array_equal(res.asnumpy(), expect_res.asnumpy())
 
 
-class Trainer2(nn.Cell):
+class Trainer2(nn.Module):
     def __init__(self, net_list):
         super(Trainer2, self).__init__()
         self.net_list = net_list
         self.less = P.Less()
         self.zero_float = Tensor(0, dtype=dtype.float32)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         sum_value = self.zero_float
         num_actor = 0
         while num_actor < 3:

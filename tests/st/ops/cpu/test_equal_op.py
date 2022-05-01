@@ -27,7 +27,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetEqualBool(nn.Cell):
+class NetEqualBool(nn.Module):
     def __init__(self):
         super(NetEqualBool, self).__init__()
         self.equal = P.Equal()
@@ -36,7 +36,7 @@ class NetEqualBool(nn.Cell):
         self.x = Parameter(initializer(x, x.shape), name="x")
         self.y = Parameter(initializer(y, y.shape), name="y")
 
-    def construct(self):
+    def call(self):
         return self.equal(self.x, self.y)
 
 
@@ -52,7 +52,7 @@ def test_equal_bool():
     assert (output.asnumpy() == expect).all()
 
 
-class NetEqualInt(nn.Cell):
+class NetEqualInt(nn.Module):
     def __init__(self):
         super(NetEqualInt, self).__init__()
         self.equal = P.Equal()
@@ -61,7 +61,7 @@ class NetEqualInt(nn.Cell):
         self.x = Parameter(initializer(x, x.shape), name="x")
         self.y = Parameter(initializer(y, y.shape), name="y")
 
-    def construct(self):
+    def call(self):
         return self.equal(self.x, self.y)
 
 
@@ -77,7 +77,7 @@ def test_equal_int():
     assert (output.asnumpy() == expect).all()
 
 
-class NetEqualFloat(nn.Cell):
+class NetEqualFloat(nn.Module):
     def __init__(self):
         super(NetEqualFloat, self).__init__()
         self.equal = P.Equal()
@@ -86,7 +86,7 @@ class NetEqualFloat(nn.Cell):
         self.x = Parameter(initializer(x, x.shape), name="x")
         self.y = Parameter(initializer(y, y.shape), name="y")
 
-    def construct(self):
+    def call(self):
         return self.equal(self.x, self.y)
 
 

@@ -27,7 +27,7 @@ from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config
 
 
-class ScalarAddScalar(nn.Cell):
+class ScalarAddScalar(nn.Module):
     """ ScalarAddScalar definition """
 
     def __init__(self,):
@@ -35,11 +35,11 @@ class ScalarAddScalar(nn.Cell):
         self.n1 = 1.2
         self.n2 = 1.3
 
-    def construct(self):
+    def call(self):
         return self.n1 + self.n2
 
 
-class ScalarAddTensor1(nn.Cell):
+class ScalarAddTensor1(nn.Module):
     """ ScalarAddTensor1 definition """
 
     def __init__(self,):
@@ -48,11 +48,11 @@ class ScalarAddTensor1(nn.Cell):
         self.n1 = 1.2
         self.n2 = 1.3
 
-    def construct(self):
+    def call(self):
         return self.n1 + self.t1
 
 
-class ScalarAddTensor2(nn.Cell):
+class ScalarAddTensor2(nn.Module):
     """ ScalarAddTensor2 definition """
 
     def __init__(self,):
@@ -61,11 +61,11 @@ class ScalarAddTensor2(nn.Cell):
         self.n1 = 1.2
         self.n2 = 1.3
 
-    def construct(self):
+    def call(self):
         return self.n1 + self.n2 + self.t1
 
 
-class TensorAddScalar(nn.Cell):
+class TensorAddScalar(nn.Module):
     """ TensorAddScalar definition """
 
     def __init__(self,):
@@ -73,11 +73,11 @@ class TensorAddScalar(nn.Cell):
         self.t1 = Tensor(np.ones([2, 1, 2, 2], np.float32))
         self.n1 = 1.2
 
-    def construct(self):
+    def call(self):
         return self.t1 + self.n1
 
 
-class ScalarTensorSub(nn.Cell):
+class ScalarTensorSub(nn.Module):
     """ ScalarTensorSub definition """
 
     def __init__(self,):
@@ -85,7 +85,7 @@ class ScalarTensorSub(nn.Cell):
         self.t1 = Tensor(np.ones([2, 1, 2, 2], np.float32))
         self.n1 = 2.1
 
-    def construct(self):
+    def call(self):
         # scalar - tensor
         z = self.n1 - self.t1
         # tensor - scalar
@@ -93,7 +93,7 @@ class ScalarTensorSub(nn.Cell):
         return z
 
 
-class ScalarTensorMul(nn.Cell):
+class ScalarTensorMul(nn.Module):
     """ ScalarTensorMul definition """
 
     def __init__(self,):
@@ -101,7 +101,7 @@ class ScalarTensorMul(nn.Cell):
         self.t1 = Tensor(np.ones([2, 1, 2, 2], np.float32))
         self.n1 = 2.1
 
-    def construct(self):
+    def call(self):
         # scalar - tensor
         z = self.n1 * self.t1
         # tensor - scalar
@@ -109,7 +109,7 @@ class ScalarTensorMul(nn.Cell):
         return z
 
 
-class ScalarTensorDiv(nn.Cell):
+class ScalarTensorDiv(nn.Module):
     """ ScalarTensorDiv definition """
 
     def __init__(self,):
@@ -117,7 +117,7 @@ class ScalarTensorDiv(nn.Cell):
         self.t1 = Tensor(np.ones([2, 1, 2, 2], np.float32))
         self.n1 = 2.1
 
-    def construct(self):
+    def call(self):
         # scalar - tensor
         z = self.n1 / self.t1
         # tensor - scalar
@@ -125,13 +125,13 @@ class ScalarTensorDiv(nn.Cell):
         return z
 
 
-class EqualClass(nn.Cell):
+class EqualClass(nn.Module):
     def __init__(self, x, y):
         super(EqualClass, self).__init__()
         self.n1 = x
         self.n2 = y
 
-    def construct(self):
+    def call(self):
         if self.n1 == self.n2:
             return self.n1
         return self.n2
@@ -148,39 +148,39 @@ def tensor_grad_scale(scale, grad):
     return grad * F.scalar_to_array(scale)
 
 
-class MapPartialNet(nn.Cell):
+class MapPartialNet(nn.Module):
     def __init__(self):
         super(MapPartialNet, self).__init__()
         self.reciprocal_scale = 1.2
         self.x1 = Tensor(np.ones([2, 1, 2,], np.float32))
         self.x2 = Tensor(np.ones([2, 1, 2, 2], np.float32))
 
-    def construct(self, x, y):
+    def call(self, x, y):
         grads = (self.x1, self.x2, x, y)
         grads = map(partial(grad_scale, self.reciprocal_scale), grads)
         return grads
 
 
-class ZipNet(nn.Cell):
+class ZipNet(nn.Module):
     def __init__(self):
         super(ZipNet, self).__init__()
         self.x1 = Tensor(np.ones([1, 2, 2, 1], np.float32))
         self.x2 = Tensor(np.ones([2, 1, 2, 2], np.float32))
 
-    def construct(self, x, y):
+    def call(self, x, y):
         t1 = (self.x1, self.x2, x, y)
         t2 = (y, x, self.x2, self.x1)
         t3 = zip(t1, t2)
         return t3
 
 
-class UnZipNet(nn.Cell):
+class UnZipNet(nn.Module):
     def __init__(self):
         super(UnZipNet, self).__init__()
         self.x1 = Tensor(np.ones([1, 2, 2, 1], np.float32))
         self.x2 = Tensor(np.ones([2, 1, 2, 2], np.float32))
 
-    def construct(self, x, y):
+    def call(self, x, y):
         t1 = (self.x1, self.x2, x, y)
         t2 = (y, x, self.x2, self.x1)
         t3 = zip(t1, t2)
@@ -188,13 +188,13 @@ class UnZipNet(nn.Cell):
         return t4
 
 
-class ScalarTensorOp2Cast(nn.Cell):
+class ScalarTensorOp2Cast(nn.Module):
     def __init__(self,):
         super(ScalarTensorOp2Cast, self).__init__()
         self.f = 1.2
         self.t = Tensor(np.ones([2, 1, 2, 2], np.float16))
 
-    def construct(self):
+    def call(self):
         a1 = self.f + self.t
         a2 = self.t + self.f
         a = a1 + a2

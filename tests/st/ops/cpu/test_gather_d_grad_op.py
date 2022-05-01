@@ -27,23 +27,23 @@ from luojianet_ms.ops.composite import GradOperation
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetGatherD(nn.Cell):
+class NetGatherD(nn.Module):
     def __init__(self, dim=1):
         super(NetGatherD, self).__init__()
         self.gatherd = P.GatherD()
         self.dim = int(dim)
 
-    def construct(self, x, index):
+    def call(self, x, index):
         return self.gatherd(x, self.dim, index)
 
-class NetGatherDGrad(nn.Cell):
+class NetGatherDGrad(nn.Module):
     def __init__(self, network):
         super(NetGatherDGrad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
     @ms_function
-    def construct(self, inputx, index, output_grad):
+    def call(self, inputx, index, output_grad):
         return self.grad(self.network)(inputx, index, output_grad)
 
 

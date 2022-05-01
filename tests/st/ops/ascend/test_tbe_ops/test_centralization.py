@@ -21,14 +21,14 @@ from luojianet_ms import Tensor
 from luojianet_ms.common.api import ms_function
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, axis=()):
         super(Net, self).__init__()
         self.centralization = inner.Centralization()
         self.axis = axis
 
     @ms_function
-    def construct(self, inputs):
+    def call(self, inputs):
         return self.centralization(inputs, self.axis)
 
 def test_net():

@@ -49,7 +49,7 @@ class MindDataSet(MindData):
         return tuple(lst)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, in_features, out_features):
         super(Net, self).__init__()
         self.weight = Parameter(Tensor(np.ones([out_features, in_features]).astype(np.float32)), name="weight")
@@ -57,12 +57,12 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.add = P.Add()
 
-    def construct(self, input_):
+    def call(self, input_):
         output = self.add(self.matmul(input_, self.weight), self.bias)
         return output
 
 
-class NetFP16(nn.Cell):
+class NetFP16(nn.Module):
     def __init__(self, in_features, out_features):
         super(NetFP16, self).__init__()
         self.weight = Parameter(Tensor(np.ones([out_features, in_features]).astype(np.float32)), name="weight")
@@ -71,7 +71,7 @@ class NetFP16(nn.Cell):
         self.add = P.Add()
         self.cast = P.Cast()
 
-    def construct(self, input_):
+    def call(self, input_):
         output = self.cast(
             self.add(self.matmul(self.cast(input_, mstype.float16), self.cast(self.weight, mstype.float16)),
                      self.cast(self.bias, mstype.float16)), mstype.float32)
@@ -86,14 +86,14 @@ def get_axis(x):
     return perm
 
 
-class MSELoss(nn.Cell):
+class MSELoss(nn.Module):
     def __init__(self):
         super(MSELoss, self).__init__()
         self.reduce_sum = P.ReduceSum()
         self.square = P.Square()
         self.reduce_mean = P.ReduceMean()
 
-    def construct(self, data, label):
+    def call(self, data, label):
         diff = data - label
         return self.reduce_mean(self.square(diff), get_axis(diff))
 

@@ -54,7 +54,7 @@ def weight_variable():
     return TruncatedNormal(0.02)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """Define LeNet5 network."""
 
     def __init__(self, num_class=10, channel=1):
@@ -70,8 +70,8 @@ class LeNet5(nn.Cell):
         self.flatten = nn.Flatten()
         self.channel = Tensor(channel)
 
-    def construct(self, data):
-        """define construct."""
+    def call(self, data):
+        """define call."""
         output = self.conv1(data)
         output = self.relu(output)
         output = self.max_pool2d(output)

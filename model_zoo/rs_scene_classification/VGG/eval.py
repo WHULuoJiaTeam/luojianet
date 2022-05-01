@@ -7,7 +7,7 @@ from luojianet_ms.common import set_seed
 from luojianet_ms.train.serialization import load_checkpoint, load_param_into_net
 
 from config import *
-from untils import create_dataset,CrossEntropySmooth
+from utils import create_dataset,CrossEntropySmooth
 from vgg import *
 # from Resnet import *
 # from Resnet_se import *

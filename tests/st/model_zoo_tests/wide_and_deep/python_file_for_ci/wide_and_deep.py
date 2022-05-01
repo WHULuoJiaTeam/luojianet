@@ -72,7 +72,7 @@ def init_var_dict(init_args, in_vars):
     return var_map
 
 
-class DenseLayer(nn.Cell):
+class DenseLayer(nn.Module):
     """
     Dense Layer for Deep Layer of WideDeep Model;
     Containing: activation, matmul, bias_add;
@@ -106,7 +106,7 @@ class DenseLayer(nn.Cell):
             act_func = P.Tanh()
         return act_func
 
-    def construct(self, x):
+    def call(self, x):
         x = self.act_func(x)
         x = self.mul(x, self.scale_coef)
         if self.convert_dtype:
@@ -121,7 +121,7 @@ class DenseLayer(nn.Cell):
         return output
 
 
-class WideDeepModel(nn.Cell):
+class WideDeepModel(nn.Module):
     """
         From paper: " Wide & Deep Learning for Recommender Systems"
         Args:
@@ -188,7 +188,7 @@ class WideDeepModel(nn.Cell):
         self.concat = P.Concat(axis=1)
         self.cast = P.Cast()
 
-    def construct(self, id_hldr, wt_hldr):
+    def call(self, id_hldr, wt_hldr):
         """
         Args:
             id_hldr: batch ids;
@@ -212,12 +212,12 @@ class WideDeepModel(nn.Cell):
         return out, self.embedding_table
 
 
-class NetWithLossClass(nn.Cell):
+class NetWithLossClass(nn.Module):
 
     """"
     Provide WideDeep training loss through network.
     Args:
-        network (Cell): The training network
+        network (Module): The training network
         config (Class): WideDeep config
     """
 
@@ -230,7 +230,7 @@ class NetWithLossClass(nn.Cell):
         self.reduceMean_false = P.ReduceMean(keep_dims=False)
         self.reduceSum_false = P.ReduceSum(keep_dims=False)
 
-    def construct(self, batch_ids, batch_wts, label):
+    def call(self, batch_ids, batch_wts, label):
         predict, embedding_table = self.network(batch_ids, batch_wts)
         log_loss = self.loss(predict, label)
         wide_loss = self.reduceMean_false(log_loss)
@@ -240,24 +240,24 @@ class NetWithLossClass(nn.Cell):
         return wide_loss, deep_loss
 
 
-class IthOutputCell(nn.Cell):
+class IthOutputCell(nn.Module):
     def __init__(self, network, output_index):
         super(IthOutputCell, self).__init__()
         self.network = network
         self.output_index = output_index
 
-    def construct(self, x1, x2, x3):
+    def call(self, x1, x2, x3):
         predict = self.network(x1, x2, x3)[self.output_index]
         return predict
 
 
-class TrainStepWrap(nn.Cell):
+class TrainStepWrap(nn.Module):
     """
     Encapsulation class of WideDeep network training.
-    Append Adam and FTRL optimizers to the training network after that construct
+    Append Adam and FTRL optimizers to the training network after that call
     function can be called to create the backward graph.
     Args:
-        network (Cell): the training network. Note that loss function should have been added.
+        network (Module): the training network. Note that loss function should have been added.
         sens (Number): The adjust parameter. Default: 1000.0
     """
 
@@ -300,7 +300,7 @@ class TrainStepWrap(nn.Cell):
             self.grad_reducer_w = DistributedGradReducer(self.optimizer_w.parameters, mean, degree)
             self.grad_reducer_d = DistributedGradReducer(self.optimizer_d.parameters, mean, degree)
 
-    def construct(self, batch_ids, batch_wts, label):
+    def call(self, batch_ids, batch_wts, label):
         weights_w = self.weights_w
         weights_d = self.weights_d
         loss_w, loss_d = self.network(batch_ids, batch_wts, label)
@@ -317,13 +317,13 @@ class TrainStepWrap(nn.Cell):
                                                                      self.optimizer_d(grads_d))
 
 
-class PredictWithSigmoid(nn.Cell):
+class PredictWithSigmoid(nn.Module):
     def __init__(self, network):
         super(PredictWithSigmoid, self).__init__()
         self.network = network
         self.sigmoid = P.Sigmoid()
 
-    def construct(self, batch_ids, batch_wts, labels):
+    def call(self, batch_ids, batch_wts, labels):
         logits, _, _, = self.network(batch_ids, batch_wts)
         pred_probs = self.sigmoid(logits)
         return logits, pred_probs, labels

@@ -23,7 +23,7 @@ from luojianet_ms import dtype as mstype
 from luojianet_ms.ops import operations as P
 
 
-class NetWithControlFlow(nn.Cell):
+class NetWithControlFlow(nn.Module):
     def __init__(self):
         super(NetWithControlFlow, self).__init__()
         self.mul = P.Mul()
@@ -33,7 +33,7 @@ class NetWithControlFlow(nn.Cell):
         param_b = np.full((1,), 4, dtype=np.float32)
         self.param_b = Parameter(Tensor(param_b), name='b')
 
-    def construct(self, x):
+    def call(self, x):
         if self.param_a > self.param_b:
             x = self.mul(x, 2)
             for _ in range(0, 5):

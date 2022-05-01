@@ -35,12 +35,12 @@ grad_all = C.GradOperation(get_all=True)
 
 
 def test_list_equal():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, z: list):
             super(Net, self).__init__()
             self.z = z
 
-        def construct(self, x, y):
+        def call(self, x, y):
             if self.z == [1, 2, 3]:
                 ret = x
             else:
@@ -60,12 +60,12 @@ def test_list_equal():
 
 
 def test_list_not_equal():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, z: list):
             super(Net, self).__init__()
             self.z = z
 
-        def construct(self, x, y):
+        def call(self, x, y):
             if self.z == [3, 4, 5]:
                 ret = x
             else:
@@ -80,12 +80,12 @@ def test_list_not_equal():
 
 
 def test_list_expansion():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, z: list):
             super(Net, self).__init__()
             self.z = z
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a, b, c = self.z
             if a == 1 and b == 2 and c == 3:
                 ret = x
@@ -101,12 +101,12 @@ def test_list_expansion():
 
 
 def test_list_append():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, z: list):
             super(Net, self).__init__()
             self.z = z
 
-        def construct(self, x, y):
+        def call(self, x, y):
             z = [[1, 2], 3]
             z[0].append(88)
             z[0].append(99)
@@ -124,13 +124,13 @@ def test_list_append():
 
 
 def test_class_member_list_append():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, z: list):
             super(Net, self).__init__()
             self.z = z
             self.x = 9
 
-        def construct(self, x, y):
+        def call(self, x, y):
             self.z[0].append(88)
             self.z[0].append(99)
             if self.z[0][3] == 88:
@@ -148,12 +148,12 @@ def test_class_member_list_append():
 
 
 def test_class_member_not_defined():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, z: list):
             super(Net, self).__init__()
             self.z = z
 
-        def construct(self, x, y):
+        def call(self, x, y):
             self.x[0] = 9
             return self.x
 
@@ -167,12 +167,12 @@ def test_class_member_not_defined():
 
 
 def test_change_list_element():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, z: list):
             super(Net, self).__init__()
             self.z = z
 
-        def construct(self, x, y):
+        def call(self, x, y):
             self.z[0] = x
             return self.z[0]
 
@@ -184,11 +184,11 @@ def test_change_list_element():
         net(x, y)
 
 
-class ListOperate(nn.Cell):
+class ListOperate(nn.Module):
     def __init__(self):
         super(ListOperate, self).__init__()
 
-    def construct(self, t, l):
+    def call(self, t, l):
         x = [1, 2, 3, 4, 5, 6]
         x[2] = 9
         x[1] = x[3] + 11
@@ -204,12 +204,12 @@ class ListOperate(nn.Cell):
         return x
 
 
-class InListNet(nn.Cell):
+class InListNet(nn.Module):
     def __init__(self):
         super(InListNet, self).__init__()
         self.list_ = [1, 2, 3, 4, 5, "ok"]
 
-    def construct(self, x):
+    def call(self, x):
         ret = x
         if 2 in self.list_:
             ret = x + x
@@ -218,7 +218,7 @@ class InListNet(nn.Cell):
         return ret
 
 
-class AxisListNet(nn.Cell):
+class AxisListNet(nn.Module):
     def __init__(self):
         super(AxisListNet, self).__init__()
         self.reduce_sum = P.ReduceSum()
@@ -228,7 +228,7 @@ class AxisListNet(nn.Cell):
         self.add_n = P.AddN()
         self.axis = [0, 1, 2]
 
-    def construct(self, x):
+    def call(self, x):
         ret_sum = self.reduce_sum(x, self.axis)
         ret_mean = self.reduce_mean(x, self.axis)
         ret_max = self.reduce_max(x, self.axis)
@@ -237,32 +237,32 @@ class AxisListNet(nn.Cell):
         return self.add_n(ret) + ret_sum
 
 
-class AxisListEmptyNet(nn.Cell):
+class AxisListEmptyNet(nn.Module):
     def __init__(self):
         super(AxisListEmptyNet, self).__init__()
         self.reduce_sum = P.ReduceSum()
         self.axis = []
 
-    def construct(self, x):
+    def call(self, x):
         return self.reduce_sum(x, self.axis)
 
 
-class AxisListDefaultNet(nn.Cell):
+class AxisListDefaultNet(nn.Module):
     def __init__(self):
         super(AxisListDefaultNet, self).__init__()
         self.reduce_sum = P.ReduceSum()
 
-    def construct(self, x):
+    def call(self, x):
         return self.reduce_sum(x)
 
 
-class TensorInList(nn.Cell):
+class TensorInList(nn.Module):
     def __init__(self):
         super(TensorInList, self).__init__()
         self.t1 = Tensor(1, mstype.float32)
         self.t2 = Tensor(2, mstype.float32)
 
-    def construct(self, x):
+    def call(self, x):
         ret = x
         list_ = [1, [2, 3], "str", self.t1, self.t2, x]
         if x in list_:
@@ -270,13 +270,13 @@ class TensorInList(nn.Cell):
         return ret
 
 
-class TensorNotInList(nn.Cell):
+class TensorNotInList(nn.Module):
     def __init__(self):
         super(TensorNotInList, self).__init__()
         self.t1 = Tensor(1, mstype.float32)
         self.t2 = Tensor(2, mstype.float32)
 
-    def construct(self, x):
+    def call(self, x):
         ret = x
         list_ = [self.t2, x]
         if self.t1 not in list_:
@@ -325,19 +325,19 @@ def test_exec():
 
 
 def test_grad_make_list():
-    class MyWhileNet(nn.Cell):
+    class MyWhileNet(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, idx, x):
+        def call(self, idx, x):
             return x[idx, :, :]
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     while_net = MyWhileNet()

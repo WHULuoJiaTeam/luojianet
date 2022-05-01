@@ -85,7 +85,7 @@ TEST_F(MindDataTestQueue, Test1) {
   ASSERT_TRUE(rc.IsOk());
   ASSERT_EQ(*b, 5);
   ASSERT_EQ(b.use_count(), 1);
-  // Test construct in place
+  // Test call in place
   rc = que.EmplaceBack(std::make_shared<int>(100));
   ASSERT_TRUE(rc.IsOk());
   rc = que.PopFront(&b);

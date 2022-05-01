@@ -24,7 +24,7 @@ from luojianet_ms import context
 from luojianet_ms.train.loss_scale_manager import FixedLossScaleManager
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, in_c, out_c):
         super().__init__()
         self.relu = nn.ReLU()
@@ -48,7 +48,7 @@ class Net(nn.Cell):
                               bias_init='ones')
         self.mean = ops.ReduceMean(keep_dims=False)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.relu(x)
         x = self.bn1(x)
         x = self.conv(x)

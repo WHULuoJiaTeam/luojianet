@@ -23,11 +23,11 @@ import luojianet_ms as ms
 
 def test_parser_support_int64_normal_graph():
     """ test tensor index support int64 -index, graph mode"""
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, inputs, tensor_in):
+        def call(self, inputs, tensor_in):
             result = inputs[tensor_in]
             return result
 

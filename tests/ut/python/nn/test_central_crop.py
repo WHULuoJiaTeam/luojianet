@@ -25,12 +25,12 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.api import _cell_graph_executor
 
 
-class CentralCropNet(nn.Cell):
+class CentralCropNet(nn.Module):
     def __init__(self, central_fraction):
         super(CentralCropNet, self).__init__()
         self.net = nn.CentralCrop(central_fraction)
 
-    def construct(self, image):
+    def call(self, image):
         return self.net(image)
 
 

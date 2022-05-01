@@ -37,14 +37,14 @@ from ...dataset_mock import MindData
 _current_dir = os.path.dirname(os.path.realpath(__file__)) + "/../python/test_data"
 
 
-class BertPreTrainingNet(nn.Cell):
+class BertPreTrainingNet(nn.Module):
     def __init__(self, config, is_training, use_one_hot_embeddings=True):
         super(BertPreTrainingNet, self).__init__()
         self.is_training = is_training
         self.use_one_hot_embeddings = use_one_hot_embeddings
         self.bert = BertPreTraining(config, self.is_training, self.use_one_hot_embeddings)
 
-    def construct(self, input_ids_, input_mask_, token_type_id_,
+    def call(self, input_ids_, input_mask_, token_type_id_,
                   next_sentence_labels_, masked_lm_positions_):
         t = next_sentence_labels_
         (prediction_scores, seq_relationship_score) = \
@@ -52,14 +52,14 @@ class BertPreTrainingNet(nn.Cell):
         return prediction_scores, seq_relationship_score
 
 
-class BertModelNet(nn.Cell):
+class BertModelNet(nn.Module):
     def __init__(self, config, is_training, use_one_hot_embeddings):
         super(BertModelNet, self).__init__()
         self.is_training = is_training
         self.use_one_hot_embeddings = use_one_hot_embeddings
         self.bert = BertModel(config, self.is_training, self.use_one_hot_embeddings)
 
-    def construct(self, input_ids_, input_mask_, token_type_id_,
+    def call(self, input_ids_, input_mask_, token_type_id_,
                   masked_lm_positions_):
         t = masked_lm_positions_
         sequence_output, pooled_output, embedding_table = \

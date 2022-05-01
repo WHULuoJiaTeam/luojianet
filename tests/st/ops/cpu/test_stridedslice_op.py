@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class StridedSlice(nn.Cell):
+class StridedSlice(nn.Module):
     def __init__(self):
         super(StridedSlice, self).__init__()
         self.stridedslice = P.StridedSlice()
 
-    def construct(self, x):
+    def call(self, x):
         return self.stridedslice(x, (2, 0, 0), (3, 2, 3), (1, 1, 1))
 
 

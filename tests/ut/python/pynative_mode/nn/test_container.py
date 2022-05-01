@@ -91,7 +91,7 @@ class TestSequentialCell():
     def test_construct(self):
         m = nn.SequentialCell(OrderedDict(
             [('cov2d', conv2), ('avg_pool', avg_pool)]))
-        m.construct(Tensor(np.ones([1, 3, 16, 50], dtype=np.float32)))
+        m.call(Tensor(np.ones([1, 3, 16, 50], dtype=np.float32)))
 
 
 class TestCellList():

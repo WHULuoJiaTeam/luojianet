@@ -31,13 +31,13 @@ size = get_group_size()
 x = np.ones([1, 1, 3, 3]).astype(np.float32) * 0.01 * (rank + 1)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.all_gather = P.AllGather(group=NCCL_WORLD_COMM_GROUP)
         self.x = Parameter(initializer(Tensor(x), x.shape), name='x')
 
-    def construct(self):
+    def call(self):
         return self.all_gather(self.x)
 
 

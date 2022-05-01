@@ -21,12 +21,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class InTopKNet(nn.Cell):
+class InTopKNet(nn.Module):
     def __init__(self, k):
         super(InTopKNet, self).__init__()
         self.in_top_k = P.InTopK(k)
 
-    def construct(self, predictions, targets):
+    def call(self, predictions, targets):
         return self.in_top_k(predictions, targets)
 
 

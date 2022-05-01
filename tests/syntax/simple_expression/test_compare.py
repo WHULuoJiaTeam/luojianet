@@ -23,12 +23,12 @@ from luojianet_ms.common.tensor import Tensor
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return x > y
 
 

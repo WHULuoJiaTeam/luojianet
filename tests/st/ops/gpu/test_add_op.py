@@ -25,7 +25,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class AddNet(nn.Cell):
+class AddNet(nn.Module):
     def __init__(self, nptype):
         super(AddNet, self).__init__()
 
@@ -53,7 +53,7 @@ class AddNet(nn.Cell):
             Tensor(np.arange(3 * 3 * 3 * 3).reshape(3, 3, 3, 3).astype(nptype)), [3, 3, 3, 3]), name='y3')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return (
             self.add(self.x, self.y), self.add(self.x1, self.y1), self.add(self.x2, self.y2),
             self.add(self.x3, self.y3))
@@ -166,13 +166,13 @@ def test_add_int64():
 def test_add_int32():
     add(np.int32)
 
-class Tensoradd_d(nn.Cell):
+class Tensoradd_d(nn.Module):
     def __init__(self):
         super(Tensoradd_d, self).__init__()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.test_dynamic(x)
         y = self.test_dynamic(y)
         return self.add(x, y)

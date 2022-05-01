@@ -43,7 +43,7 @@ grad_all = C.GradOperation(get_all=True)
 #  output shape is (batch_size, head, v_embedding // 16, seq_len//16, 16, 16)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, batch_size, num_heads, dp, mp, shard=True):
         super(Net, self).__init__()
         self.batch_size = batch_size
@@ -72,7 +72,7 @@ class Net(nn.Cell):
             self.transpose.shard(((dp, 1, mp, 1),))
             self.transpose1.shard(((dp, mp, 1, 1, 1, 1),))
 
-    def construct(self, x):
+    def call(self, x):
         # x (batch_size * seq_len, embedding_size)
         q = self.dense1(x)
         # q (batch_size * seq_len, (embedding_size // 2))
@@ -96,22 +96,22 @@ class Net(nn.Cell):
         return result
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         return grad_all(self.network)(x)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.network = network
         self.loss = VirtualLoss()
 
-    def construct(self, x):
+    def call(self, x):
         predict = self.network(x)
         return self.loss(predict)
 

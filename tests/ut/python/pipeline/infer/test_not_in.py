@@ -23,7 +23,7 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_number_not_in_tuple():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.tuple_ = (2, 3, 4)
@@ -36,7 +36,7 @@ def test_number_not_in_tuple():
             self.str_in = "a"
             self.str_not_in = "e"
 
-        def construct(self):
+        def call(self):
             ret = 0
             if self.number_in not in self.tuple_:
                 ret += 1

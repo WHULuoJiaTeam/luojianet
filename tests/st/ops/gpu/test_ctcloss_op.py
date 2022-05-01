@@ -25,26 +25,26 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.ops.composite import GradOperation
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.loss = P.CTCLoss()
         self.div = P.RealDiv()
         self.mean = P.ReduceMean()
 
-    def construct(self, probs, label, input_length, indices):
+    def call(self, probs, label, input_length, indices):
         x, _ = self.loss(probs, indices, label, input_length)
         x = self.mean(x)
         return x
 
 
-class GradData(nn.Cell):
+class GradData(nn.Module):
     def __init__(self, network):
         super(GradData, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=False)
         self.network = network
 
-    def construct(self, probs, indices, labels, input_lengths):
+    def call(self, probs, indices, labels, input_lengths):
         return self.grad(self.network)(probs, indices, labels, input_lengths)
 
 

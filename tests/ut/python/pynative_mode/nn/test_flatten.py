@@ -25,5 +25,5 @@ from luojianet_ms import Tensor
 def test_flatten_default():
     flatten = nn.Flatten()
     input_data = Tensor(np.random.randint(0, 255, [3, 6, 6]).astype(np.float32))
-    output = flatten.construct(input_data)
+    output = flatten.call(input_data)
     assert output.asnumpy().shape == (3, 36)

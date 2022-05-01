@@ -23,13 +23,13 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class NetFlattenGrad(nn.Cell):
+class NetFlattenGrad(nn.Module):
     def __init__(self):
         super(NetFlattenGrad, self).__init__()
         self.flattengrad = G.FlattenGrad()
         self.type = (2, 3)
 
-    def construct(self, x):
+    def call(self, x):
         return self.flattengrad(x, self.type)
 
 

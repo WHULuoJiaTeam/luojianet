@@ -19,7 +19,7 @@ import luojianet_ms as ms
 from luojianet_ms import context
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer.activation import ReLU
 from luojianet_ms.nn.layer.conv import Conv2d
 from luojianet_ms.nn.layer.normalization import BatchNorm2d
@@ -91,7 +91,7 @@ def bn_with_initialize(out_channels):
     return bn
 
 
-class ResNet(Cell):
+class ResNet(Module):
 
     def __init__(self, num_classes=100):
         super(ResNet, self).__init__()
@@ -105,7 +105,7 @@ class ResNet(Cell):
         self.matmul = P.MatMul().shard(((8, 1), (1, 1)))
         self.matmul_weight = Parameter(Tensor(np.ones([200704, num_classes]), dtype=ms.float32), name="weight")
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)

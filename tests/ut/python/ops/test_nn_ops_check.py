@@ -25,23 +25,23 @@ from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception
 
 
-class Conv2DBackpropInputNet(nn.Cell):
+class Conv2DBackpropInputNet(nn.Module):
     def __init__(self, net, x_shape):
         super(Conv2DBackpropInputNet, self).__init__()
         self.net = net
         self.x_shape = x_shape
 
-    def construct(self, dout, w):
+    def call(self, dout, w):
         return self.net(dout, w, self.x_shape)
 
 
-class TopKNet(nn.Cell):
+class TopKNet(nn.Module):
     def __init__(self, net, k):
         super(TopKNet, self).__init__()
         self.net = net
         self.k = k
 
-    def construct(self, x):
+    def call(self, x):
         return self.net(x, self.k)
 
 

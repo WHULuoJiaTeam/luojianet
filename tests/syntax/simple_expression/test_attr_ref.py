@@ -24,13 +24,13 @@ from luojianet_ms.common.tensor import Tensor
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super().__init__()
         self.weight = Parameter(Tensor(3, luojianet_ms.float32), name="w")
         self.m = 2
 
-    def construct(self, x, y):
+    def call(self, x, y):
         self.weight = x
         self.m = 3
         #self.l = 1

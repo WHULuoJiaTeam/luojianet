@@ -17,13 +17,13 @@
 import numpy as np
 
 from luojianet_ms import Tensor, Model, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import ReLU
 from luojianet_ms.ops import operations as P
 from ...ut_filter import non_graph_engine
 
 
-class arithmetic_Net(Cell):
+class arithmetic_Net(Module):
     """ arithmetic_Net definition """
 
     def __init__(self, symbol, loop_count=(1, 3)):
@@ -32,7 +32,7 @@ class arithmetic_Net(Cell):
         self.loop_count = loop_count
         self.relu = ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         a, b = self.loop_count
         y = self.symbol
         if y == 1:
@@ -69,7 +69,7 @@ class arithmetic_Net(Cell):
         return x
 
 
-class logical_Net(Cell):
+class logical_Net(Module):
     """ logical_Net definition """
 
     def __init__(self, symbol, loop_count=(1, 3)):
@@ -79,7 +79,7 @@ class logical_Net(Cell):
         self.fla = P.Flatten()
         self.relu = ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         a, b = self.loop_count
         y = self.symbol
         if y == 1:
@@ -138,7 +138,7 @@ def test_ME_logical_operator_0020():
 
 
 def test_ops():
-    class OpsNet(Cell):
+    class OpsNet(Module):
         """ OpsNet definition """
 
         def __init__(self, x, y):
@@ -150,7 +150,7 @@ def test_ops():
             self.str_a = "hello"
             self.str_b = "world"
 
-        def construct(self, x, y):
+        def call(self, x, y):
             h = x // y
             m = x ** y
             n = x % y
@@ -178,7 +178,7 @@ def test_ops():
 
 
 def test_in_dict():
-    class InDictNet(Cell):
+    class InDictNet(Module):
         """ InDictNet definition """
 
         def __init__(self, key_in, key_not_in):
@@ -186,7 +186,7 @@ def test_in_dict():
             self.key_in = key_in
             self.key_not_in = key_not_in
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             d = {"a": x, "b": y}
             ret_in = 1
             ret_not_in = 2

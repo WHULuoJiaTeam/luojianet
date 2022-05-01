@@ -20,7 +20,7 @@ from luojianet_ms import Tensor, Parameter
 from luojianet_ms import context
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.parameter import ParameterTuple
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE)
@@ -34,13 +34,13 @@ grad_with_sens = C.GradOperation(sens_param=True)
 
 
 def test_net_vargs_expand():
-    class AddNet(Cell):
+    class AddNet(Module):
         def __init__(self):
             super(AddNet, self).__init__()
             self.w = Parameter(
                 Tensor(np.ones((3, 4, 5), np.float32)), "w2", requires_grad=True)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return x + y
 
     x = Tensor(np.random.normal(0, 1, [3, 4, 5]).astype(np.float32))
@@ -50,7 +50,7 @@ def test_net_vargs_expand():
     _ = grad_all_with_sens(net, net.trainable_params())(x, y, sens)
 
 
-class VarNet(Cell):
+class VarNet(Module):
     def __init__(self, net):
         super(VarNet, self).__init__()
         self.b = Parameter(
@@ -59,22 +59,22 @@ class VarNet(Cell):
             Tensor(np.ones([3, 4, 5]), dtype=mstype.float32), "w", requires_grad=True)
         self.net = net
 
-    def construct(self, *args):
+    def call(self, *args):
         return self.net(*args) * self.w + self.b
 
 
-class SecondNet(Cell):
+class SecondNet(Module):
     def __init__(self):
         super(SecondNet, self).__init__()
         self.b2 = Parameter(
             Tensor(np.ones([3, 4, 5]), dtype=mstype.float32), "b2", requires_grad=True)
 
-    def construct(self, *args):
+    def call(self, *args):
         res = args[0] + args[1]
         return res + self.b2
 
 
-class Bprop(Cell):
+class Bprop(Module):
     def __init__(self, func, wrt_params, params, grad_op, sens=None):
         super(Bprop, self).__init__(auto_prefix=False)
         self.func = func
@@ -89,7 +89,7 @@ class Bprop(Cell):
             self.sens = sens if isinstance(sens, Tensor) else Tensor(sens, dtype=mstype.float32)
             self.with_sens = True
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         # pylint: disable=no-else-return
         if self.wrt_params:
             if self.with_sens:
@@ -105,13 +105,13 @@ class Bprop(Cell):
 def test_all_var_args_grad_with_sens():
     """"test grad_by_list_with_sens with all var args input"""
 
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.weights = ParameterTuple(net.trainable_params())
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_by_list_with_sens(self.net, self.weights)(*inputs)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -123,13 +123,13 @@ def test_all_var_args_grad_with_sens():
 
 
 def test_grad_list_var_args():
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.weights = ParameterTuple(net.trainable_params())
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_by_list(self.net, self.weights)(*inputs)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -140,13 +140,13 @@ def test_grad_list_var_args():
 
 
 def test_grad_all_var_args():
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.weights = ParameterTuple(net.trainable_params())
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -157,13 +157,13 @@ def test_grad_all_var_args():
 
 
 def test_grad_all_var_args_with_sens():
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.weights = ParameterTuple(net.trainable_params())
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_all_with_sens(self.net)(*inputs)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -175,13 +175,13 @@ def test_grad_all_var_args_with_sens():
 
 
 def test_grad_var_args_with_sens():
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.weights = ParameterTuple(net.trainable_params())
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_with_sens(self.net)(*inputs)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -195,7 +195,7 @@ def test_grad_var_args_with_sens():
 def test_grad_with_param_sens():
     """"test grad_with_sens parameter"""
 
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.weights = ParameterTuple(net.trainable_params())
@@ -203,7 +203,7 @@ def test_grad_with_param_sens():
             self.sens = Parameter(Tensor(np.ones([3, 4, 5]), dtype=mstype.float32), name='sens', requires_grad=False)
             self.grad = C.GradOperation(get_by_list=True, sens_param=True)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.grad(self.net, self.weights)(x, y, self.sens)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -214,33 +214,33 @@ def test_grad_with_param_sens():
 
 
 def test_var_args_grad():
-    class VarNet(Cell):
+    class VarNet(Module):
         def __init__(self, net):
             super(VarNet, self).__init__()
             self.b = Parameter(
                 Tensor(np.ones([3, 4, 5]), dtype=mstype.float32), "b", requires_grad=True)
             self.net = net
 
-        def construct(self, *args):
+        def call(self, *args):
             return self.net(*args) + self.b
 
-    class SecondNet(Cell):
+    class SecondNet(Module):
         def __init__(self):
             super(SecondNet, self).__init__()
             self.b2 = Parameter(
                 Tensor(np.ones([3, 4, 5]), dtype=mstype.float32), "b2", requires_grad=True)
 
-        def construct(self, *args):
+        def call(self, *args):
             res = args[0] + args[1]
             return res + self.b2
 
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.weights = ParameterTuple(net.trainable_params())
 
-        def construct(self, x, y, sens):
+        def call(self, x, y, sens):
             return grad_by_list_with_sens(self.net, self.weights)(x, y, sens)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -254,28 +254,28 @@ def test_var_args_grad():
 def test_var_args_positional():
     """"test grad_all with var args in inner graph"""
 
-    class VarNet(Cell):
+    class VarNet(Module):
         def __init__(self, net):
             super(VarNet, self).__init__()
             self.net = net
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.net(x, y) * x
 
-    class SecondNet(Cell):
+    class SecondNet(Module):
         def __init__(self):
             super(SecondNet, self).__init__()
 
-        def construct(self, *args):
+        def call(self, *args):
             return args[0] + args[1]
 
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.weights = ParameterTuple(net.trainable_params())
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return grad_all(self.net)(x, y)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -286,7 +286,7 @@ def test_var_args_positional():
 
 
 def test_grad_within_if_else():
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.weights = ParameterTuple(net.trainable_params())
@@ -295,7 +295,7 @@ def test_grad_within_if_else():
             sens = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
             self.grad = Bprop(self.net, True, self.weights, grad_op, sens)
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return self.grad(*inputs)
 
     x = Tensor(np.ones([3, 4, 5]), dtype=mstype.float32)
@@ -307,7 +307,7 @@ def test_grad_within_if_else():
 
 
 def test_grad_for_concat():
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.weights = ParameterTuple(net.trainable_params())
@@ -315,15 +315,15 @@ def test_grad_for_concat():
             grad_op = C.GradOperation(get_all=True, get_by_list=False, sens_param=True)
             self.grad = Bprop(self.net, False, self.weights, grad_op)
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return self.grad(*inputs)
 
-    class Concat(Cell):
+    class Concat(Module):
         def __init__(self, axis):
             super().__init__()
             self.concat = P.Concat(axis=axis)
 
-        def construct(self, *input1):
+        def call(self, *input1):
             return self.concat(input1)
 
     class ConcatFactory:

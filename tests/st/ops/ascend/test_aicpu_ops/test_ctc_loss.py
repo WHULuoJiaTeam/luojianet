@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.ctc_loss = P.CTCLoss()
 
-    def construct(self, inputs, labels_indices, labels_values, sequence_length):
+    def call(self, inputs, labels_indices, labels_values, sequence_length):
         return self.ctc_loss(inputs, labels_indices, labels_values, sequence_length)
 
 

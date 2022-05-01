@@ -18,11 +18,11 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, dim, index, strategy1=None, strategy2=None):
         super().__init__()
         self.gatherd = P.GatherD().shard(strategy1)
@@ -30,7 +30,7 @@ class Net(Cell):
         self.input = Parameter(index, "w1")
         self.dim = dim
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.gatherd(self.input, self.dim, x)
         out = self.neg(out)
         return out

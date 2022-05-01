@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class SparseGatherNet(nn.Cell):
+class SparseGatherNet(nn.Module):
     def __init__(self):
         super(SparseGatherNet, self).__init__()
         self.gather = P.SparseGatherV2()
 
-    def construct(self, x, indices):
+    def call(self, x, indices):
         return self.gather(x, indices, 1)
 
 
@@ -687,12 +687,12 @@ def test_gather0():
     assert np.all(-diff < error)
 
 
-class SparseGatherNet1(nn.Cell):
+class SparseGatherNet1(nn.Module):
     def __init__(self):
         super(SparseGatherNet1, self).__init__()
         self.gather = P.SparseGatherV2()
 
-    def construct(self, x, indices):
+    def call(self, x, indices):
         return self.gather(x, indices, -1)
 
 
@@ -736,12 +736,12 @@ def test_gather1():
     assert np.all(-diff < error)
 
 
-class SparseGatherNet2(nn.Cell):
+class SparseGatherNet2(nn.Module):
     def __init__(self):
         super(SparseGatherNet2, self).__init__()
         self.gather = P.SparseGatherV2()
 
-    def construct(self, x, indices):
+    def call(self, x, indices):
         return self.gather(x, indices, 0)
 
 
@@ -774,13 +774,13 @@ def test_gather2():
     assert np.all(-diff < error)
 
 
-class SparseGatherDynamicNet(nn.Cell):
+class SparseGatherDynamicNet(nn.Module):
     def __init__(self):
         super(SparseGatherDynamicNet, self).__init__()
         self.gather = P.SparseGatherV2()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
 
-    def construct(self, x, indices):
+    def call(self, x, indices):
         out = self.test_dynamic(x)
         return self.gather(out, indices, 0)
 
@@ -815,13 +815,13 @@ def test_gather_d():
     assert np.all(-diff < error)
 
 
-class SparseGatherDynamicNet2(nn.Cell):
+class SparseGatherDynamicNet2(nn.Module):
     def __init__(self):
         super(SparseGatherDynamicNet2, self).__init__()
         self.gather = P.SparseGatherV2()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
 
-    def construct(self, x_1, x_2, indices_1, indices_2):
+    def call(self, x_1, x_2, indices_1, indices_2):
         out_1 = self.test_dynamic(x_1)
         out_1 = self.gather(out_1, indices_1, 0)
         out_2 = self.test_dynamic(x_2)

@@ -24,7 +24,7 @@ from luojianet_ms.nn.optim import Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -34,7 +34,7 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         return x
 

@@ -31,7 +31,7 @@ size = get_group_size()
 x = np.ones([size, 1, 3, 3]).astype(np.float32) * 0.01 * (rank + 1)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.x = Parameter(initializer(Tensor(x), x.shape), name='x')
@@ -45,7 +45,7 @@ class Net(nn.Cell):
         self.reduce_scatter2 = P.ReduceScatter(self.op1, group=NCCL_WORLD_COMM_GROUP)
         self.reduce_scatter3 = P.ReduceScatter(self.op2, group=NCCL_WORLD_COMM_GROUP)
 
-    def construct(self):
+    def call(self):
         return (self.reduce_scatter1(self.x),
                 self.reduce_scatter2(self.x),
                 self.reduce_scatter3(self.x))

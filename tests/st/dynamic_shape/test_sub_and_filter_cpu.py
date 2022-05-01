@@ -24,14 +24,14 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.sub_and_filter = P.SubAndFilter()
         self.offset = 5
         self.max_num = 10
 
-    def construct(self, x):
+    def call(self, x):
         return self.sub_and_filter(x, self.max_num, self.offset)
 
 

@@ -46,7 +46,7 @@ def callback_fn():
     return model, network, ds_train, metrics
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """
     Lenet network
 
@@ -80,8 +80,8 @@ class LeNet5(nn.Cell):
         self.tensor_summary = P.TensorSummary()
         self.channel = Tensor(num_channel)
 
-    def construct(self, x):
-        """construct."""
+    def call(self, x):
+        """call."""
         self.image_summary('image', x)
         x = self.conv1(x)
         self.histogram_summary('histogram', x)

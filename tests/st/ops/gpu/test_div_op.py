@@ -22,12 +22,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class NetDiv(nn.Cell):
+class NetDiv(nn.Module):
     def __init__(self):
         super(NetDiv, self).__init__()
         self.div = P.Div()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.div(x, y)
 
 def div(nptype):

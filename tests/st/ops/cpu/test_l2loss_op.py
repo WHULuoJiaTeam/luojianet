@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import composite as C
 
 
-class L2LossNet(nn.Cell):
+class L2LossNet(nn.Module):
     def __init__(self):
         super(L2LossNet, self).__init__()
         self.l2_loss = P.L2Loss()
 
-    def construct(self, x):
+    def call(self, x):
         return self.l2_loss(x)
 
 @pytest.mark.level0
@@ -107,13 +107,13 @@ def test_l2loss_graph_fp16_1x4():
     diff = output.asnumpy() - expect
     assert np.all(diff < error)
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super(GradNet, self).__init__()
         self.net = net
         self.grad_op = C.GradOperation(get_all=True)
 
-    def construct(self, x):
+    def call(self, x):
         gradient_function = self.grad_op(self.net)
         return gradient_function(x)
 

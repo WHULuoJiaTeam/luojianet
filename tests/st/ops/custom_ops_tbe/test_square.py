@@ -27,14 +27,14 @@ context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 grad_with_sens = C.GradOperation(sens_param=True)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
 
     def __init__(self):
         super(Net, self).__init__()
         self.square = CusSquare()
 
-    def construct(self, data):
+    def call(self, data):
         return self.square(data)
 
 

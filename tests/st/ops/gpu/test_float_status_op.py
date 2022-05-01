@@ -23,39 +23,39 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.status = P.FloatStatus()
 
-    def construct(self, x):
+    def call(self, x):
         return self.status(x)
 
 
-class Netnan(nn.Cell):
+class Netnan(nn.Module):
     def __init__(self):
         super(Netnan, self).__init__()
         self.isnan = P.IsNan()
 
-    def construct(self, x):
+    def call(self, x):
         return self.isnan(x)
 
 
-class Netinf(nn.Cell):
+class Netinf(nn.Module):
     def __init__(self):
         super(Netinf, self).__init__()
         self.isinf = P.IsInf()
 
-    def construct(self, x):
+    def call(self, x):
         return self.isinf(x)
 
 
-class Netfinite(nn.Cell):
+class Netfinite(nn.Module):
     def __init__(self):
         super(Netfinite, self).__init__()
         self.isfinite = P.IsFinite()
 
-    def construct(self, x):
+    def call(self, x):
         return self.isfinite(x)
 
 

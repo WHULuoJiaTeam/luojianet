@@ -23,14 +23,14 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class RCnet(nn.Cell):
+class RCnet(nn.Module):
     def __init__(self, num_sample, seed=0, dtype=ms.int64):
         super(RCnet, self).__init__()
         self.rc = P.RandomCategorical(dtype)
         self.num_sample = num_sample
         self.seed = seed
 
-    def construct(self, logits):
+    def call(self, logits):
         return self.rc(logits, self.num_sample, self.seed)
 
 TARGET = "GPU"

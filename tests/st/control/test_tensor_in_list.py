@@ -23,12 +23,12 @@ def setup_module():
     context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.list = [Tensor([1], mstype.int32), Tensor([2], mstype.int32), Tensor([3], mstype.int32)]
 
-    def construct(self, c):
+    def call(self, c):
         if c in self.list:
             out = c + c
         else:

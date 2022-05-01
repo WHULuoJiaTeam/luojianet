@@ -132,16 +132,16 @@ def test_float_tensor_and_list_add():
 
 
 def test_float_tensor_and_bool_tensors_add_grad():
-    class Net(nn.Cell):
-        def construct(self, x, y):
+    class Net(nn.Module):
+        def call(self, x, y):
             return x + y
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, y, sens):
+        def call(self, x, y, sens):
             return grad_all_with_sens(self.net)(x, y, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))
@@ -157,16 +157,16 @@ def test_float_tensor_and_bool_tensors_add_grad():
 
 
 def test_float_tensor_and_int_tensors_sub_grad():
-    class Net(nn.Cell):
-        def construct(self, x, y):
+    class Net(nn.Module):
+        def call(self, x, y):
             return x - y
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, y, sens):
+        def call(self, x, y, sens):
             return grad_all_with_sens(self.net)(x, y, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))
@@ -182,16 +182,16 @@ def test_float_tensor_and_int_tensors_sub_grad():
 
 
 def test_float16_tensor_and_float32_tensors_sub_grad():
-    class Net(nn.Cell):
-        def construct(self, x, y):
+    class Net(nn.Module):
+        def call(self, x, y):
             return x - y
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, y, sens):
+        def call(self, x, y, sens):
             return grad_all_with_sens(self.net)(x, y, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.int32))
@@ -207,16 +207,16 @@ def test_float16_tensor_and_float32_tensors_sub_grad():
 
 
 def test_float_tensor_and_int_add_grad():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             return x + 2
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, sens):
+        def call(self, x, sens):
             return grad_all_with_sens(self.net)(x, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))
@@ -229,16 +229,16 @@ def test_float_tensor_and_int_add_grad():
 
 
 def test_int8_tensor_and_uint8_tensors_add_grad():
-    class Net(nn.Cell):
-        def construct(self, x, y):
+    class Net(nn.Module):
+        def call(self, x, y):
             return x + y
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, y, sens):
+        def call(self, x, y, sens):
             return grad_all_with_sens(self.net)(x, y, sens)
 
     x = Tensor(np.array([[1, 2, 3], [4, 5, 6]], dtype=np.int8))
@@ -253,14 +253,14 @@ def test_int8_tensor_and_uint8_tensors_add_grad():
     assert (ret[1].asnumpy() == sens.asnumpy()).all()
 
 
-class AssignCheck(nn.Cell):
+class AssignCheck(nn.Module):
     """ NetWithNDarray definition """
 
     def __init__(self):
         super(AssignCheck, self).__init__()
         self.cov_step = Parameter(0.0, name="cov_step", requires_grad=False)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         F.assign(self.cov_step, y)
         F.assign(x, y)
         return x

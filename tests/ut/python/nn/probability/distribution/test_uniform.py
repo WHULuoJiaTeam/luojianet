@@ -71,7 +71,7 @@ def test_invalid_range():
         msd.Uniform(1.0, 0.0, dtype=dtype.float32)
 
 
-class UniformProb(nn.Cell):
+class UniformProb(nn.Module):
     """
     Uniform distribution: initialize with low/high.
     """
@@ -80,7 +80,7 @@ class UniformProb(nn.Cell):
         super(UniformProb, self).__init__()
         self.u = msd.Uniform(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self, value):
+    def call(self, value):
         prob = self.u.prob(value)
         log_prob = self.u.log_prob(value)
         cdf = self.u.cdf(value)
@@ -93,7 +93,7 @@ class UniformProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_uniform_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through call.
     """
     net = UniformProb()
     value = Tensor([3.1, 3.2, 3.3, 3.4], dtype=dtype.float32)
@@ -101,7 +101,7 @@ def test_uniform_prob():
     assert isinstance(ans, Tensor)
 
 
-class UniformProb1(nn.Cell):
+class UniformProb1(nn.Module):
     """
     Uniform distribution: initialize without low/high.
     """
@@ -110,7 +110,7 @@ class UniformProb1(nn.Cell):
         super(UniformProb1, self).__init__()
         self.u = msd.Uniform(dtype=dtype.float32)
 
-    def construct(self, value, low, high):
+    def call(self, value, low, high):
         prob = self.u.prob(value, low, high)
         log_prob = self.u.log_prob(value, low, high)
         cdf = self.u.cdf(value, low, high)
@@ -123,7 +123,7 @@ class UniformProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_uniform_prob1():
     """
-    Test probability functions: passing low/high, value through construct.
+    Test probability functions: passing low/high, value through call.
     """
     net = UniformProb1()
     value = Tensor([0.1, 0.2, 0.3, 0.9], dtype=dtype.float32)
@@ -133,7 +133,7 @@ def test_uniform_prob1():
     assert isinstance(ans, Tensor)
 
 
-class UniformKl(nn.Cell):
+class UniformKl(nn.Module):
     """
     Test class: kl_loss of Uniform distribution.
     """
@@ -144,7 +144,7 @@ class UniformKl(nn.Cell):
             np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
         self.u2 = msd.Uniform(dtype=dtype.float32)
 
-    def construct(self, low_b, high_b, low_a, high_a):
+    def call(self, low_b, high_b, low_a, high_a):
         kl1 = self.u1.kl_loss('Uniform', low_b, high_b)
         kl2 = self.u2.kl_loss('Uniform', low_b, high_b, low_a, high_a)
         return kl1 + kl2
@@ -164,7 +164,7 @@ def test_kl():
     assert isinstance(ans, Tensor)
 
 
-class UniformCrossEntropy(nn.Cell):
+class UniformCrossEntropy(nn.Module):
     """
     Test class: cross_entropy of Uniform distribution.
     """
@@ -175,7 +175,7 @@ class UniformCrossEntropy(nn.Cell):
             np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
         self.u2 = msd.Uniform(dtype=dtype.float32)
 
-    def construct(self, low_b, high_b, low_a, high_a):
+    def call(self, low_b, high_b, low_a, high_a):
         h1 = self.u1.cross_entropy('Uniform', low_b, high_b)
         h2 = self.u2.cross_entropy('Uniform', low_b, high_b, low_a, high_a)
         return h1 + h2
@@ -195,7 +195,7 @@ def test_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class UniformBasics(nn.Cell):
+class UniformBasics(nn.Module):
     """
     Test class: basic mean/sd/var/mode/entropy function.
     """
@@ -204,7 +204,7 @@ class UniformBasics(nn.Cell):
         super(UniformBasics, self).__init__()
         self.u = msd.Uniform(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self):
+    def call(self):
         mean = self.u.mean()
         sd = self.u.sd()
         var = self.u.var()
@@ -222,9 +222,9 @@ def test_bascis():
     assert isinstance(ans, Tensor)
 
 
-class UniConstruct(nn.Cell):
+class UniConstruct(nn.Module):
     """
-    Uniform distribution: going through construct.
+    Uniform distribution: going through call.
     """
 
     def __init__(self):
@@ -232,7 +232,7 @@ class UniConstruct(nn.Cell):
         self.u = msd.Uniform(-4.0, 4.0)
         self.u1 = msd.Uniform()
 
-    def construct(self, value, low, high):
+    def call(self, value, low, high):
         prob = self.u('prob', value)
         prob1 = self.u('prob', value, low, high)
         prob2 = self.u1('prob', value, low, high)
@@ -242,7 +242,7 @@ class UniConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_uniform_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through call.
     """
     net = UniConstruct()
     value = Tensor([-5.0, 0.0, 1.0, 5.0], dtype=dtype.float32)

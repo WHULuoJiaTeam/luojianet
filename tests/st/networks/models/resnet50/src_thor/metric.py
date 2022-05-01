@@ -21,14 +21,14 @@ from luojianet_ms.communication.management import GlobalComm
 from luojianet_ms.ops import operations as P
 
 
-class ClassifyCorrectCell(nn.Cell):
+class ClassifyCorrectCell(nn.Module):
     r"""
-    Cell that returns correct count of the prediction in classification network.
-    This Cell accepts a network as arguments.
+    Module that returns correct count of the prediction in classification network.
+    This Module accepts a network as arguments.
     It returns orrect count of the prediction to calculate the metrics.
 
     Args:
-        network (Cell): The network Cell.
+        network (Module): The network Module.
 
     Inputs:
         - **data** (Tensor) - Tensor of shape :math:`(N, \ldots)`.
@@ -52,7 +52,7 @@ class ClassifyCorrectCell(nn.Cell):
         self.reduce_sum = P.ReduceSum()
         self.allreduce = P.AllReduce(P.ReduceOp.SUM, GlobalComm.WORLD_COMM_GROUP)
 
-    def construct(self, data, label):
+    def call(self, data, label):
         outputs = self._network(data)
         y_pred = self.argmax(outputs)
         y_pred = self.cast(y_pred, mstype.int32)

@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 from ..ut_filter import non_graph_engine
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, input_x):
+    def call(self, input_x):
         return self.relu(input_x)
 
 

@@ -24,14 +24,14 @@ from luojianet_ms.ops import operations as P
 
 
 def test_get_parameter_layout():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, weight):
             super().__init__()
             self.weight = Parameter(weight, "w1")
             self.matmul = P.MatMul(transpose_a=False, transpose_b=True).shard(strategy1)
             self.relu = P.ReLU().shard(strategy2)
 
-        def construct(self, x):
+        def call(self, x):
             out = self.matmul(x, self.weight)
             out = self.relu(out)
             return out

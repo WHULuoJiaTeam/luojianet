@@ -25,7 +25,7 @@ from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.common.parameter import Parameter
 import luojianet_ms.common.dtype as mstype
 
-class CRF(nn.Cell):
+class CRF(nn.Module):
     '''
     Conditional Random Field
     Args:
@@ -146,7 +146,7 @@ class CRF(nn.Cell):
         best_tag_id, _ = self.argmax(terminal_var)
         return backpointers, best_tag_id
 
-    def construct(self, features, label):
+    def call(self, features, label):
         if self.is_training:
             forward_score = self._normalization_factor(features)
             gold_score = self._realpath_score(features, label)

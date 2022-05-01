@@ -21,7 +21,7 @@ from luojianet_ms import Tensor, Parameter
 from luojianet_ms import context
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.optim.momentum import Momentum
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import functional as F
@@ -77,7 +77,7 @@ class Args():
     emb_size = 512
 
 
-class SemiAutoOneHotNet(Cell):
+class SemiAutoOneHotNet(Module):
     def __init__(self, args, strategy):
         super(SemiAutoOneHotNet, self).__init__()
         self.a = args.a
@@ -165,7 +165,7 @@ class SemiAutoOneHotNet(Cell):
         weight_np = np.zeros(weight_shape, np.float32)
         self.weight = Parameter(Tensor(weight_np), name='model_parallel_weight')
 
-    def construct(self, input_, label):
+    def call(self, input_, label):
         input_n = self.normalize(input_)
         w = self.normalize2(self.weight)
         fc_o = self.fc(input_n, w)
@@ -222,23 +222,23 @@ class Dataset(MindData):
         self.index = 0
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, b):
+    def call(self, x, b):
         predict = self.network(x, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, b):
+    def call(self, x, b):
         return grad_all(self.network)(x, b)
 
 
@@ -251,7 +251,7 @@ def fc_with_initialize(input_channels, out_channels):
     return nn.Dense(input_channels, out_channels)
 
 
-class BNReshapeDenseBNNet(nn.Cell):
+class BNReshapeDenseBNNet(nn.Module):
     def __init__(self):
         super(BNReshapeDenseBNNet, self).__init__()
         self.batch_norm = bn_with_initialize(2)
@@ -260,7 +260,7 @@ class BNReshapeDenseBNNet(nn.Cell):
         self.fc = fc_with_initialize(2 * 32 * 32, 512)
         self.loss = SemiAutoOneHotNet(args=Args(), strategy=StrategyBatch())
 
-    def construct(self, x, label):
+    def call(self, x, label):
         x = self.batch_norm(x)
         x = self.reshape(x, (16, 2 * 32 * 32))
         x = self.fc(x)

@@ -57,7 +57,7 @@ class DatasetLenet():
         return self
 
 
-class MatMulCell(nn.Cell):
+class MatMulCell(nn.Module):
     def __init__(self, strategy1, strategy2):
         super().__init__()
         self.param = Parameter(initializer("zeros", [64, 64]), name="param")
@@ -65,26 +65,26 @@ class MatMulCell(nn.Cell):
         self.matmul = P.MatMul().shard(strategy1)
         self.matmul1 = P.MatMul().shard(strategy2)
 
-    def construct(self, x):
+    def call(self, x):
         out = self.matmul(x, self.param)
         out = self.matmul1(out, self.param1)
         return out, self.param
 
 
-class MatMulCell2(nn.Cell):
+class MatMulCell2(nn.Module):
     def __init__(self, strategy1, strategy2):
         super().__init__()
         self.param1 = Parameter(initializer("zeros", [64, 64]), name="param1")
         self.matmul = P.MatMul().shard(strategy1)
         self.matmul1 = P.MatMul().shard(strategy2)
 
-    def construct(self, x, param):
+    def call(self, x, param):
         out = self.matmul(x, param)
         out = self.matmul1(out, self.param1)
         return out
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy1, strategy2, param=None):
         super().__init__()
         self.cell1 = MatMulCell(strategy1, strategy2)
@@ -92,7 +92,7 @@ class Net(nn.Cell):
         self.cell2 = MatMulCell2(strategy1, strategy2)
         self.cell2.pipeline_stage = 1
 
-    def construct(self, x, label):
+    def call(self, x, label):
         out, param = self.cell1(x)
         out = self.cell2(out, param)
         return out

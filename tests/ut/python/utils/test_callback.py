@@ -34,7 +34,7 @@ from luojianet_ms.train.callback import ModelCheckpoint, RunContext, LossMonitor
 from luojianet_ms.train.callback._checkpoint import _chg_ckpt_file_name_if_same_exist
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition."""
 
     def __init__(self):
@@ -46,7 +46,7 @@ class Net(nn.Cell):
         self.fc = nn.Dense(64 * 222 * 222, 3)
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)
@@ -55,7 +55,7 @@ class Net(nn.Cell):
         return out
 
 
-class LossNet(nn.Cell):
+class LossNet(nn.Module):
     """ LossNet definition """
 
     def __init__(self):
@@ -68,7 +68,7 @@ class LossNet(nn.Cell):
         self.loss = nn.SoftmaxCrossEntropyWithLogits()
 
     @ms_function
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)

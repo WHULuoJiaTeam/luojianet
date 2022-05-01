@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 import luojianet_ms as ms
 
 
-class RLBufferAppend(nn.Cell):
+class RLBufferAppend(nn.Module):
     def __init__(self, capcity, shapes, types):
         super(RLBufferAppend, self).__init__()
         self._capacity = capcity
@@ -35,11 +35,11 @@ class RLBufferAppend(nn.Cell):
         self.buffer_append = P.BufferAppend(self._capacity, shapes, types)
 
     @ms_function
-    def construct(self, buffer, exps):
+    def call(self, buffer, exps):
         return self.buffer_append(buffer, exps, self.count, self.head)
 
 
-class RLBufferGet(nn.Cell):
+class RLBufferGet(nn.Module):
     def __init__(self, capcity, shapes, types):
         super(RLBufferGet, self).__init__()
         self._capacity = capcity
@@ -48,11 +48,11 @@ class RLBufferGet(nn.Cell):
         self.buffer_get = P.BufferGetItem(self._capacity, shapes, types)
 
     @ms_function
-    def construct(self, buffer, index):
+    def call(self, buffer, index):
         return self.buffer_get(buffer, self.count, self.head, index)
 
 
-class RLBufferSample(nn.Cell):
+class RLBufferSample(nn.Module):
     def __init__(self, capcity, batch_size, shapes, types):
         super(RLBufferSample, self).__init__()
         self._capacity = capcity
@@ -62,7 +62,7 @@ class RLBufferSample(nn.Cell):
             self._capacity, batch_size, shapes, types)
 
     @ms_function
-    def construct(self, buffer):
+    def call(self, buffer):
         return self.buffer_sample(buffer, self.count, self.head)
 
 

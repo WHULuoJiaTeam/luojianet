@@ -243,7 +243,7 @@ def test_parameter_as_output():
     context.set_auto_parallel_context(parallel_mode="semi_auto_parallel")
     initial_input = initializer('One', shape=(2,), dtype=mstype.int32)
     updated_input = Tensor([2, 2], mstype.int32)
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, initial, updated):
             super().__init__()
             self.initial = initial
@@ -251,7 +251,7 @@ def test_parameter_as_output():
             self.p = Parameter(self.initial, name="weight")
             self.new_p = self.p.init_data()
             self.new_p.set_data(self.updated)
-        def construct(self):
+        def call(self):
             return self.new_p
 
     net = Net(initial_input, updated_input)

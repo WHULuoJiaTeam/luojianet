@@ -27,7 +27,7 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.parameter import Parameter
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, decay_flag=True):
         super(Net, self).__init__()
         self.decay_flag = decay_flag
@@ -45,7 +45,7 @@ class Net(nn.Cell):
             Tensor(np.array([1.2, 3.4, 5.6]).astype(np.float32)), name='v')
 
     @ms_function
-    def construct(self, beta1, beta2, one_sub_beta_1, one_sub_beta_2, gradient, eps, weight_decay_tensor, lr):
+    def call(self, beta1, beta2, one_sub_beta_1, one_sub_beta_2, gradient, eps, weight_decay_tensor, lr):
         param_fp32 = self.op_cast(self.param, mstype.float32)
         m_fp32 = self.op_cast(self.m, mstype.float32)
         v_fp32 = self.op_cast(self.v, mstype.float32)
@@ -69,7 +69,7 @@ class Net(nn.Cell):
         return depend_v
 
 
-class SideEffectFusedAdamNet(nn.Cell):
+class SideEffectFusedAdamNet(nn.Module):
     def __init__(self, decay_flag=True):
         super(SideEffectFusedAdamNet, self).__init__()
         self.decay_flag = decay_flag
@@ -89,7 +89,7 @@ class SideEffectFusedAdamNet(nn.Cell):
             Tensor(np.array([1, 3, 5]).astype(np.float32)), name='x')
 
     @ms_function
-    def construct(self, beta1, beta2, one_sub_beta_1, one_sub_beta_2, gradient, eps, weight_decay_tensor, lr):
+    def call(self, beta1, beta2, one_sub_beta_1, one_sub_beta_2, gradient, eps, weight_decay_tensor, lr):
         F.assign(self.param, self.x)
 
         param_fp32 = self.op_cast(self.param, mstype.float32)

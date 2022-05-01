@@ -26,12 +26,12 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-class NetErfc(nn.Cell):
+class NetErfc(nn.Module):
     def __init__(self):
         super(NetErfc, self).__init__()
         self.erfc = P.Erfc()
 
-    def construct(self, x):
+    def call(self, x):
         return self.erfc(x)
 
 

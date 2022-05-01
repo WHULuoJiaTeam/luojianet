@@ -56,20 +56,20 @@ class DatasetLenet():
         return self
 
 
-class MatMulCell(nn.Cell):
+class MatMulCell(nn.Module):
     def __init__(self):
         super().__init__()
         self.matmul = P.MatMul()
         self.relu = P.ReLU()
         self.weight = Parameter(initializer("ones", [64, 64]), name="param1")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.matmul(x, self.weight)
         out = self.relu(out)
         return out
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy1, strategy2):
         super().__init__()
         self.matmul = P.MatMul().shard(strategy1)
@@ -81,7 +81,7 @@ class Net(nn.Cell):
         self.relu = P.ReLU().shard(strategy2)
         self.reduce = P.ReduceSum()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.matmul(x, self.weight)
         if self.reduce(y) == 1.0:
             out = self.cell1(out)

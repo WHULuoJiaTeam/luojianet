@@ -67,7 +67,7 @@ def test_scalar():
         msd.Poisson(0.1, seed='seed')
 
 
-class PoissonProb(nn.Cell):
+class PoissonProb(nn.Module):
     """
     Poisson distribution: initialize with rate.
     """
@@ -76,7 +76,7 @@ class PoissonProb(nn.Cell):
         super(PoissonProb, self).__init__()
         self.p = msd.Poisson([0.5, 0.5, 0.5, 0.5, 0.5], dtype=dtype.float32)
 
-    def construct(self, value):
+    def call(self, value):
         prob = self.p.prob(value)
         log_prob = self.p.log_prob(value)
         cdf = self.p.cdf(value)
@@ -89,7 +89,7 @@ class PoissonProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_poisson_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through call.
     """
     net = PoissonProb()
     value = Tensor([0.2, 0.3, 5.0, 2, 3.9], dtype=dtype.float32)
@@ -97,7 +97,7 @@ def test_poisson_prob():
     assert isinstance(ans, Tensor)
 
 
-class PoissonProb1(nn.Cell):
+class PoissonProb1(nn.Module):
     """
     Poisson distribution: initialize without rate.
     """
@@ -106,7 +106,7 @@ class PoissonProb1(nn.Cell):
         super(PoissonProb1, self).__init__()
         self.p = msd.Poisson(dtype=dtype.float32)
 
-    def construct(self, value, rate):
+    def call(self, value, rate):
         prob = self.p.prob(value, rate)
         log_prob = self.p.log_prob(value, rate)
         cdf = self.p.cdf(value, rate)
@@ -119,7 +119,7 @@ class PoissonProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_poisson_prob1():
     """
-    Test probability functions: passing value/rate through construct.
+    Test probability functions: passing value/rate through call.
     """
     net = PoissonProb1()
     value = Tensor([0.2, 0.9, 1, 2, 3], dtype=dtype.float32)
@@ -128,7 +128,7 @@ def test_poisson_prob1():
     assert isinstance(ans, Tensor)
 
 
-class PoissonBasics(nn.Cell):
+class PoissonBasics(nn.Module):
     """
     Test class: basic mean/sd/var/mode function.
     """
@@ -137,7 +137,7 @@ class PoissonBasics(nn.Cell):
         super(PoissonBasics, self).__init__()
         self.p = msd.Poisson([2.3, 2.5], dtype=dtype.float32)
 
-    def construct(self):
+    def call(self):
         mean = self.p.mean()
         sd = self.p.sd()
         var = self.p.var()
@@ -154,9 +154,9 @@ def test_bascis():
     assert isinstance(ans, Tensor)
 
 
-class PoissonConstruct(nn.Cell):
+class PoissonConstruct(nn.Module):
     """
-    Poisson distribution: going through construct.
+    Poisson distribution: going through call.
     """
 
     def __init__(self):
@@ -164,7 +164,7 @@ class PoissonConstruct(nn.Cell):
         self.p = msd.Poisson([0.5, 0.5, 0.5, 0.5, 0.5], dtype=dtype.float32)
         self.p1 = msd.Poisson(dtype=dtype.float32)
 
-    def construct(self, value, rate):
+    def call(self, value, rate):
         prob = self.p('prob', value)
         prob1 = self.p('prob', value, rate)
         prob2 = self.p1('prob', value, rate)
@@ -174,7 +174,7 @@ class PoissonConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_poisson_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through call.
     """
     net = PoissonConstruct()
     value = Tensor([0, 0, 0, 0, 0], dtype=dtype.float32)

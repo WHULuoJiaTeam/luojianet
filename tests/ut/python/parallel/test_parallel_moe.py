@@ -53,13 +53,13 @@ config = TransformerOpParallelConfig(data_parallel=2, model_parallel=8, vocab_em
 moe_config = MoEConfig(expert_num=4)
 
 
-class NetWithLossFiveInputs(nn.Cell):
+class NetWithLossFiveInputs(nn.Module):
     def __init__(self, network):
         super(NetWithLossFiveInputs, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x1, x2, x3, x4, x5):
+    def call(self, x1, x2, x3, x4, x5):
         predict, _, _, _ = self.network(x1, x2, x3, x4, x5)
         return self.loss(predict)
 

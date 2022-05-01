@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class NetMul(nn.Cell):
+class NetMul(nn.Module):
     def __init__(self):
         super(NetMul, self).__init__()
         self.mul = P.Mul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.mul(x, y)
 
 
@@ -158,13 +158,13 @@ def test_mul_int64():
 def test_mul_int32():
     mul(np.int32)
 
-class NetMul_dynamic(nn.Cell):
+class NetMul_dynamic(nn.Module):
     def __init__(self):
         super(NetMul_dynamic, self).__init__()
         self.mul = P.Mul()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.test_dynamic(x)
         y = self.test_dynamic(y)
         out = self.mul(x, y)

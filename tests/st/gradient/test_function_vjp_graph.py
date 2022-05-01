@@ -25,13 +25,13 @@ from luojianet_ms.ops.functional import vjp
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class SingleInputNet(nn.Cell):
-    def construct(self, x):
+class SingleInputNet(nn.Module):
+    def call(self, x):
         return x**3
 
 
-class MultipleInputsOutputNet(nn.Cell):
-    def construct(self, x, y):
+class MultipleInputsOutputNet(nn.Module):
+    def call(self, x, y):
         return 2*x, y**3
 
 
@@ -132,12 +132,12 @@ def test_vjp_construct_single_input_single_output_default_v_graph():
     x = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
     v = Tensor(np.array([[1, 1], [1, 1]]).astype(np.float32))
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, network):
             super(Net, self).__init__()
             self.net = network
 
-        def construct(self, inputs, vectors):
+        def call(self, inputs, vectors):
             net_out, vjp_out = vjp(self.net, inputs, vectors)
             return net_out, vjp_out
 

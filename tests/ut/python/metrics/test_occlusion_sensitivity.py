@@ -21,14 +21,14 @@ from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.nn.metrics import OcclusionSensitivity
 context.set_context(mode=context.GRAPH_MODE)
 
-class DenseNet(nn.Cell):
+class DenseNet(nn.Module):
     def __init__(self):
         super(DenseNet, self).__init__()
         w = np.array([[0.1, 0.8, 0.1, 0.1], [1, 1, 1, 1]]).astype(np.float32)
         b = np.array([0.3, 0.6]).astype(np.float32)
         self.dense = nn.Dense(4, 2, weight_init=Tensor(w), bias_init=Tensor(b))
 
-    def construct(self, x):
+    def call(self, x):
         return self.dense(x)
 
 

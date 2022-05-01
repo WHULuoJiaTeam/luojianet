@@ -20,16 +20,16 @@ import pytest
 import luojianet_ms.common.dtype as mstype
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
-class LinSpaceNet(Cell):
+class LinSpaceNet(Module):
     def __init__(self, num):
         super(LinSpaceNet, self).__init__()
         self.ls_op = P.LinSpace()
         self.num = num
 
-    def construct(self, start, stop):
+    def call(self, start, stop):
         output = self.ls_op(start, stop, self.num)
         return output
 

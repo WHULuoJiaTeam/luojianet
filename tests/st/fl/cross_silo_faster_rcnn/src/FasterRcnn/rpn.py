@@ -24,7 +24,7 @@ from luojianet_ms.common.initializer import initializer
 from .bbox_assign_sample import BboxAssignSample
 
 
-class RpnRegClsBlock(nn.Cell):
+class RpnRegClsBlock(nn.Module):
     """
     Rpn reg cls block for rpn layer
 
@@ -64,7 +64,7 @@ class RpnRegClsBlock(nn.Cell):
         self.rpn_reg = nn.Conv2d(feat_channels, num_anchors * 4, kernel_size=1, pad_mode='valid',
                                  has_bias=True, weight_init=weight_reg, bias_init=bias_reg)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.relu(self.rpn_conv(x))
 
         x1 = self.rpn_cls(x)
@@ -73,7 +73,7 @@ class RpnRegClsBlock(nn.Cell):
         return x1, x2
 
 
-class RPN(nn.Cell):
+class RPN(nn.Module):
     """
     ROI proposal network..
 
@@ -200,7 +200,7 @@ class RPN(nn.Cell):
 
         return rpn_layer
 
-    def construct(self, inputs, img_metas, anchor_list, gt_bboxes, gt_labels, gt_valids):
+    def call(self, inputs, img_metas, anchor_list, gt_bboxes, gt_labels, gt_valids):
         loss_print = ()
         rpn_cls_score = ()
         rpn_bbox_pred = ()

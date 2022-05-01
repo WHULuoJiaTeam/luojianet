@@ -24,13 +24,13 @@ from luojianet_ms.common import dtype as mstype
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(Net, self).__init__()
         self.gamma = P.Gamma(seed=seed, seed2=seed2)
         self.shape = shape
 
-    def construct(self, alpha, beta):
+    def call(self, alpha, beta):
         return self.gamma(self.shape, alpha, beta)
 
 

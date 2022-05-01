@@ -19,7 +19,7 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context
 from luojianet_ms.nn import ReLU
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.ops import operations as P
 
@@ -31,13 +31,13 @@ def setup_module():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_parser_tensor_assign_slice():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self, U):
             super(Net, self).__init__()
             self.relu = ReLU()
             self.U = U
 
-        def construct(self, x):
+        def call(self, x):
             x = self.relu(x)
             x[..., :2] = U
             return x
@@ -53,13 +53,13 @@ def test_parser_tensor_assign_slice():
     assert np.allclose(out_me.asnumpy(), input_np_x, rtol=0.01, atol=0.01)
 
 def test_parser_tensor_assign_slice_002():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self, U):
             super(Net, self).__init__()
             self.relu = ReLU()
             self.U = U
 
-        def construct(self, x):
+        def call(self, x):
             x = self.relu(x)
             x[::, :, :1] = self.U
             return x
@@ -79,13 +79,13 @@ def test_parser_tensor_assign_slice_002():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_parser_tensor_assign_bool():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self, U):
             super(Net, self).__init__()
             self.relu = ReLU()
             self.U = U
 
-        def construct(self, x, tensorB):
+        def call(self, x, tensorB):
             x = self.relu(x)
             x[tensorB] = self.U
             return x
@@ -103,14 +103,14 @@ def test_parser_tensor_assign_bool():
     assert np.allclose(out_me.asnumpy(), input_np_x, rtol=0.01, atol=0.01)
 
 def test_parser_tensor_assign_bool_002():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self, U):
             super(Net, self).__init__()
             self.relu = ReLU()
             self.U = U
             self.fill = P.Fill()
 
-        def construct(self, x, tensorB):
+        def call(self, x, tensorB):
             x = self.relu(x)
             x[tensorB] = self.U
             return x

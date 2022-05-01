@@ -18,11 +18,11 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.sqrt = P.Sqrt()
@@ -30,7 +30,7 @@ class Net(Cell):
         self.neg = P.Neg()
         self.mul = P.Mul()
 
-    def construct(self, x0, x1):
+    def call(self, x0, x1):
         sqrt_res = self.sqrt(x0)
         neg_res = self.neg(sqrt_res)
         add_res = self.add(x1, sqrt_res)

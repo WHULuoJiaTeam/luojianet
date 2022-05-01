@@ -22,14 +22,14 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, x, dtype):
         super(Net, self).__init__()
         self.cast = P.Cast()
         self.x = x
         self.dtype = dtype
 
-    def construct(self):
+    def call(self):
         return self.cast(self.x, self.dtype)
 
 def test_net_f32_bool():

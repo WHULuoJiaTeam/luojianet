@@ -25,24 +25,24 @@ from luojianet_ms.ops.composite import GradOperation
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.sigmoid_cross_entropy_with_logits = P.SigmoidCrossEntropyWithLogits()
 
     @ms_function
-    def construct(self, features, labels):
+    def call(self, features, labels):
         return self.sigmoid_cross_entropy_with_logits(features, labels)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
     @ms_function
-    def construct(self, features, labels, dout):
+    def call(self, features, labels, dout):
         return self.grad(self.network)(features, labels, dout)
 
 

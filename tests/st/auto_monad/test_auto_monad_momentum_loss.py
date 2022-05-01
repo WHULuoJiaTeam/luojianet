@@ -19,7 +19,7 @@ import luojianet_ms.ops.operations as P
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms import context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn.optim import Momentum
 from luojianet_ms.nn.wrap.cell_wrapper import WithLossCell
 from luojianet_ms.nn.wrap.loss_scale import TrainOneStepWithLossScaleCell
@@ -29,7 +29,7 @@ from luojianet_ms.common import dtype as mstype
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, in_features, out_features):
         super(Net, self).__init__()
         self.weight = Parameter(Tensor(np.ones([out_features, in_features]).astype(np.float32)), name="weight")
@@ -37,7 +37,7 @@ class Net(Cell):
         self.matmul = P.MatMul()
         self.add = P.Add()
 
-    def construct(self, input_):
+    def call(self, input_):
         output = self.add(self.matmul(input_, self.weight), self.bias)
         return output
 
@@ -50,14 +50,14 @@ def get_axis(x):
     return perm
 
 
-class MSELoss(Cell):
+class MSELoss(Module):
     def __init__(self):
         super(MSELoss, self).__init__()
         self.reduce_sum = P.ReduceSum()
         self.square = P.Square()
         self.reduce_mean = P.ReduceMean()
 
-    def construct(self, data, label):
+    def call(self, data, label):
         diff = data - label
         return self.reduce_mean(self.square(diff), get_axis(diff))
 

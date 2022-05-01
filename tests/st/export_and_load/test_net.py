@@ -25,12 +25,12 @@ from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.train.serialization import export
 
 
-class SliceNet(nn.Cell):
+class SliceNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.relu(x)
         x[2,] = y
         return x

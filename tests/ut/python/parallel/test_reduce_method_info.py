@@ -28,43 +28,43 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLossNoBias(nn.Cell):
+class NetWithLossNoBias(nn.Module):
     def __init__(self, network):
         super(NetWithLossNoBias, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrapNoBias(nn.Cell):
+class GradWrapNoBias(nn.Module):
     def __init__(self, network):
         super(GradWrapNoBias, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return grad_all(self.network)(x, y)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -82,14 +82,14 @@ def compile_net(net, x, y, b):
 
 # model_parallel test
 def test_sum_mul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, (1,))
             out = self.mul2(out, b)
@@ -109,14 +109,14 @@ def test_sum_mul():
 
 
 def test_sum_mul2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, (0, 1))
             out = self.mul2(out, b)
@@ -136,14 +136,14 @@ def test_sum_mul2():
 
 
 def test_sum_mul3():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, -1)
             out = self.mul2(out, b)
@@ -163,14 +163,14 @@ def test_sum_mul3():
 
 
 def test_sum_mul4():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=True).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, -1)
             out = self.mul2(out, b)
@@ -190,13 +190,13 @@ def test_sum_mul4():
 
 
 def test_sum_mul5():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=True).shard(strategy2)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, 0)
             return out
@@ -213,13 +213,13 @@ def test_sum_mul5():
 
 
 def test_sum_mul6():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=True).shard(strategy2)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, 1)
             return out
@@ -236,13 +236,13 @@ def test_sum_mul6():
 
 
 def test_sum_mul7():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=True).shard(strategy2)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, (0, 1))
             return out
@@ -259,14 +259,14 @@ def test_sum_mul7():
 
 
 def test_max_mul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_max = P.ReduceMax(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_max(out, -1)
             out = self.mul2(out, b)
@@ -286,14 +286,14 @@ def test_max_mul():
 
 
 def test_min_mul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_min = P.ReduceMin(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_min(out, 0)
             out = self.mul2(out, b)
@@ -313,14 +313,14 @@ def test_min_mul():
 
 
 def test_reduce_mean_mul_float32():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_mean = P.ReduceMean(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_mean(out, 0)
             out = self.mul2(out, b)
@@ -340,28 +340,28 @@ def test_reduce_mean_mul_float32():
     compile_net(net, x, y, b)
 
 
-class ArgMaxWithValueNet(nn.Cell):
+class ArgMaxWithValueNet(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super().__init__()
         self.mul1 = P.Mul().shard(strategy1)
         self.arg_max_with_value = P.ArgMaxWithValue(keep_dims=False, axis=-1).shard(strategy2)
         self.mul2 = P.Mul().shard(strategy3)
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         out = self.mul1(x, y)
         _, out = self.arg_max_with_value(out)
         out = self.mul2(out, b)
         return out
 
 
-class ArgMinWithValueNet(nn.Cell):
+class ArgMinWithValueNet(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super().__init__()
         self.mul1 = P.Mul().shard(strategy1)
         self.arg_min_with_value = P.ArgMinWithValue(keep_dims=False, axis=-1).shard(strategy2)
         self.mul2 = P.Mul().shard(strategy3)
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         out = self.mul1(x, y)
         _, out = self.arg_min_with_value(out)
         out = self.mul2(out, b)
@@ -441,14 +441,14 @@ def test_arg_min_with_value_mul_auto():
     gen_inputs_and_compile_net(net)
 
 
-class ArgMinWithValueNet2(nn.Cell):
+class ArgMinWithValueNet2(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super().__init__()
         self.mul1 = P.Mul().shard(strategy1)
         self.arg_min_with_value = P.ArgMinWithValue(keep_dims=True, axis=-1).shard(strategy2)
         self.relu = P.ReLU().shard(strategy3)
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.mul1(x, y)
         _, out = self.arg_min_with_value(out)
         out = self.relu(out)
@@ -486,14 +486,14 @@ def test_arg_min_with_value_mul_auto2():
 
 
 def test_cross_batch():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy2)
             self.reduce_mean = P.ReduceMean(keep_dims=False).shard(strategy3).add_prim_attr("cross_batch", True)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, -1)
             out = self.reduce_mean(out, 0)
@@ -512,14 +512,14 @@ def test_cross_batch():
 
 
 def test_cross_batch2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_mean = P.ReduceMean(keep_dims=False).shard(strategy2)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy3).add_prim_attr("cross_batch", True)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_mean(out, -1)
             out = self.reduce_sum(out, 0)
@@ -538,14 +538,14 @@ def test_cross_batch2():
 
 
 def test_cross_batch_auto():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul1 = P.Mul()
             self.reduce_mean = P.ReduceMean(keep_dims=False)
             self.reduce_sum = P.ReduceSum(keep_dims=False).add_prim_attr("cross_batch", True)
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_mean(out, -1)
             out = self.reduce_sum(out, 0)
@@ -561,14 +561,14 @@ def test_cross_batch_auto():
 
 
 def test_max_empty_tuple():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul = P.Mul().shard(strategy1)
             self.reduce_max = P.ReduceMax(keep_dims=False).shard(strategy2)
             self.add = P.Add().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.mul(x, y)
             out = self.reduce_max(out)
             out = self.add(out, b)
@@ -589,14 +589,14 @@ def test_max_empty_tuple():
 
 
 def test_any_mul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_any = P.ReduceAny(keep_dims=False).shard(strategy2)
             self.cast = P.Cast()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.mul1(x, y)
             out = self.cast(out, ms.bool_)
             out = self.reduce_any(out, 1)
@@ -615,14 +615,14 @@ def test_any_mul():
 
 
 def test_any_mul2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_any = P.ReduceAny(keep_dims=False).shard(strategy2)
             self.cast = P.Cast()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.mul1(x, y)
             out = self.cast(out, ms.bool_)
             out = self.reduce_any(out, -1)

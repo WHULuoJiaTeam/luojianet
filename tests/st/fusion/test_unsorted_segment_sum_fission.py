@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.unsorted_segment_sum = P.UnsortedSegmentSum()
         self.num_segments = 3
 
-    def construct(self, x, segment_ids):
+    def call(self, x, segment_ids):
         x = self.unsorted_segment_sum(x, segment_ids, self.num_segments)
         return x
 

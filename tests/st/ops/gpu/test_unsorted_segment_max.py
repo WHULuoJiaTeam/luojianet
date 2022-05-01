@@ -26,13 +26,13 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.ops import operations as P
 
 
-class UnsortedSegmentMaxNet(nn.Cell):
+class UnsortedSegmentMaxNet(nn.Module):
     def __init__(self, num_segments):
         super(UnsortedSegmentMaxNet, self).__init__()
         self.unsorted_segment_max = P.UnsortedSegmentMax()
         self.num_segments = num_segments
 
-    def construct(self, data, ids):
+    def call(self, data, ids):
         return self.unsorted_segment_max(data, ids, self.num_segments)
 
 
@@ -207,7 +207,7 @@ def test_3d_single_init():
 
 
 # For testing Dynamic Shape operation
-class UnsortedSegmentMaxDynNet(nn.Cell):
+class UnsortedSegmentMaxDynNet(nn.Module):
     def __init__(self, num_segments, dyn_a=True, dyn_b=True):
         super(UnsortedSegmentMaxDynNet, self).__init__()
         self.unsorted_segment_max = P.UnsortedSegmentMax()
@@ -215,7 +215,7 @@ class UnsortedSegmentMaxDynNet(nn.Cell):
         self.num_segments = num_segments
         self.to_dyn_1 = dyn_a
         self.to_dyn_2 = dyn_b
-    def construct(self, data, ids):
+    def call(self, data, ids):
         # testing selective inputs being dynamic
         if self.to_dyn_1:
             data = self.gpu_convert_to_dynamic_shape(data)

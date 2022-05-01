@@ -25,7 +25,7 @@ context.set_context(enable_sparse=True,
                     mode=context.GRAPH_MODE,
                     device_target="Ascend")
 
-class NetWithSparseGatherV2(nn.Cell):
+class NetWithSparseGatherV2(nn.Module):
     def __init__(self):
         super(NetWithSparseGatherV2, self).__init__()
         self.weight1 = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="weight1")
@@ -33,7 +33,7 @@ class NetWithSparseGatherV2(nn.Cell):
         self.axis = 0
         self.gather = P.SparseGatherV2()
 
-    def construct(self, indices, label):
+    def call(self, indices, label):
         return self.gather(self.weight1, indices, self.axis) + self.weight2
 
 @pytest.mark.level0

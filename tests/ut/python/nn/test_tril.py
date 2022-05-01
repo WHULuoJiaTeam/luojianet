@@ -26,12 +26,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_tril():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        def construct(self):
+        def call(self):
             tril = nn.Tril()
             return tril(self.value, 0)
 
@@ -41,12 +41,12 @@ def test_tril():
 
 
 def test_tril_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        def construct(self):
+        def call(self):
             tril = nn.Tril()
             return tril(self.value, 1)
 
@@ -56,12 +56,12 @@ def test_tril_1():
 
 
 def test_tril_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        def construct(self):
+        def call(self):
             tril = nn.Tril()
             return tril(self.value, -1)
 
@@ -71,11 +71,11 @@ def test_tril_2():
 
 
 def test_tril_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             tril = nn.Tril()
             return tril(x, 0)
 
@@ -84,11 +84,11 @@ def test_tril_parameter():
 
 
 def test_tril_parameter_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             tril = nn.Tril()
             return tril(x, 1)
 
@@ -97,11 +97,11 @@ def test_tril_parameter_1():
 
 
 def test_tril_parameter_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             tril = nn.Tril()
             return tril(x, -1)
 

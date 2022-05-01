@@ -18,7 +18,7 @@ import numpy as np
 
 import luojianet_ms.numpy as mnp
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.context as context
 from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
 from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
@@ -26,50 +26,50 @@ from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
 
 context.set_context(mode=context.GRAPH_MODE)
 
-class MeshGrid(Cell):
-    def construct(self, a, b, c, d):
+class MeshGrid(Module):
+    def call(self, a, b, c, d):
         ret = mnp.meshgrid(a, b, c, d)
         return ret
 
 
-class Choose(Cell):
-    def construct(self, a, b):
+class Choose(Module):
+    def call(self, a, b):
         ret = mnp.choose(a, b)
         return ret
 
 
-class Histogram(Cell):
-    def construct(self, a):
+class Histogram(Module):
+    def call(self, a):
         ret = mnp.histogram(a)
         return ret
 
 
-class Norm(Cell):
-    def construct(self, a):
+class Norm(Module):
+    def call(self, a):
         ret = mnp.norm(a)
         return ret
 
 
-class Cross(Cell):
-    def construct(self, a, b):
+class Cross(Module):
+    def call(self, a, b):
         ret = mnp.cross(a, b)
         return ret
 
 
-class Stack(Cell):
-    def construct(self, a, b):
+class Stack(Module):
+    def call(self, a, b):
         ret = mnp.stack((a, b))
         return ret
 
 
-class Correlate(Cell):
-    def construct(self, a, b):
+class Correlate(Module):
+    def call(self, a, b):
         ret = mnp.correlate(a, b)
         return ret
 
 
-class Split(Cell):
-    def construct(self, tensor):
+class Split(Module):
+    def call(self, tensor):
         a = mnp.split(tensor, indices_or_sections=1)
         b = mnp.split(tensor, indices_or_sections=3)
         c = mnp.array_split(tensor, indices_or_sections=1)
@@ -77,14 +77,14 @@ class Split(Cell):
         return a, b, c, d
 
 
-class MatrixPower(Cell):
-    def construct(self, tensor):
+class MatrixPower(Module):
+    def call(self, tensor):
         a = mnp.matrix_power(tensor, 3)
         return a
 
 
-class RavelMultiIndex(Cell):
-    def construct(self, tensor):
+class RavelMultiIndex(Module):
+    def call(self, tensor):
         a = mnp.ravel_multi_index(tensor, (7, 6))
         b = mnp.ravel_multi_index(tensor, (7, 6), order='F')
         c = mnp.ravel_multi_index(tensor, (4, 6), mode='clip')
@@ -92,8 +92,8 @@ class RavelMultiIndex(Cell):
         return a, b, c, d
 
 
-class GeomSpace(Cell):
-    def construct(self, start):
+class GeomSpace(Module):
+    def call(self, start):
         a = mnp.geomspace(1, 256, num=9)
         b = mnp.geomspace(1, 256, num=8, endpoint=False)
         c = mnp.geomspace(start, [1000, 2000, 3000], num=4)
@@ -101,16 +101,16 @@ class GeomSpace(Cell):
         return a, b, c, d
 
 
-class Arange(Cell):
-    def construct(self):
+class Arange(Module):
+    def call(self):
         a = mnp.arange(10)
         b = mnp.arange(0, 10)
         c = mnp.arange(0.1, 9.9)
         return a, b, c
 
 
-class Eye(Cell):
-    def construct(self):
+class Eye(Module):
+    def call(self):
         res = []
         for n in range(1, 5):
             for k in range(0, 5):
@@ -118,15 +118,15 @@ class Eye(Cell):
         return res
 
 
-class Trace(Cell):
-    def construct(self, arr):
+class Trace(Module):
+    def call(self, arr):
         a = mnp.trace(arr, offset=-1, axis1=0, axis2=1)
         b = mnp.trace(arr, offset=0, axis1=1, axis2=0)
         return a, b
 
 
-class Pad(Cell):
-    def construct(self, arr1, arr2):
+class Pad(Module):
+    def call(self, arr1, arr2):
         a = mnp.pad(arr1, ((1, 1), (2, 2), (3, 4)))
         b = mnp.pad(arr1, ((1, 1), (2, 2), (3, 4)), mode="mean", stat_length=((1, 2), (2, 10), (3, 4)))
         c = mnp.pad(arr1, ((1, 1), (2, 2), (3, 4)), mode="edge")
@@ -137,76 +137,76 @@ class Pad(Cell):
         return a, b, c, d, e, f, g
 
 
-class Where(Cell):
-    def construct(self, a, b, c):
+class Where(Module):
+    def call(self, a, b, c):
         ret = mnp.where(a, b, c)
         return ret
 
 
-class Select(Cell):
-    def construct(self, a, b):
+class Select(Module):
+    def call(self, a, b):
         ret = mnp.select(a, b)
         return ret
 
 
-class IsClose(Cell):
-    def construct(self, a, b):
+class IsClose(Module):
+    def call(self, a, b):
         ret = mnp.isclose(a, b)
         return ret
 
 
-class Average(Cell):
-    def construct(self, a):
+class Average(Module):
+    def call(self, a):
         ret = mnp.average(a)
         return ret
 
 
-class Remainder(Cell):
-    def construct(self, a, b):
+class Remainder(Module):
+    def call(self, a, b):
         ret = mnp.remainder(a, b)
         return ret
 
 
-class Diff(Cell):
-    def construct(self, a):
+class Diff(Module):
+    def call(self, a):
         ret1 = mnp.diff(a)
         ret2 = mnp.ediff1d(a)
         return ret1, ret2
 
 
-class Trapz(Cell):
-    def construct(self, arr):
+class Trapz(Module):
+    def call(self, arr):
         a = mnp.trapz(arr, x=[-2, 1, 2], axis=1)
         b = mnp.trapz(arr, dx=3, axis=0)
         return a, b
 
 
-class Lcm(Cell):
-    def construct(self, a, b):
+class Lcm(Module):
+    def call(self, a, b):
         ret = mnp.lcm(a, b)
         return ret
 
 
-class Cov(Cell):
-    def construct(self, a):
+class Cov(Module):
+    def call(self, a):
         ret = mnp.cov(a, a)
         return ret
 
 
-class Gradient(Cell):
-    def construct(self, a):
+class Gradient(Module):
+    def call(self, a):
         ret = mnp.gradient(a)
         return ret
 
 
-class MultiDot(Cell):
-    def construct(self, a, b, c, d):
+class MultiDot(Module):
+    def call(self, a, b, c, d):
         ret = mnp.multi_dot((a, b, c, d))
         return ret
 
 
-class Histogramdd(Cell):
-    def construct(self, a):
+class Histogramdd(Module):
+    def call(self, a):
         ret = mnp.histogramdd(a)
         return ret
 

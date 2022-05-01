@@ -27,7 +27,7 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(device_target='Ascend')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         out_channel = 4
@@ -58,7 +58,7 @@ class Net(nn.Cell):
         self.get_shape = P.Shape()
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.conv_filter(self.out, self.x, self.get_shape(self.w))
 
 

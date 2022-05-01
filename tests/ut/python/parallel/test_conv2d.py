@@ -19,11 +19,11 @@ import pytest
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, conv2d_weight, out_channel, kernel_size, pad_mode, stride, dilation=1, group=1,
                  strategy1=None, strategy2=None):
         super().__init__()
@@ -32,7 +32,7 @@ class Net(Cell):
         self.neg = P.Neg().shard(strategy2)
         self.conv2d_weight = Parameter(conv2d_weight, "w1")
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.conv2d(x, self.conv2d_weight)
         out = self.neg(out)
         return out

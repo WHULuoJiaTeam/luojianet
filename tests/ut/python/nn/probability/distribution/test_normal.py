@@ -68,7 +68,7 @@ def test_arguments():
     assert isinstance(n, msd.Distribution)
 
 
-class NormalProb(nn.Cell):
+class NormalProb(nn.Module):
     """
     Normal distribution: initialize with mean/sd.
     """
@@ -77,7 +77,7 @@ class NormalProb(nn.Cell):
         super(NormalProb, self).__init__()
         self.normal = msd.Normal(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self, value):
+    def call(self, value):
         prob = self.normal.prob(value)
         log_prob = self.normal.log_prob(value)
         cdf = self.normal.cdf(value)
@@ -90,7 +90,7 @@ class NormalProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_normal_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through call.
     """
     net = NormalProb()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -98,7 +98,7 @@ def test_normal_prob():
     assert isinstance(ans, Tensor)
 
 
-class NormalProb1(nn.Cell):
+class NormalProb1(nn.Module):
     """
     Normal distribution: initialize without mean/sd.
     """
@@ -107,7 +107,7 @@ class NormalProb1(nn.Cell):
         super(NormalProb1, self).__init__()
         self.normal = msd.Normal()
 
-    def construct(self, value, mean, sd):
+    def call(self, value, mean, sd):
         prob = self.normal.prob(value, mean, sd)
         log_prob = self.normal.log_prob(value, mean, sd)
         cdf = self.normal.cdf(value, mean, sd)
@@ -120,7 +120,7 @@ class NormalProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_normal_prob1():
     """
-    Test probability functions: passing mean/sd, value through construct.
+    Test probability functions: passing mean/sd, value through call.
     """
     net = NormalProb1()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -130,7 +130,7 @@ def test_normal_prob1():
     assert isinstance(ans, Tensor)
 
 
-class NormalKl(nn.Cell):
+class NormalKl(nn.Module):
     """
     Test class: kl_loss of Normal distribution.
     """
@@ -140,7 +140,7 @@ class NormalKl(nn.Cell):
         self.n1 = msd.Normal(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
         self.n2 = msd.Normal(dtype=dtype.float32)
 
-    def construct(self, mean_b, sd_b, mean_a, sd_a):
+    def call(self, mean_b, sd_b, mean_a, sd_a):
         kl1 = self.n1.kl_loss('Normal', mean_b, sd_b)
         kl2 = self.n2.kl_loss('Normal', mean_b, sd_b, mean_a, sd_a)
         return kl1 + kl2
@@ -160,7 +160,7 @@ def test_kl():
     assert isinstance(ans, Tensor)
 
 
-class NormalCrossEntropy(nn.Cell):
+class NormalCrossEntropy(nn.Module):
     """
     Test class: cross_entropy of Normal distribution.
     """
@@ -170,7 +170,7 @@ class NormalCrossEntropy(nn.Cell):
         self.n1 = msd.Normal(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
         self.n2 = msd.Normal(dtype=dtype.float32)
 
-    def construct(self, mean_b, sd_b, mean_a, sd_a):
+    def call(self, mean_b, sd_b, mean_a, sd_a):
         h1 = self.n1.cross_entropy('Normal', mean_b, sd_b)
         h2 = self.n2.cross_entropy('Normal', mean_b, sd_b, mean_a, sd_a)
         return h1 + h2
@@ -190,7 +190,7 @@ def test_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class NormalBasics(nn.Cell):
+class NormalBasics(nn.Module):
     """
     Test class: basic mean/sd function.
     """
@@ -199,7 +199,7 @@ class NormalBasics(nn.Cell):
         super(NormalBasics, self).__init__()
         self.n = msd.Normal(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self):
+    def call(self):
         mean = self.n.mean()
         sd = self.n.sd()
         mode = self.n.mode()
@@ -217,9 +217,9 @@ def test_bascis():
     assert isinstance(ans, Tensor)
 
 
-class NormalConstruct(nn.Cell):
+class NormalConstruct(nn.Module):
     """
-    Normal distribution: going through construct.
+    Normal distribution: going through call.
     """
 
     def __init__(self):
@@ -227,7 +227,7 @@ class NormalConstruct(nn.Cell):
         self.normal = msd.Normal(3.0, 4.0)
         self.normal1 = msd.Normal()
 
-    def construct(self, value, mean, sd):
+    def call(self, value, mean, sd):
         prob = self.normal('prob', value)
         prob1 = self.normal('prob', value, mean, sd)
         prob2 = self.normal1('prob', value, mean, sd)
@@ -237,7 +237,7 @@ class NormalConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_normal_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through call.
     """
     net = NormalConstruct()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)

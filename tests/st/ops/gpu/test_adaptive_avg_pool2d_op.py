@@ -28,23 +28,23 @@ from luojianet_ms.common.api import ms_function
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, output_size):
         super(Net, self).__init__()
         self.adaptive_avg_pool2d = P.AdaptiveAvgPool2D(output_size)
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         return self.adaptive_avg_pool2d(x)
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self):
         super(GradNet, self).__init__()
         self.adaptive_avg_pool2d_grad = G.AdaptiveAvgPool2DGrad()
 
     @ms_function
-    def construct(self, x, dy):
+    def call(self, x, dy):
         return self.adaptive_avg_pool2d_grad(x, dy)
 
 

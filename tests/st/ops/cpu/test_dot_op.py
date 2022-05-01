@@ -26,8 +26,8 @@ from luojianet_ms.common.initializer import initializer
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetDot(nn.Cell):
-    def construct(self, x, y):
+class NetDot(nn.Module):
+    def call(self, x, y):
         return C.dot(x, y)
 
 

@@ -21,7 +21,7 @@ from luojianet_ms import ParameterTuple
 from luojianet_ms.ops import composite as C
 
 
-class TrainStepWrap(nn.Cell):
+class TrainStepWrap(nn.Module):
     """
     TrainStepWrap definition
     """
@@ -35,13 +35,13 @@ class TrainStepWrap(nn.Cell):
         self.hyper_map = C.HyperMap()
         self.grad = C.GradOperation(get_by_list=True)
 
-    def construct(self, x, label):
+    def call(self, x, label):
         weights = self.weights
         grads = self.grad(self.network, weights)(x, label)
         return self.optimizer(grads)
 
 
-class NetWithLossClass(nn.Cell):
+class NetWithLossClass(nn.Module):
     """
     NetWithLossClass definition
     """
@@ -51,7 +51,7 @@ class NetWithLossClass(nn.Cell):
         self.loss = nn.SoftmaxCrossEntropyWithLogits()
         self.network = network
 
-    def construct(self, x, label):
+    def call(self, x, label):
         predict = self.network(x)
         return self.loss(predict, label)
 
@@ -60,7 +60,7 @@ def train_step_with_loss_warp(network):
     return TrainStepWrap(NetWithLossClass(network))
 
 
-class TrainStepWrap2(nn.Cell):
+class TrainStepWrap2(nn.Module):
     """
     TrainStepWrap2 definition
     """
@@ -75,7 +75,7 @@ class TrainStepWrap2(nn.Cell):
         self.grad = C.GradOperation(get_by_list=True, sens_param=True)
         self.sens = sens
 
-    def construct(self, x):
+    def call(self, x):
         weights = self.weights
         grads = self.grad(self.network, weights)(x, self.sens)
         return self.optimizer(grads)
@@ -85,7 +85,7 @@ def train_step_with_sens(network, sens):
     return TrainStepWrap2(network, sens)
 
 
-class TrainStepWrapWithoutOpt(nn.Cell):
+class TrainStepWrapWithoutOpt(nn.Module):
     """
     TrainStepWrapWithoutOpt definition
     """
@@ -96,7 +96,7 @@ class TrainStepWrapWithoutOpt(nn.Cell):
         self.weights = ParameterTuple(network.trainable_params())
         self.grad = C.GradOperation(get_by_list=True)
 
-    def construct(self, x, label):
+    def call(self, x, label):
         grads = self.grad(self.network, self.weights)(x, label)
         return grads
 

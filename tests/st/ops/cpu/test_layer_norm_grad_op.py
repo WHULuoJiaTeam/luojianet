@@ -25,12 +25,12 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class LayerNormGradNet(nn.Cell):
+class LayerNormGradNet(nn.Module):
     def __init__(self, begin_norm_axis, begin_params_axis):
         super(LayerNormGradNet, self).__init__()
         self.norm = G.LayerNormGrad(begin_norm_axis, begin_params_axis)
 
-    def construct(self, dy, x, var, mean, gamma):
+    def call(self, dy, x, var, mean, gamma):
         return self.norm(dy, x, var, mean, gamma)
 
 

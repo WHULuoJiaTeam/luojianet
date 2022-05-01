@@ -287,14 +287,14 @@ def test_parameter():
     print(z)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
 
     def __init__(self, dim):
         super(Net, self).__init__()
         self.dim = dim
 
-    def construct(self, input_x):
+    def call(self, input_x):
         return input_x
 
 

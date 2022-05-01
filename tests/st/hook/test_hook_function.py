@@ -28,13 +28,13 @@ def var_hook_function(grad_out):
     print("grad:", grad_out)
 
 
-class GraphVarHook(nn.Cell):
+class GraphVarHook(nn.Module):
     def __init__(self):
         super(GraphVarHook, self).__init__()
         self.relu = nn.ReLU()
         self.hook = P.HookBackward(var_hook_function)
 
-    def construct(self, x):
+    def call(self, x):
         x = x + x
         x = x * x
         x = self.hook(x)
@@ -42,14 +42,14 @@ class GraphVarHook(nn.Cell):
         return x
 
 
-class MsFuncVarHook(nn.Cell):
+class MsFuncVarHook(nn.Module):
     def __init__(self):
         super(MsFuncVarHook, self).__init__()
         self.relu = nn.ReLU()
         self.hook = P.HookBackward(var_hook_function)
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = x + x
         x = x * x
         x = self.hook(x)
@@ -97,27 +97,27 @@ def cell_hook_function(cell_id, grad_input, grad_output):
     print("grad output:", grad_output)
 
 
-class GraphCellHook(nn.Cell):
+class GraphCellHook(nn.Module):
     def __init__(self):
         super(GraphCellHook, self).__init__()
         self.relu = nn.ReLU()
         self.relu.register_backward_hook(cell_hook_function)
 
-    def construct(self, x):
+    def call(self, x):
         x = x + x
         x = x * x
         x = self.relu(x)
         return x
 
 
-class MsFuncCellHook(nn.Cell):
+class MsFuncCellHook(nn.Module):
     def __init__(self):
         super(MsFuncCellHook, self).__init__()
         self.relu = nn.ReLU()
         self.relu.register_backward_hook(cell_hook_function)
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         x = x + x
         x = x * x
         x = self.relu(x)

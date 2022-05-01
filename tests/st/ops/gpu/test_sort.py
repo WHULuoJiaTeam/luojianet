@@ -21,12 +21,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class SortNet(nn.Cell):
+class SortNet(nn.Module):
     def __init__(self, axis, descending):
         super(SortNet, self).__init__()
         self.sort = P.Sort(axis, descending)
 
-    def construct(self, x):
+    def call(self, x):
         return self.sort(x)
 
 

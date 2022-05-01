@@ -25,35 +25,35 @@ from luojianet_ms import context
 context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class FirstInputTupleNet(nn.Cell):
+class FirstInputTupleNet(nn.Module):
     def __init__(self):
         super(FirstInputTupleNet, self).__init__()
 
-    def construct(self, tuple_a, tensor_x, list_b, tensor_y, scalar, dict_c, flag):
+    def call(self, tuple_a, tensor_x, list_b, tensor_y, scalar, dict_c, flag):
         if flag:
             return tensor_x - tuple_a[2] + list_b[1][1]["x"] - tensor_y + scalar - dict_c["x"]
         return tensor_x + tuple_a[2] - list_b[1][1]["y"] + tensor_y - scalar + dict_c["y"]
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net, get_all):
         super(GradNet, self).__init__()
         self.forward_net = net
         self.sens = Tensor(np.ones((2, 2), np.float32) * 5)
         self.grad_all = C.GradOperation(get_all=get_all)
 
-    def construct(self, tuple_a, tensor_x, list_b, tensor_y, scalar, dict_c, flag):
+    def call(self, tuple_a, tensor_x, list_b, tensor_y, scalar, dict_c, flag):
         return self.grad_all(self.forward_net)(tuple_a, tensor_x, list_b, tensor_y, scalar, dict_c, flag)
 
 
-class GradNet1(nn.Cell):
+class GradNet1(nn.Module):
     def __init__(self, net, get_all):
         super(GradNet1, self).__init__()
         self.forward_net = net
         self.sens = Tensor(np.ones((2, 2), np.float32) * 5)
         self.grad_all = C.GradOperation(get_all=get_all)
 
-    def construct(self, tuple_a, tensor_x, list_b, tensor_y, tensor_z, dict_c):
+    def call(self, tuple_a, tensor_x, list_b, tensor_y, tensor_z, dict_c):
         return self.grad_all(self.forward_net)(tuple_a, tensor_x, list_b, tensor_y, tensor_z, dict_c)
 
 
@@ -82,11 +82,11 @@ grad_all_inputs_net = GradNet(forward_net, get_all=True)
 
 
 def test_grad_first_input_net():
-    class FirstInputTensorNet(nn.Cell):
+    class FirstInputTensorNet(nn.Module):
         def __init__(self):
             super(FirstInputTensorNet, self).__init__()
 
-        def construct(self, tensor_x, tuple_a, list_b, tensor_y, tensor_z, dict_c):
+        def call(self, tensor_x, tuple_a, list_b, tensor_y, tensor_z, dict_c):
             return tensor_x + tuple_a[0] - list_b[1][1]["y"] + tensor_y - tensor_z + dict_c["y"]
 
     grad_fist_input_tensor_net = GradNet1(FirstInputTensorNet(), get_all=False)

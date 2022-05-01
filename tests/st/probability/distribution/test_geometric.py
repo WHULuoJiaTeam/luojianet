@@ -25,7 +25,7 @@ from luojianet_ms import dtype
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Prob(nn.Cell):
+class Prob(nn.Module):
     """
     Test class: probability of Geometric distribution.
     """
@@ -34,7 +34,7 @@ class Prob(nn.Cell):
         super(Prob, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.g.prob(x_)
 
 
@@ -52,7 +52,7 @@ def test_pmf():
     assert (np.abs(output.asnumpy() - expect_pmf) < tol).all()
 
 
-class LogProb(nn.Cell):
+class LogProb(nn.Module):
     """
     Test class: log probability of Geometric distribution.
     """
@@ -61,7 +61,7 @@ class LogProb(nn.Cell):
         super(LogProb, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.g.log_prob(x_)
 
 
@@ -79,7 +79,7 @@ def test_log_likelihood():
     assert (np.abs(output.asnumpy() - expect_logpmf) < tol).all()
 
 
-class KL(nn.Cell):
+class KL(nn.Module):
     """
     Test class: kl_loss between Geometric distributions.
     """
@@ -88,7 +88,7 @@ class KL(nn.Cell):
         super(KL, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.g.kl_loss('Geometric', x_)
 
 
@@ -108,7 +108,7 @@ def test_kl_loss():
     assert (np.abs(output.asnumpy() - expect_kl_loss) < tol).all()
 
 
-class Basics(nn.Cell):
+class Basics(nn.Module):
     """
     Test class: mean/sd/mode of Geometric distribution.
     """
@@ -117,7 +117,7 @@ class Basics(nn.Cell):
         super(Basics, self).__init__()
         self.g = msd.Geometric([0.5, 0.5], dtype=dtype.int32)
 
-    def construct(self):
+    def call(self):
         return self.g.mean(), self.g.sd(), self.g.mode()
 
 
@@ -136,7 +136,7 @@ def test_basics():
     assert (np.abs(mode.asnumpy() - expect_mode) < tol).all()
 
 
-class Sampling(nn.Cell):
+class Sampling(nn.Module):
     """
     Test class: log probability of bernoulli distribution.
     """
@@ -146,7 +146,7 @@ class Sampling(nn.Cell):
         self.g = msd.Geometric([0.7, 0.5], seed=seed, dtype=dtype.int32)
         self.shape = shape
 
-    def construct(self, probs=None):
+    def call(self, probs=None):
         return self.g.sample(self.shape, probs)
 
 
@@ -160,7 +160,7 @@ def test_sample():
     assert output.shape == (2, 3, 2)
 
 
-class CDF(nn.Cell):
+class CDF(nn.Module):
     """
     Test class: cdf of Geometric distribution.
     """
@@ -169,7 +169,7 @@ class CDF(nn.Cell):
         super(CDF, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.g.cdf(x_)
 
 
@@ -187,7 +187,7 @@ def test_cdf():
     assert (np.abs(output.asnumpy() - expect_cdf) < tol).all()
 
 
-class LogCDF(nn.Cell):
+class LogCDF(nn.Module):
     """
     Test class: log cdf of Geometric distribution.
     """
@@ -196,7 +196,7 @@ class LogCDF(nn.Cell):
         super(LogCDF, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.g.log_cdf(x_)
 
 
@@ -214,7 +214,7 @@ def test_logcdf():
     assert (np.abs(output.asnumpy() - expect_logcdf) < tol).all()
 
 
-class SF(nn.Cell):
+class SF(nn.Module):
     """
     Test class: survial function of Geometric distribution.
     """
@@ -223,7 +223,7 @@ class SF(nn.Cell):
         super(SF, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.g.survival_function(x_)
 
 
@@ -241,7 +241,7 @@ def test_survival():
     assert (np.abs(output.asnumpy() - expect_survival) < tol).all()
 
 
-class LogSF(nn.Cell):
+class LogSF(nn.Module):
     """
     Test class: log survial function of Geometric distribution.
     """
@@ -250,7 +250,7 @@ class LogSF(nn.Cell):
         super(LogSF, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.g.log_survival(x_)
 
 
@@ -269,7 +269,7 @@ def test_log_survival():
     assert (np.abs(output.asnumpy() - expect_logsurvival) < tol).all()
 
 
-class EntropyH(nn.Cell):
+class EntropyH(nn.Module):
     """
     Test class: entropy of Geometric distribution.
     """
@@ -278,7 +278,7 @@ class EntropyH(nn.Cell):
         super(EntropyH, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self):
+    def call(self):
         return self.g.entropy()
 
 
@@ -294,7 +294,7 @@ def test_entropy():
     assert (np.abs(output.asnumpy() - expect_entropy) < tol).all()
 
 
-class CrossEntropy(nn.Cell):
+class CrossEntropy(nn.Module):
     """
     Test class: cross entropy between Geometric distributions.
     """
@@ -303,7 +303,7 @@ class CrossEntropy(nn.Cell):
         super(CrossEntropy, self).__init__()
         self.g = msd.Geometric(0.7, dtype=dtype.int32)
 
-    def construct(self, x_):
+    def call(self, x_):
         entropy = self.g.entropy()
         kl_loss = self.g.kl_loss('Geometric', x_)
         h_sum_kl = entropy + kl_loss

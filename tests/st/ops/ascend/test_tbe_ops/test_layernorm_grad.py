@@ -18,30 +18,30 @@ import numpy as np
 from luojianet_ms import context
 from luojianet_ms import log as logger
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import LayerNorm
 from luojianet_ms.ops.composite import GradOperation
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Grad(Cell):
+class Grad(Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_, output_grad,):
+    def call(self, input_, output_grad,):
         gout = self.grad(self.network)(input_, output_grad)
         return gout
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, input_shape, begin_norm_axis, begin_params_axis, gamma, beta):
         super(Net, self).__init__()
         self.layernorm = LayerNorm(input_shape, begin_norm_axis, begin_params_axis, gamma, beta)
 
-    def construct(self, input_):
+    def call(self, input_):
         x = self.layernorm(input_)
         return x
 

@@ -18,11 +18,11 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.Add()
@@ -36,7 +36,7 @@ class Net(Cell):
         self.reducesum = P.ReduceSum(keep_dims=True)
         self.reshape = P.Reshape()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         add_res1 = self.add(x, 4)
         add_res2 = self.add(add_res1, 5)
         sub_res = self.sub(y, 3)
@@ -51,13 +51,13 @@ class Net(Cell):
         return self.reducemin(self.reducemin(red_res, 1), 1)
 
 
-class EmptyNet(Cell):
+class EmptyNet(Module):
     def __init__(self):
         super(EmptyNet, self).__init__()
         self.add = P.Add()
         self.neg = P.Neg()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         add_res1 = self.add(x, y)
         neg_res1 = self.neg(x)
         add_res2 = self.add(add_res1, neg_res1)

@@ -19,19 +19,19 @@ import pytest
 from luojianet_ms import context
 from luojianet_ms import log as logger
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 from luojianet_ms.train.model import Model
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Greater(Cell):
+class Greater(Module):
     def __init__(self):
         super(Greater, self).__init__()
         self.greater = P.Greater()
 
-    def construct(self, inputa, inputb):
+    def call(self, inputa, inputb):
         return self.greater(inputa, inputb)
 
 

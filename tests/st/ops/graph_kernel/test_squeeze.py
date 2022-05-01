@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, axis):
         super(Net, self).__init__()
         self.squeeze = P.Squeeze(axis)
 
-    def construct(self, x):
+    def call(self, x):
         return self.squeeze(x)
 
 

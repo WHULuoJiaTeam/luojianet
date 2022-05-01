@@ -18,16 +18,16 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations._grad_ops as G
 
 
-class TanhGradNet(Cell):
+class TanhGradNet(Module):
     def __init__(self):
         super(TanhGradNet, self).__init__()
         self.tanh_grad = G.TanhGrad()
 
-    def construct(self, y, dy):
+    def call(self, y, dy):
         return self.tanh_grad(y, dy)
 
 

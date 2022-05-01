@@ -67,7 +67,7 @@ def test_arguments():
     assert isinstance(l, msd.Distribution)
 
 
-class LogisticProb(nn.Cell):
+class LogisticProb(nn.Module):
     """
     logistic distribution: initialize with loc/scale.
     """
@@ -76,7 +76,7 @@ class LogisticProb(nn.Cell):
         super(LogisticProb, self).__init__()
         self.logistic = msd.Logistic(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self, value):
+    def call(self, value):
         prob = self.logistic.prob(value)
         log_prob = self.logistic.log_prob(value)
         cdf = self.logistic.cdf(value)
@@ -89,7 +89,7 @@ class LogisticProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_logistic_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through call.
     """
     net = LogisticProb()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -97,7 +97,7 @@ def test_logistic_prob():
     assert isinstance(ans, Tensor)
 
 
-class LogisticProb1(nn.Cell):
+class LogisticProb1(nn.Module):
     """
     logistic distribution: initialize without loc/scale.
     """
@@ -106,7 +106,7 @@ class LogisticProb1(nn.Cell):
         super(LogisticProb1, self).__init__()
         self.logistic = msd.Logistic()
 
-    def construct(self, value, mu, s):
+    def call(self, value, mu, s):
         prob = self.logistic.prob(value, mu, s)
         log_prob = self.logistic.log_prob(value, mu, s)
         cdf = self.logistic.cdf(value, mu, s)
@@ -119,7 +119,7 @@ class LogisticProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_logistic_prob1():
     """
-    Test probability functions: passing loc/scale, value through construct.
+    Test probability functions: passing loc/scale, value through call.
     """
     net = LogisticProb1()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -129,7 +129,7 @@ def test_logistic_prob1():
     assert isinstance(ans, Tensor)
 
 
-class KL(nn.Cell):
+class KL(nn.Module):
     """
     Test kl_loss. Should raise NotImplementedError.
     """
@@ -138,12 +138,12 @@ class KL(nn.Cell):
         super(KL, self).__init__()
         self.logistic = msd.Logistic(3.0, 4.0)
 
-    def construct(self, mu, s):
+    def call(self, mu, s):
         kl = self.logistic.kl_loss('Logistic', mu, s)
         return kl
 
 
-class Crossentropy(nn.Cell):
+class Crossentropy(nn.Module):
     """
     Test cross entropy. Should raise NotImplementedError.
     """
@@ -152,12 +152,12 @@ class Crossentropy(nn.Cell):
         super(Crossentropy, self).__init__()
         self.logistic = msd.Logistic(3.0, 4.0)
 
-    def construct(self, mu, s):
+    def call(self, mu, s):
         cross_entropy = self.logistic.cross_entropy('Logistic', mu, s)
         return cross_entropy
 
 
-class LogisticBasics(nn.Cell):
+class LogisticBasics(nn.Module):
     """
     Test class: basic loc/scale function.
     """
@@ -166,7 +166,7 @@ class LogisticBasics(nn.Cell):
         super(LogisticBasics, self).__init__()
         self.logistic = msd.Logistic(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self):
+    def call(self):
         mean = self.logistic.mean()
         sd = self.logistic.sd()
         mode = self.logistic.mode()
@@ -192,9 +192,9 @@ def test_bascis():
         ans = crossentropy(mu, s)
 
 
-class LogisticConstruct(nn.Cell):
+class LogisticConstruct(nn.Module):
     """
-    logistic distribution: going through construct.
+    logistic distribution: going through call.
     """
 
     def __init__(self):
@@ -202,7 +202,7 @@ class LogisticConstruct(nn.Cell):
         self.logistic = msd.Logistic(3.0, 4.0)
         self.logistic1 = msd.Logistic()
 
-    def construct(self, value, mu, s):
+    def call(self, value, mu, s):
         prob = self.logistic('prob', value)
         prob1 = self.logistic('prob', value, mu, s)
         prob2 = self.logistic1('prob', value, mu, s)
@@ -212,7 +212,7 @@ class LogisticConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_logistic_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through call.
     """
     net = LogisticConstruct()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)

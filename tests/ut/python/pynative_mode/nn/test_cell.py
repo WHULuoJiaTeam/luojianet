@@ -22,29 +22,29 @@ from luojianet_ms import Tensor, Parameter
 from ...ut_filter import non_graph_engine
 
 
-class ModA(nn.Cell):
+class ModA(nn.Module):
     """ ModA definition """
 
     def __init__(self, tensor):
         super(ModA, self).__init__()
         self.weight = Parameter(tensor, name="weight")
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         pass
 
 
-class ModB(nn.Cell):
+class ModB(nn.Module):
     """ ModB definition """
 
     def __init__(self, tensor):
         super(ModB, self).__init__()
         self.weight = Parameter(tensor, name="weight")
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         pass
 
 
-class ModC(nn.Cell):
+class ModC(nn.Module):
     """ ModC definition """
 
     def __init__(self, ta, tb):
@@ -52,11 +52,11 @@ class ModC(nn.Cell):
         self.mod1 = ModA(ta)
         self.mod2 = ModB(tb)
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         pass
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
     name_len = 4
     cells_num = 3
@@ -67,11 +67,11 @@ class Net(nn.Cell):
         self.mod2 = ModB(tb)
         self.mod3 = ModC(ta, tb)
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         pass
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """ Net2 definition """
 
     def __init__(self, ta, tb):
@@ -80,11 +80,11 @@ class Net2(nn.Cell):
         self.mod2 = ModB(tb)
         self.mod3 = ModC(ta, tb)
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         pass
 
 
-class ConvNet(nn.Cell):
+class ConvNet(nn.Module):
     """ ConvNet definition """
     image_h = 224
     image_w = 224
@@ -101,7 +101,7 @@ class ConvNet(nn.Cell):
             int(ConvNet.image_h * ConvNet.image_w * ConvNet.output_ch / (4 * 4)),
             num_classes)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -169,20 +169,20 @@ def test_exceptions():
     """ test_exceptions """
     t = Tensor(np.ones([2, 3]))
 
-    class ModError(nn.Cell):
+    class ModError(nn.Module):
         """ ModError definition """
 
         def __init__(self, tensor):
             self.weight = Parameter(tensor, name="weight")
             super(ModError, self).__init__()
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             pass
 
     with pytest.raises(AttributeError):
         ModError(t)
 
-    class ModError1(nn.Cell):
+    class ModError1(nn.Module):
         """ ModError1 definition """
 
         def __init__(self, tensor):
@@ -191,13 +191,13 @@ def test_exceptions():
             self.weight = None
             self.weight = ModA(tensor)
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             pass
 
     with pytest.raises(TypeError):
         ModError1(t)
 
-    class ModError2(nn.Cell):
+    class ModError2(nn.Module):
         """ ModError2 definition """
 
         def __init__(self, tensor):
@@ -206,14 +206,14 @@ def test_exceptions():
             self.mod = None
             self.mod = tensor
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             pass
 
     with pytest.raises(TypeError):
         ModError2(t)
 
-    m = nn.Cell()
-    assert m.construct() is None
+    m = nn.Module()
+    assert m.call() is None
 
 
 def test_del():
@@ -240,7 +240,7 @@ def test_add_attr():
     ta = Tensor(np.ones([2, 3]))
     tb = Tensor(np.ones([1, 4]))
     p = Parameter(ta, name="weight")
-    m = nn.Cell()
+    m = nn.Module()
     m.insert_param_to_cell('weight', p)
 
     with pytest.raises(TypeError):
@@ -263,14 +263,14 @@ def test_add_attr():
     with pytest.raises(TypeError):
         m.insert_child_to_cell('m', p)
 
-    class ModAddCellError(nn.Cell):
+    class ModAddCellError(nn.Module):
         """ ModAddCellError definition """
 
         def __init__(self, tensor):
             self.mod = ModA(tensor)
             super().__init__()
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             pass
 
     with pytest.raises(AttributeError):
@@ -279,7 +279,7 @@ def test_add_attr():
 
 def test_train_eval():
     """ test_train_eval """
-    m = nn.Cell()
+    m = nn.Module()
     assert not m.training
     m.set_train()
     assert m.training
@@ -305,4 +305,4 @@ def test_net_call():
         net = ConvNet()
         input_x = Tensor(
             np.random.randint(0, 255, [1, 3, net.image_h, net.image_w]).astype(np.float32))
-        net.construct(input_x)
+        net.call(input_x)

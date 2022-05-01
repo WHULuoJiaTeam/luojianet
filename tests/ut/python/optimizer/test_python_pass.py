@@ -158,7 +158,7 @@ def test_isnot_pattern_0():
     """
     set_renorm(False)
     set_reopt(False)
-    class ConvBN(nn.Cell):
+    class ConvBN(nn.Module):
         def __init__(self):
             super(ConvBN, self).__init__()
             self.conv = P.Conv2D(32, 3)
@@ -168,7 +168,7 @@ def test_isnot_pattern_0():
             self.mean = Tensor(np.ones([32]), luojianet_ms.float32)
             self.variance = Tensor(np.ones([32]), luojianet_ms.float32)
             self.bn = P.BatchNorm()
-        def construct(self, x):
+        def call(self, x):
             x = self.conv(x, self.conv_weight)
             x = self.bn(x, self.scale, self.bias, self.mean, self.variance)
             return x

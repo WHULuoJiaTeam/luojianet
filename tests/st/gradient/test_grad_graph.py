@@ -25,20 +25,20 @@ from luojianet_ms.ops.functional import grad
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class SingleInputSingleOutputNet(nn.Cell):
-    def construct(self, x):
+class SingleInputSingleOutputNet(nn.Module):
+    def call(self, x):
         return x**3
 
-class SingleInputMultipleOutputsNet(nn.Cell):
-    def construct(self, x):
+class SingleInputMultipleOutputsNet(nn.Module):
+    def call(self, x):
         return x**3, 2*x
 
-class MultipleInputsSingleOutputNet(nn.Cell):
-    def construct(self, x, y, z):
+class MultipleInputsSingleOutputNet(nn.Module):
+    def call(self, x, y, z):
         return x*y*z
 
-class MultipleInputsMultipleOutputsNet(nn.Cell):
-    def construct(self, x, y, z):
+class MultipleInputsMultipleOutputsNet(nn.Module):
+    def call(self, x, y, z):
         return x**2 + y**2 + z**2, x*y*z
 
 def function(x, y, z):

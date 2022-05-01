@@ -27,7 +27,7 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class Conv2dFilter(nn.Cell):
+class Conv2dFilter(nn.Module):
     def __init__(self):
         super(Conv2dFilter, self).__init__()
         out_channel = 1
@@ -44,7 +44,7 @@ class Conv2dFilter(nn.Cell):
         self.get_shape = P.Shape()
 
     @ms_function
-    def construct(self, out, x, w):
+    def call(self, out, x, w):
         return self.conv_filter(out, x, self.get_shape(w))
 
 

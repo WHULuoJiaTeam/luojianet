@@ -30,7 +30,7 @@ beta1 = 0.9
 beta2 = 0.999
 epsilon = 1e-8
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.fused_sparse_lazy_adam = P.FusedSparseLazyAdam()
@@ -38,7 +38,7 @@ class Net(nn.Cell):
         self.m = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="m")
         self.v = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="v")
 
-    def construct(self, grad, indices):
+    def call(self, grad, indices):
         return self.fused_sparse_lazy_adam(self.var, self.m, self.v, beta1_power, beta2_power,
                                            lr, beta1, beta2, epsilon, grad, indices)
 

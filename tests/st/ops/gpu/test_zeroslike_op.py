@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class NetZerosLike(nn.Cell):
+class NetZerosLike(nn.Module):
     def __init__(self):
         super(NetZerosLike, self).__init__()
         self.zeros_like = P.ZerosLike()
 
-    def construct(self, x):
+    def call(self, x):
         return self.zeros_like(x)
 
 
@@ -74,13 +74,13 @@ def test_ZerosLike():
     assert output1.shape == expect1.shape
 
 
-class ZerosLikeDynamicNet(nn.Cell):
+class ZerosLikeDynamicNet(nn.Module):
     def __init__(self):
         super(ZerosLikeDynamicNet, self).__init__()
         self.gpu_convert_to_dynamic_shape = inner.GpuConvertToDynamicShape()
         self.zeros_like = P.ZerosLike()
 
-    def construct(self, x):
+    def call(self, x):
         converted_to_dynamic = self.gpu_convert_to_dynamic_shape(x)
         return self.zeros_like(converted_to_dynamic)
 

@@ -14,7 +14,7 @@
 # limitations under the License.
 # ==============================================================================
 import pytest
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms import context, Tensor, Parameter
 import luojianet_ms.ops.operations as P
 import luojianet_ms as ms
@@ -22,7 +22,7 @@ import numpy as np
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class AutoMonadAddnAdamNet(Cell):
+class AutoMonadAddnAdamNet(Module):
     def __init__(self, var, m, v):
         super().__init__()
         self.apply_adam = P.Adam()
@@ -32,7 +32,7 @@ class AutoMonadAddnAdamNet(Cell):
         self.addn = P.AddN()
         self.mul = P.Mul()
 
-    def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
+    def call(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
         out = self.addn((self.var, self.m, self.v))
         self.apply_adam(self.var, self.m, self.v, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad)
         return out, self.var, self.m, self.v
@@ -84,7 +84,7 @@ def test_auto_monad_addn_adam():
     allclose_nparray(new_v_pyn.asnumpy(), new_v.asnumpy(), 0.001, 0.001)
 
 
-class AutoMonadTwoAssignTwoAddnDependencyNet(Cell):
+class AutoMonadTwoAssignTwoAddnDependencyNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter1 = ms.Parameter(Tensor([1.0], ms.float32), name="parameter1")
@@ -92,7 +92,7 @@ class AutoMonadTwoAssignTwoAddnDependencyNet(Cell):
         self.assign = P.Assign()
         self.addN = P.AddN()
 
-    def construct(self, inputs):
+    def call(self, inputs):
         self.assign(self.parameter1, inputs)
         out = self.addN((inputs, self.parameter1, self.parameter2))
         self.assign(self.parameter2, inputs)
@@ -100,13 +100,13 @@ class AutoMonadTwoAssignTwoAddnDependencyNet(Cell):
         return out
 
 
-class AutoMonadTwoAssignTwoAddnDependencyBenchmarkNet(Cell):
+class AutoMonadTwoAssignTwoAddnDependencyBenchmarkNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter2 = ms.Parameter(Tensor([3.0], ms.float32), name="parameter2")
         self.addN = P.AddN()
 
-    def construct(self, inputs):
+    def call(self, inputs):
         out = self.addN((inputs, inputs, self.parameter2))
         out = self.addN((out, inputs, inputs))
         return out

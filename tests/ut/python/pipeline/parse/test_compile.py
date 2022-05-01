@@ -32,7 +32,7 @@ log = logging.getLogger("test")
 log.setLevel(level=logging.ERROR)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -41,7 +41,7 @@ class Net(nn.Cell):
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv(x)
         x = self.relu(x)
         out = self.flatten(x)
@@ -63,14 +63,14 @@ def test_build():
 
 
 # Test case 2 : test the use different args to run graph
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """ Net2 definition """
 
     def __init__(self):
         super(Net2, self).__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.relu(x)
         return x
 

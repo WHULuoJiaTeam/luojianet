@@ -27,11 +27,11 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_list_index_1D():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def call(self):
             list_ = [[1], [2, 2], [3, 3, 3]]
             list_[0] = [100]
             return list_
@@ -44,11 +44,11 @@ def test_list_index_1D():
 
 
 def test_list_neg_index_1D():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def call(self):
             list_ = [[1], [2, 2], [3, 3, 3]]
             list_[-3] = [100]
             return list_
@@ -61,11 +61,11 @@ def test_list_neg_index_1D():
 
 
 def test_list_index_2D():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def call(self):
             list_ = [[1], [2, 2], [3, 3, 3]]
             list_[1][0] = 200
             list_[1][1] = 201
@@ -79,11 +79,11 @@ def test_list_index_2D():
 
 
 def test_list_neg_index_2D():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def call(self):
             list_ = [[1], [2, 2], [3, 3, 3]]
             list_[1][-2] = 200
             list_[1][-1] = 201
@@ -97,11 +97,11 @@ def test_list_neg_index_2D():
 
 
 def test_list_index_3D():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def call(self):
             list_ = [[1], [2, 2], [[3, 3, 3]]]
             list_[2][0][0] = 300
             list_[2][0][1] = 301
@@ -116,11 +116,11 @@ def test_list_index_3D():
 
 
 def test_list_neg_index_3D():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def call(self):
             list_ = [[1], [2, 2], [[3, 3, 3]]]
             list_[2][0][-3] = 300
             list_[2][0][-2] = 301
@@ -135,11 +135,11 @@ def test_list_neg_index_3D():
 
 
 def test_list_index_1D_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             list_ = [x]
             list_[0] = 100
             return list_
@@ -149,11 +149,11 @@ def test_list_index_1D_parameter():
 
 
 def test_list_index_2D_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             list_ = [[x, x]]
             list_[0][0] = 100
             return list_
@@ -163,11 +163,11 @@ def test_list_index_2D_parameter():
 
 
 def test_list_index_3D_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def call(self, x):
             list_ = [[[x, x]]]
             list_[0][0][0] = 100
             return list_
@@ -177,24 +177,24 @@ def test_list_index_3D_parameter():
 
 
 def test_const_list_index_3D_bprop():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [[1], [2, 2], [[3, 3], [3, 3]]]
             self.relu = P.ReLU()
 
-        def construct(self, input_x):
+        def call(self, input_x):
             list_x = self.value
             list_x[2][0][1] = input_x
             return self.relu(list_x[2][0][1])
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)
 
-        def construct(self, x, sens):
+        def call(self, x, sens):
             return self.grad_all_with_sens(self.net)(x, sens)
 
     net = Net()
@@ -205,24 +205,24 @@ def test_const_list_index_3D_bprop():
 
 
 def test_parameter_list_index_3D_bprop():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [[1], [2, 2], [[3, 3], [3, 3]]]
             self.relu = P.ReLU()
 
-        def construct(self, x, value):
+        def call(self, x, value):
             list_value = [[x], [x, x], [[x, x], [x, x]]]
             list_value[2][0][1] = value
             return self.relu(list_value[2][0][1])
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)
 
-        def construct(self, x, value, sens):
+        def call(self, x, value, sens):
             return self.grad_all_with_sens(self.net)(x, value, sens)
 
     net = Net()

@@ -21,13 +21,13 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, multiples):
         super(Net, self).__init__()
         self.tile = P.Tile()
         self.multiples = multiples
 
-    def construct(self, x):
+    def call(self, x):
         return self.tile(x, self.multiples)
 
 

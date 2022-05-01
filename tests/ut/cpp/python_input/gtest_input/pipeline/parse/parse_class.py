@@ -31,19 +31,19 @@ log = logging.getLogger("test")
 log.setLevel(level=logging.ERROR)
 
 
-class ResNet(nn.Cell):
+class ResNet(nn.Module):
     def __init__(self, tensor):
         super(ResNet, self).__init__()
         self.weight = Parameter(tensor, name="weight")
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return x + y * self.weight
 
     def get_params(self):
         return None
 
 
-class SimpleNet(nn.Cell):
+class SimpleNet(nn.Module):
     def __init__(self, network, tensor, use_net=False):
         super(SimpleNet, self).__init__()
         self.weight = Parameter(tensor, name="weight")
@@ -53,7 +53,7 @@ class SimpleNet(nn.Cell):
         else:
             self.network = None
 
-    def construct(self, x, y):
+    def call(self, x, y):
         z = self.weight * x + y
         if self.use_net:
             z = self.network(z, x)

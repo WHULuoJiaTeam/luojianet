@@ -27,22 +27,22 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 grad_all = C.GradOperation(get_all=True)
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return grad_all(self.network)(x, y)
 
 def compile_net(net, x, y):
@@ -56,13 +56,13 @@ def test_cumsum_semi():
     Description: MatMul->CumSum
     Expectation: Currently, CumSum does not support the axis dimension split. compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul().shard(((16, 1), (1, 1)))
             self.cumsum = P.CumSum().shard(((16, 1),))
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.matmul1(x, y)
             out = self.cumsum(out, 0)
             return out
@@ -84,13 +84,13 @@ def test_cumsum_semi2():
     Description: MatMul->CumSum
     Expectation: Compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul().shard(((16, 1), (1, 1)))
             self.cumsum = P.CumSum().shard(((1, 16),))
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.matmul1(x, y)
             out = self.cumsum(out, 0)
             return out
@@ -111,13 +111,13 @@ def test_cumsum_auto():
     Description: MatMul->CumSum
     Expectation: Compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul().shard(((16, 1), (1, 1)))
             self.cumsum = P.CumSum()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             out = self.matmul1(x, y)
             out = self.cumsum(out, -1)
             return out

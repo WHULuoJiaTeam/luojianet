@@ -19,26 +19,26 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
-class ConstScalarAndTensorMinimum(Cell):
+class ConstScalarAndTensorMinimum(Module):
     def __init__(self):
         super(ConstScalarAndTensorMinimum, self).__init__()
         self.min = P.Minimum()
         self.x = 20
 
-    def construct(self, y):
+    def call(self, y):
         return self.min(self.x, y)
 
 
-class TwoTensorsMinimum(Cell):
+class TwoTensorsMinimum(Module):
     def __init__(self):
         super(TwoTensorsMinimum, self).__init__()
         self.min = P.Minimum()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.min(x, y)
 
 

@@ -92,23 +92,23 @@ def get_dataset_shapes_and_types(dataset):
     return dataset_shapes, dataset_types
 
 
-class SingleOpNetwork(nn.Cell):
+class SingleOpNetwork(nn.Module):
     def __init__(self, shapes):
         super(SingleOpNetwork, self).__init__()
         self.shapes = tuple(shapes[0])
         self.Op_Reshape_network = P.Reshape()
 
-    def construct(self, network_input):
+    def call(self, network_input):
         return self.Op_Reshape_network(network_input, self.shapes)
 
 
-class NetWithTDT(nn.Cell):
+class NetWithTDT(nn.Module):
     def __init__(self, network, dataset_types, dataset_shapes, shared_name=''):
         super(NetWithTDT, self).__init__()
         self.get_next = P.GetNext(dataset_types, dataset_shapes, len(dataset_shapes), shared_name)
         self.Op_network = network
 
-    def construct(self):
+    def call(self):
         next_input, _ = self.get_next()
         return self.Op_network(next_input)
 

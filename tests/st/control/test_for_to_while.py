@@ -29,25 +29,25 @@ context.set_context(device_target="Ascend")
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_single_for_01():
-    class SingleForNet(nn.Cell):
+    class SingleForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.add = P.Add()
             self.mul = P.Mul()
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             x = self.add(x, y)
             for _ in range(0, 3):
                 z = self.add(z, x)
             y = self.mul(z, y)
             return y
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def call(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([2], mstype.int32)

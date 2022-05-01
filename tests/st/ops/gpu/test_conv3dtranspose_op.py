@@ -23,7 +23,7 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetConv3dTranspose(nn.Cell):
+class NetConv3dTranspose(nn.Module):
     def __init__(self):
         super(NetConv3dTranspose, self).__init__()
         in_channel = 2
@@ -37,7 +37,7 @@ class NetConv3dTranspose(nn.Cell):
                                             dilation=1,
                                             group=1)
 
-    def construct(self, x, w):
+    def call(self, x, w):
         return self.conv_trans(x, w)
 
 

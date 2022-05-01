@@ -23,13 +23,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.logical_not = P.LogicalNot()
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         return self.logical_not(x)
 
 

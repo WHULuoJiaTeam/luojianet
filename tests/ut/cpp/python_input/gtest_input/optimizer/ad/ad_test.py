@@ -307,4 +307,4 @@ def test_constant_output(x, y):
 def test_resnet_construct(x):
     # not right model to import
     network = resnet50()
-    return network.construct(x)
+    return network.call(x)

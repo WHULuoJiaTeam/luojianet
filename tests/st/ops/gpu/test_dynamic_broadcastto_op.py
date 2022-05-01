@@ -26,13 +26,13 @@ from luojianet_ms.ops.operations import _inner_ops as inner
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.d_shape = ops.DynamicShape()
         self.d_broadcastto = inner.DynamicBroadcastTo()
 
-    def construct(self, data, shape):
+    def call(self, data, shape):
         shape = self.d_shape(shape)
         return self.d_broadcastto(data, shape)
 

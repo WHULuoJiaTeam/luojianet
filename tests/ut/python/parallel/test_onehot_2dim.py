@@ -22,7 +22,7 @@ from luojianet_ms.common.api import _cell_graph_executor
 from luojianet_ms.nn import TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, wi, stra1=None, stra2=None, stra3=None):
         super(Net, self).__init__()
         self.wi = Parameter(wi, "wi")
@@ -34,7 +34,7 @@ class Net(nn.Cell):
         self.cast = P.Cast()
         self.depth = 48
 
-    def construct(self, x):
+    def call(self, x):
         output = self.matmul(x, self.wi)
         output = self.cast(output, ms.int32)
         output = self.onehot(output, self.depth, self.on_value, self.off_value)

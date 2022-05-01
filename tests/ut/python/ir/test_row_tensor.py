@@ -63,14 +63,14 @@ def get_axis(x):
     perm = F.make_range(0, length)
     return perm
 
-class MSELoss(nn.Cell):
+class MSELoss(nn.Module):
     def __init__(self):
         super(MSELoss, self).__init__()
         self.reduce_sum = P.ReduceSum()
         self.square = P.Square()
         self.reduce_mean = P.ReduceMean()
 
-    def construct(self, data, label):
+    def call(self, data, label):
         diff = data - label
         return self.reduce_mean(self.square(diff), get_axis(diff))
 
@@ -227,7 +227,7 @@ class AdamWeightDecaySparse(Optimizer):
         self.decay_flag = tuple(decay_filter(x) for x in self.params)
         self.map = C.Map()
 
-    def construct(self, gradients):
+    def call(self, gradients):
         lr = self.get_lr()
         updated_velocity = self.map(F.partial(adam_opt_for_map, self.beta1, self.beta2, self.eps, lr,
                                               self.weight_decay_tensor),
@@ -236,11 +236,11 @@ class AdamWeightDecaySparse(Optimizer):
 
 
 def test_row_tensor_make_row_tensor():
-    class MakeRowTensor(nn.Cell):
+    class MakeRowTensor(nn.Module):
         def __init__(self):
             super(MakeRowTensor, self).__init__()
             self.dense_shape = (3, 2)
-        def construct(self, indices, values):
+        def call(self, indices, values):
             ret = (RowTensor(indices, values, self.dense_shape),)
             return ret[0]
     indices = Tensor([1, 2])
@@ -248,11 +248,11 @@ def test_row_tensor_make_row_tensor():
     MakeRowTensor()(indices, values)
 
 
-class RowTensorGetAttr(nn.Cell):
+class RowTensorGetAttr(nn.Module):
     def __init__(self, dense_shape):
         super(RowTensorGetAttr, self).__init__()
         self.dense_shape = dense_shape
-    def construct(self, indices, values):
+    def call(self, indices, values):
         x = RowTensor(indices, values, self.dense_shape)
         return x.values, x.indices, x.dense_shape
 
@@ -265,19 +265,19 @@ def test_row_tensor_attr():
 
 def test_row_tensor_sparse_gatherv2_grad_all():
     grad_all = C.GradOperation(get_all=True)
-    class GradWrap(nn.Cell):
+    class GradWrap(nn.Module):
         def __init__(self, network):
             super(GradWrap, self).__init__()
             self.network = network
-        def construct(self, x, y):
+        def call(self, x, y):
             grad = grad_all(self.network)(x, y)
             return grad[0].indices, grad[0].values, grad[0].dense_shape
-    class SparseGatherV2(nn.Cell):
+    class SparseGatherV2(nn.Module):
         def __init__(self):
             super(SparseGatherV2, self).__init__()
             self.sparse_gatherv2 = MySparseGatherV2()
             self.axis = 0
-        def construct(self, params, indices):
+        def call(self, params, indices):
             return self.sparse_gatherv2(params, indices, self.axis)
     params = Tensor(np.ones([3, 1, 2]).astype(np.int32))
     indices = Tensor(np.array([0, 1]).astype(np.int32))
@@ -286,23 +286,23 @@ def test_row_tensor_sparse_gatherv2_grad_all():
 
 def test_row_tensor_sparse_gatherv2_grad_with_pram():
     grad_by_list = C.GradOperation(get_by_list=True)
-    class GradWrap(nn.Cell):
+    class GradWrap(nn.Module):
         def __init__(self, network):
             super(GradWrap, self).__init__()
             self.network = network
             self.weights = ParameterTuple(filter(lambda x: x.requires_grad, network.get_parameters()))
-        def construct(self, x):
+        def call(self, x):
             weights = self.weights
             grad = grad_by_list(self.network, weights)(x)
             x = grad[0]
             return x.values, x.indices, x.dense_shape
-    class SparseGatherV2(nn.Cell):
+    class SparseGatherV2(nn.Module):
         def __init__(self):
             super(SparseGatherV2, self).__init__()
             self.sparse_gatherv2 = MySparseGatherV2()
             self.axis = 0
             self.params = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.int32)), name="params")
-        def construct(self, indices):
+        def call(self, indices):
             return self.sparse_gatherv2(self.params, indices, self.axis)
     indices = Tensor(np.array([0, 1]).astype(np.int32))
     network = GradWrap(SparseGatherV2())
@@ -310,19 +310,19 @@ def test_row_tensor_sparse_gatherv2_grad_with_pram():
 
 
 def test_row_tensor_env_get():
-    class Loss(nn.Cell):
+    class Loss(nn.Module):
         def __init__(self):
             super(Loss, self).__init__()
-        def construct(self, base, target):
+        def call(self, base, target):
             return base
-    class NetWithSparseGatherV2(nn.Cell):
+    class NetWithSparseGatherV2(nn.Module):
         def __init__(self):
             super(NetWithSparseGatherV2, self).__init__()
             self.w1 = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="w1")
             self.w2 = Parameter(Tensor(np.ones([2, 1, 2]).astype(np.float32)), name="w2")
             self.gatherv2 = MySparseGatherV2()
             self.axis = 0
-        def construct(self, indices):
+        def call(self, indices):
             return self.gatherv2(self.w1, indices, self.axis) * self.w2
 
     inputs = Tensor(np.array([0, 1]).astype(np.int32))
@@ -338,7 +338,7 @@ def test_row_tensor_env_get():
 
 
 def test_row_tensor_model_train():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, in_features, out_features):
             super(Net, self).__init__()
             self.weight = Parameter(Tensor(np.ones([out_features, in_features]).astype(np.float32)), name="weight")
@@ -346,7 +346,7 @@ def test_row_tensor_model_train():
             self.cast = P.Cast()
             self.flag = True
 
-        def construct(self, inputs, label):
+        def call(self, inputs, label):
             x = self.add(inputs, self.weight)
             if self.flag:
                 x = self.cast(x, mstype.float32)
@@ -387,36 +387,36 @@ def test_row_tensor_value_and_dense_shape_illegal():
         RowTensorGetAttr(dense_shape)(indices, values)
 
 
-class RowTensorValuesDouble(nn.Cell):
+class RowTensorValuesDouble(nn.Module):
     def __init__(self):
         super().__init__()
 
-    def construct(self, x):
+    def call(self, x):
         indices = x.indices
         values = x.values * 2
         dense_shape = x.dense_shape
         return RowTensor(indices, values, dense_shape)
 
 
-class RowTensorValuesAdd2(nn.Cell):
+class RowTensorValuesAdd2(nn.Module):
     def __init__(self):
         super().__init__()
 
-    def construct(self, x):
+    def call(self, x):
         indices = x.indices
         values = x.values + 2
         dense_shape = x.dense_shape
         return RowTensor(indices, values, dense_shape)
 
 
-class RowTensorWithControlIf(nn.Cell):
+class RowTensorWithControlIf(nn.Module):
     def __init__(self, dense_shape):
         super().__init__()
         self.op1 = RowTensorValuesDouble()
         self.op2 = RowTensorValuesAdd2()
         self.dense_shape = dense_shape
 
-    def construct(self, a, b, indices, values):
+    def call(self, a, b, indices, values):
         x = RowTensor(indices, values, self.dense_shape)
         if a > b:
             x = self.op1(x)
@@ -436,7 +436,7 @@ def test_row_tensor_with_control_flow_if():
     net(a, b, indices, values)
 
 
-class EmbeddingLookUpBnNet(nn.Cell):
+class EmbeddingLookUpBnNet(nn.Module):
     def __init__(self, vocab_size, embedding_size, target='CPU'):
         super().__init__()
         self.embedding_lookup = nn.EmbeddingLookup(vocab_size, embedding_size, param_init='ones', target=target)
@@ -445,7 +445,7 @@ class EmbeddingLookUpBnNet(nn.Cell):
         self.reshape = P.Reshape()
         self.relu = nn.PReLU()
 
-    def construct(self, indices):
+    def call(self, indices):
         x = self.embedding_lookup(indices)
         x = self.reshape(x, (2, 3, 2, 2))
         x = self.relu(x)

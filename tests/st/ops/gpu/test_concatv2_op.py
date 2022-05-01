@@ -26,7 +26,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.ops import operations as P
 
 
-class ConcatV32(nn.Cell):
+class ConcatV32(nn.Module):
     def __init__(self, nptype):
         super(ConcatV32, self).__init__()
 
@@ -37,7 +37,7 @@ class ConcatV32(nn.Cell):
             Tensor(np.arange(2 * 2 * 2).reshape(2, 2, 2).astype(nptype)), [2, 2, 2]), name='x2')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.cat((self.x1, self.x2))
 
 
@@ -83,7 +83,7 @@ def test_axis32_bool():
     axis32(np.bool)
 
 
-class ConcatV43(nn.Cell):
+class ConcatV43(nn.Module):
     def __init__(self, nptype):
         super(ConcatV43, self).__init__()
 
@@ -94,7 +94,7 @@ class ConcatV43(nn.Cell):
             Tensor(np.arange(2 * 2 * 2 * 3).reshape(2, 2, 2, 3).astype(nptype)), [2, 2, 2, 3]), name='x2')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.cat((self.x1, self.x2))
 
 
@@ -144,7 +144,7 @@ def test_axis43_bool():
     axis43(np.bool)
 
 
-class ConcatV21(nn.Cell):
+class ConcatV21(nn.Module):
     def __init__(self, nptype):
         super(ConcatV21, self).__init__()
 
@@ -155,7 +155,7 @@ class ConcatV21(nn.Cell):
             Tensor(np.arange(2 * 3).reshape(2, 3).astype(nptype)), [2, 3]), name='x2')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.cat((self.x1, self.x2))
 
 
@@ -199,12 +199,12 @@ def test_axis21_bool():
     axis21(np.bool)
 
 
-class Concat3INet(nn.Cell):
+class Concat3INet(nn.Module):
     def __init__(self):
         super(Concat3INet, self).__init__()
         self.cat = P.Concat(axis=1)
 
-    def construct(self, x1, x2, x3):
+    def call(self, x1, x2, x3):
         return self.cat((x1, x2, x3))
 
 
@@ -270,12 +270,12 @@ def test_concat_3i_bool():
     assert (output_ms.asnumpy() == output_np).all()
 
 
-class Concat4INet(nn.Cell):
+class Concat4INet(nn.Module):
     def __init__(self):
         super(Concat4INet, self).__init__()
         self.cat = P.Concat(axis=1)
 
-    def construct(self, x1, x2, x3, x4):
+    def call(self, x1, x2, x3, x4):
         return self.cat((x1, x2, x3, x4))
 
 

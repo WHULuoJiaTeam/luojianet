@@ -142,7 +142,7 @@ def test_arguments_with_dtype_specified():
     with pytest.raises(TypeError):
         MySecondBijector(Tensor([1, 2], dtype=dtype.int32), Tensor([1, 2], dtype=dtype.int32))
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     """
     Test input value when bijector's dtype is not specified.
     """
@@ -150,10 +150,10 @@ class Net1(nn.Cell):
         super(Net1, self).__init__()
         self.bijector = MyBijector(np.array(1.0).astype(np.float32), np.array(2.0).astype(np.float32))
 
-    def construct(self, value):
+    def call(self, value):
         return self.bijector.forward(value)
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """
     Test input value when bijector's dtype is specified.
     """
@@ -161,7 +161,7 @@ class Net2(nn.Cell):
         super(Net2, self).__init__()
         self.bijector = MySecondBijector(np.array(1.0).astype(np.float32), np.array(2.0).astype(np.float32))
 
-    def construct(self, value):
+    def call(self, value):
         return self.bijector.forward(value)
 
 def test_input_value():
@@ -205,4 +205,3 @@ def test_input_value2():
     value = Tensor(1.0, dtype=dtype.float32)
     ans = net(value)
     assert ans.dtype == dtype.float32
- 

@@ -27,31 +27,31 @@ from luojianet_ms.ops import operations as P
 grad_by_list = C.GradOperation(get_by_list=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network, strategy3):
         super(NetWithLoss, self).__init__()
         self.loss = P.SoftmaxCrossEntropyWithLogits().shard(strategy3)
         self.network = network
 
-    def construct(self, x, b):
+    def call(self, x, b):
         predict = self.network(x)
         return self.loss(predict, b)[0]
 
 
-class OneStepCell(nn.Cell):
+class OneStepCell(nn.Module):
     def __init__(self, network):
         super(OneStepCell, self).__init__(auto_prefix=False)
         self.network = network
         self.weights = ParameterTuple(network.network.trainable_params())
 
-    def construct(self, data, label):
+    def call(self, data, label):
         weights = self.weights
         grads = grad_by_list(self.network, weights)(data, label)
         return grads
 
 
 def test_two_weights_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, weight, weight2):
             super().__init__()
             self.weight = Parameter(weight, "w1", requires_grad=True)
@@ -59,7 +59,7 @@ def test_two_weights_parameter():
             self.matmul = P.MatMul().shard(strategy1)
             self.matmul2 = P.MatMul().shard(strategy2)
 
-        def construct(self, x):
+        def call(self, x):
             out = self.matmul(x, self.weight)
             out = self.matmul2(out, self.weight2)
             return out

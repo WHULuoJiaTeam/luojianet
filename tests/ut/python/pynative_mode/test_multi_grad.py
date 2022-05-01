@@ -27,7 +27,7 @@ def setup_teardown():
     context.set_context(mode=context.GRAPH_MODE)
 
 
-class _Grad(nn.Cell):
+class _Grad(nn.Module):
     def __init__(self, grad, network, wrt_params=False, real_inputs_count=None):
         super().__init__()
         self.network = network
@@ -38,7 +38,7 @@ class _Grad(nn.Cell):
         if self.wrt_params:
             self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         if self.wrt_params:
             if self.real_inputs_count is None or self.sens_param is False:
                 return self.grad(self.network, self.params)(*inputs)
@@ -74,20 +74,20 @@ class GradOfAllInputs(_Grad):
 
 
 def test_multi_grad():
-    class ForwardNetMul(nn.Cell):
+    class ForwardNetMul(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a = x * x
             b = y * y
             return a * b
 
-    class ForwardNetAdd(nn.Cell):
+    class ForwardNetAdd(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a = x + x + x
             b = y + y
             return a * b
@@ -107,20 +107,20 @@ def test_multi_grad():
 
 
 def test_multi_same_grad():
-    class ForwardNetMul(nn.Cell):
+    class ForwardNetMul(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a = x * x
             b = y * y
             return a * b
 
-    class ForwardNetAdd(nn.Cell):
+    class ForwardNetAdd(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a = x*3
             b = y*2
             return a + b
@@ -140,21 +140,21 @@ def test_multi_same_grad():
 
 
 def test_net_inner_grad():
-    class ForwardNetMul(nn.Cell):
+    class ForwardNetMul(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a = x * x
             b = y * y
             return a * b
 
-    class ForwardNetAdd(nn.Cell):
+    class ForwardNetAdd(nn.Module):
         def __init__(self, net):
             super().__init__()
             self.net = net
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a = x + x
             b = y + y
             res = self.net(a, b)
@@ -175,24 +175,24 @@ def test_net_inner_grad():
 
 
 def test_net_inner_first_run_grad():
-    class ForwardNetMul(nn.Cell):
+    class ForwardNetMul(nn.Module):
         def __init__(self):
             super().__init__()
             self.z1 = Parameter(Tensor(np.ones([32])*2, dtype=mstype.float32), name='z1')
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a = x * self.z1
             b = y * y
             return a * b
 
-    class ForwardNetAdd(nn.Cell):
+    class ForwardNetAdd(nn.Module):
         def __init__(self, net):
             super().__init__()
             self.net = net
             self.z2 = Parameter(Tensor(np.ones([32]), dtype=mstype.float32), name='z2')
             self.z3 = Parameter(Tensor(np.ones([32]), dtype=mstype.float32), name='z2')
 
-        def construct(self, x, y):
+        def call(self, x, y):
             a = x + x*self.z3
             b = y + y*self.z2
             res = self.net(a, b)

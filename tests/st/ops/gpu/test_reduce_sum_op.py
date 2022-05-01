@@ -87,7 +87,7 @@ np_axis14 = None
 keep_dims14 = True
 
 
-class ReduceSum(nn.Cell):
+class ReduceSum(nn.Module):
     def __init__(self):
         super(ReduceSum, self).__init__()
 
@@ -152,7 +152,7 @@ class ReduceSum(nn.Cell):
         self.keep_dims14 = keep_dims14
 
     @ms_function
-    def construct(self):
+    def call(self):
         return (P.ReduceSum(self.keep_dims0)(self.x0, self.axis0),
                 P.ReduceSum(self.keep_dims1)(self.x1, self.axis1),
                 P.ReduceSum(self.keep_dims2)(self.x2, self.axis2),
@@ -275,7 +275,7 @@ x_2 = x1
 axis_2 = 0
 
 
-class ReduceSumDynamic(nn.Cell):
+class ReduceSumDynamic(nn.Module):
     def __init__(self, x, axis):
         super(ReduceSumDynamic, self).__init__()
         self.reducesum = P.ReduceSum(True)
@@ -283,7 +283,7 @@ class ReduceSumDynamic(nn.Cell):
         self.x = x
         self.axis = axis
 
-    def construct(self):
+    def call(self):
         dynamic_x = self.test_dynamic(self.x)
         return self.reducesum(dynamic_x, self.axis)
 
@@ -306,14 +306,14 @@ def test_reduce_sum_dynamic():
     np.testing.assert_almost_equal(output2.asnumpy(), expect_2)
 
 
-class ReduceSumTypeNet(nn.Cell):
+class ReduceSumTypeNet(nn.Module):
     def __init__(self, nptype):
         super(ReduceSumTypeNet, self).__init__()
         self.x0 = Tensor(x0.astype(nptype))
         self.axis0 = axis0
         self.keep_dims0 = keep_dims0
 
-    def construct(self):
+    def call(self):
         return P.ReduceSum(self.keep_dims0)(self.x0, self.axis0)
 
 @pytest.mark.level0

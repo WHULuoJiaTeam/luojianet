@@ -24,13 +24,13 @@ from luojianet_ms.common.api import ms_function
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.image_gradients = nn.ImageGradients()
 
     @ms_function
-    def construct(self, x):
+    def call(self, x):
         return self.image_gradients(x)
 
 

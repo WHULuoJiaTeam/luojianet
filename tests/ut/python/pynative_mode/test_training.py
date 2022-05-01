@@ -28,7 +28,7 @@ def setup_module(module):
     context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """ LeNet5 definition """
 
     def __init__(self):
@@ -42,7 +42,7 @@ class LeNet5(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.flatten = P.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.max_pool2d(self.relu(self.conv1(x)))
         x = self.max_pool2d(self.relu(self.conv2(x)))
         x = self.flatten(x)

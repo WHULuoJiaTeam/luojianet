@@ -40,7 +40,7 @@ def conv_block(in_channels,
     )
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     """
     DarkNet V1 residual block definition.
 
@@ -65,7 +65,7 @@ class ResidualBlock(nn.Cell):
         self.conv2 = conv_block(out_chls, out_channels, kernel_size=3, stride=1)
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
         out = self.conv1(x)
         out = self.conv2(out)
@@ -74,12 +74,12 @@ class ResidualBlock(nn.Cell):
         return out
 
 
-class DarkNet(nn.Cell):
+class DarkNet(nn.Module):
     """
     DarkNet V1 network.
 
     Args:
-        block: Cell. Block for network.
+        block: Module. Block for network.
         layer_nums: List. Numbers of different layers.
         in_channels: Integer. Input channel.
         out_channels: Integer. Output channel.
@@ -158,7 +158,7 @@ class DarkNet(nn.Cell):
         """
         Make Layer for DarkNet.
 
-        :param block: Cell. DarkNet block.
+        :param block: Module. DarkNet block.
         :param layer_num: Integer. Layer number.
         :param in_channel: Integer. Input channel.
         :param out_channel: Integer. Output channel.
@@ -176,7 +176,7 @@ class DarkNet(nn.Cell):
 
         return nn.SequentialCell(layers)
 
-    def construct(self, x):
+    def call(self, x):
         c1 = self.conv0(x)
         c2 = self.conv1(c1)
         c3 = self.layer1(c2)
@@ -202,7 +202,7 @@ def darknet53():
     Get DarkNet53 neural network.
 
     Returns:
-        Cell, cell instance of DarkNet53 neural network.
+        Module, cell instance of DarkNet53 neural network.
 
     Examples:
         darknet53()

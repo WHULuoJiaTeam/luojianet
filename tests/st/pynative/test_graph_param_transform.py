@@ -27,7 +27,7 @@ def setup_module():
     context.set_context(mode=context.PYNATIVE_MODE, enable_sparse=False)
 
 
-class _Grad(nn.Cell):
+class _Grad(nn.Module):
     def __init__(self, grad, network, wrt_params=False, real_inputs_count=None):
         super().__init__()
         self.network = network
@@ -38,7 +38,7 @@ class _Grad(nn.Cell):
         if self.wrt_params:
             self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         if self.wrt_params:
             if self.real_inputs_count is None or self.sens_param is False:
                 return self.grad(self.network, self.params)(*inputs)
@@ -78,23 +78,23 @@ class GradOfAllInputs(_Grad):
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_row_tensor_in_while():
-    class RowTensorValuesDouble(nn.Cell):
+    class RowTensorValuesDouble(nn.Module):
 
-        def construct(self, x):
+        def call(self, x):
             indices = x.indices
             values = x.values * 2
             dense_shape = x.dense_shape
             return RowTensor(indices, values, dense_shape)
 
-    class RowTensorValuesAdd2(nn.Cell):
+    class RowTensorValuesAdd2(nn.Module):
 
-        def construct(self, x):
+        def call(self, x):
             indices = x.indices
             values = x.values + 2
             dense_shape = x.dense_shape
             return RowTensor(indices, values, dense_shape)
 
-    class RowTensorWithControlWhile(nn.Cell):
+    class RowTensorWithControlWhile(nn.Module):
         def __init__(self, dense_shape):
             super().__init__()
             self.op1 = RowTensorValuesDouble()
@@ -102,7 +102,7 @@ def test_row_tensor_in_while():
             self.dense_shape = dense_shape
 
         @ms_function
-        def construct(self, a, b, indices, values):
+        def call(self, a, b, indices, values):
             x = RowTensor(indices, values, self.dense_shape)
             x = self.op2(x)
             while a > b:
@@ -126,41 +126,41 @@ def test_row_tensor_in_while():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_parser_switch_layer_inputs_tuple():
-    class Add(nn.Cell):
+    class Add(nn.Module):
         def __init__(self):
             super().__init__()
             self.op = P.Add()
 
-        def construct(self, x):
+        def call(self, x):
             y = self.op(x[0], x[1])
             return self.op(x[0], y)
 
-    class Mul(nn.Cell):
+    class Mul(nn.Module):
         def __init__(self):
             super().__init__()
             self.op = P.Mul()
 
-        def construct(self, x):
+        def call(self, x):
             y = self.op(x[0], x[1])
             return self.op(x[0], y)
 
-    class MulTwoInput(nn.Cell):
+    class MulTwoInput(nn.Module):
         def __init__(self):
             super().__init__()
             self.op = P.Mul()
 
         @ms_function
-        def construct(self, x, y):
+        def call(self, x, y):
             y = self.op(x, y)
             return self.op(x, y)
 
-    class TwoInputTupleFinalNet(nn.Cell):
+    class TwoInputTupleFinalNet(nn.Module):
         def __init__(self, funcs):
             super().__init__()
             self.funcs = funcs
 
         @ms_function
-        def construct(self, i, inputa, inputb):
+        def call(self, i, inputa, inputb):
             inputs = (inputa, inputb)
             x = self.funcs[i](inputs)
             return x
@@ -185,12 +185,12 @@ def test_parser_switch_layer_inputs_tuple():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_imagenet():
-    class ImageGradients(nn.Cell):
+    class ImageGradients(nn.Module):
         def __init__(self):
             super().__init__()
             self.imagegradients = nn.ImageGradients()
 
-        def construct(self, inputs):
+        def call(self, inputs):
             return self.imagegradients(inputs)
 
     net = ImageGradients()

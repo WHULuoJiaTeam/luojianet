@@ -22,7 +22,7 @@ from luojianet_ms.common.api import _cell_graph_executor
 from luojianet_ms.nn import TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, wi, wo, stra1=None, stra2=None, stra3=None, stra4=None,
                  stra5=None, stra6=None):
         super(Net, self).__init__()
@@ -37,7 +37,7 @@ class Net(nn.Cell):
         self.reshape = P.Reshape()
         self.reshape2 = P.Reshape()
 
-    def construct(self, x):
+    def call(self, x):
         output = self.relu(x)
         trans_out = self.transpose(output, (2, 0, 3, 1))
         output = self.reshape(trans_out,

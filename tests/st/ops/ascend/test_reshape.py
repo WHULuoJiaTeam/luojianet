@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.reshape = P.Reshape()
 
     @ms_function
-    def construct(self, tensor):
+    def call(self, tensor):
         return self.reshape(tensor, (1, 16))
 
 

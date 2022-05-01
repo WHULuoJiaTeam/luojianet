@@ -25,13 +25,13 @@ context.set_context(mode=context.GRAPH_MODE,
                     device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, offset):
         super(Net, self).__init__()
         self.embedding = P.EmbeddingLookup()
         self.offset = offset
 
-    def construct(self, param, index):
+    def call(self, param, index):
         return self.embedding(param, index, self.offset)
 
 

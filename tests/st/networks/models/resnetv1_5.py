@@ -90,7 +90,7 @@ def fc_with_initialize(input_channels, out_channels):
     return nn.Dense(input_channels, out_channels, weight, bias)
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     expansion = 4
 
     def __init__(self,
@@ -112,7 +112,7 @@ class ResidualBlock(nn.Cell):
         self.relu = P.ReLU()
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -132,7 +132,7 @@ class ResidualBlock(nn.Cell):
         return out
 
 
-class ResidualBlockWithDown(nn.Cell):
+class ResidualBlockWithDown(nn.Module):
     expansion = 4
 
     def __init__(self,
@@ -159,7 +159,7 @@ class ResidualBlockWithDown(nn.Cell):
         self.bn_down_sample = bn_with_initialize(out_channels)
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -182,7 +182,7 @@ class ResidualBlockWithDown(nn.Cell):
         return out
 
 
-class MakeLayer0(nn.Cell):
+class MakeLayer0(nn.Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer0, self).__init__()
@@ -190,7 +190,7 @@ class MakeLayer0(nn.Cell):
         self.b = block(out_channels, out_channels, stride=stride)
         self.c = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -198,7 +198,7 @@ class MakeLayer0(nn.Cell):
         return x
 
 
-class MakeLayer1(nn.Cell):
+class MakeLayer1(nn.Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer1, self).__init__()
@@ -207,7 +207,7 @@ class MakeLayer1(nn.Cell):
         self.c = block(out_channels, out_channels, stride=1)
         self.d = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -216,7 +216,7 @@ class MakeLayer1(nn.Cell):
         return x
 
 
-class MakeLayer2(nn.Cell):
+class MakeLayer2(nn.Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer2, self).__init__()
@@ -227,7 +227,7 @@ class MakeLayer2(nn.Cell):
         self.e = block(out_channels, out_channels, stride=1)
         self.f = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -238,7 +238,7 @@ class MakeLayer2(nn.Cell):
         return x
 
 
-class MakeLayer3(nn.Cell):
+class MakeLayer3(nn.Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer3, self).__init__()
@@ -246,7 +246,7 @@ class MakeLayer3(nn.Cell):
         self.b = block(out_channels, out_channels, stride=1)
         self.c = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -254,7 +254,7 @@ class MakeLayer3(nn.Cell):
         return x
 
 
-class ResNet(nn.Cell):
+class ResNet(nn.Module):
 
     def __init__(self, block, num_classes=100, batch_size=32):
         super(ResNet, self).__init__()
@@ -276,7 +276,7 @@ class ResNet(nn.Cell):
         self.fc = fc_with_initialize(512 * block.expansion, num_classes)
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)

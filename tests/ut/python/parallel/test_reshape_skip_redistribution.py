@@ -18,11 +18,11 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, matmul_weight, strategy1=None):
         super().__init__()
         self.gatherv2 = P.Gather().shard(strategy1)
@@ -32,7 +32,7 @@ class Net(Cell):
         self.matmul_weight = Parameter(matmul_weight, "w1")
         self.axis = 0
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.gatherv2(x, self.index, self.axis)
         out = self.reshape(out, (64, -1))
         out = self.matmul(out, self.matmul_weight)

@@ -26,12 +26,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self,):
         super().__init__()
         self.matmul = P.MatMul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.matmul(x, y)
         return out
 

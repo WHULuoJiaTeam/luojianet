@@ -21,7 +21,7 @@ from luojianet_ms import Tensor, Model, context
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import functional as F
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import ReLU
 from ...ut_filter import non_graph_engine
 
@@ -37,7 +37,7 @@ class Access:
         return self.b
 
 
-class access2_net(Cell):
+class access2_net(Module):
     """ access2_net definition """
 
     def __init__(self, number, loop_count=1):
@@ -46,7 +46,7 @@ class access2_net(Cell):
         self.loop_count = loop_count
         self.relu = ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         a = self.loop_count
         b = self.number
         z = Access(a, b)
@@ -72,13 +72,13 @@ def test_access_0040():
     function_access_base(2)
 
 
-class OpSeqNet(Cell):
+class OpSeqNet(Module):
     def __init__(self, loop_count=1):
         super().__init__()
         self.loop_count = loop_count
         self.op_seq = (P.Sqrt(), P.Reciprocal(), P.Square())
 
-    def construct(self, x):
+    def call(self, x):
         t = x
         for op in self.op_seq:
             t = op(t)
@@ -101,7 +101,7 @@ def tensor_grad_scale(x, op):
     return op(x)
 
 
-class AllReduceTest(Cell):
+class AllReduceTest(Module):
     def __init__(self, loop_count=1):
         super().__init__()
         self.op_list = ()
@@ -111,7 +111,7 @@ class AllReduceTest(Cell):
             self.op_list = self.op_list + (op,)
         self.hyper_map = C.HyperMap()
 
-    def construct(self, x):
+    def call(self, x):
         ret = ()
         for _ in self.fushion_flag:
             ret = ret + (x,)

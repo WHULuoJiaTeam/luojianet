@@ -21,7 +21,7 @@ from luojianet_ms import context
 from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer.basic import Flatten
 from luojianet_ms.nn.layer.conv import Conv2d
 from luojianet_ms.nn.layer.normalization import BatchNorm2d
@@ -44,7 +44,7 @@ strategy_fc_weight_nobias = ((1, dev_num), (1, dev_num))
 strategy_tensor_add = ((1, dev_num), (dev_num,))
 
 
-class DenseWrap(Cell):
+class DenseWrap(Module):
     def __init__(self,
                  input_channels,
                  output_channels,
@@ -73,7 +73,7 @@ class DenseWrap(Cell):
         self.matmul = P.MatMul(transpose_b=True).shard(matmul_strategy)
         self.bias_add = P.Add().shard(shard)
 
-    def construct(self, x):
+    def call(self, x):
         if self.has_bias:
             output = self.bias_add(self.matmul(x, self.weight), self.bias)
         else:
@@ -179,7 +179,7 @@ def fc_with_initialize(input_channels, out_channels):
                      matmul_strategy=strategy_fc_weight_nobias, shard=strategy_tensor_add)
 
 
-class ResidualBlock(Cell):
+class ResidualBlock(Module):
     expansion = 4
 
     def __init__(self,
@@ -203,7 +203,7 @@ class ResidualBlock(Cell):
         self.relu3 = P.ReLU().shard(strategy_no_weight)
         self.add = Add().shard(strategy_add)
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -223,7 +223,7 @@ class ResidualBlock(Cell):
         return out
 
 
-class ResidualBlockWithDown(Cell):
+class ResidualBlockWithDown(Module):
     expansion = 4
 
     def __init__(self,
@@ -252,7 +252,7 @@ class ResidualBlockWithDown(Cell):
         self.bn_down_sample = bn_with_initialize(out_channels)
         self.add = Add().shard(strategy_add)
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -275,7 +275,7 @@ class ResidualBlockWithDown(Cell):
         return out
 
 
-class MakeLayer0(Cell):
+class MakeLayer0(Module):
 
     def __init__(self, block, in_channels, out_channels, stride):
         super(MakeLayer0, self).__init__()
@@ -283,7 +283,7 @@ class MakeLayer0(Cell):
         self.b = block(out_channels, out_channels, stride=stride)
         self.c = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.a(x)
         x = self.b(x)
         x = self.c(x)
@@ -291,7 +291,7 @@ class MakeLayer0(Cell):
         return x
 
 
-class ResNet(Cell):
+class ResNet(Module):
 
     def __init__(self, block, num_classes=100):
         super(ResNet, self).__init__()
@@ -305,7 +305,7 @@ class ResNet(Cell):
         self.fc = fc_with_initialize(64 * block.expansion, num_classes)
         self.flatten = Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -317,7 +317,7 @@ class ResNet(Cell):
         return x
 
 
-class ResNetModelParallel(Cell):
+class ResNetModelParallel(Module):
     def __init__(self, block, num_classes=100):
         super(ResNetModelParallel, self).__init__()
         self.relu = P.ReLU().shard(((1, dev_num, 1, 1),))
@@ -328,7 +328,7 @@ class ResNetModelParallel(Cell):
         self.fc = fc_with_initialize(64 * block.expansion, num_classes)
         self.flatten = Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.relu(x)
         x = self.maxpool(x)
         x = self.layer1(x)

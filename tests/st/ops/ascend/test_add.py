@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.Add()
 
-    def construct(self, x_, y_):
+    def call(self, x_, y_):
         return self.add(x_, y_)
 
 

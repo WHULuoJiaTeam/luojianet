@@ -28,13 +28,13 @@ from luojianet_ms.common.parameter import Parameter
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.b = Parameter(initializer('ones', [5]), name='b')
         self.sub = P.AssignSub()
 
-    def construct(self, value):
+    def call(self, value):
         return self.sub(self.b, value)
 
 

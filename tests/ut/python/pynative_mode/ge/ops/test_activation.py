@@ -26,7 +26,7 @@ from ....ut_filter import non_graph_engine
 def test_relu():
     relu = nn.ReLU()
     input_data = Tensor(np.random.rand(1, 3, 4, 4).astype(np.float32) - 0.5)
-    output = relu.construct(input_data)
+    output = relu.call(input_data)
     output_np = output.asnumpy()
     print(output_np)
     assert isinstance(output_np[0][0][0][0], (np.float32, np.float64))
@@ -36,7 +36,7 @@ def test_relu():
 def test_softmax_axis_none():
     layer = nn.Softmax()
     x = Tensor(np.random.rand(1, 3, 4, 4).astype(np.float32))
-    output = layer.construct(x)
+    output = layer.call(x)
     output_np = output.asnumpy()
     print(output_np)
     assert isinstance(output_np[0][0][0][0], (np.float32, np.float64))

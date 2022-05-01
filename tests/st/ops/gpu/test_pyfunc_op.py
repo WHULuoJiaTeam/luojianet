@@ -34,13 +34,13 @@ def func_no_output(x1, x2):
     global output
     output = x1 + x2
 
-class PyFuncNet(nn.Cell):
+class PyFuncNet(nn.Module):
     def __init__(self, fn, in_types, in_shapes, out_types, out_shapes):
         super().__init__()
         self.func = P.PyFunc(fn, in_types, in_shapes, out_types, out_shapes)
         self.relu = P.ReLU()
 
-    def construct(self, x1, x2):
+    def call(self, x1, x2):
         x = self.func((x1, x2))
         return self.relu(x[0])
 
@@ -91,12 +91,12 @@ def test_pyfunc_multi_output():
     assert np.allclose(x.asnumpy(), expect.asnumpy())
 
 
-class PyFuncGraph(nn.Cell):
+class PyFuncGraph(nn.Module):
     def __init__(self, fn, in_types, in_shapes, out_types, out_shapes):
         super().__init__()
         self.func = P.PyFunc(fn, in_types, in_shapes, out_types, out_shapes)
 
-    def construct(self, x1, x2):
+    def call(self, x1, x2):
         return self.func((x1, x2))
 
 @pytest.mark.level0

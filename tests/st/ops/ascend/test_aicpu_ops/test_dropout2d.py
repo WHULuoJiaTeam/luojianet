@@ -27,23 +27,23 @@ x0 = Tensor(np.random.randn(3, 4, 3, 3).astype(dtype))
 x1 = Tensor(np.random.randn(3, 4, 3, 3).astype(dtype))
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, keep_prob):
         super(Net, self).__init__()
         self.drop = P.Dropout2D(keep_prob=keep_prob)
 
-    def construct(self, x):
+    def call(self, x):
         return self.drop(x)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
         self.network.set_train()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.grad(self.network)(x, y)
 
 

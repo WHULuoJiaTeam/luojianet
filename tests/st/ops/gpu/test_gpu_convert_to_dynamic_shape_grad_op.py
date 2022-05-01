@@ -25,22 +25,22 @@ from luojianet_ms.ops.operations import _inner_ops as inner
 def test_gpu_convert_to_dynamic_shape_grad():
     context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.op = inner.GpuConvertToDynamicShape()
 
-        def construct(self, x1):
+        def call(self, x1):
             return self.op(x1)
 
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, network):
             super(GradNet, self).__init__()
             self.grad = C.GradOperation(get_all=True, sens_param=True)
             self.network = network
 
-        def construct(self, x1, dy):
+        def call(self, x1, dy):
             return self.grad(self.network)(x1, dy)
 
     net = Net()

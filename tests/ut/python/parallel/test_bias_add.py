@@ -22,7 +22,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.train.model import Model
 
 
-class CrossEntropyLoss(nn.Cell):
+class CrossEntropyLoss(nn.Module):
     def __init__(self, reduction='mean'):
         super(CrossEntropyLoss, self).__init__()
 
@@ -30,7 +30,7 @@ class CrossEntropyLoss(nn.Cell):
         self.cross_entropy = nn.SoftmaxCrossEntropyWithLogits()
         self.reduction = reduction
 
-    def construct(self, logits, label):
+    def call(self, logits, label):
         loss = self.cross_entropy(logits, label)
         if self.reduction == 'mean':
             loss = self.reduce_mean(loss, (-1,))
@@ -66,7 +66,7 @@ class DatasetLenet():
         return self
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv = nn.Conv2d(in_channels=3, out_channels=64, kernel_size=1, stride=1, pad_mode='valid',
@@ -75,7 +75,7 @@ class Net(nn.Cell):
         self.reduce_mean = P.ReduceMean(keep_dims=False).shard(((1, 1, 1, 8),))
         self.flat = nn.Flatten()
 
-    def construct(self, inputs):
+    def call(self, inputs):
         x = self.conv(inputs)
         x = self.reduce_mean(x, -1)
         x = self.flat(x)

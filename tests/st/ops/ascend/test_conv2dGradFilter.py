@@ -26,7 +26,7 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.conv2d_grad = G.Conv2DBackpropFilter(4, 1)
@@ -35,7 +35,7 @@ class Net(nn.Cell):
         self.get_shape = P.Shape()
 
     @ms_function
-    def construct(self, x_, out_):
+    def call(self, x_, out_):
         return self.conv2d_grad(out_, x_, self.get_shape(self.y))
 
 

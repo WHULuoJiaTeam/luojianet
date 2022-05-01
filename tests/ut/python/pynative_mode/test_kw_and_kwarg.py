@@ -24,19 +24,19 @@ from luojianet_ms.ops.composite import base as C
 
 
 def test_kw_nested():
-    class NetKeyValueArg(nn.Cell):
+    class NetKeyValueArg(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x, y, *arg, w, **kwargs):
+        def call(self, x, y, *arg, w, **kwargs):
             return x + y + arg[0] + w + kwargs['c']
 
-    class NetOut(nn.Cell):
+    class NetOut(nn.Module):
         def __init__(self, net):
             super().__init__()
             self.in_net = net
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             ret = self.in_net(x, y, z, w=x, a=x, b=y, c=z) + x
             return ret
 
@@ -54,20 +54,20 @@ def test_kw_nested():
 
 
 def test_kw_grad():
-    class KwNet(nn.Cell):
+    class KwNet(nn.Module):
         def __init__(self):
             super(KwNet, self).__init__()
 
-        def construct(self, x, y, *arg, **kwargs):
+        def call(self, x, y, *arg, **kwargs):
             return 2 * x + 3 * y + 4 * arg[0] + 5 * kwargs['v']
 
-    class GradKwNet(nn.Cell):
+    class GradKwNet(nn.Module):
         def __init__(self, net):
             super(GradKwNet, self).__init__()
             self.net = net
             self.grad_all_wit_sense = C.GradOperation(get_all=True, sens_param=True)
 
-        def construct(self, x, y, *arg, **kwargs):
+        def call(self, x, y, *arg, **kwargs):
             return self.grad_all_wit_sense(self.net)(x, y, *arg, **kwargs)
 
     kw_net = KwNet()
@@ -102,20 +102,20 @@ def test_kw_grad():
 
 
 def test_grad():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             return 2 * x + 3 * y + 4 * z
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.grad_all_wit_sense = C.GradOperation(get_all=True, sens_param=True)
 
-        def construct(self, x, y, z, sens):
+        def call(self, x, y, z, sens):
             return self.grad_all_wit_sense(self.net)(x, y, z, sens)
 
     net = Net()

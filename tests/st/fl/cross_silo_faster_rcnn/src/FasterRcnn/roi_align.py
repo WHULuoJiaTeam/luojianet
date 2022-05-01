@@ -23,7 +23,7 @@ from luojianet_ms.ops import composite as C
 from luojianet_ms.nn import layer as L
 from luojianet_ms.common.tensor import Tensor
 
-class ROIAlign(nn.Cell):
+class ROIAlign(nn.Module):
     """
     Extract RoI features from multiple feature map.
 
@@ -46,7 +46,7 @@ class ROIAlign(nn.Cell):
         self.align_op = P.ROIAlign(self.out_size[0], self.out_size[1],
                                    self.spatial_scale, self.sample_num)
 
-    def construct(self, features, rois):
+    def call(self, features, rois):
         return self.align_op(features, rois)
 
     def __repr__(self):
@@ -56,7 +56,7 @@ class ROIAlign(nn.Cell):
         return format_str
 
 
-class SingleRoIExtractor(nn.Cell):
+class SingleRoIExtractor(nn.Module):
     """
     Extract RoI features from a single level feature map.
 
@@ -165,7 +165,7 @@ class SingleRoIExtractor(nn.Cell):
 
         return target_lvls
 
-    def construct(self, rois, feat1, feat2, feat3, feat4):
+    def call(self, rois, feat1, feat2, feat3, feat4):
         feats = (feat1, feat2, feat3, feat4)
         res = self.res_
         target_lvls = self._c_map_roi_levels(rois)

@@ -25,13 +25,13 @@ from luojianet_ms.ops import composite as C
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, shape, seed=0):
         super(Net, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, mean, stddev):
+    def call(self, mean, stddev):
         return C.normal(self.shape, mean, stddev, self.seed)
 
 

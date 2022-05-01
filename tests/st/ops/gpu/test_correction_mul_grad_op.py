@@ -26,13 +26,13 @@ from luojianet_ms.ops.operations import _quant_ops as Q
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.op_w = Q.CorrectionMulGrad()
 
     @ms_function
-    def construct(self, dy, x, batch_std, running_std):
+    def call(self, dy, x, batch_std, running_std):
         dx, d_batch_std = self.op_w(dy, x, batch_std, running_std)
         return dx, d_batch_std
 

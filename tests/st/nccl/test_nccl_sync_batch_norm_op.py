@@ -43,7 +43,7 @@ expect_output_back = np.array([[[[-0.69126546, -0.32903028, 1.9651246, -0.884457
                                  [0.39576983, 0.5470243, 1.1715001, 1.6447213],
                                  [-1.7996241, -0.7051701, 0.7080077, 0.5437813]]]]).astype(np.float32)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, c):
         super(Net, self).__init__()
         self.num_features = c
@@ -61,16 +61,16 @@ class Net(nn.Cell):
                                            moving_var_init='ones',
                                            use_batch_statistics=True,
                                            process_groups=None)
-    def construct(self, input_data):
+    def call(self, input_data):
         return self.sync_bn_op(input_data)
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_data, sens):
+    def call(self, input_data, sens):
         gout = self.grad(self.network)(input_data, sens)
         return gout
 

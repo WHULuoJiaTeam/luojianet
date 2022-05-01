@@ -55,7 +55,7 @@ def test_bias_add(test_with_simu):
     if test_with_simu:
         return
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """Net definition"""
 
         def __init__(self,
@@ -72,7 +72,7 @@ def test_bias_add(test_with_simu):
             self.bias = Parameter(initializer(
                 bias_init, [output_channels]), name="bias")
 
-        def construct(self, input_x):
+        def call(self, input_x):
             return self.biasAdd(input_x, self.bias)
 
     bias_init = Tensor(np.ones([3]).astype(np.float32))
@@ -91,7 +91,7 @@ def test_conv(test_with_simu):
     if test_with_simu:
         return
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         "Net definition"""
 
         def __init__(self,
@@ -104,7 +104,7 @@ def test_conv(test_with_simu):
                                   cout,
                                   kernel_size)
 
-        def construct(self, input_x):
+        def call(self, input_x):
             return self.conv(input_x)
 
     net = Net(3, 6, (3, 3))
@@ -121,7 +121,7 @@ def test_net():
     if is_pynative_mode:
         context.set_context(mode=context.GRAPH_MODE)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """Net definition"""
 
         def __init__(self):
@@ -134,7 +134,7 @@ def test_net():
             self.flatten = nn.Flatten()
             self.dense = nn.Dense(64, 12)
 
-        def construct(self, input_x):
+        def call(self, input_x):
             output = input_x
             output = self.conv(output)
             output = self.bn(output)
@@ -158,7 +158,7 @@ def test_bn():
     if is_pynative_mode:
         context.set_context(mode=context.GRAPH_MODE)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """Net definition"""
 
         def __init__(self, cin, cout):
@@ -167,7 +167,7 @@ def test_bn():
             self.flatten = nn.Flatten()
             self.dense = nn.Dense(cin, cout)
 
-        def construct(self, input_x):
+        def call(self, input_x):
             output = input_x
             output = self.bn(output)
             output = self.flatten(output)

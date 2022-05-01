@@ -22,7 +22,7 @@ from luojianet_ms.ops import operations as P
 from ....train_step_wrap import train_step_with_loss_warp
 
 
-class DenseMutMulNet(nn.Cell):
+class DenseMutMulNet(nn.Module):
     def __init__(self):
         super(DenseMutMulNet, self).__init__()
         self.fc1 = nn.Dense(128, 768, activation='relu')
@@ -35,7 +35,7 @@ class DenseMutMulNet(nn.Cell):
         self.matmul1 = P.MatMul()
         self.matmul2 = P.MatMul()
 
-    def construct(self, x):
+    def call(self, x):
         q = self.fc1(x)
         k = self.fc2(x)
         v = self.fc3(x)

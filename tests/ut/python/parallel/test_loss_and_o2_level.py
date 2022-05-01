@@ -17,7 +17,7 @@ import numpy as np
 
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
-from luojianet_ms.nn import Cell, Momentum
+from luojianet_ms.nn import Module, Momentum
 from luojianet_ms.nn.loss import SoftmaxCrossEntropyWithLogits
 from luojianet_ms.ops import operations as P
 from luojianet_ms.train import Model
@@ -45,14 +45,14 @@ class Dataset(MindData):
         self.index = 0
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, mul_weight, strategy1=None, strategy2=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
         self.neg = P.Neg().shard(strategy2)
         self.mul_weight = Parameter(mul_weight, "w1")
 
-    def construct(self, x):
+    def call(self, x):
         out = self.mul(x, self.mul_weight)
         out = self.neg(out)
         return out

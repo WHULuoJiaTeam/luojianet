@@ -29,12 +29,12 @@ from luojianet_ms.profiler import Profiler
 from tests.security_utils import security_off_wrap
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.Add()
 
-    def construct(self, x_, y_):
+    def call(self, x_, y_):
         return self.add(x_, y_)
 
 

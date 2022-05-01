@@ -25,7 +25,7 @@ import numpy as np
 import pytest
 from luojianet_ms import Tensor, set_dump
 from luojianet_ms.ops import operations as P
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import Dense
 from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
 from luojianet_ms.nn import Momentum
@@ -39,14 +39,14 @@ class IsDump(Enum):
     SET_DUMP_FALSE = 2
     SET_NONE = 3
 
-class ReluReduceMeanDenseRelu(Cell):
+class ReluReduceMeanDenseRelu(Module):
     def __init__(self, kernel, bias, in_channel, num_class):
         super().__init__()
         self.relu = P.ReLU()
         self.mean = P.ReduceMean(keep_dims=False)
         self.dense = Dense(in_channel, num_class, kernel, bias)
 
-    def construct(self, x_):
+    def call(self, x_):
         x_ = self.relu(x_)
         x_ = self.mean(x_, (2, 3))
         x_ = self.dense(x_)
@@ -81,7 +81,7 @@ def run_multi_layer_train(is_set_dump):
 @security_off_wrap
 def test_ascend_cell_dump():
     """
-    Feature: Cell Dump
+    Feature: Module Dump
     Description: Test cell dump
     Expectation: Only dump cell set by set_dump when dump_mode = 2
     """
@@ -118,7 +118,7 @@ def test_ascend_cell_dump():
 @security_off_wrap
 def test_ascend_not_cell_dump():
     """
-    Feature: Cell Dump
+    Feature: Module Dump
     Description: Test cell dump
     Expectation: Should ignore set_dump when dump_mode != 2
     """
@@ -150,7 +150,7 @@ def test_ascend_not_cell_dump():
 @security_off_wrap
 def test_ascend_cell_empty_dump():
     """
-    Feature: Cell Dump
+    Feature: Module Dump
     Description: Test cell dump
     Expectation: Should dump nothing when set_dump is not set and dump_mode = 2
     """
@@ -178,7 +178,7 @@ def test_ascend_cell_empty_dump():
 @security_off_wrap
 def test_ascend_cell_dump_set_enable_false():
     """
-    Feature: Cell Dump
+    Feature: Module Dump
     Description: Test cell dump
     Expectation: Should ignore set_dump when enabled=False
     """

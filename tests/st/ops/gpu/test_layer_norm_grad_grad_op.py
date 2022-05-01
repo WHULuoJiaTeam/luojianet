@@ -25,12 +25,12 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 np.random.seed(0)
 
-class LayerNormGradGradNet(nn.Cell):
+class LayerNormGradGradNet(nn.Module):
     def __init__(self, begin_norm_axis, begin_params_axis):
         super(LayerNormGradGradNet, self).__init__()
         self.norm = G.LayerNormGradGrad(begin_norm_axis, begin_params_axis)
 
-    def construct(self, x, dy, var, mean, gamma, grad_dx, grad_dg, grad_db):
+    def call(self, x, dy, var, mean, gamma, grad_dx, grad_dg, grad_db):
         return self.norm(x, dy, var, mean, gamma, grad_dx, grad_dg, grad_db)
 
 

@@ -76,7 +76,7 @@ def test_image_summary_sample():
             test_writer.flush()
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -88,7 +88,7 @@ class Net(nn.Cell):
         self.flatten = nn.Flatten()
         self.fc = nn.Dense(64 * 222 * 222, 3)  # padding=0
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)
@@ -97,7 +97,7 @@ class Net(nn.Cell):
         return out
 
 
-class LossNet(nn.Cell):
+class LossNet(nn.Module):
     """ LossNet definition """
 
     def __init__(self):
@@ -110,7 +110,7 @@ class LossNet(nn.Cell):
         self.fc = nn.Dense(64 * 222 * 222, 3)  # padding=0
         self.loss = nn.SoftmaxCrossEntropyWithLogits()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)

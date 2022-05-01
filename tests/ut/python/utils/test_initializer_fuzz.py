@@ -20,7 +20,7 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Model
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self, in_str):
@@ -41,7 +41,7 @@ class Net(nn.Cell):
         self.flatten = nn.Flatten()
         self.fc = nn.Dense(e * f * g, h)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)
@@ -50,7 +50,7 @@ class Net(nn.Cell):
         return out
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """ LeNet5 definition """
 
     def __init__(self, in_str):
@@ -82,7 +82,7 @@ class LeNet5(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=a15)
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.max_pool2d(self.relu(self.conv1(x)))
         x = self.max_pool2d(self.relu(self.conv2(x)))
         x = self.flatten(x)

@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
 
@@ -37,7 +37,7 @@ class Net(nn.Cell):
             Tensor(np.arange(2 * 3).reshape(2, 3).astype(np.float32)), [2, 3]), name='x2')
 
     @ms_function
-    def construct(self):
+    def call(self):
         return self.cat((self.x1, self.x2))
 
 

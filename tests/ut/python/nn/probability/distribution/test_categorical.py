@@ -90,7 +90,7 @@ def rank():
             Tensor(np.array(0.3).astype(np.float32)), dtype=dtype.int32)
 
 
-class CategoricalProb(nn.Cell):
+class CategoricalProb(nn.Module):
     """
     Categorical distribution: initialize with probs.
     """
@@ -99,7 +99,7 @@ class CategoricalProb(nn.Cell):
         super(CategoricalProb, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, value):
+    def call(self, value):
         prob = self.c.prob(value)
         log_prob = self.c.log_prob(value)
         cdf = self.c.cdf(value)
@@ -112,7 +112,7 @@ class CategoricalProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_categorical_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through call.
     """
     net = CategoricalProb()
     value = Tensor([0, 1, 0, 1, 0], dtype=dtype.float32)
@@ -120,7 +120,7 @@ def test_categorical_prob():
     assert isinstance(ans, Tensor)
 
 
-class CategoricalProb1(nn.Cell):
+class CategoricalProb1(nn.Module):
     """
     Categorical distribution: initialize without probs.
     """
@@ -129,7 +129,7 @@ class CategoricalProb1(nn.Cell):
         super(CategoricalProb1, self).__init__()
         self.c = msd.Categorical(dtype=dtype.int32)
 
-    def construct(self, value, probs):
+    def call(self, value, probs):
         prob = self.c.prob(value, probs)
         log_prob = self.c.log_prob(value, probs)
         cdf = self.c.cdf(value, probs)
@@ -142,7 +142,7 @@ class CategoricalProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_categorical_prob1():
     """
-    Test probability functions: passing value/probs through construct.
+    Test probability functions: passing value/probs through call.
     """
     net = CategoricalProb1()
     value = Tensor([0, 1, 0, 1, 0], dtype=dtype.float32)
@@ -151,7 +151,7 @@ def test_categorical_prob1():
     assert isinstance(ans, Tensor)
 
 
-class CategoricalKl(nn.Cell):
+class CategoricalKl(nn.Module):
     """
     Test class: kl_loss between Categorical distributions.
     """
@@ -161,7 +161,7 @@ class CategoricalKl(nn.Cell):
         self.c1 = msd.Categorical([0.2, 0.2, 0.6], dtype=dtype.int32)
         self.c2 = msd.Categorical(dtype=dtype.int32)
 
-    def construct(self, probs_b, probs_a):
+    def call(self, probs_b, probs_a):
         kl1 = self.c1.kl_loss('Categorical', probs_b)
         kl2 = self.c2.kl_loss('Categorical', probs_b, probs_a)
         return kl1 + kl2
@@ -179,7 +179,7 @@ def test_kl():
     assert isinstance(ans, Tensor)
 
 
-class CategoricalCrossEntropy(nn.Cell):
+class CategoricalCrossEntropy(nn.Module):
     """
     Test class: cross_entropy of Categorical distribution.
     """
@@ -189,7 +189,7 @@ class CategoricalCrossEntropy(nn.Cell):
         self.c1 = msd.Categorical([0.1, 0.7, 0.2], dtype=dtype.int32)
         self.c2 = msd.Categorical(dtype=dtype.int32)
 
-    def construct(self, probs_b, probs_a):
+    def call(self, probs_b, probs_a):
         h1 = self.c1.cross_entropy('Categorical', probs_b)
         h2 = self.c2.cross_entropy('Categorical', probs_b, probs_a)
         return h1 + h2
@@ -207,9 +207,9 @@ def test_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class CategoricalConstruct(nn.Cell):
+class CategoricalConstruct(nn.Module):
     """
-    Categorical distribution: going through construct.
+    Categorical distribution: going through call.
     """
 
     def __init__(self):
@@ -217,7 +217,7 @@ class CategoricalConstruct(nn.Cell):
         self.c = msd.Categorical([0.1, 0.8, 0.1], dtype=dtype.int32)
         self.c1 = msd.Categorical(dtype=dtype.int32)
 
-    def construct(self, value, probs):
+    def call(self, value, probs):
         prob = self.c('prob', value)
         prob1 = self.c('prob', value, probs)
         prob2 = self.c1('prob', value, probs)
@@ -227,7 +227,7 @@ class CategoricalConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_categorical_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through call.
     """
     net = CategoricalConstruct()
     value = Tensor([0, 1, 2, 0, 0], dtype=dtype.float32)
@@ -236,7 +236,7 @@ def test_categorical_construct():
     assert isinstance(ans, Tensor)
 
 
-class CategoricalBasics(nn.Cell):
+class CategoricalBasics(nn.Module):
     """
     Test class: basic mean/var/mode/entropy function.
     """
@@ -246,7 +246,7 @@ class CategoricalBasics(nn.Cell):
         self.c = msd.Categorical([0.2, 0.7, 0.1], dtype=dtype.int32)
         self.c1 = msd.Categorical(dtype=dtype.int32)
 
-    def construct(self, probs):
+    def call(self, probs):
         basics1 = self.c.mean() + self.c.var() + self.c.mode() + self.c.entropy()
         basics2 = self.c1.mean(probs) + self.c1.var(probs) +\
             self.c1.mode(probs) + self.c1.entropy(probs)

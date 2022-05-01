@@ -28,30 +28,30 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, z, w, a):
+    def call(self, x, y, z, w, a):
         predict = self.network(x, y, z, w, a)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, z, w, a):
+    def call(self, x, y, z, w, a):
         return grad_all(self.network)(x, y, z, w, a)
 
     # model_parallel test
 
 
 def test_zig_zag_graph():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -59,7 +59,7 @@ def test_zig_zag_graph():
             self.matmul3 = P.MatMul()
             self.matmul4 = P.MatMul()
 
-        def construct(self, x, y, z, w, a):
+        def call(self, x, y, z, w, a):
             m1_result = self.matmul1(x, y)
             m2_result = self.matmul2(z, w)
             _ = self.matmul3(m2_result, m1_result)

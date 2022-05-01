@@ -24,7 +24,7 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bias_add_grad = G.BiasAddGrad()
@@ -32,7 +32,7 @@ class Net(nn.Cell):
         # 'normal', [2, 3, 3, 4]), name='dout')
 
     @ms_function
-    def construct(self, dout_):
+    def call(self, dout_):
         return self.bias_add_grad(dout_)
 
 

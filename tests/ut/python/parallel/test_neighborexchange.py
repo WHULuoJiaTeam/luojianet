@@ -45,7 +45,7 @@ def test_NeighborExchange_two_inputs_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class MatMulNet(nn.Cell):
+    class MatMulNet(nn.Module):
         def __init__(self, weight1):
             super(MatMulNet, self).__init__()
             self.matmul = P.MatMul()
@@ -55,7 +55,7 @@ def test_NeighborExchange_two_inputs_success():
                                               send_shapes=([32, 32], [32, 16]), recv_type=ms.float32)
             self.weight1 = Parameter(weight1, "w1")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             out = self.matmul(x1, x2)
             out = self.mul(out, self.weight1)
             out = self.alltoallv((out, x1))
@@ -73,7 +73,7 @@ def test_NeighborExchange_single_input_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class MatMulNet2(nn.Cell):
+    class MatMulNet2(nn.Module):
         def __init__(self, weight1):
             super(MatMulNet2, self).__init__()
             self.matmul = P.MatMul()
@@ -82,7 +82,7 @@ def test_NeighborExchange_single_input_success():
                                               send_shapes=([32, 32],), recv_type=ms.float32)
             self.weight1 = Parameter(weight1, "w1")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             out = self.matmul(x1, x2)
             out = self.mul(out, self.weight1)
             out = self.alltoallv((out,))
@@ -100,13 +100,13 @@ def test_NeighborExchange_empty_send_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[], recv_rank_ids=[1], recv_shapes=([1],),
                                               send_shapes=(), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             self.alltoallv()
             return x1
 
@@ -122,13 +122,13 @@ def test_NeighborExchange_empty_recv_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[0], recv_rank_ids=[], recv_shapes=(),
                                               send_shapes=([32, 16],), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             self.alltoallv((x1,))
             return x1
 
@@ -144,13 +144,13 @@ def test_NeighborExchange_empty_send_empty_recv_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[], recv_rank_ids=[], recv_shapes=(),
                                               send_shapes=(), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             self.alltoallv()
             return x1
 
@@ -166,7 +166,7 @@ def test_NeighborExchange_recv_shape_num_diff_with_recv_rank_size_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, weight1):
             super(Net, self).__init__()
             self.matmul = P.MatMul()
@@ -175,7 +175,7 @@ def test_NeighborExchange_recv_shape_num_diff_with_recv_rank_size_failed():
                                               send_shapes=([32, 32],), recv_type=ms.float32)
             self.weight1 = Parameter(weight1, "w1")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             out = self.matmul(x1, x2)
             out = self.mul(out, self.weight1)
             out = self.alltoallv((out,))
@@ -194,7 +194,7 @@ def test_NeighborExchange_send_shape_num_diff_with_send_rank_size_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, weight1):
             super(Net, self).__init__()
             self.matmul = P.MatMul()
@@ -204,7 +204,7 @@ def test_NeighborExchange_send_shape_num_diff_with_send_rank_size_failed():
                                               send_shapes=([32, 32],), recv_type=ms.float32)
             self.weight1 = Parameter(weight1, "w1")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             out = self.matmul(x1, x2)
             out = self.mul(out, self.weight1)
             out = self.alltoallv((out,))
@@ -223,7 +223,7 @@ def test_NeighborExchange_send_shape_num_diff_with_input_num_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, weight1):
             super(Net, self).__init__()
             self.matmul = P.MatMul()
@@ -233,7 +233,7 @@ def test_NeighborExchange_send_shape_num_diff_with_input_num_failed():
                                               send_shapes=([32, 32], [32, 32]), recv_type=ms.float32)
             self.weight1 = Parameter(weight1, "w1")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             out = self.matmul(x1, x2)
             out = self.mul(out, self.weight1)
             out = self.alltoallv((out,))
@@ -252,7 +252,7 @@ def test_NeighborExchange_send_shape_diff_with_input_shape_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, weight1):
             super(Net, self).__init__()
             self.matmul = P.MatMul()
@@ -261,7 +261,7 @@ def test_NeighborExchange_send_shape_diff_with_input_shape_failed():
                                               send_shapes=([16, 16],), recv_type=ms.float32)
             self.weight1 = Parameter(weight1, "w1")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             out = self.matmul(x1, x2)
             out = self.mul(out, self.weight1)
             out = self.alltoallv((out,))
@@ -280,13 +280,13 @@ def test_NeighborExchange_attr_check_send_rank_ids_is_tuple_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=(0), recv_rank_ids=[1, 2], recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16],), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -303,14 +303,14 @@ def test_NeighborExchange_attr_check_send_rank_ids_is_tuple_2_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=(0,), recv_rank_ids=[1, 2],
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16],), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -327,14 +327,14 @@ def test_NeighborExchange_attr_check_send_rank_ids_is_float_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[1.0], recv_rank_ids=[1, 2],
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16],), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -351,14 +351,14 @@ def test_NeighborExchange_attr_check_recv_rank_ids_is_tuple_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[0], recv_rank_ids=([1, 2],),
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16],), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -375,14 +375,14 @@ def test_NeighborExchange_attr_check_recv_rank_ids_is_tuple_2_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[0], recv_rank_ids=(1, 2,),
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16],), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -399,14 +399,14 @@ def test_NeighborExchange_attr_check_recv_rank_ids_is_float_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[1], recv_rank_ids=[1, 2.0],
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16],), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -423,14 +423,14 @@ def test_NeighborExchange_attr_check_send_shape_not_tuple_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[1], recv_rank_ids=[1, 2],
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16]), recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -447,14 +447,14 @@ def test_NeighborExchange_attr_check_send_shape_list_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[1], recv_rank_ids=[1, 2],
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=[[32, 16]], recv_type=ms.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -471,14 +471,14 @@ def test_NeighborExchange_attr_check_recv_type_numpy_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[1], recv_rank_ids=[1, 2],
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16],), recv_type=np.float32)
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 
@@ -495,14 +495,14 @@ def test_NeighborExchange_attr_invalid_grpup_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = NeighborExchange(send_rank_ids=[1], recv_rank_ids=[1, 2],
                                               recv_shapes=([32, 32], [32, 64]),
                                               send_shapes=([32, 16],), recv_type=ms.float32, group=("str",))
 
-        def construct(self, x1):
+        def call(self, x1):
             out = self.alltoallv((x1,))
             return out[0]
 

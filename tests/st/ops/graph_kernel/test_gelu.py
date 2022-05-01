@@ -18,26 +18,26 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 import luojianet_ms.ops.operations._grad_ops as G
 
 
-class GeluNet(Cell):
+class GeluNet(Module):
     def __init__(self):
         super(GeluNet, self).__init__()
         self.gelu = P.GeLU()
 
-    def construct(self, x):
+    def call(self, x):
         return self.gelu(x)
 
 
-class GeluGradNet(Cell):
+class GeluGradNet(Module):
     def __init__(self):
         super(GeluGradNet, self).__init__()
         self.gelu_grad = G.GeLUGrad()
 
-    def construct(self, dy, x, y):
+    def call(self, dy, x, y):
         return self.gelu_grad(dy, x, y)
 
 

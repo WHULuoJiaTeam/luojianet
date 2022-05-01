@@ -31,27 +31,27 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         predict = self.network(x)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         return grad_all(self.network)(x)
 
 def test_unique_column_split():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.unique = P.Unique().shard(((1,),))
@@ -65,7 +65,7 @@ def test_unique_column_split():
             self.matmul = P.MatMul()
             self.mul_weight = Parameter(Tensor(np.full([32, 64, 1], 0.5, dtype=np.float32)), name="mul_weight")
 
-        def construct(self, indices):
+        def call(self, indices):
             indices_flatten = self.reshape(indices, (-1,))
             unique_id, unique_idx = self.unique(indices_flatten)
             unique_id_weight = self.embedding_lookp(self.embedding_table, unique_id, 0)
@@ -85,7 +85,7 @@ def test_unique_column_split():
     _cell_graph_executor.compile(train_net, x)
 
 def test_unique_row_split():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.unique = P.Unique().shard(((1,),))
@@ -99,7 +99,7 @@ def test_unique_row_split():
             self.matmul = P.MatMul()
             self.mul_weight = Parameter(Tensor(np.full([32, 64, 1], 0.5, dtype=np.float32)), name="mul_weight")
 
-        def construct(self, indices):
+        def call(self, indices):
             indices_flatten = self.reshape(indices, (-1,))
             unique_id, unique_idx = self.unique(indices_flatten)
             unique_id_weight = self.embedding_lookp(self.embedding_table, unique_id, 0)

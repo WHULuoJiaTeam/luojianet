@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.scatter = P.TensorScatterMin()
 
-    def construct(self, x, indices, update):
+    def call(self, x, indices, update):
         return self.scatter(x, indices, update)
 
 

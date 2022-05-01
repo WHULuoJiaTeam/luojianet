@@ -18,7 +18,7 @@ import pytest
 import numpy as np
 from luojianet_ms import context
 from luojianet_ms.nn import ReLU
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.common.tensor import Tensor
 
 def setup_module():
@@ -29,12 +29,12 @@ def setup_module():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_parser_operator_floor_div():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super(Net, self).__init__()
             self.relu = ReLU()
 
-        def construct(self, x):
+        def call(self, x):
             x = self.relu(x)
             x = 3 // x
             return x

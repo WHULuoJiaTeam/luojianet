@@ -24,23 +24,23 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.unique = P.Unique().add_prim_attr("primitive_target", "CPU")
 
-    def construct(self, x):
+    def call(self, x):
         x, y = self.unique(x)
         return (x, y)
 
 
-class UniqueSquare(nn.Cell):
+class UniqueSquare(nn.Module):
     def __init__(self):
         super(UniqueSquare, self).__init__()
         self.unique = P.Unique().add_prim_attr("primitive_target", "CPU")
         self.square = P.Square()
 
-    def construct(self, x):
+    def call(self, x):
         x, _ = self.unique(x)
         return self.square(x)
 

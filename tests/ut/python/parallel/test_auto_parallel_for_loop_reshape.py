@@ -17,7 +17,7 @@ import numpy as np
 
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.nn as nn
 from luojianet_ms.ops import operations as P, functional as F
 from luojianet_ms.common.initializer import initializer
@@ -47,7 +47,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class LayerNorm(nn.Cell):
+class LayerNorm(nn.Module):
     def __init__(self, normalized_shape, eps=1e-5):
         super(LayerNorm, self).__init__()
         self.gamma = Parameter(initializer('ones', normalized_shape), name="gamma")
@@ -62,7 +62,7 @@ class LayerNorm(nn.Cell):
         self.reshape = P.Reshape()
         self.shape = P.Shape()
 
-    def construct(self, x):
+    def call(self, x):
         x_origin_shape = self.shape(x)
         x_target_shape = x_origin_shape[:-1]
         x_shape = x_origin_shape + (1,)
@@ -77,19 +77,19 @@ class LayerNorm(nn.Cell):
         return rescaled_output
 
 
-class SubNet(Cell):
+class SubNet(Module):
     def __init__(self, index):
         super().__init__()
         self.relu = P.ReLU()
         self.layernorm1 = LayerNorm((128,)).to_float(mstype.float32)
 
-    def construct(self, x):
+    def call(self, x):
         x = self.layernorm1(x)
         out = self.relu(x)
         return out
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, mul_weight, num_layers, strategy1=None, strategy2=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -100,7 +100,7 @@ class Net(Cell):
         for i in range(num_layers):
             self.layers.append(SubNet(i))
 
-    def construct(self, x):
+    def call(self, x):
         for i in range(self.num_layers):
             x = self.layers[i](x)
         out = self.mul(x, self.mul_weight)
@@ -108,13 +108,13 @@ class Net(Cell):
         return out
 
 
-class Full(Cell):
+class Full(Module):
     def __init__(self, mul_weight, num_layers, strategy1=None, strategy2=None):
         super().__init__()
         self.network = Net(mul_weight, num_layers, strategy1, strategy2)
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         out = self.network(x)
         out = self.relu(out)
         return out

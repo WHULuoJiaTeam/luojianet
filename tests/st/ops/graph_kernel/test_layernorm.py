@@ -25,21 +25,21 @@ from luojianet_ms.ops.operations import _grad_ops as G
 import luojianet_ms.ops.operations as P
 
 
-class LayerNormNet(nn.Cell):
+class LayerNormNet(nn.Module):
     def __init__(self, begin_norm_axis, begin_params_axis):
         super(LayerNormNet, self).__init__()
         self.layernorm = P.LayerNorm(begin_norm_axis, begin_params_axis)
 
-    def construct(self, x, gamma, beta):
+    def call(self, x, gamma, beta):
         return self.layernorm(x, gamma, beta)
 
 
-class LayerNormGradNet(nn.Cell):
+class LayerNormGradNet(nn.Module):
     def __init__(self, begin_norm_axis, begin_params_axis):
         super(LayerNormGradNet, self).__init__()
         self.layernorm_grad = G.LayerNormGrad(begin_norm_axis, begin_params_axis)
 
-    def construct(self, dy, x, var, mean, gamma):
+    def call(self, dy, x, var, mean, gamma):
         return self.layernorm_grad(dy, x, var, mean, gamma)
 
 def get_layernorm_output(x, gamma, beta, begin_norm_axis, begin_params_axis, enable_graph_kernel=False):

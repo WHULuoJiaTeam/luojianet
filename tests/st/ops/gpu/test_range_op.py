@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class RangeNet(nn.Cell):
+class RangeNet(nn.Module):
     def __init__(self, maxlen=50):
         super(RangeNet, self).__init__()
         self.range = P.Range(maxlen)
 
-    def construct(self, start, limit, delta):
+    def call(self, start, limit, delta):
         return self.range(start, limit, delta)
 
 

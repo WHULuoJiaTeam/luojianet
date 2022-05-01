@@ -33,8 +33,8 @@ context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 grad_all = C.GradOperation(get_all=True)
 
 
-class MulAdd(nn.Cell):
-    def construct(self, x, y):
+class MulAdd(nn.Module):
+    def call(self, x, y):
         return 2 * x + y
 
     def bprop(self, x, y, out, dout):
@@ -51,13 +51,13 @@ def test_grad_mul_add():
     assert grad_all(mul_add)(x, y) == (2, 4)
 
 
-class InlineMulADD(nn.Cell):
+class InlineMulADD(nn.Module):
     def __init__(self):
         super(InlineMulADD, self).__init__()
         self.mul_add = MulAdd()
         self.param = 2
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.mul_add(x, y) + x + self.param * y
 
 @pytest.mark.level0
@@ -70,13 +70,13 @@ def test_grad_inline_mul_add():
     assert grad_all(inline_mul_add)(x, y) == (3, 6)
 
 
-class WithParameter(nn.Cell):
+class WithParameter(nn.Module):
     def __init__(self):
         super(WithParameter, self).__init__()
         self.param1 = Parameter(1, 'param1')
         self.param2 = Parameter(2, 'param2')
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.param1 * self.param2 * x + y
 
     def bprop(self, x, y, out, dout):
@@ -92,8 +92,8 @@ def test_with_param():
         grad_all(with_param)(1, 2)
 
 
-class WithNoBprop(nn.Cell):
-    def construct(self, x, y):
+class WithNoBprop(nn.Module):
+    def call(self, x, y):
         return 2 * x + y
 
 @pytest.mark.level0
@@ -109,32 +109,32 @@ def test_with_no_bprop():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_grad_in_bprop_1():
-    class GradInBprop_1(nn.Cell):
+    class GradInBprop_1(nn.Module):
         def __init__(self):
             super(GradInBprop_1, self).__init__()
             self.relu = P.ReLU()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.relu(x)
 
-    class GradInBprop_2(nn.Cell):
+    class GradInBprop_2(nn.Module):
         def __init__(self):
             super(GradInBprop_2, self).__init__()
             self.f = GradInBprop_1()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.f(x, y), grad_all(self.f)(x, y)
 
         def bprop(self, x, y, out, dout):
             grads = grad_all(self.f)(x, y)
             return out[1][0], grads[1]
 
-    class GradInBprop_3(nn.Cell):
+    class GradInBprop_3(nn.Module):
         def __init__(self):
             super(GradInBprop_3, self).__init__()
             self.f = GradInBprop_2()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.f(x, y)
 
     grad_in_bprop = GradInBprop_3()
@@ -147,35 +147,35 @@ def test_grad_in_bprop_1():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_grad_in_bprop_2():
-    class GradInBprop_1(nn.Cell):
+    class GradInBprop_1(nn.Module):
         def __init__(self):
             super(GradInBprop_1, self).__init__()
             self.relu = P.ReLU()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.relu(x)
 
         def bprop(self, x, y, out, dout):
             return x * y, y + x
 
-    class GradInBprop_2(nn.Cell):
+    class GradInBprop_2(nn.Module):
         def __init__(self):
             super(GradInBprop_2, self).__init__()
             self.f = GradInBprop_1()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.f(x, y), grad_all(self.f)(x, y)
 
         def bprop(self, x, y, out, dout):
             grads = grad_all(self.f)(x, y)
             return out[1][0], grads[1]
 
-    class GradInBprop_3(nn.Cell):
+    class GradInBprop_3(nn.Module):
         def __init__(self):
             super(GradInBprop_3, self).__init__()
             self.f = GradInBprop_2()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.f(x, y)
 
     grad_in_bprop = GradInBprop_3()
@@ -188,32 +188,32 @@ def test_grad_in_bprop_2():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_grad_in_bprop_3():
-    class GradInBprop_1(nn.Cell):
+    class GradInBprop_1(nn.Module):
         def __init__(self):
             super(GradInBprop_1, self).__init__()
             self.relu = P.ReLU()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.relu(x)
 
-    class GradInBprop_2(nn.Cell):
+    class GradInBprop_2(nn.Module):
         def __init__(self):
             super(GradInBprop_2, self).__init__()
             self.f = GradInBprop_1()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.f(x, y), grad_all(self.f)(x, y)
 
         def bprop(self, x, y, out, dout):
             grads = grad_all(self.f)(x, y)
             return out[1][0], grads[1]
 
-    class GradInBprop_3(nn.Cell):
+    class GradInBprop_3(nn.Module):
         def __init__(self):
             super(GradInBprop_3, self).__init__()
             self.f = GradInBprop_2()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             return self.f(x, y)
 
         def bprop(self, x, y, out, dout):
@@ -226,12 +226,12 @@ def test_grad_in_bprop_3():
     assert (grads[1].asnumpy() == np.array([[5, 5], [5, 5]]).astype(np.float32)).all()
 
 
-class OneInputBprop(nn.Cell):
+class OneInputBprop(nn.Module):
     def __init__(self):
         super().__init__()
         self.op = P.ReLU()
 
-    def construct(self, x):
+    def call(self, x):
         return self.op(x)
 
     def bprop(self, x, out, dout):
@@ -247,17 +247,17 @@ def test_grad_one_input_bprop():
     assert (grad[0].asnumpy() == np.array([5, 5]).astype(np.float32)).all()
 
 
-class TwoInput(nn.Cell):
-    def construct(self, x, y):
+class TwoInput(nn.Module):
+    def call(self, x, y):
         return x * y
 
 
-class InlineBpropTwoInput(nn.Cell):
+class InlineBpropTwoInput(nn.Module):
     def __init__(self):
         super().__init__()
         self.f = TwoInput()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.f(x, y), grad_all(self.f)(x, y)
 
     def bprop(self, x, y, out, dout):
@@ -277,43 +277,43 @@ def test_grad_inline_bprop_two_input():
     assert len(grads) == 2
 
 
-class TwoInputBprop(nn.Cell):
+class TwoInputBprop(nn.Module):
     def __init__(self):
         super().__init__()
         self.op = P.Mul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.op(x, y)
 
     def bprop(self, x, y, out, dout):
         return 5 * x, 8 * y
 
 
-class TwoInputWithParameter(nn.Cell):
+class TwoInputWithParameter(nn.Module):
     def __init__(self):
         super().__init__()
         self.op = P.Mul()
         self.inputdata = Parameter(initializer(1, (2, 2), mstype.float32), name="global_step")
 
-    def construct(self, x, y):
+    def call(self, x, y):
         x = self.inputdata + x
         return self.op(x, y)
 
 
-class TwoInputWithOnlyInitParameterBprop(nn.Cell):
+class TwoInputWithOnlyInitParameterBprop(nn.Module):
     def __init__(self):
         super().__init__()
         self.op = P.Mul()
         self.inputdata = Parameter(initializer(1, (2, 2), mstype.float32), name="global_step")
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.op(x, y)
 
     def bprop(self, x, y, out, dout):
         return 5 * x, 8 * y
 
 
-class InlineMutilTwoInputParameterCell(nn.Cell):
+class InlineMutilTwoInputParameterCell(nn.Module):
     def __init__(self):
         super().__init__()
         self.f1 = TwoInputBprop()
@@ -321,7 +321,7 @@ class InlineMutilTwoInputParameterCell(nn.Cell):
         self.f3 = TwoInputWithParameter()
         self.f4 = TwoInputWithOnlyInitParameterBprop()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         output = self.f1(x, y) + self.f2(x, y) + self.f3(x, y) + self.f4(x, y)
         return output
 
@@ -339,13 +339,13 @@ def test_grad_inline_bprop_multi_input():
     assert len(grads) == 2
 
 
-class MulAddWithParam(nn.Cell):
+class MulAddWithParam(nn.Module):
     def __init__(self):
         super(MulAddWithParam, self).__init__()
         self.mul_add = MulAdd()
         self.param = Parameter(Tensor(np.array([[3, 2]], np.float32)), 'param')
 
-    def construct(self, x):
+    def call(self, x):
         return self.mul_add(self.param, x)
 
 @pytest.mark.level0
@@ -353,12 +353,12 @@ class MulAddWithParam(nn.Cell):
 @pytest.mark.env_onecard
 def test_refkey_bprop():
     grad_by_list = C.GradOperation(get_all=True, get_by_list=True)
-    class GradWrap(nn.Cell):
+    class GradWrap(nn.Module):
         def __init__(self, network):
             super(GradWrap, self).__init__()
             self.network = network
             self.weights = ParameterTuple(filter(lambda x: x.requires_grad, network.get_parameters()))
-        def construct(self, x):
+        def call(self, x):
             weights = self.weights
             grads = grad_by_list(self.network, weights)(x)
             return grads
@@ -369,8 +369,8 @@ def test_refkey_bprop():
     assert (grads[1][0].asnumpy() == np.array([2, 2]).astype(np.float32)).all()
 
 
-class MulAddWithWrongOutputNum(nn.Cell):
-    def construct(self, x, y):
+class MulAddWithWrongOutputNum(nn.Module):
+    def call(self, x, y):
         return 2 * x + y
 
     def bprop(self, x, y, out, dout):
@@ -386,8 +386,8 @@ def test_grad_mul_add_with_wrong_output_num():
         grad_all(mul_add)(1, 2)
 
 
-class MulAddWithWrongOutputType(nn.Cell):
-    def construct(self, x, y):
+class MulAddWithWrongOutputType(nn.Module):
+    def call(self, x, y):
         return 2 * x + y
 
     def bprop(self, x, y, out, dout):
@@ -403,12 +403,12 @@ def test_grad_mul_add_with_wrong_output_type():
         grad_all(mul_add)(1, Tensor(np.ones([2, 2])))
 
 
-class MulAddWithWrongOutputShape(nn.Cell):
+class MulAddWithWrongOutputShape(nn.Module):
     def __init__(self):
         super(MulAddWithWrongOutputShape, self).__init__()
         self.ones = Tensor(np.ones([2,]))
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return 2 * x + y
 
     def bprop(self, x, y, out, dout):

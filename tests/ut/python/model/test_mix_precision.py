@@ -32,7 +32,7 @@ from tests.ops_common import convert
 from ....train_step_wrap import train_step_with_loss_warp
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """LeNet5"""
 
     def __init__(self):
@@ -46,7 +46,7 @@ class LeNet5(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.flatten = P.Flatten()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.max_pool2d(self.relu(self.conv1(x)))
         x = self.max_pool2d(self.relu(self.conv2(x)))
         x = self.flatten(x)
@@ -56,14 +56,14 @@ class LeNet5(nn.Cell):
         return x
 
 
-class NetForConcat(nn.Cell):
+class NetForConcat(nn.Module):
     def __init__(self):
         super(NetForConcat, self).__init__()
         self.concat = P.Concat()
         self.x1 = Tensor(np.zeros([1, 10]).astype(np.float32))
         self.x2 = Parameter(Tensor(np.zeros([1, 10]).astype(np.float32)), name='x2')
 
-    def construct(self, x0):
+    def call(self, x0):
         return self.concat((x0, self.x1, self.x2))
 
 
@@ -117,12 +117,12 @@ def data_parallel_with_cast():
     context.reset_auto_parallel_context()
 
 
-class NetForPReLU(nn.Cell):
+class NetForPReLU(nn.Module):
     def __init__(self):
         super(NetForPReLU, self).__init__()
         self.prelu = nn.PReLU()
 
-    def construct(self, x):
+    def call(self, x):
         return self.prelu(x)
 
 
@@ -133,13 +133,13 @@ def test_nn_prelu():
     _cell_graph_executor.compile(net, x)
 
 
-class NetForCast(nn.Cell):
+class NetForCast(nn.Module):
     def __init__(self):
         super(NetForCast, self).__init__()
         self.x1 = Tensor(1.0, mstype.float32)
         self.x2 = Parameter(Tensor(np.zeros([1, 10]).astype(np.float32)), name='x2')
 
-    def construct(self, x0):
+    def call(self, x0):
         x = self.x1 * x0 * self.x2
         return x
 
@@ -151,19 +151,19 @@ def test_cast():
     net(x)
 
 
-class IRBlockZ(nn.Cell):
+class IRBlockZ(nn.Module):
     def __init__(self, inplanes, planes):
         super(IRBlockZ, self).__init__()
         self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=3, stride=1, pad_mode="same", group=1, has_bias=False,
                                dilation=1)
         self.act_layer = nn.PReLU(planes)
 
-    def construct(self, x):
+    def call(self, x):
         out = self.conv1(x)
         return self.act_layer(out)
 
 
-class GetParamGrad(nn.Cell):
+class GetParamGrad(nn.Module):
     def __init__(self, network):
         super(GetParamGrad, self).__init__(auto_prefix=False)
         self.network = network
@@ -171,7 +171,7 @@ class GetParamGrad(nn.Cell):
         self.grad = C.GradOperation(get_by_list=True,
                                     sens_param=True)
 
-    def construct(self, data, sens):
+    def call(self, data, sens):
         weights = self.weights
         return self.grad(self.network, weights)(data, sens)
 
@@ -190,13 +190,13 @@ def test_grad_conv_prelu():
 
 
 def test_dict_cast():
-    class FirstNet(nn.Cell):
+    class FirstNet(nn.Module):
         def __init__(self):
             super(FirstNet, self).__init__()
             self.net = SecondNet()
             self.sub = P.Sub()
 
-        def construct(self, tensor_a, tensor_b):
+        def call(self, tensor_a, tensor_b):
             a = F.mixed_precision_cast(mstype.float16, tensor_a)
             b = F.mixed_precision_cast(mstype.float16, tensor_b)
             c = self.sub(a, b)
@@ -204,12 +204,12 @@ def test_dict_cast():
             result = self.net(c, key1=a, key2=dictionary)
             return result
 
-    class SecondNet(nn.Cell):
+    class SecondNet(nn.Module):
         def __init__(self):
             super(SecondNet, self).__init__()
             self.add = P.Add()
 
-        def construct(self, tensor_c, **kwargs):
+        def call(self, tensor_c, **kwargs):
             d = F.mixed_precision_cast(mstype.float16, tensor_c)
             dict_cast = F.mixed_precision_cast(mstype.float16, kwargs)
             e = self.add(d, dict_cast["key1"])
@@ -223,24 +223,24 @@ def test_dict_cast():
 
 
 def test_kwarg_cast():
-    class FirstNet(nn.Cell):
+    class FirstNet(nn.Module):
         def __init__(self):
             super(FirstNet, self).__init__()
             self.net = SecondNet().add_flags_recursive(fp16=True)
             self.add = P.Add()
 
-        def construct(self, tensor_a, tensor_b):
+        def call(self, tensor_a, tensor_b):
             tensor_c = self.add(tensor_a, tensor_b)
             dictionary = {"key": tensor_a}
             result = self.net(key1=tensor_c, key2=dictionary)
             return result
 
-    class SecondNet(nn.Cell):
+    class SecondNet(nn.Module):
         def __init__(self):
             super(SecondNet, self).__init__()
             self.add = P.Add()
 
-        def construct(self, key1=1, key2=2):
+        def call(self, key1=1, key2=2):
             tensor_d = self.add(key1, key2["key"])
             return tensor_d
 

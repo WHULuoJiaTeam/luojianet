@@ -27,7 +27,7 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net_Pool_Grad(nn.Cell):
+class Net_Pool_Grad(nn.Module):
     def __init__(self):
         super(Net_Pool_Grad, self).__init__()
         self.maxpool_grad_fun = G.MaxPoolGrad(pad_mode="VALID",
@@ -58,7 +58,7 @@ class Net_Pool_Grad(nn.Cell):
                 [31, 33, 35]
             ]]]).astype(np.float32)), [1, 1, 3, 3]), name='d')
 
-    def construct(self):
+    def call(self):
         return self.maxpool_grad_fun(self.x, self.a, self.d)
 
 

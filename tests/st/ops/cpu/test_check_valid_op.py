@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetCheckValid(nn.Cell):
+class NetCheckValid(nn.Module):
     def __init__(self):
         super(NetCheckValid, self).__init__()
         self.valid = P.CheckValid()
 
-    def construct(self, anchor, image_metas):
+    def call(self, anchor, image_metas):
         return self.valid(anchor, image_metas)
 
 def check_valid(nptype):

@@ -63,12 +63,12 @@ class LU(PrimitiveWithInfer):
         return output
 
 
-class LuNet(nn.Cell):
+class LuNet(nn.Module):
     def __init__(self):
         super(LuNet, self).__init__()
         self.lu = LU()
 
-    def construct(self, a):
+    def call(self, a):
         return self.lu(a)
 
 

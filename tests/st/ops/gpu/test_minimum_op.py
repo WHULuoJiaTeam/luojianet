@@ -19,28 +19,28 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import operations as P
 
 
-class MinimumNet(Cell):
+class MinimumNet(Module):
     def __init__(self):
         super(MinimumNet, self).__init__()
         self.min = P.Minimum()
 
-    def construct(self, x1, x2):
+    def call(self, x1, x2):
         x = self.min(x1, x2)
         return x
 
 
-class Grad(Cell):
+class Grad(Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, x1, x2, sens):
+    def call(self, x1, x2, sens):
         gout = self.grad(self.network)(x1, x2, sens)
         return gout
 

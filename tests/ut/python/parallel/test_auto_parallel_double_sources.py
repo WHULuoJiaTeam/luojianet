@@ -28,30 +28,30 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, z, w, a):
+    def call(self, x, y, z, w, a):
         predict = self.network(x, y, z, w, a)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, z, w, a):
+    def call(self, x, y, z, w, a):
         return grad_all(self.network)(x, y, z, w, a)
 
     # model_parallel test
 
 
 def test_double_source_graph():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -60,7 +60,7 @@ def test_double_source_graph():
             self.matmul4 = P.MatMul()
             self.matmul5 = P.MatMul()
 
-        def construct(self, x, y, z, w, a):
+        def call(self, x, y, z, w, a):
             m1_result = self.matmul1(x, y)
             m2_result = self.matmul2(z, w)
             m3_result = self.matmul3(m2_result, m1_result)
@@ -85,7 +85,7 @@ def test_double_source_graph():
 
 
 def test_double_source_complex_graph():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -95,7 +95,7 @@ def test_double_source_complex_graph():
             self.matmul5 = P.MatMul()
             self.matmul6 = P.MatMul()
 
-        def construct(self, x, y, z, w, a):
+        def call(self, x, y, z, w, a):
             m1_result = self.matmul1(x, y)
             m6_result = self.matmul6(m1_result, a)
             m2_result = self.matmul2(z, w)

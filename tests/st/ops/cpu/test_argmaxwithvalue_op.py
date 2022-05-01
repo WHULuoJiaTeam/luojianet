@@ -23,7 +23,7 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetArgmaxWithValue(nn.Cell):
+class NetArgmaxWithValue(nn.Module):
     def __init__(self):
         super(NetArgmaxWithValue, self).__init__()
         axis1 = 0
@@ -32,16 +32,16 @@ class NetArgmaxWithValue(nn.Cell):
         self.argmax2 = P.ArgMaxWithValue(axis2)
         self.argmax3 = P.ArgMaxWithValue()
 
-    def construct(self, x):
+    def call(self, x):
         return (self.argmax1(x), self.argmax2(x), self.argmax3(x))
 
 
-class NetArgmaxWithValueBig(nn.Cell):
+class NetArgmaxWithValueBig(nn.Module):
     def __init__(self, axis=0):
         super(NetArgmaxWithValueBig, self).__init__()
         self.argmax = P.ArgMaxWithValue(axis)
 
-    def construct(self, x):
+    def call(self, x):
         return self.argmax(x)
 
 

@@ -24,25 +24,25 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class ResizeNearestNeighborGradAlignCornerT(nn.Cell):
+class ResizeNearestNeighborGradAlignCornerT(nn.Module):
     def __init__(self, size=None):
         super(ResizeNearestNeighborGradAlignCornerT, self).__init__()
         self.ResizeNearestNeighborGradAlignCornerT = G.ResizeNearestNeighborGrad(
             align_corners=True)
         self.size = size
 
-    def construct(self, dy):
+    def call(self, dy):
         return self.ResizeNearestNeighborGradAlignCornerT(dy, self.size)
 
 
-class ResizeNearestNeighborGradAlignCornerF(nn.Cell):
+class ResizeNearestNeighborGradAlignCornerF(nn.Module):
     def __init__(self, size=None):
         super(ResizeNearestNeighborGradAlignCornerF, self).__init__()
         self.ResizeNearestNeighborGradAlignCornerF = G.ResizeNearestNeighborGrad(
             align_corners=False)
         self.size = size
 
-    def construct(self, dy):
+    def call(self, dy):
         return self.ResizeNearestNeighborGradAlignCornerF(dy, self.size)
 
 

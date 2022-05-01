@@ -21,14 +21,14 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor, context
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 3, 3)
         self.conv2 = nn.Conv2d(1, 3, 5, has_bias=True)
         self.layers = (self.conv1, self.conv2)
 
-    def construct(self, x, index):
+    def call(self, x, index):
         x = self.layers[index](x)
         return 2 + x
 

@@ -26,24 +26,24 @@ grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)
 
 
 def test_user_define_bprop_check_ok():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.grad = Tensor(np.array([[1.1, 2.2, 3.3], [2.0, 3.0, 4.0]], dtype=np.float32))
 
-        def construct(self, x):
+        def call(self, x):
             ret = x * 2
             return ret
 
         def bprop(self, x, out, dout):
             return (self.grad * 3,)
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, sens):
+        def call(self, x, sens):
             return grad_all_with_sens(self.net)(x, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))
@@ -58,24 +58,24 @@ def test_user_define_bprop_check_ok():
 
 
 def test_user_define_bprop_no_check_dtype():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.grad = Tensor(np.array([[1.1, 2.2, 3.3], [2.0, 3.0, 4.0]], dtype=np.float16))
 
-        def construct(self, x):
+        def call(self, x):
             ret = x * 2
             return ret
 
         def bprop(self, x, out, dout):
             return (self.grad * 3,)
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, sens):
+        def call(self, x, sens):
             return grad_all_with_sens(self.net)(x, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))
@@ -90,24 +90,24 @@ def test_user_define_bprop_no_check_dtype():
 
 
 def test_user_define_bprop_check_shape():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.grad = Tensor(np.array([[1.1, 2.2], [2.0, 3.0]], dtype=np.float32))
 
-        def construct(self, x):
+        def call(self, x):
             ret = x * 2
             return ret
 
         def bprop(self, x, out, dout):
             return (self.grad * 3,)
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, sens):
+        def call(self, x, sens):
             return grad_all_with_sens(self.net)(x, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))
@@ -120,24 +120,24 @@ def test_user_define_bprop_check_shape():
 
 
 def test_user_define_bprop_check_dtype():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.grad = Tensor(np.array([[1.1, 2.2, 3.3], [2.0, 3.0, 4.0]], dtype=np.float16))
 
-        def construct(self, x):
+        def call(self, x):
             ret = x * 2
             return ret
 
         def bprop(self, x, out, dout):
             return (self.grad * 3,)
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, sens):
+        def call(self, x, sens):
             return grad_all_with_sens(self.net)(x, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))
@@ -150,25 +150,25 @@ def test_user_define_bprop_check_dtype():
 
 
 def test_user_define_bprop_check_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.par = Parameter(Tensor(np.array([[1.1, 2.2, 3.3], [2.0, 3.0, 4.0]], dtype=np.float32)), name="par")
             self.grad = Tensor(np.array([[1.1, 2.2, 3.3], [2.0, 3.0, 4.0]], dtype=np.float16))
 
-        def construct(self, x):
+        def call(self, x):
             ret = x * 2 + self.par
             return ret
 
         def bprop(self, x, out, dout):
             return dout + x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, sens):
+        def call(self, x, sens):
             return grad_all_with_sens(self.net)(x, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))
@@ -182,24 +182,24 @@ def test_user_define_bprop_check_parameter():
 
 
 def test_user_define_bprop_check_number():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.grad = Tensor(np.array([[1.1, 2.2, 3.3], [2.0, 3.0, 4.0]], dtype=np.float32))
 
-        def construct(self, x, y):
+        def call(self, x, y):
             ret = x * 2 + y
             return ret
 
         def bprop(self, x, y, out, dout):
             return (dout,)
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, y, sens):
+        def call(self, x, y, sens):
             return grad_all_with_sens(self.net)(x, y, sens)
 
     x = Tensor(np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=np.float32))

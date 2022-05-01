@@ -24,12 +24,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bias_add = P.BiasAdd()
 
-    def construct(self, x, b):
+    def call(self, x, b):
         return self.bias_add(x, b)
 
 
@@ -100,7 +100,7 @@ def test_bias_add5d():
     assert np.all(output.asnumpy() == expect_output), "bias_add execute failed, please check current code commit"
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self):
         super(Net2, self).__init__()
         self.bias_add = P.BiasAdd()
@@ -108,7 +108,7 @@ class Net2(nn.Cell):
         self.div = P.Div()
         self.add = P.Add()
 
-    def construct(self, x, y, z, w):
+    def call(self, x, y, z, w):
         mul_ = self.mul(x, y)
         div_ = self.div(z, w)
         temp = self.bias_add(mul_, div_)

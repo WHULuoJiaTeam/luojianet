@@ -43,7 +43,7 @@ def fc_with_initialize(input_channels, out_channels):
     return nn.Dense(input_channels, out_channels, weight, bias)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     def __init__(self):
         super(LeNet5, self).__init__()
         self.batch_size = 32
@@ -56,7 +56,7 @@ class LeNet5(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.reshape = P.Reshape()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)
@@ -72,18 +72,18 @@ class LeNet5(nn.Cell):
         return x
 
 
-class WithLossCell(nn.Cell):
+class WithLossCell(nn.Module):
     def __init__(self, network):
         super(WithLossCell, self).__init__(auto_prefix=False)
         self.loss = nn.SoftmaxCrossEntropyWithLogits()
         self.network = network
 
-    def construct(self, x, label):
+    def call(self, x, label):
         predict = self.network(x)
         return self.loss(predict, label)
 
 
-class TrainOneStepCell(nn.Cell):
+class TrainOneStepCell(nn.Module):
     def __init__(self, network):
         super(TrainOneStepCell, self).__init__(auto_prefix=False)
         self.network = network
@@ -93,7 +93,7 @@ class TrainOneStepCell(nn.Cell):
         self.hyper_map = C.HyperMap()
         self.grad = C.GradOperation(get_by_list=True)
 
-    def construct(self, x, label):
+    def call(self, x, label):
         weights = self.weights
         grads = self.grad(self.network, weights)(x, label)
         return self.optimizer(grads)

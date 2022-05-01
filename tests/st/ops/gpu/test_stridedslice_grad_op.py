@@ -22,7 +22,7 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import composite as C
 
-class StridedSliceNet(nn.Cell):
+class StridedSliceNet(nn.Module):
     def __init__(self, begin, end, stride, begin_mask=0, end_mask=0, ellipsis_mask=0):
         super(StridedSliceNet, self).__init__()
         self.begin = begin
@@ -30,16 +30,16 @@ class StridedSliceNet(nn.Cell):
         self.strides = stride
         self.slice = P.StridedSlice(begin_mask, end_mask, ellipsis_mask)
 
-    def construct(self, x):
+    def call(self, x):
         return self.slice(x, self.begin, self.end, self.strides)
 
-class GradData(nn.Cell):
+class GradData(nn.Module):
     def __init__(self, network):
         super(GradData, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=False)
         self.network = network
 
-    def construct(self, x):
+    def call(self, x):
         return self.grad(self.network)(x)
 
 

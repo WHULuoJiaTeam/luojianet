@@ -49,7 +49,7 @@ def weight_variable():
     return TruncatedNormal(0.02)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """
     Lenet network
 
@@ -75,7 +75,7 @@ class LeNet5(nn.Cell):
         self.flatten = nn.Flatten()
         self.reshape = ops.Reshape()
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)

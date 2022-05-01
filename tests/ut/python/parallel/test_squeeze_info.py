@@ -18,17 +18,17 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, strategy1=None, strategy2=None, axis=()):
         super().__init__()
         self.squeeze = P.Squeeze(axis=axis).shard(strategy1)
         self.mul = P.Mul().shard(strategy2)
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.squeeze(x)
         out = self.mul(out, b)
         return out

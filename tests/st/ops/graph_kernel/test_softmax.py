@@ -20,12 +20,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, axis=-1):
         super(Net, self).__init__()
         self.Softmax = P.Softmax(axis)
 
-    def construct(self, x):
+    def call(self, x):
         return self.Softmax(x)
 
 def get_output(x, enable_graph_kernel=False):

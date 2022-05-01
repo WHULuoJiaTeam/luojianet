@@ -59,12 +59,12 @@ class Rank(PrimitiveWithInfer):
         }
 
 
-class RankNet(nn.Cell):
+class RankNet(nn.Module):
     def __init__(self, axis: int, method: str, na_option: str, ascending: bool, pct: bool):
         super(RankNet, self).__init__()
         self.rank = Rank(axis, method, na_option, ascending, pct)
 
-    def construct(self, x):
+    def call(self, x):
         return self.rank(x)
 
 

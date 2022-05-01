@@ -28,18 +28,18 @@ from luojianet_ms.ops.composite import GradOperation
 context.set_context(device_target="Ascend")
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
     @ms_function
-    def construct(self, input_, output_grad):
+    def call(self, input_, output_grad):
         return self.grad(self.network)(input_, output_grad)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bn = P.BatchNorm()
@@ -48,7 +48,7 @@ class Net(nn.Cell):
         self.mean = Parameter(initializer('ones', [64]), name='mean')
         self.variance = Parameter(initializer('zeros', [64]), name='variance')
 
-    def construct(self, x):
+    def call(self, x):
         return self.bn(x, self.scale, self.offset, self.mean, self.variance)[0]
 
 

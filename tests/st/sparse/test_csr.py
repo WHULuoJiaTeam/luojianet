@@ -103,25 +103,25 @@ def test_csr_tensor_in_while():
     Description: Test CSRTensor computation in while loop.
     Expectation: Success.
     """
-    class CSRTensorValuesDouble(nn.Cell):
+    class CSRTensorValuesDouble(nn.Module):
 
-        def construct(self, x):
+        def call(self, x):
             indptr = x.indptr
             indices = x.indices
             values = x.values * 2
             shape = x.shape
             return CSRTensor(indptr, indices, values, shape)
 
-    class CSRTensorValuesAdd2(nn.Cell):
+    class CSRTensorValuesAdd2(nn.Module):
 
-        def construct(self, x):
+        def call(self, x):
             indptr = x.indptr
             indices = x.indices
             values = x.values + 2
             shape = x.shape
             return CSRTensor(indptr, indices, values, shape)
 
-    class CSRTensorWithControlWhile(nn.Cell):
+    class CSRTensorWithControlWhile(nn.Module):
         def __init__(self, shape):
             super().__init__()
             self.op1 = CSRTensorValuesDouble()
@@ -129,7 +129,7 @@ def test_csr_tensor_in_while():
             self.shape = shape
 
         @ms_function
-        def construct(self, a, b, indptr, indices, values):
+        def call(self, a, b, indptr, indices, values):
             x = CSRTensor(indptr, indices, values, self.shape)
             x = self.op2(x)
             while a > b:
@@ -173,25 +173,25 @@ def test_csr_tensor_in_while_cpu():
     Description: Test CSRTensor computation in while loop.
     Expectation: Success.
     """
-    class CSRTensorValuesDouble(nn.Cell):
+    class CSRTensorValuesDouble(nn.Module):
 
-        def construct(self, x):
+        def call(self, x):
             indptr = x.indptr
             indices = x.indices
             values = x.values * 2
             shape = x.shape
             return CSRTensor(indptr, indices, values, shape)
 
-    class CSRTensorValuesAdd2(nn.Cell):
+    class CSRTensorValuesAdd2(nn.Module):
 
-        def construct(self, x):
+        def call(self, x):
             indptr = x.indptr
             indices = x.indices
             values = x.values + 2
             shape = x.shape
             return CSRTensor(indptr, indices, values, shape)
 
-    class CSRTensorWithControlWhile(nn.Cell):
+    class CSRTensorWithControlWhile(nn.Module):
         def __init__(self, shape):
             super().__init__()
             self.op1 = CSRTensorValuesDouble()
@@ -199,7 +199,7 @@ def test_csr_tensor_in_while_cpu():
             self.shape = shape
 
         @ms_function
-        def construct(self, a, b, indptr, indices, values):
+        def call(self, a, b, indptr, indices, values):
             x = CSRTensor(indptr, indices, values, self.shape)
             x = self.op2(x)
             while a > b:
@@ -277,12 +277,12 @@ def test_csrtensor_export_mindir():
     Description: Test export and load.
     Expectation: Success.
     """
-    class TestCSRTensor(nn.Cell):
+    class TestCSRTensor(nn.Module):
         def __init__(self, shape):
             super().__init__()
             self.shape = shape
 
-        def construct(self, indptr, indices, values):
+        def call(self, indptr, indices, values):
             return CSRTensor(indptr, indices, values, self.shape)
 
     indptr = Tensor([0, 1, 2])
@@ -315,14 +315,14 @@ def test_csrops_export_mindir():
     Description: Test export and load.
     Expectation: Success.
     """
-    class TestCSRNet(nn.Cell):
+    class TestCSRNet(nn.Module):
         def __init__(self, shape):
             super().__init__()
             self.shape = shape
             self.csr_reducesum = _csr_ops.CSRReduceSum()
             self.csr_mv = _csr_ops.CSRMV()
 
-        def construct(self, indptr, indices, values, dence_tensor, dense_vector):
+        def call(self, indptr, indices, values, dence_tensor, dense_vector):
             csr_tensor = CSRTensor(indptr, indices, values, self.shape)
             dense1 = self.csr_reducesum(csr_tensor, 1)
             dense2 = self.csr_mv(csr_tensor, dense_vector)

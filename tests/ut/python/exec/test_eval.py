@@ -24,7 +24,7 @@ from luojianet_ms.common.api import _cell_graph_executor
 from ..ut_filter import non_graph_engine
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
 
     def __init__(self,
@@ -53,7 +53,7 @@ class Net(nn.Cell):
                               weight_init,
                               bias_init)
 
-    def construct(self, input_x):
+    def call(self, input_x):
         return self.conv(input_x)
 
 

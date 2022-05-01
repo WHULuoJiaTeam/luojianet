@@ -33,21 +33,21 @@ def setup_teardown():
 
 
 grad_all = C.GradOperation(get_all=True)
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
-    def construct(self, *args):
+    def call(self, *args):
         grad = grad_all(self.network)(*args)
         return grad
 
 
 def test_row_tensor_attr():
-    class RowTensorGetAttr(nn.Cell):
+    class RowTensorGetAttr(nn.Module):
         def __init__(self, dense_shape):
             super(RowTensorGetAttr, self).__init__()
             self.dense_shape = dense_shape
-        def construct(self, indices, values):
+        def call(self, indices, values):
             x = RowTensor(indices, values, self.dense_shape)
             return x.values, x.indices, x.dense_shape
     indices = Tensor([0])
@@ -57,11 +57,11 @@ def test_row_tensor_attr():
 
 
 def test_sparse_tensor_attr():
-    class SparseTensorGetAttr(nn.Cell):
+    class SparseTensorGetAttr(nn.Module):
         def __init__(self):
             super(SparseTensorGetAttr, self).__init__()
             self.dense_shape = (3, 4)
-        def construct(self, indices, values):
+        def call(self, indices, values):
             x = SparseTensor(indices, values, self.dense_shape)
             return x.values, x.indices, x.dense_shape
 

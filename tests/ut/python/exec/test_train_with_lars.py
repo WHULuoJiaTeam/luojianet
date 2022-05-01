@@ -43,7 +43,7 @@ def get_net_trainable_reordered_params(net):
     return get_reordered_parameters(params)
 
 
-class TrainOneStepWithLarsCell(nn.Cell):
+class TrainOneStepWithLarsCell(nn.Module):
     """TrainOneStepWithLarsCell definition"""
 
     def __init__(self, network, optimizer, sens=1.0):
@@ -58,7 +58,7 @@ class TrainOneStepWithLarsCell(nn.Cell):
         self.weight_decay = 1.0
         self.lars = P.Lars(epsilon=1.0, hyperpara=1.0)
 
-    def construct(self, data, label):
+    def call(self, data, label):
         weights = self.weights
         loss = self.network(data, label)
         grads = self.grad(self.network, weights)(data, label, self.sens)

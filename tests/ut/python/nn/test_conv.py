@@ -26,7 +26,7 @@ in_channels = 3
 out_channels = 64
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self,
@@ -54,7 +54,7 @@ class Net(nn.Cell):
                               weight_init,
                               bias_init)
 
-    def construct(self, input_x):
+    def call(self, input_x):
         return self.conv(input_x)
 
 
@@ -126,7 +126,7 @@ def test_conv_check():
         Net(0, 1, 4)
 
 
-class NetConv2dTranspose(nn.Cell):
+class NetConv2dTranspose(nn.Module):
     def __init__(self,
                  cin,
                  cout,
@@ -152,7 +152,7 @@ class NetConv2dTranspose(nn.Cell):
                                        weight_init,
                                        bias_init)
 
-    def construct(self, input_x):
+    def call(self, input_x):
         return self.conv(input_x)
 
 

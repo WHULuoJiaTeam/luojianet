@@ -24,22 +24,22 @@ from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import operations as P
 
 
-class LogSoftmax(nn.Cell):
+class LogSoftmax(nn.Module):
     def __init__(self, axis=1):
         super(LogSoftmax, self).__init__()
         self.logsoftmax = P.LogSoftmax(axis)
 
-    def construct(self, x):
+    def call(self, x):
         return self.logsoftmax(x)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_data, sens):
+    def call(self, input_data, sens):
         gout = self.grad(self.network)(input_data, sens)
         return gout
 

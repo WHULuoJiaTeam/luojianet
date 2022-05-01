@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 
-"""Component that construct function that compile forward graph."""
+"""Component that call function that compile forward graph."""
 
 from ...components.icomponent import IBuilderComponent
 from ...utils.block_util import compile_block, gen_net, create_funcs

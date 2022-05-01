@@ -26,12 +26,12 @@ from luojianet_ms import dtype as ms
 context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
 
 
-class CauchyMean(nn.Cell):
+class CauchyMean(nn.Module):
     def __init__(self, loc, scale, seed=10, dtype=ms.float32, name='Cauchy'):
         super().__init__()
         self.b = msd.Cauchy(loc, scale, seed, dtype, name)
 
-    def construct(self):
+    def call(self):
         out4 = self.b.entropy()
         return out4
 
@@ -47,12 +47,12 @@ def test_probability_cauchy_mean_loc_scale_rand_2_ndarray():
     net()
 
 
-class CauchyProb(nn.Cell):
+class CauchyProb(nn.Module):
     def __init__(self, loc, scale, seed=10, dtype=ms.float32, name='Cauchy'):
         super().__init__()
         self.b = msd.Cauchy(loc, scale, seed, dtype, name)
 
-    def construct(self, value):
+    def call(self, value):
         out1 = self.b.prob(value)
         out2 = self.b.log_prob(value)
         out3 = self.b.cdf(value)

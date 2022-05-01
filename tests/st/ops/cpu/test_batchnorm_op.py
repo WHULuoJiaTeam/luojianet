@@ -20,28 +20,28 @@ import pytest
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.nn import BatchNorm2d
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import composite as C
 
 
-class Batchnorm_Net(Cell):
+class Batchnorm_Net(Module):
     def __init__(self, c, weight, bias, moving_mean, moving_var_init):
         super(Batchnorm_Net, self).__init__()
         self.bn = BatchNorm2d(c, eps=0.00001, momentum=0.1, beta_init=bias, gamma_init=weight,
                               moving_mean_init=moving_mean, moving_var_init=moving_var_init)
 
-    def construct(self, input_data):
+    def call(self, input_data):
         x = self.bn(input_data)
         return x
 
 
-class Grad(Cell):
+class Grad(Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_data, sens):
+    def call(self, input_data, sens):
         gout = self.grad(self.network)(input_data, sens)
         return gout
 

@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms import context
 
 
-class InvertNet(nn.Cell):
+class InvertNet(nn.Module):
     def __init__(self):
         super(InvertNet, self).__init__()
         self.t = Tensor(np.array([True, False, True]))
 
-    def construct(self, x):
+    def call(self, x):
         invert_t = ~self.t
         invert_x = ~x
         ret = (invert_t, invert_x)

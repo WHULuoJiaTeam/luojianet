@@ -22,7 +22,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.common.tensor import Tensor
 
 
-class BboxAssignSampleForRcnn(nn.Cell):
+class BboxAssignSampleForRcnn(nn.Module):
     """
     Bbox assigner and sampler definition.
 
@@ -109,7 +109,7 @@ class BboxAssignSampleForRcnn(nn.Cell):
         self.scalar_pos_iou_thr = Tensor(self.pos_iou_thr, dtype=self.ms_type)
         self.scalar_min_pos_iou = Tensor(self.min_pos_iou, dtype=self.ms_type)
 
-    def construct(self, gt_bboxes_i, gt_labels_i, valid_mask, bboxes, gt_valids):
+    def call(self, gt_bboxes_i, gt_labels_i, valid_mask, bboxes, gt_valids):
         gt_bboxes_i = self.select(self.cast(self.tile(self.reshape(self.cast(gt_valids, mstype.int32), \
                                   (self.num_gts, 1)), (1, 4)), mstype.bool_), \
                                   gt_bboxes_i, self.check_gt_one)

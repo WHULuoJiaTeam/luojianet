@@ -65,7 +65,7 @@ TEST_F(TestAttrAndDynamicBackendInfer, test_attr_and_dynamic_input_infer) {
   // Register Attr for ut
   ConstInputToAttrInfoRegistry &reg = ConstInputToAttrInfoRegistry::Instance();
   reg.Register(kAttrConvertTestName, {1});
-  // construct primitive
+  // call primitive
   PrimitivePtr prim_attr_test = std::make_shared<Primitive>(kAttrConvertTestName);
   PrimitivePtr prim_dynamic_input_test = std::make_shared<Primitive>(kDynamicInputTestName);
   // set primtive attr
@@ -77,7 +77,7 @@ TEST_F(TestAttrAndDynamicBackendInfer, test_attr_and_dynamic_input_infer) {
   // set dynameic input list for primtive
   std::vector<int64_t> dynamic_input_list = {-1, 2, -1};
   prim_dynamic_input_test->AddAttr(kAttrDynInputSizes, MakeValue(dynamic_input_list));
-  // construct Abstract list
+  // call Abstract list
   auto abs_a = std::make_shared<abstract::AbstractTensor>(kFloat32, std::vector<int64_t>{2, 2, 2, 2});
   auto abs_c = std::make_shared<abstract::AbstractTensor>(kFloat32, std::vector<int64_t>{2, 2, 2, 2});
   auto attr_infer_result = CppInferShape(prim_attr_test, {abs_a, abs_c});

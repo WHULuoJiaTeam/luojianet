@@ -24,7 +24,7 @@ import luojianet_ms.ops.operations as op
 
 def test_net_infer():
     """ test_net_infer """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
@@ -35,7 +35,7 @@ def test_net_infer():
             self.relu = nn.ReLU()
             self.flatten = nn.Flatten()
 
-        def construct(self, x):
+        def call(self, x):
             x = self.conv(x)
             x = self.relu(x)
             x = self.flatten(x)
@@ -48,13 +48,13 @@ def test_net_infer():
 def test_assign_in_while():
     context.set_context(device_target="Ascend")
     context.set_context(mode=context.GRAPH_MODE)
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, input_shape):
             super().__init__()
             self.assign = op.Assign()
             self.inputdata = Parameter(initializer(1, input_shape), name="global_step")
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             out = z
             while x < y:
                 inputdata = self.inputdata
@@ -76,11 +76,11 @@ def test_dup_context():
     """
     context.set_context(mode=context.GRAPH_MODE)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x):
+        def call(self, x):
             def identity(f):
                 return f
 
@@ -106,11 +106,11 @@ def test_maybe_poly_func():
     """ different func_with_fv in net1 and net2 may produce poly node. """
     context.set_context(mode=context.GRAPH_MODE)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, x, y, z):
+        def call(self, x, y, z):
             def identity(f, inp):
                 return f(inp)
 

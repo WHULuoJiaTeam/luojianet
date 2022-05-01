@@ -43,7 +43,7 @@ def test_SoftmaxCrossEntropyWithLogits():
 
     logits = Tensor(np.random.randint(0, 9, [100, 10]).astype(np.float32))
     labels = Tensor(np.random.randint(0, 9, [100, 10]).astype(np.float32))
-    loss.construct(logits, labels)
+    loss.call(logits, labels)
 
 
 def test_SoftmaxCrossEntropyWithLogits_reduce():

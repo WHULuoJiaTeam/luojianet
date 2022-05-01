@@ -17,7 +17,7 @@
 import pytest
 import numpy as np
 from luojianet_ms import context, Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 from luojianet_ms.ops import DataType, CustomRegOp, custom_info_register
 
@@ -45,7 +45,7 @@ def cube(a):
     return c
 
 
-class TestHybridTwoInputs(Cell):
+class TestHybridTwoInputs(Module):
     """Net definition"""
 
     def __init__(self, func, out_shape, out_dtype):
@@ -53,11 +53,11 @@ class TestHybridTwoInputs(Cell):
 
         self.program = ops.Custom(func, out_shape=out_shape, out_dtype=out_dtype, func_type="akg")
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.program(x, y)
 
 
-class TestHybridOneInput(Cell):
+class TestHybridOneInput(Module):
     """Net definition"""
 
     def __init__(self, func, out_shape, out_dtype):
@@ -65,29 +65,29 @@ class TestHybridOneInput(Cell):
 
         self.program = ops.Custom(func, out_shape=out_shape, out_dtype=out_dtype, func_type="akg")
 
-    def construct(self, x):
+    def call(self, x):
         return self.program(x)
 
 
-class MatMulNN(Cell):
+class MatMulNN(Module):
     """Net definition"""
 
     def __init__(self):
         super(MatMulNN, self).__init__()
         self.matmul = ops.MatMul()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.matmul(x, y)
 
 
-class PowNN(Cell):
+class PowNN(Module):
     """Net definition"""
 
     def __init__(self):
         super(PowNN, self).__init__()
         self.pow = ops.Pow()
 
-    def construct(self, x):
+    def call(self, x):
         return self.pow(x, 3)
 
 
@@ -218,14 +218,14 @@ def v_add(inputs, attrs):
                       name="v_add", dtype=data_1.dtype)
 
 
-class TestIRbuilder(Cell):
+class TestIRbuilder(Module):
     """Net definition"""
 
     def __init__(self):
         super(TestIRbuilder, self).__init__()
         self.program = ops.Custom(v_add, out_shape=lambda x: x[0], out_dtype=lambda x: x[0], func_type="akg")
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return self.program([x, y])
 
 

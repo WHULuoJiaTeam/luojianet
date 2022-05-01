@@ -18,18 +18,18 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, mul_weight):
         super().__init__()
         self.reshape1 = P.Reshape()
         self.reshape2 = P.Reshape()
         self.mul_weight = Parameter(mul_weight, "w1")
 
-    def construct(self, x, b):
+    def call(self, x, b):
         out = self.reshape1(self.mul_weight, (128, 64, 32))
         out = self.reshape2(out, (128, 64, 32))
         return out

@@ -17,7 +17,7 @@
 import pytest
 import numpy as np
 from luojianet_ms import context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.composite import GradOperation
@@ -31,20 +31,20 @@ def setup_module():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_parser_construct():
-    class ParentNet(Cell):
+    class ParentNet(Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU()
 
-        def construct(self, x):
+        def call(self, x):
             return self.relu(x)
 
-    class UncleNet(Cell):
+    class UncleNet(Module):
         def __init__(self):
             super(UncleNet, self).__init__()
             self.sigmoid = P.Sigmoid()
 
-        def construct(self, x):
+        def call(self, x):
             return self.sigmoid(x)
 
     class Net(UncleNet, ParentNet):
@@ -52,8 +52,8 @@ def test_parser_construct():
             super().__init__()
             super(UncleNet, self).__init__()
 
-        def construct(self, x):
-            return super(UncleNet, self).construct(x)
+        def call(self, x):
+            return super(UncleNet, self).call(x)
 
     input_np_x = np.ones([2, 3, 4, 5]).astype(np.float32)
     out_np = np.ones([2, 3, 4, 5]).astype(np.float32)

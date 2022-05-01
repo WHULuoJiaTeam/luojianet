@@ -28,34 +28,34 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return grad_all(self.network)(x, y)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy):
         super().__init__()
         self.reshape = P.Reshape()
         self.mul = P.Mul().shard(strategy)
         self.relu = P.ReLU()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         out = self.reshape(x, (10000, 36, 1))
         out = self.mul(out, y)
         out = self.relu(out)

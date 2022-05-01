@@ -85,12 +85,12 @@ def test_list_of_tensor():
     print(use_list_of_tensor())
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.x = Tensor([2, 3, 4])
 
-    def construct(self):
+    def call(self):
         x_len = len(self.x)
         for i in range(x_len):
             print(i)
@@ -210,12 +210,12 @@ def test_context():
     Description: Test context in graph.
     Expectation: No exception.
     """
-    class ContextNet(nn.Cell):
+    class ContextNet(nn.Module):
         def __init__(self):
             super(ContextNet, self).__init__()
             self.mode = context.get_context("mode")
 
-        def construct(self):
+        def call(self):
             out = 1
             if self.mode == context.GRAPH_MODE:
                 out = 2

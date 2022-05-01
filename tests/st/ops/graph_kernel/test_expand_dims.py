@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.expand_dims = P.ExpandDims()
 
-    def construct(self, x, dim):
+    def call(self, x, dim):
         return self.expand_dims(x, dim)
 
 

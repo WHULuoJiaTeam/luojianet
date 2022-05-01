@@ -23,12 +23,12 @@ import luojianet_ms.nn as nn
 import luojianet_ms.context as context
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.embeddinglookup = P.EmbeddingLookup()
 
-    def construct(self, input_params, input_indices, offset):
+    def call(self, input_params, input_indices, offset):
         return self.embeddinglookup(input_params, input_indices, offset)
 
 

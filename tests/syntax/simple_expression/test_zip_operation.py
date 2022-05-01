@@ -19,7 +19,7 @@ import numpy as np
 
 from luojianet_ms import Tensor, Parameter
 from luojianet_ms.ops import operations as P
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms as ms
 
 
@@ -29,7 +29,7 @@ def test_zip_operation_args_size():
     Description: The inputs of ZipOperation must not be empty.
     Expectation: The size of inputs of ZipOperation must be greater than 0.
     """
-    class AssignInZipLoop(Cell):
+    class AssignInZipLoop(Module):
         def __init__(self):
             super().__init__()
             self.conv1 = ms.nn.Conv2d(3, 2, 1, weight_init="zero")
@@ -37,7 +37,7 @@ def test_zip_operation_args_size():
             self.params1 = self.conv1.trainable_params()
             self.params2 = self.conv2.trainable_params()
 
-        def construct(self, x):
+        def call(self, x):
             for p1, p2 in zip():
                 P.Assign()(p2, p1 + x)
 
@@ -60,7 +60,7 @@ def test_zip_operation_args_type():
     Description: Check whether all inputs in zip is sequeue.
     Expectation: All inputs in zip must be sequeue.
     """
-    class AssignInZipLoop(Cell):
+    class AssignInZipLoop(Module):
         def __init__(self):
             super().__init__()
             self.conv1 = ms.nn.Conv2d(3, 2, 1, weight_init="zero")
@@ -69,7 +69,7 @@ def test_zip_operation_args_type():
             self.params2 = self.conv2.trainable_params()
             self.param = Parameter(Tensor(5, ms.float32), name="param")
 
-        def construct(self, x):
+        def call(self, x):
             for p1, p2 in zip(self.params1, self.params2, self.param):
                 P.Assign()(p2, p1 + x)
 

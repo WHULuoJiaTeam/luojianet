@@ -27,23 +27,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -59,13 +59,13 @@ def test_matmul_sub():
     Description: matmul-sub net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.sub = P.Sub().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.sub(out, b)
             return out
@@ -88,13 +88,13 @@ def test_matmul_add():
     Description: matmul-add net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.add = P.Add().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.add(out, b)
             return out
@@ -117,13 +117,13 @@ def test_matmul_mul():
     Description: matmul-mul net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.mul = P.Mul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -145,13 +145,13 @@ def test_matmul_mod():
     Description: matmul-mod net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.mod = P.Mod().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mod(out, b)
             return out
@@ -173,13 +173,13 @@ def test_matmul_floormod():
     Description: matmul-floormod net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.floormod = P.FloorMod().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floormod(out, b)
             return out
@@ -202,13 +202,13 @@ def test_matmul_atan2():
     Description: matmul-atan2 net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.atan2 = P.Atan2().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.atan2(out, b)
             return out
@@ -231,13 +231,13 @@ def test_matmul_divNoNan():
     Description: matmul-divNoNan net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.divNoNan = P.DivNoNan().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.divNoNan(out, b)
             return out
@@ -260,7 +260,7 @@ def test_matmul_logicaland():
     Description: matmul-logical_and net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
@@ -268,7 +268,7 @@ def test_matmul_logicaland():
             self.notequal = P.NotEqual().shard(strategy2)
             self.logical = P.LogicalAnd().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out1 = self.equal(out, b)
             out = self.matmul(x, y)
@@ -294,7 +294,7 @@ def test_matmul_logicalor():
     Description: matmul-logical_or net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
@@ -302,7 +302,7 @@ def test_matmul_logicalor():
             self.notequal = P.NotEqual().shard(strategy2)
             self.logical = P.LogicalOr().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out1 = self.equal(out, b)
             out = self.matmul(x, y)
@@ -328,13 +328,13 @@ def test_matmul_div():
     Description: matmul-div net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.div = P.Div().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.div(out, b)
             return out
@@ -357,13 +357,13 @@ def test_matmul_add_broadcast():
     Description: matmul-add broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.add = P.Add().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.add(out, b)
             return out
@@ -386,13 +386,13 @@ def test_matmul_add_broadcast2():
     Description: matmul-add broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.add = P.Add().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.add(out, b)
             return out
@@ -415,13 +415,13 @@ def test_matmul_sub_broadcast():
     Description: matmul-sub broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.sub = P.Sub().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.sub(out, b)
             return out
@@ -444,13 +444,13 @@ def test_matmul_sub_broadcast2():
     Description: matmul-sub broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.sub = P.Sub().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.sub(out, b)
             return out
@@ -473,13 +473,13 @@ def test_matmul_mul_broadcast():
     Description: matmul-mul broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.mul = P.Mul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -502,13 +502,13 @@ def test_matmul_mul_broadcast2():
     Description: matmul-mul broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.mul = P.Mul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -531,13 +531,13 @@ def test_matmul_div_broadcast():
     Description: matmul-div broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.div = P.Div().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.div(out, b)
             return out
@@ -560,13 +560,13 @@ def test_matmul_div_broadcast2():
     Description: matmul-div broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.div = P.Div().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.div(out, b)
             return out
@@ -589,13 +589,13 @@ def test_matmul_greater_broadcast():
     Description: matmul-greater broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.greater = P.Greater().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.greater(out, b)
             return out
@@ -618,13 +618,13 @@ def test_matmul_greater_broadcast2():
     Description: matmul-greater broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.greater = P.Greater().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.greater(out, b)
             return out
@@ -647,13 +647,13 @@ def test_matmul_floordiv():
     Description: matmul-floordiv net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.floordiv = P.FloorDiv().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floordiv(out, b)
             return out
@@ -676,13 +676,13 @@ def test_matmul_floordiv_broadcast():
     Description: matmul-floordiv broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.floordiv = P.FloorDiv().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floordiv(out, b)
             return out
@@ -705,13 +705,13 @@ def test_matmul_floordiv_broadcast2():
     Description: matmul-floordiv broadcast net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.floordiv = P.FloorDiv().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floordiv(out, b)
             return out
@@ -734,7 +734,7 @@ def test_assign_sub():
     Description: mul-assign_sub net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.assign_sub = P.AssignSub()
@@ -746,27 +746,27 @@ def test_assign_sub():
                                                              1.1, dtype=np.float32)),
                                               name="assignsub_weight")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.mul(x, self.mul_weight)
             out = self.assign_sub(self.assignsub_weight, out)
             return out
 
-    class SubNetWithLoss(nn.Cell):
+    class SubNetWithLoss(nn.Module):
         def __init__(self, network):
             super(SubNetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x):
+        def call(self, x):
             predict = self.network(x,)
             return self.loss(predict)
 
-    class SubGradWrap(nn.Cell):
+    class SubGradWrap(nn.Module):
         def __init__(self, network):
             super(SubGradWrap, self).__init__()
             self.network = network
 
-        def construct(self, x):
+        def call(self, x):
             return grad_all(self.network)(x)
 
     def compile_sub_net(net, x):
@@ -787,7 +787,7 @@ def test_assign_add():
     Description: mul-assign_add net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.assign_sub = P.AssignAdd()
@@ -799,27 +799,27 @@ def test_assign_add():
                                                              1.1, dtype=np.float32)),
                                               name="assignsub_weight")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.mul(x, self.mul_weight)
             out = self.assign_sub(self.assignsub_weight, out)
             return out
 
-    class SubNetWithLoss(nn.Cell):
+    class SubNetWithLoss(nn.Module):
         def __init__(self, network):
             super(SubNetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x):
+        def call(self, x):
             predict = self.network(x,)
             return self.loss(predict)
 
-    class SubGradWrap(nn.Cell):
+    class SubGradWrap(nn.Module):
         def __init__(self, network):
             super(SubGradWrap, self).__init__()
             self.network = network
 
-        def construct(self, x):
+        def call(self, x):
             return grad_all(self.network)(x)
 
     def compile_sub_net(net, x):
@@ -840,7 +840,7 @@ def test_assign():
     Description: mul-assign_sub net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.assign_sub = P.Assign()
@@ -852,27 +852,27 @@ def test_assign():
                                                              1.1, dtype=np.float32)),
                                               name="assignsub_weight")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.mul(x, self.mul_weight)
             out = self.assign_sub(self.assignsub_weight, out)
             return out
 
-    class SubNetWithLoss(nn.Cell):
+    class SubNetWithLoss(nn.Module):
         def __init__(self, network):
             super(SubNetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x):
+        def call(self, x):
             predict = self.network(x,)
             return self.loss(predict)
 
-    class SubGradWrap(nn.Cell):
+    class SubGradWrap(nn.Module):
         def __init__(self, network):
             super(SubGradWrap, self).__init__()
             self.network = network
 
-        def construct(self, x):
+        def call(self, x):
             return grad_all(self.network)(x)
 
     def compile_sub_net(net, x):

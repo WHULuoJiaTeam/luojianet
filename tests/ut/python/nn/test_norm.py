@@ -22,12 +22,12 @@ from luojianet_ms.common.api import _cell_graph_executor
 from ..ut_filter import non_graph_engine
 
 
-class NormNet(nn.Cell):
+class NormNet(nn.Module):
     def __init__(self):
         super(NormNet, self).__init__()
         self.norm = nn.Norm()
 
-    def construct(self, x):
+    def call(self, x):
         return self.norm(x)
 
 

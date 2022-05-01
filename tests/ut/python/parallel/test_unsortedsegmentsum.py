@@ -32,33 +32,33 @@ context.set_context(mode=context.GRAPH_MODE)
 grad_all = C.GradOperation(get_all=True)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy1, strategy2, num_segments):
         super(Net, self).__init__()
         self.merge_op = P.UnsortedSegmentSum().shard((strategy1, strategy2))
         self.num_segments = num_segments
 
-    def construct(self, vectors, segment_ids):
+    def call(self, vectors, segment_ids):
         predict = self.merge_op(vectors, segment_ids, self.num_segments)
         return predict
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def call(self, x, y):
         return grad_all(self.network)(x, y)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.network = network
         self.loss = VirtualLoss()
 
-    def construct(self, x, y):
+    def call(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 

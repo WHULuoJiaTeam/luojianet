@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 
-"""Component that construct function that return gradients wrt inputs."""
+"""Component that call function that return gradients wrt inputs."""
 
 from luojianet_ms.ops.composite import GradOperation
 from ...components.icomponent import IBuilderComponent

@@ -26,12 +26,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class SearchSortedNet(nn.Cell):
+class SearchSortedNet(nn.Module):
     def __init__(self, out_int32=False, right=False):
         super(SearchSortedNet, self).__init__()
         self.searchsorted = P.SearchSorted(out_int32=out_int32, right=right)
 
-    def construct(self, sequence, values):
+    def call(self, sequence, values):
         return self.searchsorted(sequence, values)
 
 @pytest.mark.level0

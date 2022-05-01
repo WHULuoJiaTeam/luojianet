@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class ReduceMin(nn.Cell):
+class ReduceMin(nn.Module):
     def __init__(self, keep_dims):
         super(ReduceMin, self).__init__()
         self.reduce_min = P.ReduceMin(keep_dims)
 
-    def construct(self, x, axis):
+    def call(self, x, axis):
         return self.reduce_min(x, axis)
 
 

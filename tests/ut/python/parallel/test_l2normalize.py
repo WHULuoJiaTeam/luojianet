@@ -28,29 +28,29 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
 # model_parallel test
 def test_l2normalize_matmul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.norm1 = P.L2Normalize(axis=0).shard(strategy1)
@@ -58,7 +58,7 @@ def test_l2normalize_matmul():
             self.mul1 = P.Mul().shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             y = self.norm1(y)
             x = self.norm2(x)
             out = self.mul1(x, y)

@@ -56,28 +56,28 @@ class Dataset(MindData):
         self.index = 0
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
 def test_auto_parallel_arithmetic():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
@@ -86,7 +86,7 @@ def test_auto_parallel_arithmetic():
             self.off_value = Tensor(0.0, ms.float32)
             self.matmul2 = P.MatMul()
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out1 = self.one_hot(b, 64, self.on_value, self.off_value)
             out2 = self.matmul2(out, out1)
@@ -105,7 +105,7 @@ def test_auto_parallel_arithmetic():
 
 
 def test_auto_parallel_arithmetic_model():
-    class NetOneHot(nn.Cell):
+    class NetOneHot(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
@@ -115,7 +115,7 @@ def test_auto_parallel_arithmetic_model():
             self.matmul2 = P.MatMul()
             self.w = Parameter(Tensor(np.zeros([32, 64]).astype(np.float32)), "weight", requires_grad=True)
 
-        def construct(self, x, b):
+        def call(self, x, b):
             out = self.matmul(x, self.w)
             out1 = self.one_hot(b, 64, self.on_value, self.off_value)
             out2 = self.matmul2(out, out1)

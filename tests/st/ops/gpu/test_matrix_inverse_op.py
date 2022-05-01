@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 
 np.random.seed(1)
 
-class NetMatrixInverse(nn.Cell):
+class NetMatrixInverse(nn.Module):
     def __init__(self):
         super(NetMatrixInverse, self).__init__()
         self.matrix_inverse = P.MatrixInverse()
 
-    def construct(self, x):
+    def call(self, x):
         return self.matrix_inverse(x)
 
 

@@ -26,7 +26,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.initializer import initializer
 
 
-class NetConv2d(nn.Cell):
+class NetConv2d(nn.Module):
     def __init__(self):
         super(NetConv2d, self).__init__()
         out_channel = 2
@@ -40,7 +40,7 @@ class NetConv2d(nn.Cell):
                              dilation=1,
                              group=1)
 
-    def construct(self, x, w):
+    def call(self, x, w):
         return self.conv(x, w)
 
 
@@ -67,7 +67,7 @@ def test_conv2d():
     assert (output.asnumpy() == expect).all()
 
 
-class NetConv(nn.Cell):
+class NetConv(nn.Module):
     def __init__(self, weight, x):
         super(NetConv, self).__init__()
         self.conv = nn.Conv2d(in_channels=3,
@@ -83,7 +83,7 @@ class NetConv(nn.Cell):
                               )
         self.x = Parameter(initializer(Tensor(x), [1, 3, 4, 2]), name="x")
 
-    def construct(self):
+    def call(self):
         return self.conv(self.x)
 
 
@@ -169,7 +169,7 @@ def test_conv():
     assert (loss < error).all()
 
 
-class NetConv2dDynamic(nn.Cell):
+class NetConv2dDynamic(nn.Module):
     def __init__(self, axis=0, out_nums=1):
         super(NetConv2dDynamic, self).__init__()
         self.dynshape = inner.GpuConvertToDynamicShape()
@@ -184,7 +184,7 @@ class NetConv2dDynamic(nn.Cell):
                              dilation=1,
                              group=1)
 
-    def construct(self, x, w):
+    def call(self, x, w):
         x_dyn = self.dynshape(x)
         w_dyn = self.dynshape(w)
         x_conv = self.conv(x_dyn, w_dyn)
@@ -235,7 +235,7 @@ def test_conv2d_dynamic():
     assert (output2.asnumpy() == expect2).all()
 
 
-class NetConvNHWC(nn.Cell):
+class NetConvNHWC(nn.Module):
     def __init__(self, weight, x):
         super(NetConvNHWC, self).__init__()
         self.conv = nn.Conv2d(in_channels=1,
@@ -248,7 +248,7 @@ class NetConvNHWC(nn.Cell):
                               )
         self.x = Parameter(initializer(Tensor(x), [1, 4, 4, 1]), name="x")
 
-    def construct(self):
+    def call(self):
         return self.conv(self.x)
 
 

@@ -22,8 +22,8 @@ from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.train.serialization import export, load
 
 
-class SingleWhileNet(nn.Cell):
-    def construct(self, x, y):
+class SingleWhileNet(nn.Module):
+    def call(self, x, y):
         x += 1
         while x < y:
             x += 1
@@ -80,8 +80,8 @@ def test_ms_function_while():
     assert origin_out == outputs_after_load
 
 
-class SingleWhileInlineNet(nn.Cell):
-    def construct(self, x, y):
+class SingleWhileInlineNet(nn.Module):
+    def call(self, x, y):
         x += 1
         while x < y:
             x += 1

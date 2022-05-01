@@ -29,7 +29,7 @@ class WeightedLoss(LossBase):
         self.abs = P.Abs()
         self.weights = weights
 
-    def construct(self, base, target):
+    def call(self, base, target):
         x = self.abs(base - target)
         return self.get_loss(x, self.weights)
 
@@ -78,7 +78,7 @@ class CustomLoss(LossBase):
         super(CustomLoss, self).__init__(reduction)
         self.abs = P.Abs()
 
-    def construct(self, base, target):
+    def call(self, base, target):
         x = self.abs(base - target)
         return self.get_loss(x, weights=2.0)
 

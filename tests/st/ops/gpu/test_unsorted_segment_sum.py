@@ -25,13 +25,13 @@ from luojianet_ms.ops.operations import _inner_ops as inner
 from luojianet_ms.ops import operations as P
 
 
-class UnsortedSegmentSumNet(nn.Cell):
+class UnsortedSegmentSumNet(nn.Module):
     def __init__(self, num_segments):
         super(UnsortedSegmentSumNet, self).__init__()
         self.unsorted_segment_sum = P.UnsortedSegmentSum()
         self.num_segments = num_segments
 
-    def construct(self, data, ids):
+    def call(self, data, ids):
         return self.unsorted_segment_sum(data, ids, self.num_segments)
 
 
@@ -110,7 +110,7 @@ def test_3D():
 
 
 # Testing Dynamic Shape
-class UnsortedSegmentSumDynNet(nn.Cell):
+class UnsortedSegmentSumDynNet(nn.Module):
     def __init__(self, num_segments, dyn_a=True, dyn_b=True):
         super(UnsortedSegmentSumDynNet, self).__init__()
         self.unsorted_segment_sum = P.UnsortedSegmentSum()
@@ -118,7 +118,7 @@ class UnsortedSegmentSumDynNet(nn.Cell):
         self.num_segments = num_segments
         self.to_dyn_1 = dyn_a
         self.to_dyn_2 = dyn_b
-    def construct(self, data, ids):
+    def call(self, data, ids):
         # testing selective inputs being dynamic
         if self.to_dyn_1:
             data = self.gpu_convert_to_dynamic_shape(data)

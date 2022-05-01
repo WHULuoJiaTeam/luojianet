@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class TensorPrint(nn.Cell):
+class TensorPrint(nn.Module):
     def __init__(self):
         super().__init__()
         self.print = P.Print()
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         self.print(*inputs)
         return inputs[0]
 

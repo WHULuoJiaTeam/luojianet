@@ -23,13 +23,13 @@ from luojianet_ms.common.api import ms_function
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.AddN()
 
     @ms_function
-    def construct(self, x, y, z):
+    def call(self, x, y, z):
         return self.add((x, y, z))
 
 

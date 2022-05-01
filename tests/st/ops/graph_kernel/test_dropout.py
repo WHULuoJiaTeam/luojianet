@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, keep_prob):
         super(Net, self).__init__()
         self.drop = P.Dropout(keep_prob)
 
-    def construct(self, x_):
+    def call(self, x_):
         return self.drop(x_)
 
 

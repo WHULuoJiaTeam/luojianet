@@ -46,7 +46,7 @@ def conv1x1(in_channels, out_channels, stride=1, padding=0):
                      padding=padding, weight_init=weight)
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     """
     residual Block
     """
@@ -78,7 +78,7 @@ class ResidualBlock(nn.Cell):
             self.bn_down_sample = nn.BatchNorm2d(out_channels)
         self.add = P.Add()
 
-    def construct(self, x):
+    def call(self, x):
         identity = x
 
         out = self.conv1(x)
@@ -102,7 +102,7 @@ class ResidualBlock(nn.Cell):
         return out
 
 
-class ResNet(nn.Cell):
+class ResNet(nn.Module):
     """ ResNet definition """
 
     def __init__(self, tensor):
@@ -111,13 +111,13 @@ class ResNet(nn.Cell):
         self.bn1 = nn.BatchNorm2d(64)
         self.weight = Parameter(tensor, name='w')
 
-    def construct(self, x):
+    def call(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         return x
 
 
-class LeNet(nn.Cell):
+class LeNet(nn.Module):
     """ LeNet definition """
 
     def __init__(self):
@@ -136,7 +136,7 @@ class LeNet(nn.Cell):
         self.fc2 = nn.Dense(120, 84, weight_init=fcweight2)
         self.fc3 = nn.Dense(84, 10, weight_init=fcweight3)
 
-    def construct(self, input_x):
+    def call(self, input_x):
         output = self.conv1(input_x)
         output = self.relu(output)
         output = self.pool(output)
@@ -158,12 +158,12 @@ def optimizer(x):
     return x
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self, dim):
         super(Net, self).__init__()
         self.softmax = nn.Softmax(dim)
 
-    def construct(self, input_x):
+    def call(self, input_x):
         return self.softmax(input_x)

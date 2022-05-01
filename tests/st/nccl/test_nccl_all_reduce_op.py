@@ -31,7 +31,7 @@ size = get_group_size()
 x = np.ones([3, 1, 3, 3]).astype(np.float32) * 0.01 * (rank + 1)
 y = np.ones([3, 4, 6, 3]).astype(np.float32) * 0.01 * (rank + 1)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.x1 = Parameter(initializer(Tensor(x), x.shape), name='x1')
@@ -46,7 +46,7 @@ class Net(nn.Cell):
         self.all_reduce2 = P.AllReduce(self.op1, group=NCCL_WORLD_COMM_GROUP)
         self.all_reduce3 = P.AllReduce(self.op2, group=NCCL_WORLD_COMM_GROUP)
 
-    def construct(self):
+    def call(self):
         return (self.all_reduce1(self.x1),
                 self.all_reduce2(self.x2),
                 self.all_reduce3(self.x3))
@@ -78,7 +78,7 @@ def test_AllReduce():
     assert output[2].shape == expect2.shape
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self):
         super(Net2, self).__init__()
         self.x1 = Parameter(initializer(Tensor(x), x.shape), name='x1')
@@ -91,7 +91,7 @@ class Net2(nn.Cell):
         self.all_reduce2 = P.AllReduce(self.op1, group=NCCL_WORLD_COMM_GROUP)
         self.all_reduce3 = P.AllReduce(self.op2, group=NCCL_WORLD_COMM_GROUP)
 
-    def construct(self):
+    def call(self):
         x_ = self.all_reduce1(self.x1)
         y_ = self.all_reduce2(x_)
         z_ = self.all_reduce3(y_)
@@ -124,14 +124,14 @@ def test_AllReduce2():
     assert output[2].shape == expect2.shape
 
 
-class DynamicAllReduceNet(nn.Cell):
+class DynamicAllReduceNet(nn.Module):
     def __init__(self):
         super(DynamicAllReduceNet, self).__init__()
         self.op = "sum"
         self.all_reduce = P.AllReduce(self.op, group=NCCL_WORLD_COMM_GROUP)
         self.d = inner.GpuConvertToDynamicShape()
 
-    def construct(self, input_x):
+    def call(self, input_x):
         out = self.d(input_x)
         out = self.all_reduce(out)
         return out

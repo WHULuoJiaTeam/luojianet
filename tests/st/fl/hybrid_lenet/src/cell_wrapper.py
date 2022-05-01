@@ -21,23 +21,23 @@ from luojianet_ms.common.parameter import ParameterTuple
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.wrap.grad_reducer import DistributedGradReducer
 
-class TrainOneStepCellWithServerCommunicator(Cell):
+class TrainOneStepCellWithServerCommunicator(Module):
     r"""
     Network training package class.
 
     Wraps the network with an optimizer and communicator operators.
-    The resulting Cell is trained with input '\*inputs'.
-    The backward graph will be created in the construct function to update the parameter. Different
+    The resulting Module is trained with input '\*inputs'.
+    The backward graph will be created in the call function to update the parameter. Different
     parallel modes are available for training.
 
     This cell is used for hybrid training mode for now.
 
     Args:
-        network (Cell): The training network. The network only supports single output.
-        optimizer (Cell): Optimizer for updating the weights.
+        network (Module): The training network. The network only supports single output.
+        optimizer (Module): Optimizer for updating the weights.
         sens (Number): The scaling number to be filled as the input of backpropagation. Default value is 1.0.
 
     Inputs:
@@ -58,13 +58,13 @@ class TrainOneStepCellWithServerCommunicator(Cell):
         >>> train_net = nn.TrainOneStepCell(loss_net, optim)
         >>>
         >>> #2) Using user-defined WithLossCell
-        >>> class MyWithLossCell(Cell):
+        >>> class MyWithLossCell(Module):
         ...    def __init__(self, backbone, loss_fn):
         ...        super(MyWithLossCell, self).__init__(auto_prefix=False)
         ...        self._backbone = backbone
         ...        self._loss_fn = loss_fn
         ...
-        ...    def construct(self, x, y, label):
+        ...    def call(self, x, y, label):
         ...        out = self._backbone(x, y)
         ...        return self._loss_fn(out, label)
         ...
@@ -148,7 +148,7 @@ class TrainOneStepCellWithServerCommunicator(Cell):
 
         return ParameterTuple(filtered_weights), tuple(weight_names), tuple(weight_indices)
 
-    def construct(self, *inputs):
+    def call(self, *inputs):
         weights = self.weights
         res = self._pull_from_server(self.pull_weights,
                                      self.pull_weight_names, self.pull_weight_indices)

@@ -52,8 +52,8 @@ def test_np_print_2():
     Description: Support print.
     Expectation: No exception.
     """
-    class PrintNet(nn.Cell):
-        def construct(self):
+    class PrintNet(nn.Module):
+        def call(self):
             x = np.array([1, 2, 3, 4, 5])
             print("x: ", x)
             return Tensor(x)
@@ -93,8 +93,8 @@ def test_tensor_print_2():
     Description: Support print.
     Expectation: No exception.
     """
-    class PrintNet(nn.Cell):
-        def construct(self):
+    class PrintNet(nn.Module):
+        def call(self):
             x = np.array([1, 2, 3, 4, 5])
             print("Tensor(x): ", Tensor(x))
             return Tensor(x)

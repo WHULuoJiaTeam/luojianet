@@ -24,21 +24,21 @@ from luojianet_ms.ops.operations import _grad_ops as G
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
-class NetSqrtGrad(nn.Cell):
+class NetSqrtGrad(nn.Module):
     def __init__(self):
         super(NetSqrtGrad, self).__init__()
         self.sqrt_grad = G.SqrtGrad()
 
-    def construct(self, x, dx):
+    def call(self, x, dx):
         return self.sqrt_grad(x, dx)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.ops = P.Sqrt()
 
-    def construct(self, x):
+    def call(self, x):
         return self.ops(x)
 
 @pytest.mark.level0

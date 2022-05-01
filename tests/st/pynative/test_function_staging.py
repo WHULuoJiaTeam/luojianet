@@ -18,7 +18,7 @@ import pytest
 import numpy as np
 from luojianet_ms import context
 from luojianet_ms.nn import ReLU
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.common.api import ms_function
 
@@ -30,19 +30,19 @@ def setup_module():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_pynative_staging_together():
-    class NetPynative(Cell):
+    class NetPynative(Module):
         def __init__(self):
             super().__init__()
             self.relu = ReLU()
-        def construct(self, x):
+        def call(self, x):
             return self.relu(x)
 
-    class NetStaging(Cell):
+    class NetStaging(Module):
         def __init__(self):
             super().__init__()
             self.relu = ReLU()
         @ms_function
-        def construct(self, x):
+        def call(self, x):
             return self.relu(x)
 
     input1 = np.random.randn(2, 2).astype(np.float32)

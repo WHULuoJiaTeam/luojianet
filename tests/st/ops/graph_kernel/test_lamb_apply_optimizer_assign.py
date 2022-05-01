@@ -23,14 +23,14 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.common.parameter import Parameter
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, v, m):
         super(Net, self).__init__()
         self.lamb_apply_optimizer_assign = P.LambApplyOptimizerAssign()
         self.m = Parameter(m, name='m')
         self.v = Parameter(v, name='v')
 
-    def construct(self, grad, input_param, beta_1, one_minus_beta_1, beta_2, one_minus_beta_2, epsilon,
+    def call(self, grad, input_param, beta_1, one_minus_beta_1, beta_2, one_minus_beta_2, epsilon,
                   steps, do_use_weight, weight_decay_rate):
         return self.lamb_apply_optimizer_assign(grad, self.v, self.m, input_param, beta_1, one_minus_beta_1, beta_2,
                                                 one_minus_beta_2, epsilon, steps, do_use_weight, weight_decay_rate)

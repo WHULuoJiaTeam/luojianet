@@ -22,13 +22,13 @@ from luojianet_ms.ops import operations as P
 import luojianet_ms.nn as nn
 import luojianet_ms.context as context
 
-class UniformCandidateSamplerNet(nn.Cell):
+class UniformCandidateSamplerNet(nn.Module):
     def __init__(self, num_true, num_sampled, unique, range_max):
         super(UniformCandidateSamplerNet, self).__init__()
         self.sampler = P.UniformCandidateSampler(num_true, num_sampled,
                                                  unique, range_max)
 
-    def construct(self, x):
+    def call(self, x):
         return self.sampler(x)
 
 
@@ -49,14 +49,14 @@ def uniform_candidate_sampler_int64(x, num_true, num_sampled, unique, range_max)
     return out1.shape, out2.shape, out3.shape
 
 
-class UniformCandidateSamplerHitNet(nn.Cell):
+class UniformCandidateSamplerHitNet(nn.Module):
     def __init__(self, num_true, num_sampled, unique, range_max, seed, remove_accidental_hits):
         super(UniformCandidateSamplerHitNet, self).__init__()
         self.sampler = P.UniformCandidateSampler(num_true, num_sampled, unique,
                                                  range_max, seed=seed,
                                                  remove_accidental_hits=remove_accidental_hits)
 
-    def construct(self, x):
+    def call(self, x):
         return self.sampler(x)
 
 

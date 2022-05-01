@@ -42,7 +42,7 @@ def test_neighborexchangev2_single_input_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.linear = nn.Dense(16, 16)
@@ -51,7 +51,7 @@ def test_neighborexchangev2_single_input_success():
                                                          recv_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
                                                          recv_lens=[0, 1, 0, 0], data_format="NCHW")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             y = self.linear(x1)
             y = self.neighborexchangev2(y)
             y = y + x2
@@ -68,7 +68,7 @@ def test_neighborexchangev2_send_lens_equal_to_input_shape_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.linear = nn.Dense(16, 16)
@@ -77,7 +77,7 @@ def test_neighborexchangev2_send_lens_equal_to_input_shape_success():
                                                          recv_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
                                                          recv_lens=[0, 1, 0, 0], data_format="NCHW")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             y = self.linear(x1)
             y = self.neighborexchangev2(y)
             y = y + x2
@@ -94,7 +94,7 @@ def test_neighborexchangev2_empty_send_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.linear = nn.Dense(16, 16)
@@ -104,7 +104,7 @@ def test_neighborexchangev2_empty_send_success():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             y = self.linear(x1)
             y = self.neighborexchangev2(y)
             y = y + x2
@@ -122,7 +122,7 @@ def test_neighborexchangev2_empty_recv_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.linear = nn.Dense(16, 16)
@@ -132,7 +132,7 @@ def test_neighborexchangev2_empty_recv_success():
                                                          recv_lens=[1, 2, 3, 4],
                                                          data_format="NCHW")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             y = self.linear(x1)
             y = self.neighborexchangev2(y)
             y = y + x2
@@ -150,7 +150,7 @@ def test_neighborexchangev2_empty_send_empty_recv_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, -1, -1, -1, -1],
@@ -159,7 +159,7 @@ def test_neighborexchangev2_empty_send_empty_recv_success():
                                                          recv_lens=[1, 2, 3, 4],
                                                          data_format="NCHW")
 
-        def construct(self, x1):
+        def call(self, x1):
             y = self.neighborexchangev2(x1)
             return y
 
@@ -174,7 +174,7 @@ def test_neighborexchangev2_invalid_dataformat_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -183,7 +183,7 @@ def test_neighborexchangev2_invalid_dataformat_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NHWC")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -199,7 +199,7 @@ def test_neighborexchangev2_invalid_send_rank_ids_size_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1],
@@ -208,7 +208,7 @@ def test_neighborexchangev2_invalid_send_rank_ids_size_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -224,7 +224,7 @@ def test_neighborexchangev2_invalid_recv_rank_ids_size_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -233,7 +233,7 @@ def test_neighborexchangev2_invalid_recv_rank_ids_size_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -249,7 +249,7 @@ def test_neighborexchangev2_invalid_send_lens_size_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -258,7 +258,7 @@ def test_neighborexchangev2_invalid_send_lens_size_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -274,7 +274,7 @@ def test_neighborexchangev2_invalid_recv_lens_size_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -283,7 +283,7 @@ def test_neighborexchangev2_invalid_recv_lens_size_failed():
                                                          recv_lens=[0, 1, 0, 0, 2],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -299,7 +299,7 @@ def test_neighborexchangev2_invalid_input_size_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -308,7 +308,7 @@ def test_neighborexchangev2_invalid_input_size_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x1, x2):
+        def call(self, x1, x2):
             out = self.neighborexchangev2(x1, x2)
             return out[0]
 
@@ -324,7 +324,7 @@ def test_neighborexchangev2_recv_rank_ids_invalid_value_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -333,7 +333,7 @@ def test_neighborexchangev2_recv_rank_ids_invalid_value_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -349,7 +349,7 @@ def test_neighborexchangev2_attr_check_send_rank_ids_is_tuple_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=(-1, -1, -1, -1, 1, -1, -1, -1),
@@ -358,7 +358,7 @@ def test_neighborexchangev2_attr_check_send_rank_ids_is_tuple_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -374,7 +374,7 @@ def test_neighborexchangev2_attr_check_send_lens_is_tuple_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -383,7 +383,7 @@ def test_neighborexchangev2_attr_check_send_lens_is_tuple_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -399,7 +399,7 @@ def test_neighborexchangev2_attr_check_recv_rank_ids_is_tuple_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -408,7 +408,7 @@ def test_neighborexchangev2_attr_check_recv_rank_ids_is_tuple_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -424,7 +424,7 @@ def test_neighborexchangev2_attr_check_recv_lens_is_tuple_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -433,7 +433,7 @@ def test_neighborexchangev2_attr_check_recv_lens_is_tuple_failed():
                                                          recv_lens=(0, 1, 0, 0),
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -449,7 +449,7 @@ def test_neighborexchangev2_attr_check_send_rank_ids_is_float_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1.0, -1, -1, -1],
@@ -458,7 +458,7 @@ def test_neighborexchangev2_attr_check_send_rank_ids_is_float_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -474,7 +474,7 @@ def test_neighborexchangev2_attr_check_send_lens_is_float_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -483,7 +483,7 @@ def test_neighborexchangev2_attr_check_send_lens_is_float_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -499,7 +499,7 @@ def test_neighborexchangev2_attr_check_recv_rank_ids_is_float_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -508,7 +508,7 @@ def test_neighborexchangev2_attr_check_recv_rank_ids_is_float_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -524,7 +524,7 @@ def test_neighborexchangev2_attr_check_recv_lens_is_float_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -533,7 +533,7 @@ def test_neighborexchangev2_attr_check_recv_lens_is_float_failed():
                                                          recv_lens=[0, 1.0, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -549,7 +549,7 @@ def test_neighborexchangev2_group_is_tuple_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -558,7 +558,7 @@ def test_neighborexchangev2_group_is_tuple_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW", group=("str",))
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -574,7 +574,7 @@ def test_neighborexchangev2_send_lens_larger_than_input_shape_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -583,7 +583,7 @@ def test_neighborexchangev2_send_lens_larger_than_input_shape_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -599,7 +599,7 @@ def test_neighborexchangev2_send_rank_ids_value_invalid_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -3, 1, -1, -1, -1],
@@ -608,7 +608,7 @@ def test_neighborexchangev2_send_rank_ids_value_invalid_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -624,7 +624,7 @@ def test_neighborexchangev2_recv_rank_ids_value_invalid_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -633,7 +633,7 @@ def test_neighborexchangev2_recv_rank_ids_value_invalid_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -649,7 +649,7 @@ def test_neighborexchangev2_send_lens_value_invalid_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -658,7 +658,7 @@ def test_neighborexchangev2_send_lens_value_invalid_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -674,7 +674,7 @@ def test_neighborexchangev2_recv_lens_value_invalid_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -683,7 +683,7 @@ def test_neighborexchangev2_recv_lens_value_invalid_failed():
                                                          recv_lens=[0, -3, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -699,7 +699,7 @@ def test_neighborexchangev2_send_rank_ids_repeat_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[1, -1, -1, -1, 1, -1, -1, -1],
@@ -708,7 +708,7 @@ def test_neighborexchangev2_send_rank_ids_repeat_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 
@@ -724,7 +724,7 @@ def test_neighborexchangev2_recv_rank_ids_repeat_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.neighborexchangev2 = NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -733,7 +733,7 @@ def test_neighborexchangev2_recv_rank_ids_repeat_failed():
                                                          recv_lens=[0, 1, 0, 0],
                                                          data_format="NCHW")
 
-        def construct(self, x):
+        def call(self, x):
             out = self.neighborexchangev2(x)
             return out[0]
 

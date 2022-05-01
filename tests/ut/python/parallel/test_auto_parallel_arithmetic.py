@@ -32,23 +32,23 @@ context.set_context(mode=context.GRAPH_MODE)
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def call(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -59,13 +59,13 @@ def compile_net(net, x, y, b, phase):
 
 
 def test_auto_parallel_arithmetic():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
             self.floordiv = P.FloorDiv()
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floordiv(out, b)
             return out
@@ -88,13 +88,13 @@ def test_auto_parallel_arithmetic():
 
 
 def test_auto_parallel_arithmetic_broadcast_both():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
             self.floordiv = P.FloorDiv()
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floordiv(out, b)
             return out
@@ -117,13 +117,13 @@ def test_auto_parallel_arithmetic_broadcast_both():
 
 
 def test_auto_parallel_arithmetic_broadcast_right():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
             self.floordiv = P.FloorDiv()
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floordiv(out, b)
             return out
@@ -146,13 +146,13 @@ def test_auto_parallel_arithmetic_broadcast_right():
 
 
 def test_auto_parallel_arithmetic_broadcast_left():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
             self.floordiv = P.FloorDiv()
 
-        def construct(self, x, y, b):
+        def call(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floordiv(out, b)
             return out

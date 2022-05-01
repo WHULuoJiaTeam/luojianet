@@ -11,13 +11,13 @@ from luojianet_ms.nn.optim import Momentum
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bias_add = P.BiasAdd()
         self.bias_add1 = P.BiasAdd()
 
-    def construct(self, x, b, c):
+    def call(self, x, b, c):
         return self.bias_add1(self.bias_add(x, b), c)
 
 
@@ -34,26 +34,26 @@ def test_bias_add1():
     assert np.all(output.asnumpy() == expect_output)
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self):
         super(Net1, self).__init__()
         self.bias_add = P.BiasAdd()
         self.mul = P.Mul()
 
-    def construct(self, x, a, b):
+    def call(self, x, a, b):
         p1 = self.bias_add(x, b)
         p2 = self.bias_add(x, a)
         p3 = self.mul(p1, p2)
         return p3
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self):
         super(Net2, self).__init__()
         self.bias_add = P.BiasAdd()
         self.bias_add1 = P.BiasAdd()
 
-    def construct(self, x, b, c):
+    def call(self, x, b, c):
         return self.bias_add1(self.bias_add(x, b), c)
 
 
@@ -77,7 +77,7 @@ def test_bias_add2():
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class MomentumNet(nn.Cell):
+class MomentumNet(nn.Module):
     def __init__(self):
         super(MomentumNet, self).__init__()
         self.batch_size = 1
@@ -86,7 +86,7 @@ class MomentumNet(nn.Cell):
         weight = Tensor(np.ones([10, 16]).astype(np.float32) * 0.01)
         self.fc1 = Dense(16, 10, weight_init=weight)
 
-    def construct(self, input_x):
+    def call(self, input_x):
         output = self.reshape(input_x, (self.batch_size, -1))
         output = self.fc1(output)
         return output

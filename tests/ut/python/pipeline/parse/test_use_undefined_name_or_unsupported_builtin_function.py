@@ -25,8 +25,8 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_use_undefined_name():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             ret = x + a
             return ret
 
@@ -40,8 +40,8 @@ def test_use_undefined_name():
 
 
 def test_insert_undefined_name():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             b
             ret = x + x
             return ret
@@ -55,8 +55,8 @@ def test_insert_undefined_name():
 
 
 def test_insert_undefined_name_compute():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             c + x
             ret = x + x
             return ret
@@ -71,8 +71,8 @@ def test_insert_undefined_name_compute():
 
 
 def test_insert_undefined_name_in_if():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             if x > 0:
                 i
             ret = x + x
@@ -87,8 +87,8 @@ def test_insert_undefined_name_in_if():
 
 
 def test_insert_undefined_name_in_while_inner_if():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             while x > 0:
                 if x > 1:
                     j
@@ -105,8 +105,8 @@ def test_insert_undefined_name_in_while_inner_if():
 
 
 def test_insert_undefined_name_compute__in_while_inner_if():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             while x > 0:
                 if x > 1:
                     p + x
@@ -124,12 +124,12 @@ def test_insert_undefined_name_compute__in_while_inner_if():
 
 
 def test_insert_undefined_name_compute__in_if_in_for():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             for i in self.value:
                 if x > 1:
                     w
@@ -147,12 +147,12 @@ def test_insert_undefined_name_compute__in_if_in_for():
 
 
 def test_use_undefined_name_for_inner_if():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             for i in self.value:
                 if x > 1:
                     x = x - i + y
@@ -169,12 +169,12 @@ def test_use_undefined_name_for_inner_if():
 
 
 def test_use_undefined_name_in_for():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             for i in self.value:
                 x = x + d + i
             return x
@@ -189,12 +189,12 @@ def test_use_undefined_name_in_for():
 
 
 def test_insert_undefined_name_in_for():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             for i in self.value:
                 e
                 x = x + i
@@ -210,12 +210,12 @@ def test_insert_undefined_name_in_for():
 
 
 def test_insert_undefined_name_compute_in_for():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             for i in self.value:
                 f + i
                 x = x + i
@@ -231,8 +231,8 @@ def test_insert_undefined_name_compute_in_for():
 
 
 def test_use_undefined_name_in_while():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             while x < 0:
                 x = x - g
             return x
@@ -247,8 +247,8 @@ def test_use_undefined_name_in_while():
 
 
 def test_insert_undefined_name_in_while():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             while x < 0:
                 h
                 x = x - 1
@@ -264,8 +264,8 @@ def test_insert_undefined_name_in_while():
 
 
 def test_insert_undefined_name_compute_while():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def call(self, x):
             while x < 0:
                 x + i
                 x = x - 1
@@ -281,12 +281,12 @@ def test_insert_undefined_name_compute_while():
 
 
 def test_call_none_in_if():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             ret = 0
             if self.value:
                 ret = self.func(x)
@@ -302,12 +302,12 @@ def test_call_none_in_if():
 
 
 def test_insert_defined_var():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             x
             ret = x + x
             return ret
@@ -317,12 +317,12 @@ def test_insert_defined_var():
 
 
 def test_insert_defined_var_compute():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             x - x
             ret = x + x
             return ret
@@ -333,11 +333,11 @@ def test_insert_defined_var_compute():
 
 @pytest.mark.skip(reason='Not support in graph jit fallback feature yet')
 def test_call_unsupported_builtin_function_in_while():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x, y):
+        def call(self, x, y):
             ret = 0
             number = 5
             while number > 0:
@@ -356,12 +356,12 @@ def test_call_unsupported_builtin_function_in_while():
 
 @pytest.mark.skip(reason='Not support in graph jit fallback feature yet')
 def test_call_unsupported_builtin_function_in_if_in_for():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [11, 22, 33, 44]
 
-        def construct(self, x):
+        def call(self, x):
             for i in self.value:
                 if x > 1:
                     x = divmod(x, i)
@@ -383,13 +383,13 @@ def test_use_defined_class_obj_in_for():
         def __init__(self):
             self.number = 1
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = [1, 2, 3]
             self.test = Test()
 
-        def construct(self, x):
+        def call(self, x):
             for i in self.value:
                 x = i + self.test.number
             ret = x + x

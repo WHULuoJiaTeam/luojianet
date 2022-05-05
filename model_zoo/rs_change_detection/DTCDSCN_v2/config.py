@@ -41,6 +41,7 @@ config = ed({
     "save_checkpoint_epochs": 200, #多少次迭代保存一次模型
     "keep_checkpoint_max": 10, #保存模型的最大个数
     "decay_epochs": 20, #学习率衰减的epoch数
+    "decay":5e-5,
     "max_lr": 0.001, #最大学习率
     "min_lr": 0.00001 #最小学习率
 })

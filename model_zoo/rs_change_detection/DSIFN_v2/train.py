@@ -10,6 +10,7 @@ from luojianet_ms.train.callback import CheckpointConfig, ModelCheckpoint
 from dataset import create_Dataset
 from IFN import DSIFN
 from config import config 
+from loss import loss_fusion
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -24,13 +25,13 @@ if __name__ == '__main__':
         ckpt = load_checkpoint('**.ckpt')
         load_param_into_net(net, ckpt)
 
-    lr = nn.cosine_decay_lr(min_lr=config.min_lr,max_lr=config.max_lr,total_step=config.epoch_size,step_per_epoch=config.steps_per_epoch,decay_epoch=config.decay_epochs)
+    # lr = nn.cosine_decay_lr(min_lr=config.min_lr,max_lr=config.max_lr,total_step=config.epoch_size,step_per_epoch=config.steps_per_epoch,decay_epoch=config.decay_epochs)
 
-    optimizer = nn.Adam(params=net.trainable_params(), learning_rate=lr)
+    optimizer = nn.Adam(params=net.trainable_params(), learning_rate=config.max_lr,weight_decay=config.decay)
 
     time_cb = TimeMonitor(data_size=config.steps_per_epoch)
     loss_cb = LossMonitor(200)
-    loss = nn.BCELoss(reduction='mean')
+    loss = loss_fusion()
     model = Model(net, loss_fn=loss, optimizer=optimizer, metrics={'acc'})
 
     config_ck = CheckpointConfig(save_checkpoint_steps=config.save_checkpoint_epochs,

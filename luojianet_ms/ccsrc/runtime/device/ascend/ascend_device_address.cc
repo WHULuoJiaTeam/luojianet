@@ -280,7 +280,7 @@ std::vector<size_t> AscendDeviceAddress::GetDeviceShape(std::vector<size_t> *hos
   if (format_ == kOpFormat_FRAC_NZ || format_ == kOpFormat_NCDHW) {
     device_shape = trans::TransShapeToDevice(*host_shape, format_, node_index.first, node_index.second);
   } else {
-    if (host_shape_.empty()) {
+    if (host_shape_.empty() || host_shape_.size() < 4) {
       *host_shape = trans::PaddingShape(*host_shape, format_);
     } else {
       host_shape->clear();

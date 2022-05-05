@@ -25,8 +25,6 @@ if __name__ == '__main__':
         ckpt = load_checkpoint('**.ckpt')
         load_param_into_net(net, ckpt)
 
-    # lr = nn.cosine_decay_lr(min_lr=config.min_lr,max_lr=config.max_lr,total_step=config.epoch_size,step_per_epoch=config.steps_per_epoch,decay_epoch=config.decay_epochs)
-
     optimizer = nn.Adam(params=net.trainable_params(), learning_rate=config.max_lr,weight_decay=config.decay)
 
     time_cb = TimeMonitor(data_size=config.steps_per_epoch)

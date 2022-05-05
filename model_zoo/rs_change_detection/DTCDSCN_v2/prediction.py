@@ -62,7 +62,7 @@ def pred_single(model_path,left_path,right_path,result_path):
     images = [image1,image2]  
     output = model(images)[2].asnumpy()
     output = np.array(output.squeeze())
-    output = ((output > 0.4985)*255).astype('uint8')
+    output = ((output > 0.484)*255).astype('uint8')
     output = Image.fromarray(output)
     output.save(os.path.join(result_path, 'CD_'+img_left+'_'+img_right+'.tif'))
     print('saved'+' CD_'+img_left+'_'+img_right+'.tif')

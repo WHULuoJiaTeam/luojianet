@@ -23,7 +23,7 @@ Wuhan University:
 - Du Zhuotong
 - Teng Haotian
 
-Huawei echnologies Co., Ltd:
+Huawei technologies Co., Ltd:
 - Tian Kunyang
 - Ying Jiangyong
 - Zhang Guowen

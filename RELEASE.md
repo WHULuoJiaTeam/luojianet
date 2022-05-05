@@ -24,7 +24,6 @@ Wuhan University:
 - Teng Haotian
 
 Huawei technologies Co., Ltd:
-- Tian Kunyang
 - Ying Jiangyong
 - Zhang Guowen
 - Liu Zhujun

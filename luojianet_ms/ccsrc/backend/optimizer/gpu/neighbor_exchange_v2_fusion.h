@@ -1,4 +1,5 @@
 /**
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
  * Copyright 2021 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,18 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_CCSRC_BACKEND_OPTIMIZER_NEIGHBOR_EXCHANGE_V2_FUSION_H_
-#define MINDSPORE_CCSRC_BACKEND_OPTIMIZER_NEIGHBOR_EXCHANGE_V2_FUSION_H_
+#ifndef LUOJIANET_MS_CCSRC_BACKEND_OPTIMIZER_NEIGHBOR_EXCHANGE_V2_FUSION_H_
+#define LUOJIANET_MS_CCSRC_BACKEND_OPTIMIZER_NEIGHBOR_EXCHANGE_V2_FUSION_H_
 
 #include <memory>
 #include <vector>
 #include "backend/optimizer/common/optimizer.h"
 #include "backend/session/anf_runtime_algorithm.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 struct SplitvNodeInfo {
   bool is_first = false;
+  bool is_last = false;
   bool is_last = false;
   int64_t split_dim = 0;
   int64_t num_split = 0;
@@ -88,5 +90,5 @@ class NeighborExchangeV2GradFusion : public PatternProcessPass {
                                 const std::vector<int64_t> &split_num) const;
 };
 }  // namespace opt
-}  // namespace mindspore
-#endif  // MINDSPORE_CCSRC_BACKEND_OPTIMIZER_NEIGHBOR_EXCHANGE_V2_FUSION_H_
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_CCSRC_BACKEND_OPTIMIZER_NEIGHBOR_EXCHANGE_V2_FUSION_H_

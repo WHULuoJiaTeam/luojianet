@@ -1,4 +1,5 @@
 /**
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
  * Copyright 2021 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +28,7 @@
 #include "backend/optimizer/common/helper.h"
 #include "backend/kernel_compiler/gpu/nccl/nccl_gpu_kernel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 namespace {
 constexpr size_t kCNodePrimitiveIdx = 0;
@@ -965,4 +966,4 @@ const AnfNodePtr NeighborExchangeV2GradFusion::Process(const FuncGraphPtr &graph
   return add;
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

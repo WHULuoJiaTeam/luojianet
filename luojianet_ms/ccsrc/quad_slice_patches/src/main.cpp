@@ -124,7 +124,7 @@ py::list get_objects(int device_num, int rank_id,
 	Object object;
 
 	// Get init information of big_input.
-	int init_cols, init_rows, init_bands = 0;
+	int init_cols = 0, init_rows = 0, init_bands = 0;
 	get_init_cols_rows(image_path, &init_cols, &init_rows, &init_bands);
 
 	// 1. Sequentially store cord of all-class related data blocks.

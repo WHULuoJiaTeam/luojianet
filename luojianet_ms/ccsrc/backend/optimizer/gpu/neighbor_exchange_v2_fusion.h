@@ -27,7 +27,6 @@ namespace opt {
 struct SplitvNodeInfo {
   bool is_first = false;
   bool is_last = false;
-  bool is_last = false;
   int64_t split_dim = 0;
   int64_t num_split = 0;
   TypeId dtype = kTypeUnknown;

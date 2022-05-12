@@ -150,7 +150,7 @@ def train_model():
             rank = get_rank()
             device_num = get_group_size()
             context.set_auto_parallel_context(device_num=device_num, parallel_mode=ParallelMode.DATA_PARALLEL,
-                                              gradients_mean=True)
+                                              gradients_mean=True, parameter_broadcast=True)
     else:
         rank = 0
         device_num = 1

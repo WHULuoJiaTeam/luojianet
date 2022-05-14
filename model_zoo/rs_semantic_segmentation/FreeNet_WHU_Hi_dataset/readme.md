@@ -24,9 +24,9 @@ http://rsidea.whu.edu.cn/resource_WHUHi_sharing.htm
               |    |──Test50.mat
               |    |──Train100.mat
               |    └─ ...
-              └──WHU_Hi_HanChuan_gt.mat
+              └──WHU_Hi_XXX_gt.mat
               |
-              |__WHU-Hi_HanChuan.mat
+              |__WHU-Hi_XXX.mat
      
 2.根据需求修改config中的参数
 

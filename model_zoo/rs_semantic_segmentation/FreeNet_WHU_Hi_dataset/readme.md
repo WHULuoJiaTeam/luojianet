@@ -8,7 +8,7 @@
 
 链接：https://ieeexplore.ieee.org/document/9007624/references#references
 
-![](readme.assets/DeepLabv3.jpg)
+![](readme.assets/freenet.png)
 
 
 
@@ -24,9 +24,9 @@ http://rsidea.whu.edu.cn/resource_WHUHi_sharing.htm
               |    |──Test50.mat
               |    |──Train100.mat
               |    └─ ...
-              └────WHU_Hi_HanChuan_gt.mat
+              └──WHU_Hi_HanChuan_gt.mat
               |
-              |____WHU-Hi_HanChuan.mat
+              |__WHU-Hi_HanChuan.mat
      
 2.根据需求修改config中的参数
 
@@ -90,7 +90,7 @@ config = dict(
 -t --device_target为设备类型，包括CPU、GPU、Ascend
 ```
 
-5.利用预训练好的模型对单张影像进行预测，选择合适的模型，使用predict.py进行预测，在cmd下运行`python predict.py -i XXX -o XXX -c1 XXX -c2 XXX -t XXX`进行预测，输出该影像对应地物分类的类别,也可运行`python test.py --input_file ./input_image/xxxxxx.mat --output_pth ./output.tif --checkpoint_path ./xxx/xx/xxx.ckpt –classes_file xxx.txt --device_target xxx`进行预测
+5.利用预训练好的模型对单张影像进行预测，选择合适的模型，使用prediction.py进行预测，在cmd下运行`python prediction.py -i XXX -o XXX -c1 XXX -c2 XXX -t XXX`进行预测，输出该影像对应地物分类的类别,也可运行`python prediction.py --input_file ./input_image/xxxxxx.mat --output_pth ./output.tif --checkpoint_path ./xxx/xx/xxx.ckpt –classes_file xxx.txt --device_target xxx`进行预测
 
 ```
 -i --input_file 为输入的单张影像路径

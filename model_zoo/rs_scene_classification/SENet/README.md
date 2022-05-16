@@ -3,6 +3,11 @@
 链接：[https://arxiv.org/abs/1709.01507v4](https://arxiv.org/abs/1709.01507v4)
 ![SE Block](image.png)
 &emsp;
+
+>训练后模型下载：
+>- [resnet50-se](https://whu.obs.cn-central-221.ovaijisuan.com/trained_model/resnet50-se.ckpt)
+>- [resnet101-se](https://whu.obs.cn-central-221.ovaijisuan.com/trained_model/resnet101-se.ckpt)
+
 1. 下载常用的遥感分类影像数据集，如WHU-RS19、UCMD以及NWPU DataSet等
 2. 将数据集整理成如下格式：
 ```

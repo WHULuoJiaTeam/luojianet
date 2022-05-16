@@ -148,7 +148,7 @@ def maskrcnn_inference(ckpt_path):
                 flt_mask = get_seg_masks_inference(all_mask_fb_tmp_mask, all_bboxes_tmp_mask, all_labels_tmp_mask, img_metas[0],
                                              True, config.num_classes)
                 for id in range(len(cls_names) - 1):
-                    if all_labels_tmp_mask.shape[id] != 0:
+                    if len(flt_bbox[id]) != 0:
                         for bbox, amask in zip(flt_bbox[id], flt_mask[id]):
                             if bbox[4] < 0.7:
                                 continue

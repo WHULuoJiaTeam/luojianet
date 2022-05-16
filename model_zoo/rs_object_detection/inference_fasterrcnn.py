@@ -144,7 +144,7 @@ def fasterrcnn_inference(ckpt_path):
 
                 flt_bbox = bbox2result_1image(all_bboxes_tmp_mask, all_labels_tmp_mask, config.num_classes)
                 for id in range(len(cls_names) - 1):
-                    if all_labels_tmp_mask.shape[id] != 0:
+                    if len(flt_bbox[id]) != 0:
                         for bbox in flt_bbox[id]:
                             if bbox[4] < 0.7:
                                 continue

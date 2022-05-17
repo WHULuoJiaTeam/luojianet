@@ -7,8 +7,9 @@
 论文：《FPGA: Fast Patch-Free Global Learning Framework for Fully End-to-End Hyperspectral Image Classification》 
 
 链接：https://ieeexplore.ieee.org/document/9007624/references#references
-
 ![](readme.assets/freenet.png)
+
+
 2 S3ANet
 论文：《S3
 ANet: Spectral-spatial-scale attention network for end-to-end precise crop classification based on UAV-borne H2 imagery》

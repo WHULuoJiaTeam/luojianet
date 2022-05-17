@@ -17,6 +17,11 @@
 "2": {"imagePath": .....tif", "labelPath":......tif", "x": ..., "y": ..., "block_x": ..., "block_y": ..., "width": ..., "height": ...},
 }
 ```
+imagePath：为文件路径，
+labelPath：为标签路径，
+x，y:当前patch左上角坐标，
+block_x， block_y: 当前patch长宽，
+width，height：当前影像长宽。
 
 2.训练好的模型可使用eval.py进行测试，在cmd下运行python eval.py -d XXX -c XXX -t xxx进行测试验证，也可用python eval.py --dataset_path xxx --checkpoint_path xxx --device_target xxx进行测试验证，输出为验证集的各类别的precision、recall、F1、IoU、mIoU、Kappa精度指标
 

@@ -9,9 +9,14 @@
 链接：https://ieeexplore.ieee.org/document/9007624/references#references
 
 ![](readme.assets/freenet.png)
+2 S3ANet
+论文：《S3
+ANet: Spectral-spatial-scale attention network for end-to-end precise crop classification based on UAV-borne H2 imagery》
+链接：https://www.sciencedirect.com/science/article/pii/S0924271621002823
+![](readme.assets/S3ANet.png)
 
 
-
+代码使用指南：
 1.下载WHU-Hi数据集
 http://rsidea.whu.edu.cn/resource_WHUHi_sharing.htm
 
@@ -90,13 +95,12 @@ config = dict(
 -t --device_target为设备类型，包括CPU、GPU、Ascend
 ```
 
-5.利用预训练好的模型对单张影像进行预测，选择合适的模型，使用prediction.py进行预测，在cmd下运行`python prediction.py -i XXX -o XXX -c1 XXX -c2 XXX -t XXX`进行预测，输出该影像对应地物分类的类别,也可运行`python prediction.py --input_file ./input_image/xxxxxx.mat --output_pth ./output.tif --checkpoint_path ./xxx/xx/xxx.ckpt –classes_file xxx.txt --device_target xxx`进行预测
+5.利用预训练好的模型对单张影像进行预测，选择合适的模型，使用prediction.py进行预测，在cmd下运行`python prediction.py -i XXX -o XXX -c1 XXX -c2 XXX -t XXX`进行预测，输出该影像对应地物分类的类别,也可运行`python prediction.py --input_file ./input_image --output_dir ./output.tif --checkpoint_path ./xxx/xx/xxx.ckpt –classes_file xxx.txt --device_target xxx`进行预测
 
 ```
--i --input_file 为输入的单张影像路径
--o --output_pth 为输出的结果路径
+-i --input_file 为输入的测试数据集地址
+-o --output_dir 为输出的结果路径
 -c1 --checkpoint_path为训练权重路径，
 -c2 -- classes_file 为类别文件，xxx.txt文本文件中是所包含的类别名称，暂时不会用到
 -t --device_target 为设备类型，包括CPU、GPU、Ascend
 ```
-

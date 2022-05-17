@@ -66,6 +66,6 @@ python eval.py --dataset_path xxx --checkpoint_path xxx --device_target xxx
 执行cmd命令
 
 ```
-python prediction.py --input_file xxx --output_folder xxx --checkpoint_path xxx --device_target xxx
+python predict.py --input_file xxx --output_folder xxx --checkpoint_path xxx --device_target xxx
 ```
 进行网络的预测。其中--input_file为输入的单张影像路径，--output_folder为输出的结果所在文件夹，输出结果文件名与输入影像相同，保存为tif格式，--checkpoint_path为训练好的模型路径，--device_target为设备类型，包括CPU、GPU、Ascend

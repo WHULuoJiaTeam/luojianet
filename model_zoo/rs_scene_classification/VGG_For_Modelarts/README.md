@@ -31,6 +31,7 @@ from luojianet_ms.communication.management import init
   `mox.file.copy_parallel(os.environ['DLS_DATA_URL'], "/cache/dataset")`
 
 - 请在`context.set_context(**kwargs)`或`context.set_auto_parallel_context(**kwargs)`后插入`init()`
+
   **注意：** 优先插入在`set_auto_parallel_context(**kwargs)`之后
 
 - 请在训练完成后插入

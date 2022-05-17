@@ -5,7 +5,8 @@
 论文：《Deep High-Resolution Representation Learningfor Visual Recognition》
 
 链接：[https://arxiv.org/abs/1908.07919](http://)
-![输入图片说明](../../../image.png)
+
+![输入图片说明](HRNet.JPG)
 
 1.下载GID 数据集 http://captain.whu.edu.cn/GID/
 数据不裁剪，使用先标记再分块读入的方式，标记json文档格式如下：

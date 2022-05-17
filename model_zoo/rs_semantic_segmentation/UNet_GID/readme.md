@@ -6,8 +6,8 @@
 链接：[https://arxiv.org/abs/1505.04597](http://)
 
 ![输入图片说明](../../../image.png)
-1.下载GID 数据集 http://captain.whu.edu.cn/GID/ 数据不裁剪，使用先标记再分块读入的方式，标记json文档格式如下：
 
+1.下载GID 数据集 http://captain.whu.edu.cn/GID/ 数据不裁剪，使用先标记再分块读入的方式，标记json文档格式如下：
 
 ```
 {
@@ -16,6 +16,11 @@
 "2": {"imagePath": .....tif", "labelPath":......tif", "x": ..., "y": ..., "block_x": ..., "block_y": ..., "width": ..., "height": ...},
 }
 ```
+imagePath：为文件路径
+labelPath：为标签路径
+x，y:当前patch左上角坐标
+block_x， block_y: 当前patch长宽
+width，height：当前影像长宽
 
 2.训练好的模型可使用eval.py进行测试，在cmd下运行python eval.py -d XXX -c XXX -t xxx进行测试验证，也可用python eval.py --dataset_path xxx --checkpoint_path xxx --device_target xxx进行测试验证，输出为验证集的各类别的precision、recall、F1、IoU、mIoU、Kappa精度指标
 

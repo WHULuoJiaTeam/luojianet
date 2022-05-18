@@ -7,14 +7,14 @@
 
     └── data
          ├── image
-         │    ├── 1.jpg
-         │    ├── 2.jpg
-         │    ├── 3.jpg
+         │    ├── 1.tif
+         │    ├── 2.tif
+         │    ├── 3.tif
          ├── train
-         │    ├── 1.jpg
-         │    ├── 2.jpg
+         │    ├── 1.tif
+         │    ├── 2.tif
          ├── test
-         │    ├── 3.jpg
+         │    ├── 3.tif
     
 
 2.网络训练

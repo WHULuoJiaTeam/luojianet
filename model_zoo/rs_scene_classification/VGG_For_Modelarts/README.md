@@ -7,6 +7,7 @@
 若要在[LuojiaNet 前端平台](http://58.48.42.237/luojiaNet/)提交训练作业，除了参照[此文件夹](https://gitee.com/mindspore/luojianet/tree/master/model_zoo/rs_scene_classification)的示例代码进行结构组织外还需进行以下操作：
 
 1.修改`config.py`中的参数
+
 对应参数修改为代码块中所示：
 
 ```python
@@ -16,6 +17,7 @@
 ```
 
 2.修改`train.py`文件
+
 请分别在文件的不同位置加入如下代码：
 
 **文件头**

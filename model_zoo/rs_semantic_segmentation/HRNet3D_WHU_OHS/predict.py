@@ -1,3 +1,5 @@
+# HRNet-3D网络预测
+
 import os
 import argparse
 import numpy as np
@@ -20,6 +22,7 @@ IMG_EXTENSIONS = [
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
 
+# 输出预测结果影像的函数
 def writeTiff(im_data, im_width, im_height, im_bands, path):
     if 'int8' in im_data.dtype.name:
         datatype = gdal.GDT_Byte
@@ -35,7 +38,6 @@ def writeTiff(im_data, im_width, im_height, im_bands, path):
     else:
         im_bands, (im_height, im_width) = 1, im_data.shape
 
-    # 创建文件
     driver = gdal.GetDriverByName("GTiff")
     dataset = driver.Create(path, im_width, im_height, im_bands, datatype)
 
@@ -55,7 +57,7 @@ def main():
 
     context.set_context(mode=context.GRAPH_MODE, device_target=args_opt.device_target)
 
-    # Model
+    # 加载网络模型
     print('Build model ...')
     net = HigherHRNet_Binary(num_classes=config['classnum'], hr_cfg='w18_3d2d_at')
     model_path = args_opt.checkpoint_path
@@ -75,11 +77,13 @@ def main():
     softmax = ops.Softmax(axis=0)
     argmax = ops.Argmax(axis=0)
 
+    # 读取待预测影像
     image_dataset = gdal.Open(args_opt.input_file, gdal.GA_ReadOnly)
     image = image_dataset.ReadAsArray()
     width = image.shape[2]
     height = image.shape[1]
 
+    # 若需要对影像进行归一化，则逐波段进行标准差归一化
     if(config['normalize']):
         eps = 1e-8
         bands = image.shape[0]
@@ -95,7 +99,8 @@ def main():
     image = np.expand_dims(image, axis=0)
     image = np.expand_dims(image, axis=0)
     image = Tensor(image)
-
+    
+    # 网络预测
     output = model.predict(image)
     output = output.squeeze()
     output = softmax(output)
@@ -104,7 +109,8 @@ def main():
     output = output.asnumpy() + 1
 
     output = output.astype(np.uint8)
-
+    
+    # 保存结果
     fname = os.path.basename(args_opt.input_file)
     writeTiff(output, width, height, 1, os.path.join(save_path, fname))
 

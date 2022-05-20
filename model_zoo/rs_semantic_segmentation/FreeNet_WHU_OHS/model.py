@@ -1,9 +1,12 @@
+# FreeNet网络模型
+
 import luojianet_ms.context as context
 import luojianet_ms.nn as nn
 import luojianet_ms.ops as ops
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
+# 光谱注意力机制 SE-Block
 class SEBlock(nn.Module):
     def __init__(self, in_channels, reduction_ratio):
         super(SEBlock, self).__init__()
@@ -21,6 +24,7 @@ class SEBlock(nn.Module):
         y = x * score.reshape(score.shape[0], score.shape[1], 1, 1)
         return y
 
+# 3×3卷积模块
 def conv3x3_bn_relu(in_channel, out_channel):
     return nn.SequentialCell(
         nn.Conv2d(in_channel, out_channel, kernel_size=3, stride=1, pad_mode='same', weight_init='he_uniform', has_bias=True),
@@ -28,6 +32,7 @@ def conv3x3_bn_relu(in_channel, out_channel):
         nn.ReLU(),
     )
 
+# 光谱注意力机制模块
 def repeat_block(block_channel, r, n):
     layers = nn.SequentialCell([])
     for _ in range(n):
@@ -38,6 +43,7 @@ def repeat_block(block_channel, r, n):
 
     return layers
 
+# 网络总体结构
 class FreeNet(nn.Module):
     def __init__(self, config):
         super(FreeNet, self).__init__()
@@ -81,7 +87,8 @@ class FreeNet(nn.Module):
             nn.Conv2d(inner_dim, inner_dim, kernel_size=3, stride=1, pad_mode='same', weight_init='he_uniform', has_bias=True),
         ])
         self.cls_pred_conv = nn.Conv2d(inner_dim, self.config['num_classes'], kernel_size=1, weight_init='he_uniform', has_bias=True)
-
+    
+    # 跳跃连接
     def top_down(self, top, lateral):
         return lateral + top
 

@@ -1,5 +1,5 @@
 ### 高光谱遥感影像语义分割——HRNet-3D
-![HRNet-3D网络结构](../../../HRNet3D.PNG)
+![HRNet-3D网络结构](HRNet3D.PNG)
 
 1.数据集组织格式
 

@@ -1,3 +1,5 @@
+# FreeNet网络精度评价
+
 import os
 import argparse
 import numpy as np
@@ -21,6 +23,7 @@ IMG_EXTENSIONS = [
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
 
+# 测试流程定义
 class MyWithEvalCell(nn.Module):
     def __init__(self, network):
         super(MyWithEvalCell, self).__init__(auto_prefix=False)
@@ -35,6 +38,7 @@ class MyWithEvalCell(nn.Module):
         output = self.argmax(output)
         return output
 
+# 精度评价指标定义（评价OA、Kappa、PA、UA、F1-score、IoU几个指标）
 class MyMetric(nn.Metric):
     def __init__(self, classnum):
         super(MyMetric, self).__init__()
@@ -76,7 +80,7 @@ class MyMetric(nn.Metric):
         intersection = np.diag(self.confusion_matrix)
         union = np.sum(self.confusion_matrix, axis=1) + np.sum(self.confusion_matrix, axis=0) - np.diag(
             self.confusion_matrix)
-        IoU = intersection / union  # 返回列表，其值为各个类别的IoU
+        IoU = intersection / union
         mIoU = np.nanmean(IoU)
         return dict(OA=OA, Kappa=Kappa, PA=PA, UA=UA, F1=F1, mF1=mF1, IoU=IoU, mIoU=mIoU)
 
@@ -100,7 +104,7 @@ def main():
             reduction_ratio=1.0,
         )
 
-    # Test data
+    # 加载测试数据并定义数据集
     print('Load data ...')
 
     data_path = args_opt.dataset_path
@@ -125,7 +129,7 @@ def main():
     test_dataset = ds.GeneratorDataset(dataset_generator, column_names=['image', 'label'], shuffle=False)
     test_dataset = test_dataset.batch(1)
 
-    # Model
+    # 加载模型
     print('Build model ...')
     net = FreeNet(config=config_net)
     model_path = args_opt.checkpoint_path
@@ -136,11 +140,11 @@ def main():
     net.set_train(False)
     net.set_grad(False)
 
+    # 网络测试
     eval_net = MyWithEvalCell(net)
     eval_net.set_train(False)
     Metric = MyMetric(classnum=24)
 
-    # num = 0
     time_start = time.time()
     for image, label in test_dataset:
         output = eval_net(image)

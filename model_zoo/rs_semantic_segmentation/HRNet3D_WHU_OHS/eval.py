@@ -1,3 +1,5 @@
+# HRNet-3D网络测试
+
 import os
 import argparse
 import numpy as np
@@ -21,6 +23,7 @@ IMG_EXTENSIONS = [
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
 
+# 测试流程定义
 class MyWithEvalCell(nn.Module):
     def __init__(self, network):
         super(MyWithEvalCell, self).__init__(auto_prefix=False)
@@ -35,6 +38,7 @@ class MyWithEvalCell(nn.Module):
         output = self.argmax(output)
         return output
 
+# 精度评价指标定义（评价OA、Kappa、PA、UA、F1-score、IoU几个指标）
 class MyMetric(nn.Metric):
     def __init__(self, classnum):
         super(MyMetric, self).__init__()
@@ -91,7 +95,7 @@ def main():
 
     context.set_context(mode=context.GRAPH_MODE, device_target=args_opt.device_target)
 
-    # Test data
+    # 读取测试数据并定义数据集
     print('Load data ...')
 
     data_path = args_opt.dataset_path
@@ -116,7 +120,7 @@ def main():
     test_dataset = ds.GeneratorDataset(dataset_generator, column_names=['image', 'label'], shuffle=False)
     test_dataset = test_dataset.batch(1)
 
-    # Model
+    # 加载网络模型
     print('Build model ...')
     net = HigherHRNet_Binary(num_classes=config['classnum'], hr_cfg='w18_3d2d_at')
     model_path = args_opt.checkpoint_path
@@ -127,6 +131,7 @@ def main():
     net.set_train(False)
     net.set_grad(False)
 
+    # 网络测试
     eval_net = MyWithEvalCell(net)
     eval_net.set_train(False)
     Metric = MyMetric(classnum=24)

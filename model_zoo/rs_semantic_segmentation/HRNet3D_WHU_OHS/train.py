@@ -1,3 +1,5 @@
+# HRNet-3D网络训练
+
 import os
 import numpy as np
 import luojianet_ms
@@ -17,6 +19,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 context.set_context(mode=context.GRAPH_MODE, device_target=config['device_target'])
 
+# 加权交叉熵损失函数定义
 class WeightedCrossEntropyLoss(nn.Module):
     def __init__(self, weight, ignore_index=None):
         super(WeightedCrossEntropyLoss, self).__init__()
@@ -68,7 +71,7 @@ def main():
     batch_size = config['batch_size']
     num_epochs = config['num_epochs']
 
-    # Train Dataset
+    # 读取训练数据并定义数据集
     print('Load data ...')
 
     data_path = config['dataset_path']
@@ -108,7 +111,7 @@ def main():
 
     loss = WeightedCrossEntropyLoss(weight=weight, ignore_index=config['nodata_value']-1)
 
-    # Predefine learning rate schedule
+    # 定义学习率衰减
     initial_learning_rate = config['learning_rate']
     learning_rate = []
     for i in range(num_epochs):
@@ -122,7 +125,8 @@ def main():
     model_path = config['save_model_path']
     if not os.path.exists(model_path):
         os.makedirs(model_path)
-
+    
+    # 网络训练
     print('Training.')
 
     net_with_criterion = nn.WithLossCell(net, loss)
@@ -150,7 +154,8 @@ def main():
 
         time_end = time.time()
         print('Time:', time_end - time_start)
-
+    
+    # 训练模型保存
     luojianet_ms.save_checkpoint(net, model_path + '/HRNet3D_final.ckpt')
 
 if __name__ == '__main__':

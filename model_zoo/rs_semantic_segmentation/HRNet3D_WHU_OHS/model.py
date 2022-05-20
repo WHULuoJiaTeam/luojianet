@@ -1,3 +1,5 @@
+# HRNet-3D网络模型
+
 import os
 import logging
 
@@ -64,6 +66,7 @@ stage4_64_cfg = {'NUM_CHANNELS': [64, 128, 256, 512], 'BLOCK': 'BASIC', 'NUM_BLO
                  'NUM_BRANCHES': 4, 'FUSE_METHOD': 'SUM'}
 hrnet_w64_cfg = {'stage1': stage1_64_cfg, 'stage2': stage2_64_cfg, 'stage3': stage3_64_cfg, 'stage4': stage4_64_cfg}
 
+# 光谱注意力机制 SE-Block
 class SEBlock(nn.Module):
     def __init__(self, in_channels, reduction_ratio):
         super(SEBlock, self).__init__()
@@ -89,6 +92,7 @@ def conv3x3(in_planes, out_planes, stride=1):
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
                      pad_mode='pad', padding=1, has_bias=False)
 
+# 卷积模块 BasicBlock
 class BasicBlock(nn.Module):
     expansion = 1
 
@@ -120,6 +124,7 @@ class BasicBlock(nn.Module):
 
         return out
 
+# 卷积模块 Bottleneck
 class Bottleneck(nn.Module):
     expansion = 4
 
@@ -160,6 +165,7 @@ class Bottleneck(nn.Module):
 
         return out
 
+# 多分辨率融合模块
 class HighResolutionModule(nn.Module):
     def __init__(self, num_branches, blocks, num_blocks, num_inchannels,
                  num_channels, fuse_method, multi_scale_output=True):
@@ -316,6 +322,7 @@ blocks_dict = {
     'BOTTLENECK': Bottleneck,
 }
 
+# HRNet-3D整体结构
 class HigherHRNet_Binary(nn.Module):
 
     def __init__(self, num_classes=2, hr_cfg='w48'):
@@ -362,6 +369,7 @@ class HigherHRNet_Binary(nn.Module):
             self.conv1 = nn.Conv2d(249, 64, kernel_size=3, stride=2, pad_mode='pad', padding=1,
                                    has_bias=False)
 
+        # 3D卷积与光谱注意力机制
         if hr_cfg == 'w18_3d2d_at':
             ly1dim = 192
             hrnet_cfg = hrnet_w18_cfg
@@ -372,7 +380,8 @@ class HigherHRNet_Binary(nn.Module):
             self.conv2 = nn.Conv3d(64, 64, kernel_size=(4, 3, 3), stride=(2, 1, 1), pad_mode='pad', padding=(0, 0, 1, 1, 1, 1),
                                    has_bias=False)
             self.bn2 = nn.BatchNorm3d(64, momentum=BN_MOMENTUM)
-
+        
+        # HRNet网络
         self.stage1_cfg = hrnet_cfg['stage1']
         num_channels = self.stage1_cfg['NUM_CHANNELS'][0]
         block = blocks_dict[self.stage1_cfg['BLOCK']]

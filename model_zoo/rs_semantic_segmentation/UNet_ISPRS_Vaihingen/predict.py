@@ -38,7 +38,6 @@ def overlap_predict_image(model, image, grid, stride):
         for j in range(0, cols, stride):
             patch = pad_image[0:, 0:, i:i + grid, j:j + grid]
             patch = Tensor(patch)
-            print(patch.shape)
             pred = model(patch)
             pred=pred.argmax(1).asnumpy()[0].astype('uint8')
 

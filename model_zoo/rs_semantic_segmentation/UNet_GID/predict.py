@@ -154,18 +154,3 @@ if __name__ == '__main__':
 
     context.set_context(mode=context.GRAPH_MODE, device_target=args.device_target)
     run_spyd(6, args.input_file, args.output_folder, args.checkpoint_path)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

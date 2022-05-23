@@ -8,7 +8,7 @@
 
 1.修改`config.py`中的参数
 
-对应参数修改为代码块中所示：
+键值对修改为代码块中所示：
 
 ```python
 "device_target":"Ascend",      #Ascend

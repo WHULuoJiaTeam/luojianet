@@ -7,7 +7,7 @@ LuoJiaNET同时与国产人工智能硬件NPU深度融合，可同时支持CPU�
 
 ![昇腾全栈](images/architecture.png)
 
-1. 请参照[LuoJiaNet安装手册](https://whu.obs.cn-central-221.ovaijisuan.com/instruction/index.html) 安装[whl包](https://gitee.com/mindspore/luojianet/tree/master/whl_files)或源码编译安装
+1. 请参照[LuoJiaNet安装手册](https://whu.obs.cn-central-221.ovaijisuan.com/instruction/index.html) 安装[whl包](https://github.com/WHULuoJiaTeam/luojianet/tree/master/whl_files)或源码编译安装
 
 2. 执行以下命令，验证安装结果。
 
@@ -39,12 +39,12 @@ LuoJiaNET同时与国产人工智能硬件NPU深度融合，可同时支持CPU�
     [ 4. 10. 18.]
     ```
 
-3. LuoJiaNET安装手册中，相应的源码见[tutorial](https://gitee.com/mindspore/luojianet/blob/master/examples/tutorial)
+3. LuoJiaNET安装手册中，相应的源码见[tutorial](https://github.com/WHULuoJiaTeam/luojianet/tree/master/examples/tutorial)
 
 ## 版本说明
 
-版本说明请参阅[RELEASE](https://gitee.com/mindspore/luojianet/blob/master/RELEASE.md)。
+版本说明请参阅[RELEASE](https://github.com/WHULuoJiaTeam/luojianet/blob/master/RELEASE.md)。
 
 ## 许可证
 
-[Apache License 2.0](https://gitee.com/mindspore/luojianet/blob/master/LICENSE)
+[Apache License 2.0](https://github.com/WHULuoJiaTeam/luojianet/blob/master/LICENSE)

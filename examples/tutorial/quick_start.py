@@ -9,7 +9,7 @@
 '''
 `CPU` `GPU` `Linux` `入门`
 
-[![](https://gitee.com/luojianet_ms/docs/raw/master/resource/_static/logo_modelarts.png)](https://authoring-modelarts-cnnorth4.huaweicloud.com/console/lab?share-url-b64=aHR0cHM6Ly9taW5kc3BvcmUtd2Vic2l0ZS5vYnMuY24tbm9ydGgtNC5teWh1YXdlaWNsb3VkLmNvbS9ub3RlYm9vay9tYXN0ZXIvdHV0b3JpYWxzL3poX2NuL21pbmRzcG9yZV9xdWlja19zdGFydC5pcHluYg==&imageid=65f636a0-56cf-49df-b941-7d2a07ba8c8c)&emsp;[![](https://gitee.com/luojianet_ms/docs/raw/master/resource/_static/logo_notebook.png)](https://obs.dualstack.cn-north-4.myhuaweicloud.com/luojianet_ms-website/notebook/master/tutorials/zh_cn/luojianet_ms_quick_start.ipynb)&emsp;[![](https://gitee.com/luojianet_ms/docs/raw/master/resource/_static/logo_download_code.png)](https://obs.dualstack.cn-north-4.myhuaweicloud.com/luojianet_ms-website/notebook/master/tutorials/zh_cn/luojianet_ms_quick_start.py)&emsp;[![](https://gitee.com/luojianet_ms/docs/raw/master/resource/_static/logo_source.png)](https://gitee.com/luojianet_ms/docs/blob/master/tutorials/source_zh_cn/quick_start.ipynb)
+[![](https://gitee.com/mindspore/docs/raw/master/resource/_static/logo_modelarts.png)](https://authoring-modelarts-cnnorth4.huaweicloud.com/console/lab?share-url-b64=aHR0cHM6Ly9taW5kc3BvcmUtd2Vic2l0ZS5vYnMuY24tbm9ydGgtNC5teWh1YXdlaWNsb3VkLmNvbS9ub3RlYm9vay9tYXN0ZXIvdHV0b3JpYWxzL3poX2NuL21pbmRzcG9yZV9xdWlja19zdGFydC5pcHluYg==&imageid=65f636a0-56cf-49df-b941-7d2a07ba8c8c)&emsp;[![](https://gitee.com/mindspore/docs/raw/master/resource/_static/logo_notebook.png)](https://obs.dualstack.cn-north-4.myhuaweicloud.com/mindspore-website/notebook/master/tutorials/zh_cn/mindspore_quick_start.ipynb)&emsp;[![](https://gitee.com/mindspore/docs/raw/master/resource/_static/logo_download_code.png)](https://obs.dualstack.cn-north-4.myhuaweicloud.com/mindspore-website/notebook/master/tutorials/zh_cn/mindspore_quick_start.py)&emsp;[![](https://gitee.com/mindspore/docs/raw/master/resource/_static/logo_source.png)](https://gitee.com/mindspore/docs/blob/master/tutorials/source_zh_cn/quick_start.ipynb)
 
 本节以Minist数据处理为例，介绍LuoJiaNET搭建LeNet网络、训练和测试的基本流程。
 
@@ -25,7 +25,7 @@ import os
 import argparse
 from luojianet_ms import context
 
-context.set_context(mode=context.GRAPH_MODE, device_target='GPU')
+context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
 # In[ ]:
@@ -35,11 +35,11 @@ context.set_context(mode=context.GRAPH_MODE, device_target='GPU')
 '''
 
 # ## 下载数据集
-# 
+#
 # 我们示例中用到的MNIST数据集是由10类28∗28的灰度图片组成，训练数据集包含60000张图片，测试数据集包含10000张图片。
-# 
+#
 # 你可以从[MNIST数据集下载页面](http://yann.lecun.com/exdb/mnist/)下载，并按下方目录结构放置。
-# 
+#
 # 以下示例代码将数据集下载并解压到指定位置。
 
 # In[ ]:
@@ -67,14 +67,14 @@ def download_dataset(dataset_url, path):
 train_path = "datasets/MNIST_Data/train"
 test_path = "datasets/MNIST_Data/test"
 
-download_dataset("https://luojianet_ms-website.obs.myhuaweicloud.com/notebook/datasets/mnist/train-labels-idx1-ubyte", train_path)
-download_dataset("https://luojianet_ms-website.obs.myhuaweicloud.com/notebook/datasets/mnist/train-images-idx3-ubyte", train_path)
-download_dataset("https://luojianet_ms-website.obs.myhuaweicloud.com/notebook/datasets/mnist/t10k-labels-idx1-ubyte", test_path)
-download_dataset("https://luojianet_ms-website.obs.myhuaweicloud.com/notebook/datasets/mnist/t10k-images-idx3-ubyte", test_path)
+download_dataset("https://mindspore-website.obs.myhuaweicloud.com/notebook/datasets/mnist/train-labels-idx1-ubyte", train_path)
+download_dataset("https://mindspore-website.obs.myhuaweicloud.com/notebook/datasets/mnist/train-images-idx3-ubyte", train_path)
+download_dataset("https://mindspore-website.obs.myhuaweicloud.com/notebook/datasets/mnist/t10k-labels-idx1-ubyte", test_path)
+download_dataset("https://mindspore-website.obs.myhuaweicloud.com/notebook/datasets/mnist/t10k-images-idx3-ubyte", test_path)
 
 
 # 下载的数据集文件的目录结构如下：
-# 
+#
 # ```text
 # ./datasets/MNIST_Data
 # ├── test
@@ -91,7 +91,7 @@ download_dataset("https://luojianet_ms-website.obs.myhuaweicloud.com/notebook/da
 ## 数据处理
 '''
 数据集对于模型训练非常重要，好的数据集可以有效提高训练精度和效率。
-LuoJiaNET融合luojianet_ms特性，提供了用于数据处理的API模块 `luojianet_ms.dataset` , 用于存储样本和标签。
+LuoJiaNET融合MindSpore特性，提供了用于数据处理的API模块 `luojianet_ms.dataset` , 用于存储样本和标签。
 在加载数据集前，我们通常会对数据集进行一些处理，`luojianet_ms.dataset`也集成了常见的数据处理方法。 首先导入LuoJiaNET中`luojianet_ms.dataset`和其他相应的模块。
 '''
 
@@ -226,7 +226,7 @@ net_loss = nn.SoftmaxCrossEntropyWithLogits(sparse=True, reduction='mean')
 # In[ ]:
 
 '''
-> 阅读更多有关[在luojianet_ms中使用损失函数](https://www.luojianet_ms.cn/tutorials/zh-CN/master/optimization.html#损失函数)的信息。
+> 阅读更多有关[在mindspore中使用损失函数](https://www.mindspore.cn/tutorials/zh-CN/master/optimization.html#损失函数)的信息。
 
 LuoJiaNET支持的优化器有`Adam`、`AdamWeightDecay`、`Momentum`等。这里使用`Momentum`优化器为例。
 '''
@@ -241,7 +241,7 @@ net_opt = nn.Momentum(net.trainable_params(), learning_rate=0.01, momentum=0.9)
 # In[ ]:
 
 '''
-> 阅读更多有关[在luojianet_ms中使用优化器](https://www.luojianet_ms.cn/tutorials/zh-CN/master/optimization.html#优化器)的信息。
+> 阅读更多有关[在mindspore中使用优化器](https://www.mindspore.cn/tutorials/zh-CN/master/optimization.html#优化器)的信息。
 
 ## 训练及保存模型
 

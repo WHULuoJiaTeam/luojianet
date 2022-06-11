@@ -205,7 +205,7 @@ Status FileSaver::SaveToBuffWithFileHeader(const ModelFileHeader &file_header,
   // save to buff
   auto buff = reinterpret_cast<uint8_t *>(malloc(total_size));
   GE_CHK_BOOL_RET_STATUS(buff != nullptr, FAILED, "Malloc failed!");
-  GE_PRINT_DYNAMIC_MEMORY(malloc, "File buffer.", total_size)
+  GE_PRINT_DYNAMIC_MEMORY(malloc, "File buffer.", total_size);
   model.data.reset(buff, [](uint8_t *buff) {
     GELOGD("Free online model memory.");
     free(buff);

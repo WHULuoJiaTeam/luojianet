@@ -63,7 +63,7 @@
       GELOGE((ge::FAILED), __VA_ARGS__);   \
       return _chk_status;                  \
     }                                      \
-  } while (false)
+  } while (false);
 
 // If expr is not SUCCESS, print the log and do not execute return
 #define GE_CHK_STATUS(expr, ...)           \
@@ -72,7 +72,7 @@
     if (_chk_status != ge::SUCCESS) {      \
       GELOGE((ge::FAILED), __VA_ARGS__);   \
     }                                      \
-  } while (false)
+  } while (false);
 
 // If expr is not SUCCESS, return the same value
 #define GE_CHK_STATUS_RET_NOLOG(expr)      \
@@ -81,7 +81,7 @@
     if (_chk_status != ge::SUCCESS) {      \
       return _chk_status;                  \
     }                                      \
-  } while (false)
+  } while (false);
 
 // If expr is not GRAPH_SUCCESS, print the log and return FAILED
 #define GE_CHK_GRAPH_STATUS_RET(expr, ...)                  \
@@ -91,14 +91,14 @@
       GELOGE(ge::FAILED, __VA_ARGS__);                      \
       return (FAILED);                                      \
     }                                                       \
-  } while (false)
+  } while (false);
 
 // If expr is not SUCCESS, print the log and execute a custom statement
 #define GE_CHK_STATUS_EXEC(expr, exec_expr, ...)                      \
   do {                                                                \
     const ge::Status _chk_status = (expr);                            \
     GE_CHK_BOOL_EXEC(_chk_status == SUCCESS, exec_expr, __VA_ARGS__); \
-  } while (false)
+  } while (false);
 
 // If expr is not true, print the log and return the specified status
 #define GE_CHK_BOOL_RET_STATUS(expr, _status, ...) \
@@ -109,7 +109,7 @@
       GELOGE((_status), __VA_ARGS__);              \
       return (_status);                            \
     }                                              \
-  } while (false)
+  } while (false);
 
 // If expr is not true, print the log and return the specified status
 #define GE_CHK_BOOL_RET_STATUS_NOLOG(expr, _status, ...) \
@@ -118,7 +118,7 @@
     if (!b) {                                            \
       return (_status);                                  \
     }                                                    \
-  } while (false)
+  } while (false);
 
 // If expr is not true, print the log and execute a custom statement
 #define GE_CHK_BOOL_EXEC(expr, exec_expr, ...) \
@@ -218,7 +218,7 @@
     if (_rt_ret != RT_ERROR_NONE) {                                    \
       GELOGE(ge::RT_FAILED, "Call rt api failed, ret: 0x%X", _rt_ret); \
     }                                                                  \
-  } while (false)
+  } while (false);
 
 // If expr is not RT_ERROR_NONE, print the log and execute the exec_expr expression
 #define GE_CHK_RT_EXEC(expr, exec_expr)                                \
@@ -228,7 +228,7 @@
       GELOGE(ge::RT_FAILED, "Call rt api failed, ret: 0x%X", _rt_ret); \
       exec_expr;                                                       \
     }                                                                  \
-  } while (false)
+  } while (false);
 
 // If expr is not RT_ERROR_NONE, print the log and return
 #define GE_CHK_RT_RET(expr)                                                   \
@@ -239,7 +239,7 @@
       GELOGE(ge::RT_FAILED, "Call rt api failed, ret: 0x%X", _rt_ret);        \
       return RT_ERROR_TO_GE_STATUS(_rt_ret);                                  \
     }                                                                         \
-  } while (false)
+  } while (false);
 
 // If expr is true, execute exec_expr without printing logs
 #define GE_IF_BOOL_EXEC(expr, exec_expr) \
@@ -278,7 +278,7 @@
       ErrorManager::GetInstance().ATCReportErrMessage("E19021", {"reason"}, {(errormsg)}); \
       return (_status);                                                                    \
     }                                                                                      \
-  } while (false)
+  } while (false);
 
 template <typename T>
 GE_FUNC_VISIBILITY std::string FmtToStr(const T &t) {

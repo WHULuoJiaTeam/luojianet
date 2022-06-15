@@ -4,7 +4,7 @@
 
 ## 训练
 
-若要在[LuojiaNet 前端平台](http://58.48.42.237/luojiaNet/)提交训练作业，除了参照[此文件夹](https://gitee.com/mindspore/luojianet/tree/master/model_zoo/rs_scene_classification)的示例代码进行结构组织外还需进行以下操作：
+若要在[LuojiaNet 前端平台](http://58.48.42.237/luojiaNet/)提交训练作业，除了参照[此文件夹](https://github.com/WHULuoJiaTeam/luojianet/edit/master/model_zoo/rs_scene_classification)的示例代码进行结构组织外还需进行以下操作：
 
 1.修改`config.py`中的参数
 
@@ -39,4 +39,4 @@ from luojianet_ms.communication.management import init
 - 请在训练完成后插入
   `mox.file.copy_parallel("./", os.environ['DLS_TRAIN_URL'])`
 
-完整的 Modelarts 用 VGG 示例代码，请点击[此处](https://gitee.com/mindspore/luojianet/tree/master/model_zoo/rs_scene_classification/VGG_For_Modelarts)
+完整的 Modelarts 用 VGG 示例代码，请点击[此处](https://github.com/WHULuoJiaTeam/luojianet/edit/master/model_zoo/rs_scene_classification/VGG_For_Modelarts)

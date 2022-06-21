@@ -1,5 +1,8 @@
 ## LuoJiaNet whl_files:
 
+-**ascend910_npu:**
+.[luojianet_ms_ascend-1.0.0-cp37-cp37m-linux_aarch64.whl](https://whu.obs.cn-central-221.ovaijisuan.com/whl_files/ascend910_npu/luojianet_ms_ascend-1.0.0-cp37-cp37m-linux_aarch64.whl)
+
 - **win10_cpu:**
   [luojianet_ms-cpu-1.0.0-cp37-cp37m-win_amd64.whl](https://whu.obs.cn-central-221.ovaijisuan.com/whl_files/win10_cpu/luojianet_ms-cpu-1.0.0-cp37-cp37m-win_amd64.whl)
 

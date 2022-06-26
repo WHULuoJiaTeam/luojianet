@@ -20,6 +20,24 @@ BASEPATH=$(cd "$(dirname $0)"; pwd)
 export CUDA_PATH=""
 export BUILD_PATH="${BASEPATH}/build/"
 
+#remove default patches for third party library
+PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
+if [ -d $LIB_FOLDER ]; then
+     rm -rf $PATCHES_FOLDER
+fi
+
+DEPS_FOLDER="${BUILD_PATH}/luojianet_ms/_deps"
+if [ -d $DEPS_FOLDER ]; then
+    rm -rf $DEPS_FOLDER/*-src
+    rm -rf $DEPS_FOLDER/*-build
+    rm -rf $DEPS_FOLDER/*-subbuild/CMake*
+    rm -rf $DEPS_FOLDER/*-subbuild/Make*
+    rm -rf $DEPS_FOLDER/*-subbuild/cmake*
+    rm -rf $DEPS_FOLDER/*-subbuild/*-populate-prefix/src/*-stamp
+    rm -rf ${BUILD_PATH}/luojianet_ms/cmake*
+    rm -rf ${BUILD_PATH}/luojianet_ms/CMake*
+fi
+
 source ./scripts/build/usage.sh
 source ./scripts/build/default_options.sh
 source ./scripts/build/option_proc_debug.sh

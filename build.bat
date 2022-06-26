@@ -43,6 +43,35 @@ IF NOT EXIST "%BUILD_PATH%/luojianet_ms" (
     md "luojianet_ms"
 )
 
+set PATCHES_FOLDER="%BUILD_PATH%/luojianet_ms/_ms_patch"
+echo %PATCHES_FOLDER%
+
+IF EXIST "%PATCHES_FOLDER%" (
+    rd %PATCHES_FOLDER% /S /Q
+)
+
+set DEPS_FOLDER="%BUILD_PATH%/luojianet_ms/_deps"
+IF EXIST "%DEPS_FOLDER%" (
+    FOR /D %%p IN ("%DEPS_FOLDER%\*-src") DO rmdir "%%p" /S /Q
+	FOR /D %%p IN ("%DEPS_FOLDER%\*-build") DO rmdir "%%p" /S /Q
+	FOR /D %%p IN ("%DEPS_FOLDER%\*-subbuild") do (
+		rmdir "%%p\CMakeFiles" /S /Q
+		del "%%p\CMake*" /S /Q
+		del "%%p\Make*" /S /Q
+		del "%%p\cmake*" /S /Q
+		echo "subpath: %%p\*-populate-prefix\src"
+		FOR /D %%m IN ("%%p\*-populate-prefix") DO (
+			FOR /D %%n IN ("%%m\src\*-stamp") DO rmdir "%%n" /S /Q
+		)
+	)
+	FOR /D %%q IN ("%BUILD_PATH%\luojianet_ms") do (
+		echo "newpath: %%q"
+		del %%q\CMake* /S /Q
+		del %%q\cmake* /S /Q
+	)
+	REM FOR /D %%p IN ("%BUILD_PATH%\luojianet_ms\CMake*") DO rmdir "%%p" /S /Q
+)
+
 cd %BUILD_PATH%/luojianet_ms
 IF "%1%" == "lite" (
     echo "======Start building LuoJiaNET Lite %VERSION_STR%======"

@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/lamb_next_mv_with_decay_rule.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 
 class TestHWLambNextMVWithDecayRule : public BackendCommon {
@@ -377,4 +377,4 @@ TEST_F(TestHWLambNextMVWithDecayRule, test_lamb_next_mv_with_decay_rule_cond3_un
   EXPECT_FALSE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

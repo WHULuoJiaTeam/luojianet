@@ -6,7 +6,7 @@ else()
     set(USE_MS_THREADPOOL "")
 endif()
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    mindspore_add_pkg(onednn
+    luojianet_ms_add_pkg(onednn
         VER 2.2
         LIBS dnnl mkldnn
         HEAD_ONLY ./include
@@ -21,7 +21,7 @@ else()
         set(REQ_URL "https://github.com/oneapi-src/oneDNN/archive/v2.2.tar.gz")
         set(MD5 "6a062e36ea1bee03ff55bf44ee243e27")
     endif()
-    mindspore_add_pkg(onednn
+    luojianet_ms_add_pkg(onednn
         VER 2.2
         LIBS dnnl mkldnn
         URL ${REQ_URL}
@@ -34,5 +34,5 @@ else()
 endif()
 
 include_directories(${onednn_INC})
-add_library(mindspore::dnnl ALIAS onednn::dnnl)
-add_library(mindspore::mkldnn ALIAS onednn::mkldnn)
+add_library(luojianet_ms::dnnl ALIAS onednn::dnnl)
+add_library(luojianet_ms::mkldnn ALIAS onednn::mkldnn)

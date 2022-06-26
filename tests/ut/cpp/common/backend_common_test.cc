@@ -28,7 +28,7 @@
 #include "ir/anf.h"
 #include "ir/manager.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace {
 std::vector<AnfNodePtr> GetCNodeList(const FuncGraphPtr &func_graph) {
   std::vector<AnfNodePtr> nodes = TopoSort(func_graph->get_return());
@@ -78,4 +78,4 @@ FuncGraphPtr BackendCommon::GetFuncGraph(const FuncGraphPtr &func_graph, const A
   pipeline::ResourcePtr resource_ = std::make_shared<pipeline::Resource>();
   return pipeline::Renormalize(resource_, func_graph, args_spec_list);
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 Testing RandomOrder op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms as py_transforms
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms as py_transforms
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import visualize_list, config_get_set_seed, \
     config_get_set_num_parallel_workers, save_and_check_md5
 

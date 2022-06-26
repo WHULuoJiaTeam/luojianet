@@ -15,9 +15,9 @@
 import numpy as np
 import pytest
 
-from mindspore import context, Tensor
-from mindspore.nn import Cell
-from mindspore.ops import operations as P
+from luojianet_ms import context, Tensor
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import operations as P
 
 from parallel.utils.utils import compile_net
 

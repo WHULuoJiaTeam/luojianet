@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+archivesBaseName = 'luojianet_ms-lite-java-common'
+
+
+repositories {
+    mavenCentral()
+}

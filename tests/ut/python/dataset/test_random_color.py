@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +19,11 @@ Testing RandomColor op in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as vision
-import mindspore.dataset.vision.py_transforms as F
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as vision
+import luojianet_ms.dataset.vision.py_transforms as F
+from luojianet_ms import log as logger
 from util import visualize_list, diff_mse, save_and_check_md5, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -45,7 +46,7 @@ def test_random_color_py(degrees=(0.1, 1.9), plot=False):
     # Original Images
     data = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_original = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_original = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                               F.Resize((224, 224)),
                                                                               F.ToTensor()])
 
@@ -64,7 +65,7 @@ def test_random_color_py(degrees=(0.1, 1.9), plot=False):
             # Random Color Adjusted Images
     data = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_random_color = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_random_color = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                                   F.Resize((224, 224)),
                                                                                   F.RandomColor(degrees=degrees),
                                                                                   F.ToTensor()])
@@ -147,7 +148,7 @@ def test_random_color_py_md5():
     # Generate dataset
     data = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                      F.RandomColor((2.0, 2.5)),
                                                                      F.ToTensor()])
 
@@ -182,7 +183,7 @@ def test_compare_random_color_op(degrees=None, plot=False):
         c_op = vision.RandomColor(degrees)
         p_op = F.RandomColor(degrees)
 
-    transforms_random_color_py = mindspore.dataset.transforms.py_transforms.Compose(
+    transforms_random_color_py = luojianet_ms.dataset.transforms.py_transforms.Compose(
         [lambda img: img.astype(np.uint8), F.ToPIL(),
          p_op, np.array])
 

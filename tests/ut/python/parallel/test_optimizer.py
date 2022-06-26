@@ -14,17 +14,17 @@
 
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore.common.api import _cell_graph_executor
-from mindspore.communication.management import init
-from mindspore.nn import Dense
-from mindspore.nn import Momentum
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.ops import operations as P
-from mindspore.context import ParallelMode
-from mindspore.communication._comm_helper import GlobalComm
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.communication.management import init
+from luojianet_ms.nn import Dense
+from luojianet_ms.nn import Momentum
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.ops import operations as P
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.communication._comm_helper import GlobalComm
 
 class Net(nn.Cell):
     def __init__(self, input_channel, out_channel):

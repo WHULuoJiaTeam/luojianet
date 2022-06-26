@@ -21,10 +21,10 @@
 #include "minddata/dataset/core/config_manager.h"
 #include "minddata/dataset/core/global_context.h"
 
-using namespace mindspore::dataset;
-using mindspore::MsLogLevel::INFO;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::LogStream;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::MsLogLevel::INFO;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::LogStream;
 
 class MindDataTestRandomSharpness : public UT::CVOP::CVOpCommon {
  public:

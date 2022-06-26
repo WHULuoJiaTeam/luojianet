@@ -1,5 +1,6 @@
 /**
- * Copyright 2020 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_TYPES_H
-#define MINDSPORE_INCLUDE_API_TYPES_H
+#ifndef LUOJIANET_MS_INCLUDE_API_TYPES_H
+#define LUOJIANET_MS_INCLUDE_API_TYPES_H
 
 #include <cstddef>
 #include <string>
@@ -33,7 +34,7 @@
 #endif
 #endif
 
-namespace mindspore {
+namespace luojianet_ms {
 enum ModelType : uint32_t {
   kMindIR = 0,
   kAIR = 1,
@@ -63,7 +64,7 @@ struct QuantParam {
 };
 
 class Allocator;
-/// \brief The MSTensor class defines a tensor in MindSpore.
+/// \brief The MSTensor class defines a tensor in LuoJiaNET.
 class MS_API MSTensor {
  public:
   class Impl;
@@ -242,12 +243,12 @@ class MS_API MSTensor {
   /// \brief Set the format for the MSTensor. Only valid for Lite.
   ///
   /// \param[in] The format of the MSTensor.
-  void SetFormat(mindspore::Format format);
+  void SetFormat(luojianet_ms::Format format);
 
   /// \brief Obtain the format of the MSTensor. Only valid for Lite.
   ///
   /// \return The format of the MSTensor.
-  mindspore::Format format() const;
+  luojianet_ms::Format format() const;
 
   /// \brief Set the data for the MSTensor. Only valid for Lite.
   ///
@@ -373,5 +374,5 @@ using MSKernelCallBack = std::function<bool(const std::vector<MSTensor> &inputs,
 std::vector<char> CharVersion();
 inline std::string Version() { return CharToString(CharVersion()); }
 
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_TYPES_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_TYPES_H

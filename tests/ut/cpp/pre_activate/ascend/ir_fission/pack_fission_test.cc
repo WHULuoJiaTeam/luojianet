@@ -22,7 +22,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWPackFission : public BackendCommon {
  public:
@@ -80,4 +80,4 @@ TEST_F(TestHWPackFission, test_stack_fission_divided_by_4) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -14,12 +14,12 @@
 
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore.communication.management import init
-from mindspore.ops import operations as P
-from mindspore.communication._comm_helper import GlobalComm
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.communication.management import init
+from luojianet_ms.ops import operations as P
+from luojianet_ms.communication._comm_helper import GlobalComm
 
 class DataParallelNet(nn.Cell):
     def __init__(self):

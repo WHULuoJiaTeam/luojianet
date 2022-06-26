@@ -5,9 +5,9 @@ import numpy as np
 import pytest
 from PIL import Image
 
-import mindspore.dataset as ds
-from mindspore.mindrecord import FileWriter
-import mindspore.dataset.vision.c_transforms as V_C
+import luojianet_ms.dataset as ds
+from luojianet_ms.mindrecord import FileWriter
+import luojianet_ms.dataset.vision.c_transforms as V_C
 
 FILES_NUM = 4
 CV_DIR_NAME = "../data/mindrecord/testImageNetData"

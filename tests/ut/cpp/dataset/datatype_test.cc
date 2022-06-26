@@ -21,7 +21,7 @@
 #include <opencv2/opencv.hpp>
 #include "minddata/dataset/include/dataset/constants.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestDatatype : public UT::Common {
  public:

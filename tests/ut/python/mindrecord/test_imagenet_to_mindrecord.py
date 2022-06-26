@@ -16,9 +16,9 @@
 import os
 import pytest
 
-from mindspore import log as logger
-from mindspore.mindrecord import FileReader
-from mindspore.mindrecord import ImageNetToMR
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import FileReader
+from luojianet_ms.mindrecord import ImageNetToMR
 
 IMAGENET_MAP_FILE = "../data/mindrecord/testImageNetDataWhole/labels_map.txt"
 IMAGENET_IMAGE_DIR = "../data/mindrecord/testImageNetDataWhole/images"

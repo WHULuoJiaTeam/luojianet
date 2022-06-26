@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestPReLU : public UT::Common {
  public:
@@ -90,4 +90,4 @@ TEST_F(TestPReLU, test_ops_prelu2) {
   EXPECT_EQ(shape_vec[3], 8);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

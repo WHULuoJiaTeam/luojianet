@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestAvgPoolGrad : public UT::Common {
  public:
@@ -61,4 +61,4 @@ TEST_F(TestAvgPoolGrad, test_ops_avg_pool_grad1) {
   EXPECT_EQ(data_type->type_id(), kNumberTypeFloat32);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

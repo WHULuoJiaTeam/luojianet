@@ -64,7 +64,7 @@
 #include "minddata/dataset/kernels/ir/vision/swap_red_blue_ir.h"
 #include "minddata/dataset/kernels/ir/vision/uniform_aug_ir.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestIRVision : public UT::DatasetOpTesting {
  public:

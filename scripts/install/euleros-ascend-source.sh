@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2022 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +15,11 @@
 # limitations under the License.
 # ============================================================================
 
-# Prepare environment for mindspore ascend compilation on EulerOS 2.8.
+# Prepare environment for luojianet_ms ascend compilation on EulerOS 2.8.
 #
 # This file will:
-#   - install mindspore dependencies via apt like gcc, cmake
-#   - install conda and set up environment for mindspore
+#   - install luojianet_ms dependencies via apt like gcc, cmake
+#   - install conda and set up environment for luojianet_ms
 #
 # Augments:
 #   - PYTHON_VERSION: python version to set up. [3.7(default), 3.8, 3.9]
@@ -116,7 +117,7 @@ fi
 set -e
 
 # set up conda env
-env_name=mindspore_py3${PYTHON_VERSION##*.}
+env_name=luojianet_ms_py3${PYTHON_VERSION##*.}
 # constraint openssl when py3.9+310
 openssl_constraint=""
 if [[ "$PYTHON_VERSION" == "3.9" ]]; then
@@ -161,4 +162,4 @@ if [[ X"$OPENMPI" == "Xon" ]]; then
     cd $origin_wd
 fi
 
-echo "The environment is ready to clone and compile mindspore."
+echo "The environment is ready to clone and compile luojianet_ms."

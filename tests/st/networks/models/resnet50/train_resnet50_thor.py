@@ -15,9 +15,9 @@
 """resnet train & eval case."""
 import os
 import numpy as np
-import mindspore as ms
-from mindspore import nn
-from mindspore.train.train_thor import ConvertModelUtils
+import luojianet_ms as ms
+from luojianet_ms import nn
+from luojianet_ms.train.train_thor import ConvertModelUtils
 from tests.st.networks.models.resnet50.src.callback import LossGet
 from tests.st.networks.models.resnet50.src_thor.config import config as thor_config
 from tests.st.networks.models.resnet50.src_thor.dataset import create_dataset2 as create_dataset_thor
@@ -25,8 +25,8 @@ from tests.st.networks.models.resnet50.src.resnet import resnet50
 from tests.st.networks.models.resnet50.src.metric import DistAccuracy, ClassifyCorrectCell
 from tests.st.networks.models.resnet50.src.CrossEntropySmooth import CrossEntropySmooth
 
-TRAIN_PATH = "/home/workspace/mindspore_dataset/imagenet/imagenet_original/train"
-EVAL_PATH = "/home/workspace/mindspore_dataset/imagenet/imagenet_original/val"
+TRAIN_PATH = "/home/workspace/luojianet_ms_dataset/imagenet/imagenet_original/train"
+EVAL_PATH = "/home/workspace/luojianet_ms_dataset/imagenet/imagenet_original/val"
 ms.set_seed(1)
 
 

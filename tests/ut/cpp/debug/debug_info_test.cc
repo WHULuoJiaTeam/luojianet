@@ -24,7 +24,7 @@
 #include "frontend/operator/ops.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestDebugInfo : public UT::Common {
  public:
   TestDebugInfo() {}
@@ -86,4 +86,4 @@ TEST_F(TestDebugInfo, test_fused_debug_info) {
 
   ASSERT_TRUE(cnode->fused_debug_infos().size() == 1);
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

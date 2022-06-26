@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +18,10 @@ Testing RandomGrayscale op in DE
 """
 import numpy as np
 
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as py_vision
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 from util import save_and_check_md5, visualize_list, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -44,7 +45,7 @@ def test_random_grayscale_valid_prob(plot=False):
         py_vision.RandomGrayscale(1),
         py_vision.ToTensor()
     ]
-    transform1 = mindspore.dataset.transforms.py_transforms.Compose(transforms1)
+    transform1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms1)
     data1 = data1.map(operations=transform1, input_columns=["image"])
 
     # Second dataset
@@ -53,7 +54,7 @@ def test_random_grayscale_valid_prob(plot=False):
         py_vision.Decode(),
         py_vision.ToTensor()
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(transforms2)
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms2)
     data2 = data2.map(operations=transform2, input_columns=["image"])
 
     image_gray = []
@@ -85,7 +86,7 @@ def test_random_grayscale_input_grayscale_images():
         py_vision.RandomGrayscale(0.5),
         py_vision.ToTensor()
     ]
-    transform1 = mindspore.dataset.transforms.py_transforms.Compose(transforms1)
+    transform1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms1)
     data1 = data1.map(operations=transform1, input_columns=["image"])
 
     # Second dataset
@@ -94,7 +95,7 @@ def test_random_grayscale_input_grayscale_images():
         py_vision.Decode(),
         py_vision.ToTensor()
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(transforms2)
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms2)
     data2 = data2.map(operations=transform2, input_columns=["image"])
 
     image_gray = []
@@ -131,7 +132,7 @@ def test_random_grayscale_md5_valid_input():
         py_vision.RandomGrayscale(0.8),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     # Check output images with md5 comparison
@@ -158,7 +159,7 @@ def test_random_grayscale_md5_no_param():
         py_vision.RandomGrayscale(),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     # Check output images with md5 comparison
@@ -184,7 +185,7 @@ def test_random_grayscale_invalid_param():
             py_vision.RandomGrayscale(1.5),
             py_vision.ToTensor()
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data = data.map(operations=transform, input_columns=["image"])
     except ValueError as e:
         logger.info("Got an exception in DE: {}".format(str(e)))

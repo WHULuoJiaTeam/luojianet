@@ -20,7 +20,7 @@
 #include "common/common_test.h"
 #include "frontend/operator/cc_implementations.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace prim {
 
 class TestImplementations : public UT::Common {
@@ -475,4 +475,4 @@ TEST_F(TestImplementations, BoolEqTest) {
 }
 
 }  // namespace prim
-}  // namespace mindspore
+}  // namespace luojianet_ms

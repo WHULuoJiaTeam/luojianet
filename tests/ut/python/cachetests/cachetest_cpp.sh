@@ -25,7 +25,7 @@ echo
 # Summary: A launcher for invoking cpp cache tests                             #
 ################################################################################
 
-UT_TEST_DIR="${BUILD_PATH}/mindspore/tests/ut/cpp"
+UT_TEST_DIR="${BUILD_PATH}/luojianet_ms/tests/ut/cpp"
 DateStamp=$(date +%Y%m%d_%H%M%S);
 CPP_TEST_LOG_OUTPUT="/tmp/ut_tests_cache_${DateStamp}.log"
 

@@ -14,7 +14,7 @@ endif()
 
 message("libevent using openssl stub dir: " ${openssl_ROOT})
 
-mindspore_add_pkg(libevent
+luojianet_ms_add_pkg(libevent
         VER 2.1.12
         LIBS event event_pthreads event_core event_openssl
         URL ${REQ_URL}
@@ -24,7 +24,7 @@ mindspore_add_pkg(libevent
 
 include_directories(${libevent_INC})
 
-add_library(mindspore::event ALIAS libevent::event)
-add_library(mindspore::event_pthreads ALIAS libevent::event_pthreads)
-add_library(mindspore::event_core ALIAS libevent::event_core)
-add_library(mindspore::event_openssl ALIAS libevent::event_openssl)
+add_library(luojianet_ms::event ALIAS libevent::event)
+add_library(luojianet_ms::event_pthreads ALIAS libevent::event_pthreads)
+add_library(luojianet_ms::event_core ALIAS libevent::event_core)
+add_library(luojianet_ms::event_openssl ALIAS libevent::event_openssl)

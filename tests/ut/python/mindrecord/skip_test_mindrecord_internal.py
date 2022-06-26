@@ -17,7 +17,7 @@ test mindrecord internal func
 """
 from multiprocessing import cpu_count
 
-from mindspore.mindrecord import MAX_CONSUMER_COUNT
+from luojianet_ms.mindrecord import MAX_CONSUMER_COUNT
 
 
 def test_c_layer_thread_num_with_python_layer():

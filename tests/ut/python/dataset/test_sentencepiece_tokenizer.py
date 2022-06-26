@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +15,9 @@
 # ==============================================================================
 import copy
 import numpy as np
-import mindspore.dataset.text as text
-import mindspore.dataset as ds
-from mindspore.dataset.text import SentencePieceModel, to_str, SPieceTokenizerOutType
+import luojianet_ms.dataset.text as text
+import luojianet_ms.dataset as ds
+from luojianet_ms.dataset.text import SentencePieceModel, to_str, SPieceTokenizerOutType
 
 VOCAB_FILE = "../data/dataset/test_sentencepiece/botchan.txt"
 DATA_FILE = "../data/dataset/testTokenizerData/sentencepiece_tokenizer.txt"

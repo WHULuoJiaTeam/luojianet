@@ -14,23 +14,23 @@
 
 import numpy as np
 
-import mindspore as ms
-import mindspore.ops.operations.math_ops as M
-from mindspore import context
-from mindspore.common.initializer import initializer
-from mindspore.common.parameter import Parameter
-from mindspore.common.tensor import Tensor
-from mindspore.nn.cell import Cell
-from mindspore.nn.layer.basic import Flatten
-from mindspore.nn.layer.conv import Conv2d
-from mindspore.nn.layer.normalization import BatchNorm2d
-from mindspore.nn.layer.pooling import MaxPool2d
-from mindspore.nn.loss import SoftmaxCrossEntropyWithLogits
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.ops import operations as P
-from mindspore.ops.operations import Add
-from mindspore.train import Model
-from mindspore.context import ParallelMode
+import luojianet_ms as ms
+import luojianet_ms.ops.operations.math_ops as M
+from luojianet_ms import context
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.layer.basic import Flatten
+from luojianet_ms.nn.layer.conv import Conv2d
+from luojianet_ms.nn.layer.normalization import BatchNorm2d
+from luojianet_ms.nn.layer.pooling import MaxPool2d
+from luojianet_ms.nn.loss import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations import Add
+from luojianet_ms.train import Model
+from luojianet_ms.context import ParallelMode
 from tests.dataset_mock import MindData
 
 dev_num = 8

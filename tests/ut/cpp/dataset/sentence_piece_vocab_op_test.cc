@@ -25,7 +25,7 @@
 #include "utils/log_adapter.h"
 #include "minddata/dataset/util/status.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestSentencePieceVocabOp : public UT::DatasetOpTesting {
  public:

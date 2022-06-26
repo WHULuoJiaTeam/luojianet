@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,20 +16,20 @@
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore import context
-from mindspore.common import dtype as mstype
-from mindspore.nn.optim import Momentum
-from mindspore.nn.wrap.cell_wrapper import WithLossCell
-from mindspore.nn.wrap.loss_scale import TrainOneStepWithLossScaleCell
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
-from mindspore.ops._grad.grad_base import bprop_getters
-from mindspore.ops._grad.grad_math_ops import binop_grad_common
-from mindspore.ops._utils import get_broadcast_shape
-from mindspore.ops.primitive import PrimitiveWithInfer, prim_attr_register
-from mindspore.train.loss_scale_manager import DynamicLossScaleManager
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms import context
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.nn.wrap.cell_wrapper import WithLossCell
+from luojianet_ms.nn.wrap.loss_scale import TrainOneStepWithLossScaleCell
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops._grad.grad_base import bprop_getters
+from luojianet_ms.ops._grad.grad_math_ops import binop_grad_common
+from luojianet_ms.ops._utils import get_broadcast_shape
+from luojianet_ms.ops.primitive import PrimitiveWithInfer, prim_attr_register
+from luojianet_ms.train.loss_scale_manager import DynamicLossScaleManager
 
 context.set_context(mode=context.GRAPH_MODE)
 

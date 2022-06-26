@@ -17,7 +17,7 @@
 #include "plugin/device/ascend/hal/device/ascend_label_assign.h"
 #include "runtime/device/kernel_adjust.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace device {
 namespace ascend {
 
@@ -50,4 +50,4 @@ void KernelAdjust::InsertOverflowCheckOperations(const std::shared_ptr<session::
   return;
 }
 }  // namespace device
-}  // namespace mindspore
+}  // namespace luojianet_ms

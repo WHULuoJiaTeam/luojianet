@@ -25,7 +25,7 @@
 #include "include/common/utils/utils.h"
 #include "include/common/utils/anfalgo.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWConstInputToTensorInput : public BackendCommon {
  public:
@@ -109,4 +109,4 @@ TEST_F(TestHWConstInputToTensorInput, test_value_tuple_tensor_input) {
   EXPECT_EQ(std::vector<int64_t>((int64_t *)data, (int64_t *)data + 4), std::vector<int64_t>({2, 4, 2, 2}));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

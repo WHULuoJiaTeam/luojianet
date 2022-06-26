@@ -25,10 +25,10 @@
 
 namespace py = pybind11;
 using pybind11::literals::operator"" _a;
-using Tensor = mindspore::tensor::Tensor;
-using TensorPtr = mindspore::tensor::TensorPtr;
+using Tensor = luojianet_ms::tensor::Tensor;
+using TensorPtr = luojianet_ms::tensor::TensorPtr;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace pynative {
 class TestPynativeExecute : public UT::Common {
  public:
@@ -46,7 +46,7 @@ inline ValuePtr PyAttrValue(const py::object &obj) {
 
 OpExecInfoPtr ConstructOpExecInfo() {
   py::str op_name = "Conv2D";
-  py::object tensor_py_module = py::module::import("mindspore.common.tensor").attr("Tensor");
+  py::object tensor_py_module = py::module::import("luojianet_ms.common.tensor").attr("Tensor");
   py::object np_py_module = py::module::import("numpy");
   py::object np_ones = np_py_module.attr("ones");
   py::object np_float32 = np_py_module.attr("float32");
@@ -93,4 +93,4 @@ TEST_F(TestPynativeExecute, TestDefaultContext) {
 }
 
 }  // namespace pynative
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -28,7 +28,7 @@
 #include "common/ge_inner_error_codes.h"
 #include "graph/utils/op_desc_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace device {
 namespace tiling {
 constexpr auto COMPILE_INFO_KEY = "compile_info_key";
@@ -105,4 +105,4 @@ ge::Operator OpTilingCalculateAdapter::AnfNodeToGeNodeAdapter(
 }
 }  // namespace tiling
 }  // namespace device
-}  // namespace mindspore
+}  // namespace luojianet_ms

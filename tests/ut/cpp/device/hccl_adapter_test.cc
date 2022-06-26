@@ -18,9 +18,9 @@
 #include "plugin/device/ascend/hal/hccl_adapter/all_to_all_v_calc_param.h"
 #include "backend/common/session/anf_runtime_algorithm.h"
 #include "include/common/utils/anfalgo.h"
-#include "mindspore/core/ir/dtype/type_id.h"
+#include "luojianet_ms/core/ir/dtype/type_id.h"
 
-namespace mindspore::hccl {
+namespace luojianet_ms::hccl {
 class TestHcclAdapter : public UT::Common {
  public:
   TestHcclAdapter() {}
@@ -343,4 +343,4 @@ TEST_F(TestHcclAdapter, test_all_to_all_v_calc_param_2p_wrong_order_and_invalid_
   AllToAllvCalcParam calc(alltoall, rank_size);
   ASSERT_ANY_THROW(calc.CalcOpParam());
 }
-}  // namespace mindspore::hccl
+}  // namespace luojianet_ms::hccl

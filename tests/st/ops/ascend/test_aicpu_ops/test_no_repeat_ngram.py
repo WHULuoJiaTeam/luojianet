@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +14,11 @@
 # limitations under the License.
 # ============================================================================
 import numpy as np
-import mindspore
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 FLT_MAX = 3.4028235e+38
 
@@ -43,7 +44,7 @@ def test_net():
                          [3, 4, 7, 4, 7, 6, 8],
                          [1, 9, 5, 7, 6, 9, 3],
                          [4, 8, 6, 4, 5, 6, 4],
-                         [4, 8, 8, 4, 3, 4, 8]]], dtype=mindspore.int32)
+                         [4, 8, 8, 4, 3, 4, 8]]], dtype=luojianet_ms.int32)
 
     log_probs = Tensor(np.random.random((2, 5, 10)).astype(np.float32))
     expect_log_probs = log_probs.asnumpy().copy()

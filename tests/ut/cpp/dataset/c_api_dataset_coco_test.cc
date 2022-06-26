@@ -16,10 +16,10 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::dsize_t;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::TensorShape;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::dsize_t;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -43,7 +43,7 @@ TEST_F(MindDataTestPipeline, TestCocoDefault) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -103,7 +103,7 @@ TEST_F(MindDataTestPipeline, TestCocoDefaultWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -160,7 +160,7 @@ TEST_F(MindDataTestPipeline, TestCocoDetection) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::string expect_file[] = {"000000391895", "000000318219", "000000554625",
@@ -178,20 +178,20 @@ TEST_F(MindDataTestPipeline, TestCocoDetection) {
     auto bbox = row["bbox"];
     auto category_id = row["category_id"];
 
-    mindspore::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
+    luojianet_ms::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
     EXPECT_MSTENSOR_EQ(image, expect_image);
 
     std::shared_ptr<Tensor> de_expect_bbox;
     dsize_t bbox_num = static_cast<dsize_t>(expect_bbox_vector[i].size() / 4);
     ASSERT_OK(Tensor::CreateFromVector(expect_bbox_vector[i], TensorShape({bbox_num, 4}), &de_expect_bbox));
-    mindspore::MSTensor expect_bbox =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_bbox));
+    luojianet_ms::MSTensor expect_bbox =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_bbox));
     EXPECT_MSTENSOR_EQ(bbox, expect_bbox);
 
     std::shared_ptr<Tensor> de_expect_categoryid;
     ASSERT_OK(Tensor::CreateFromVector(expect_catagoryid_list[i], TensorShape({bbox_num, 1}), &de_expect_categoryid));
-    mindspore::MSTensor expect_categoryid =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_categoryid));
+    luojianet_ms::MSTensor expect_categoryid =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_categoryid));
     EXPECT_MSTENSOR_EQ(category_id, expect_categoryid);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -256,7 +256,7 @@ TEST_F(MindDataTestPipeline, TestCocoKeypoint) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::string expect_file[] = {"000000391895", "000000318219"};
@@ -275,21 +275,21 @@ TEST_F(MindDataTestPipeline, TestCocoKeypoint) {
     auto keypoints = row["keypoints"];
     auto num_keypoints = row["num_keypoints"];
 
-    mindspore::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
+    luojianet_ms::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
     EXPECT_MSTENSOR_EQ(image, expect_image);
 
     std::shared_ptr<Tensor> de_expect_keypoints;
     dsize_t keypoints_size = expect_size[i][0];
     ASSERT_OK(Tensor::CreateFromVector(expect_keypoint_vector[i], TensorShape(expect_size[i]), &de_expect_keypoints));
-    mindspore::MSTensor expect_keypoints =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_keypoints));
+    luojianet_ms::MSTensor expect_keypoints =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_keypoints));
     EXPECT_MSTENSOR_EQ(keypoints, expect_keypoints);
 
     std::shared_ptr<Tensor> de_expect_num_keypoints;
     ASSERT_OK(Tensor::CreateFromVector(expect_num_keypoints_list[i], TensorShape({keypoints_size, 1}),
                                        &de_expect_num_keypoints));
-    mindspore::MSTensor expect_num_keypoints =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_num_keypoints));
+    luojianet_ms::MSTensor expect_num_keypoints =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_num_keypoints));
     EXPECT_MSTENSOR_EQ(num_keypoints, expect_num_keypoints);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -321,7 +321,7 @@ TEST_F(MindDataTestPipeline, TestCocoPanoptic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::string expect_file[] = {"000000391895", "000000574769"};
@@ -339,33 +339,33 @@ TEST_F(MindDataTestPipeline, TestCocoPanoptic) {
     auto iscrowd = row["iscrowd"];
     auto area = row["area"];
 
-    mindspore::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
+    luojianet_ms::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
     EXPECT_MSTENSOR_EQ(image, expect_image);
 
     std::shared_ptr<Tensor> de_expect_bbox;
     dsize_t bbox_size = expect_size[i][0];
     ASSERT_OK(Tensor::CreateFromVector(expect_bbox_vector[i], TensorShape(expect_size[i]), &de_expect_bbox));
-    mindspore::MSTensor expect_bbox =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_bbox));
+    luojianet_ms::MSTensor expect_bbox =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_bbox));
     EXPECT_MSTENSOR_EQ(bbox, expect_bbox);
 
     std::shared_ptr<Tensor> de_expect_categoryid;
     ASSERT_OK(
       Tensor::CreateFromVector(expect_categoryid_vector[i], TensorShape({bbox_size, 1}), &de_expect_categoryid));
-    mindspore::MSTensor expect_categoryid =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_categoryid));
+    luojianet_ms::MSTensor expect_categoryid =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_categoryid));
     EXPECT_MSTENSOR_EQ(category_id, expect_categoryid);
 
     std::shared_ptr<Tensor> de_expect_iscrowd;
     ASSERT_OK(Tensor::CreateFromVector(expect_iscrowd_vector[i], TensorShape({bbox_size, 1}), &de_expect_iscrowd));
-    mindspore::MSTensor expect_iscrowd =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_iscrowd));
+    luojianet_ms::MSTensor expect_iscrowd =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_iscrowd));
     EXPECT_MSTENSOR_EQ(iscrowd, expect_iscrowd);
 
     std::shared_ptr<Tensor> de_expect_area;
     ASSERT_OK(Tensor::CreateFromVector(expect_area_vector[i], TensorShape({bbox_size, 1}), &de_expect_area));
-    mindspore::MSTensor expect_area =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_area));
+    luojianet_ms::MSTensor expect_area =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_area));
     EXPECT_MSTENSOR_EQ(area, expect_area);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -423,7 +423,7 @@ TEST_F(MindDataTestPipeline, TestCocoStuff) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::string expect_file[] = {"000000391895", "000000318219", "000000554625",
@@ -443,14 +443,14 @@ TEST_F(MindDataTestPipeline, TestCocoStuff) {
     auto image = row["image"];
     auto segmentation = row["segmentation"];
 
-    mindspore::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
+    luojianet_ms::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
     EXPECT_MSTENSOR_EQ(image, expect_image);
 
     std::shared_ptr<Tensor> de_expect_segmentation;
     ASSERT_OK(
       Tensor::CreateFromVector(expect_segmentation_vector[i], TensorShape(expect_size[i]), &de_expect_segmentation));
-    mindspore::MSTensor expect_segmentation =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_segmentation));
+    luojianet_ms::MSTensor expect_segmentation =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_segmentation));
     EXPECT_MSTENSOR_EQ(segmentation, expect_segmentation);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -480,7 +480,7 @@ TEST_F(MindDataTestPipeline, TestCocoCaptioning) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::string expect_file[] = {"000000391895", "000000318219"};
   std::vector<std::vector<std::string>> expect_captions_vector = {
@@ -494,13 +494,13 @@ TEST_F(MindDataTestPipeline, TestCocoCaptioning) {
     auto image = row["image"];
     auto captions = row["captions"];
 
-    mindspore::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
+    luojianet_ms::MSTensor expect_image = ReadFileToTensor(folder_path + "/" + expect_file[i] + ".jpg");
     EXPECT_MSTENSOR_EQ(image, expect_image);
 
     std::shared_ptr<Tensor> de_expect_captions;
     ASSERT_OK(Tensor::CreateFromVector(expect_captions_vector[i], TensorShape(expect_size[i]), &de_expect_captions));
-    mindspore::MSTensor expect_captions =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_captions));
+    luojianet_ms::MSTensor expect_captions =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_captions));
     EXPECT_MSTENSOR_EQ(captions, expect_captions);
 
     ASSERT_OK(iter->GetNextRow(&row));

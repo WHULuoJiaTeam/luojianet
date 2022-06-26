@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +15,11 @@
 
 import numpy as np
 
-import mindspore as ms
-from mindspore import context, Tensor, Parameter
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import Cell, TrainOneStepCell, Momentum, BatchNorm2d, BatchNorm1d
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+from luojianet_ms import context, Tensor, Parameter
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum, BatchNorm2d, BatchNorm1d
+from luojianet_ms.ops import operations as P
 from tests.security_utils import security_off_wrap
 
 class Net(Cell):

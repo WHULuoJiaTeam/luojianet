@@ -20,7 +20,7 @@
 #include "ir/dtype/type.h"
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestFftImag : public UT::Common {
  public:
@@ -56,4 +56,4 @@ TEST_F(TestFftImag, test_ops_fftimag) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

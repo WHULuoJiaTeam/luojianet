@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 """test layer switch"""
 import numpy as np
 
-import mindspore
-from mindspore import nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.ops import operations as P
+import luojianet_ms
+from luojianet_ms import nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.ops import operations as P
 
 class Layer1(nn.Cell):
     def __init__(self):
@@ -88,8 +89,8 @@ class MySwitchNet(nn.Cell):
 def test_layer_switch():
     context.set_context(mode=context.GRAPH_MODE)
     net = MySwitchNet()
-    x = Tensor(np.ones((3, 3, 24, 24)), mindspore.float32)
-    index = Tensor(0, dtype=mindspore.int32)
+    x = Tensor(np.ones((3, 3, 24, 24)), luojianet_ms.float32)
+    index = Tensor(0, dtype=luojianet_ms.int32)
     net(x, index)
 
 class MySwitchNetPynative(nn.Cell):
@@ -108,7 +109,7 @@ class MySwitchNetPynative(nn.Cell):
 def test_layer_switch_pynative():
     context.set_context(mode=context.PYNATIVE_MODE)
     net = MySwitchNetPynative()
-    x = Tensor(np.ones((3, 3, 24, 24)), mindspore.float32)
-    index = Tensor(2, dtype=mindspore.int32)
+    x = Tensor(np.ones((3, 3, 24, 24)), luojianet_ms.float32)
+    index = Tensor(2, dtype=luojianet_ms.int32)
     net(x, index)
     context.set_context(mode=context.GRAPH_MODE)

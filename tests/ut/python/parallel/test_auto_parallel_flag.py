@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,15 +15,15 @@
 # ============================================================================
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore import context
-from mindspore.common import dtype as mstype
-from mindspore.nn.optim import Momentum
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
-from mindspore.train import Model
-from mindspore.train.loss_scale_manager import FixedLossScaleManager
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms import context
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train import Model
+from luojianet_ms.train.loss_scale_manager import FixedLossScaleManager
 from ....dataset_mock import MindData
 
 context.set_context(mode=context.GRAPH_MODE)

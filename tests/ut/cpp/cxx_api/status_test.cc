@@ -19,7 +19,7 @@
 #include "include/api/status.h"
 #undef private
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestCxxApiStatus : public UT::Common {
  public:
   TestCxxApiStatus() = default;
@@ -59,4 +59,4 @@ TEST_F(TestCxxApiStatus, test_status_string_SUCCESS) {
   Status status_1(kMDSyntaxError);
   ASSERT_EQ(Status::CodeAsString(status_1.StatusCode()), "Syntax error");
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

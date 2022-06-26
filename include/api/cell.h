@@ -1,5 +1,6 @@
 /**
- * Copyright 2020 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_CELL_H
-#define MINDSPORE_INCLUDE_API_CELL_H
+#ifndef LUOJIANET_MS_INCLUDE_API_CELL_H
+#define LUOJIANET_MS_INCLUDE_API_CELL_H
 #include <string>
 #include <vector>
 #include <map>
@@ -23,7 +24,7 @@
 #include "include/api/types.h"
 #include "include/api/graph.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class InputAndOutput;
 class Context;
 using Input = InputAndOutput;
@@ -131,5 +132,5 @@ class MS_API InputAndOutput {
   std::vector<InputAndOutput> prev_;
   int32_t index_;
 };
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_CELL_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_CELL_H

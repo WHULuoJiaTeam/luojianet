@@ -24,7 +24,7 @@
 #include "backend/common/optimizer/optimizer.h"
 #include "backend/common/pass/getitem_tuple.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWGetitemTuple : public BackendCommon {
  public:
@@ -48,4 +48,4 @@ TEST_F(TestHWGetitemTuple, test_getitem_tuple) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

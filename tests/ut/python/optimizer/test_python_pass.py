@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +15,16 @@
 # ============================================================================
 import numpy as np
 
-import mindspore
-import mindspore.nn as nn
-from mindspore import context
-from mindspore.common.tensor import Tensor
-from mindspore.ops import operations as P
-from mindspore.ops import _constants as Constants
-from mindspore.graph_utils.python_pass import register_pass, unregister_pass, set_renorm, gen_new_parameter, \
+import luojianet_ms
+import luojianet_ms.nn as nn
+from luojianet_ms import context
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import _constants as Constants
+from luojianet_ms.graph_utils.python_pass import register_pass, unregister_pass, set_renorm, gen_new_parameter, \
     cancel_new_parameter, set_reopt
-from mindspore._c_expression import GraphExecutor_
-from mindspore.graph_utils.graph_pattern import OneOf, Prim, Call, NoneOf, Any, NewTensor, NewParameter, Imm
+from luojianet_ms._c_expression import GraphExecutor_
+from luojianet_ms.graph_utils.graph_pattern import OneOf, Prim, Call, NoneOf, Any, NewTensor, NewParameter, Imm
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -41,7 +42,7 @@ def test_softmax_relu():
     """
     Use python pass to transform from Softmax to ReLU.
     """
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     @register_pass(run_only_once=True)
@@ -58,7 +59,7 @@ def test_softmax_relu():
 
 
 def test_prim():
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     @register_pass(run_only_once=True)
@@ -82,7 +83,7 @@ def test_softmax_relu_sigmoid():
     NOTE:
         Sigmoid pattern only exists in the target.
     """
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     @register_pass(run_only_once=True)
@@ -107,7 +108,7 @@ def test_isin_pattern_0():
     """
     Test IsIn pattern which expresses the IsIn/OneOf semantics.
     """
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     @register_pass(run_only_once=True)
@@ -133,7 +134,7 @@ def test_isin_pattern_1():
     """
     Test IsIn. IsIn is used as nested inputs for the target in this case.
     """
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     @register_pass(run_only_once=True)
@@ -167,11 +168,11 @@ def test_isnot_pattern_0():
         def __init__(self):
             super(ConvBN, self).__init__()
             self.conv = P.Conv2D(32, 3)
-            self.conv_weight = Tensor(np.ones([32, 32, 3, 3]), mindspore.float32)
-            self.scale = Tensor(np.ones([32]), mindspore.float32)
-            self.bias = Tensor(np.ones([32]), mindspore.float32)
-            self.mean = Tensor(np.ones([32]), mindspore.float32)
-            self.variance = Tensor(np.ones([32]), mindspore.float32)
+            self.conv_weight = Tensor(np.ones([32, 32, 3, 3]), luojianet_ms.float32)
+            self.scale = Tensor(np.ones([32]), luojianet_ms.float32)
+            self.bias = Tensor(np.ones([32]), luojianet_ms.float32)
+            self.mean = Tensor(np.ones([32]), luojianet_ms.float32)
+            self.variance = Tensor(np.ones([32]), luojianet_ms.float32)
             self.bn = P.BatchNorm()
 
         def construct(self, x):
@@ -179,7 +180,7 @@ def test_isnot_pattern_0():
             x = self.bn(x, self.scale, self.bias, self.mean, self.variance)
             return x
 
-    inputs = Tensor(np.random.normal(0, 1, (10, 32, 32, 32)), mindspore.float32)
+    inputs = Tensor(np.random.normal(0, 1, (10, 32, 32, 32)), luojianet_ms.float32)
     conv_bn_model = ConvBN()
 
     @register_pass(requires_grad=False, run_only_once=True)
@@ -216,7 +217,7 @@ def test_isnot_pattern_1():
     Test IsNot pattern which expresses the IsNot semantics.
     Case: IsNot pattern matches with the graph
     """
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     @register_pass(run_only_once=True)
@@ -244,7 +245,7 @@ def test_newtensor_pattern():
     """
     set_renorm(False)
     set_reopt(False)
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     @register_pass(requires_grad=False, run_only_once=True)
@@ -252,7 +253,7 @@ def test_newtensor_pattern():
         x = Any()
         pattern = Call(P.Softmax(), [x])
 
-        weight_tensor = Tensor(np.zeros([42]), mindspore.float16)
+        weight_tensor = Tensor(np.zeros([42]), luojianet_ms.float16)
         new_weight = NewTensor(weight_tensor)
         target = Call(P.AddN(), [x, new_weight])
         return pattern, target
@@ -268,7 +269,7 @@ def test_newparameter_pattern():
     """
     Test NewParameter pattern in the target
     """
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     set_renorm(False)
@@ -279,8 +280,8 @@ def test_newparameter_pattern():
         x = Any()
         pattern = Call(P.Softmax(), [x])
 
-        default_tensor0 = Tensor(np.ones((4, 4)), mindspore.float32)
-        default_tensor1 = Tensor(np.ones((4, 4)), mindspore.float32)
+        default_tensor0 = Tensor(np.ones((4, 4)), luojianet_ms.float32)
+        default_tensor1 = Tensor(np.ones((4, 4)), luojianet_ms.float32)
         new_para_0 = NewParameter("Merlin", default_tensor0)
         new_para_1 = NewParameter("Arthur", default_tensor1)
         target_0 = Call(P.MatMul(), [new_para_0, new_para_1])
@@ -298,7 +299,7 @@ def test_imm_target():
     """
     Test NewParameter pattern in the target
     """
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
     set_renorm(False)
@@ -324,10 +325,10 @@ def test_gen_new_parameter():
     """
     Test gen_new_parameter
     """
-    inputs = Tensor(np.ones([42]), mindspore.float16)
+    inputs = Tensor(np.ones([42]), luojianet_ms.float16)
     softmax_model = nn.Softmax()
 
-    default_tensor = Tensor(np.ones((4, 4)), mindspore.float32)
+    default_tensor = Tensor(np.ones((4, 4)), luojianet_ms.float32)
     new_para = NewParameter("Merlin", default_tensor)
     set_renorm(False)
     set_reopt(False)

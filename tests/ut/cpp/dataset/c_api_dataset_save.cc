@@ -18,7 +18,7 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "minddata/dataset/include/dataset/transforms.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -39,8 +39,8 @@ TEST_F(MindDataTestPipeline, TestSaveCifar10AndLoad) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
-  std::vector<mindspore::MSTensor> original_data;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> original_data;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Save original data for comparison
@@ -76,7 +76,7 @@ TEST_F(MindDataTestPipeline, TestSaveCifar10AndLoad) {
   // Create objects for the tensor ops
   // uint32 will be casted to int64 implicitly in mindrecord file, so we have to cast it back to uint32
   std::shared_ptr<TensorTransform> type_cast =
-    std::make_shared<transforms::TypeCast>(mindspore::DataType::kNumberTypeUInt32);
+    std::make_shared<transforms::TypeCast>(luojianet_ms::DataType::kNumberTypeUInt32);
   EXPECT_NE(type_cast, nullptr);
 
   // Create a Map operation on ds
@@ -89,7 +89,7 @@ TEST_F(MindDataTestPipeline, TestSaveCifar10AndLoad) {
   EXPECT_NE(iter_minddata, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row_minddata;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row_minddata;
   ASSERT_OK(iter_minddata->GetNextRow(&row_minddata));
 
   // Check column name for each row

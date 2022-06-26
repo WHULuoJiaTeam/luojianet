@@ -1,5 +1,6 @@
 /**
- * Copyright 2020 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_SERIALIZATION_H
-#define MINDSPORE_INCLUDE_API_SERIALIZATION_H
+#ifndef LUOJIANET_MS_INCLUDE_API_SERIALIZATION_H
+#define LUOJIANET_MS_INCLUDE_API_SERIALIZATION_H
 
 #include <string>
 #include <vector>
@@ -26,7 +27,7 @@
 #include "include/api/graph.h"
 #include "include/api/dual_abi_helper.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 /// \brief The Serialization class is used to summarize methods for reading and writing model files.
 class MS_API Serialization {
  public:
@@ -43,7 +44,7 @@ class MS_API Serialization {
   inline static Status Load(const void *model_data, size_t data_size, ModelType model_type, Graph *graph,
                             const Key &dec_key = {}, const std::string &dec_mode = kDecModeAesGcm);
 
-  /// \brief Loads a model file from path, is not supported on MindSpore Lite.
+  /// \brief Loads a model file from path, is not supported on LuoJiaNET Lite.
   ///
   /// \param[in] file The path of model file.
   /// \param[in] model_type The Type of model file, options are ModelType::kMindIR, ModelType::kOM.
@@ -55,7 +56,7 @@ class MS_API Serialization {
   inline static Status Load(const std::string &file, ModelType model_type, Graph *graph, const Key &dec_key = {},
                             const std::string &dec_mode = kDecModeAesGcm);
 
-  /// \brief Load multiple models from multiple files, MindSpore Lite does not provide this feature.
+  /// \brief Load multiple models from multiple files, LuoJiaNET Lite does not provide this feature.
   ///
   /// \param[in] files The path of model files.
   /// \param[in] model_type The Type of model file, options are ModelType::kMindIR, ModelType::kOM.
@@ -107,5 +108,5 @@ Status Serialization::ExportModel(const Model &model, ModelType model_type, cons
                      VectorStringToChar(output_tensor_name));
 }
 
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_SERIALIZATION_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_SERIALIZATION_H

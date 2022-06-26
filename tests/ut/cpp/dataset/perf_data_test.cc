@@ -19,7 +19,7 @@
 #include "minddata/dataset/engine/perf/cyclic_array.h"
 #include "minddata/dataset/engine/perf/perf_data.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPerfData : public UT::Common {
  public:

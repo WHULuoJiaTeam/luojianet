@@ -24,7 +24,7 @@
 #include "distributed/persistent/data.h"
 #include "utils/file_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace distributed {
 namespace persistent {
 class TestPersistStorage : public UT::Common {
@@ -100,4 +100,4 @@ TEST_F(TestPersistStorage, test_embedding_storage) {
 }
 }  // namespace persistent
 }  // namespace distributed
-}  // namespace mindspore
+}  // namespace luojianet_ms

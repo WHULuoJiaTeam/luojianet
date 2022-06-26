@@ -15,8 +15,8 @@
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 from util import dataset_equal
 
 

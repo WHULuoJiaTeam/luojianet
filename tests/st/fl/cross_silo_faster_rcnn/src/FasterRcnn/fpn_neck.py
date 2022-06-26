@@ -15,11 +15,11 @@
 """FasterRcnn feature pyramid network."""
 
 import numpy as np
-import mindspore.nn as nn
-from mindspore.ops import operations as P
-from mindspore.common.tensor import Tensor
-from mindspore.common import dtype as mstype
-from mindspore.common.initializer import initializer
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common.initializer import initializer
 
 
 def bias_init_zeros(shape):

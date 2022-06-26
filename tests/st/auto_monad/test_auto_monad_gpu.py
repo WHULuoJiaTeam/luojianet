@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,18 +18,18 @@ import re
 import subprocess
 import pytest
 import numpy as np
-import mindspore as ms
-import mindspore.ops.operations as P
-import mindspore.numpy as msnp
-from mindspore.nn import Cell
-from mindspore.nn import ReLU, BatchNorm2d, Conv2d, ParameterUpdate
-from mindspore.nn import Momentum
-from mindspore.nn import SoftmaxCrossEntropyWithLogits
-from mindspore import amp
-from mindspore import context, Tensor
-from mindspore.common import ParameterTuple
-from mindspore.common.parameter import Parameter
-from mindspore.ops.composite import GradOperation
+import luojianet_ms as ms
+import luojianet_ms.ops.operations as P
+import luojianet_ms.numpy as msnp
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import ReLU, BatchNorm2d, Conv2d, ParameterUpdate
+from luojianet_ms.nn import Momentum
+from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
+from luojianet_ms import amp
+from luojianet_ms import context, Tensor
+from luojianet_ms.common import ParameterTuple
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.ops.composite import GradOperation
 from tests.security_utils import security_off_wrap
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
@@ -158,7 +159,7 @@ class SideEffectControlFlowAssignDependWhileNet(Cell):
             self.assignadd(self.parameter1, z)
         return x
 
-    def grad_mindspore_impl(self, params1, params2, params3, grad_ys):
+    def grad_luojianet_ms_impl(self, params1, params2, params3, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params1, params2, params3, grad_ys)
@@ -221,7 +222,7 @@ class SideEffectTwoAssignTwoAddnDependencyNet(Cell):
         out = self.addN((out, self.parameter1, self.parameter2))
         return out
 
-    def grad_mindspore_impl(self, params, grad_ys):
+    def grad_luojianet_ms_impl(self, params, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params, grad_ys)

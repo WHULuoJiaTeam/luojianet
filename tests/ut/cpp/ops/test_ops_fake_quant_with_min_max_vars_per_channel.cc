@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 
 class TestFakeQuantWithMinMaxVarsPerChannel : public UT::Common {
@@ -69,4 +69,4 @@ TEST_F(TestFakeQuantWithMinMaxVarsPerChannel, test_ops_fake_quant_with_min_max_v
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

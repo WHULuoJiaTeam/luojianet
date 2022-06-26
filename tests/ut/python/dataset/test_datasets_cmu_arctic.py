@@ -18,8 +18,8 @@ Test CMUArctic dataset operators
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 
 DATA_DIR = "../data/dataset/testCMUArcticData"

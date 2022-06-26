@@ -7,7 +7,7 @@ else()
 endif()
 
 set(ompi_CXXFLAGS "-D_FORTIFY_SOURCE=2 -O2")
-mindspore_add_pkg(ompi
+luojianet_ms_add_pkg(ompi
         VER 4.0.3
         LIBS mpi
         URL ${REQ_URL}
@@ -15,4 +15,4 @@ mindspore_add_pkg(ompi
         PRE_CONFIGURE_COMMAND ./autogen.pl
         CONFIGURE_COMMAND ./configure)
 include_directories(${ompi_INC})
-add_library(mindspore::ompi ALIAS ompi::mpi)
+add_library(luojianet_ms::ompi ALIAS ompi::mpi)

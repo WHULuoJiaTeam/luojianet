@@ -18,11 +18,11 @@ from functools import reduce
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.common import dtype as mstype
-import mindspore.ops as ops
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.common import dtype as mstype
+import luojianet_ms.ops as ops
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 

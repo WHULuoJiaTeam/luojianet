@@ -16,10 +16,10 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::DataType;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::TensorShape;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::DataType;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -42,7 +42,7 @@ TEST_F(MindDataTestPipeline, TestUSPSTrainDataset) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("image"), row.end());
@@ -79,7 +79,7 @@ TEST_F(MindDataTestPipeline, TestUSPSTestDataset) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("image"), row.end());
@@ -116,7 +116,7 @@ TEST_F(MindDataTestPipeline, TestUSPSAllDataset) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("image"), row.end());
@@ -174,7 +174,7 @@ TEST_F(MindDataTestPipeline, TestUSPSDatasetWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("image"), row.end());
@@ -216,7 +216,7 @@ TEST_F(MindDataTestPipeline, TestUSPSIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<int64_t> expect_image = {1, 16, 16, 1};
 
@@ -245,7 +245,7 @@ TEST_F(MindDataTestPipeline, TestUSPSIteratorWrongColumn) {
   std::string folder_path = datasets_root_path_ + "/testUSPSDataset/";
   std::shared_ptr<Dataset> ds = USPS(folder_path, "train");
   EXPECT_NE(ds, nullptr);
-  
+
   // Pass wrong column name
   std::vector<std::string> columns = {"digital"};
   std::shared_ptr<Iterator> iter = ds->CreateIterator(columns);

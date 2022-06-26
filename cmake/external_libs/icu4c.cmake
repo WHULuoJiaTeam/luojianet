@@ -6,8 +6,8 @@ if(ENABLE_GITEE_EULER)
     set(GIT_REPOSITORY "https://gitee.com/src-openeuler/icu.git")
     set(GIT_TAG "openEuler-22.03-LTS")
     set(MD5 "fa4070da839ce75469a8de962f2a0c2a")
-    set(ICU4C_SRC "${TOP_DIR}/build/mindspore/_deps/icu4c-src/icu4c")
-    set(ICU4C_TAR_SRC "${TOP_DIR}/build/mindspore/_deps/icu4c-src")
+    set(ICU4C_SRC "${TOP_DIR}/build/luojianet_ms/_deps/icu4c-src/icu4c")
+    set(ICU4C_TAR_SRC "${TOP_DIR}/build/luojianet_ms/_deps/icu4c-src")
     __download_pkg_with_git(icu4c ${GIT_REPOSITORY} ${GIT_TAG} ${MD5})
     execute_process(COMMAND mkdir ${ICU4C_SRC})
     execute_process(COMMAND tar -xf ${ICU4C_TAR_SRC}/icu4c-69_1-src.tgz --strip-components 1 -C ${ICU4C_SRC})
@@ -33,7 +33,7 @@ else()
     ")
     file(WRITE ${CMAKE_BINARY_DIR}/icu4c_filter.json ${JSON_FILE})
     if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-        mindspore_add_pkg(icu4c
+        luojianet_ms_add_pkg(icu4c
                 VER 69.1
                 LIBS ${LIB_ICU_COMMON} ${LIB_ICU_DATA} ${LIB_ICU_I18N}
                 URL ${REQ_URL}
@@ -44,7 +44,7 @@ else()
                                   ICU_DATA_FILTER_FILE=${CMAKE_BINARY_DIR}/icu4c_filter.json
                 )
     else()
-        mindspore_add_pkg(icu4c
+        luojianet_ms_add_pkg(icu4c
                 VER 69.1
                 LIBS ${LIB_ICU_COMMON} ${LIB_ICU_DATA} ${LIB_ICU_I18N}
                 URL ${REQ_URL}
@@ -62,8 +62,8 @@ else()
         changerpath($<TARGET_FILE:icu4c::${LIB_ICU_DATA}> ${LIB_ICU_DATA} "libicudata")
         changerpath($<TARGET_FILE:icu4c::${LIB_ICU_I18N}> ${LIB_ICU_I18N} "libicuuc;libicudata;libicui18n")
     endif()
-    add_library(mindspore::icuuc ALIAS icu4c::${LIB_ICU_COMMON})
-    add_library(mindspore::icudata ALIAS icu4c::${LIB_ICU_DATA})
-    add_library(mindspore::icui18n ALIAS icu4c::${LIB_ICU_I18N})
+    add_library(luojianet_ms::icuuc ALIAS icu4c::${LIB_ICU_COMMON})
+    add_library(luojianet_ms::icudata ALIAS icu4c::${LIB_ICU_DATA})
+    add_library(luojianet_ms::icui18n ALIAS icu4c::${LIB_ICU_I18N})
     add_definitions(-D ENABLE_ICU4C)
 endif()

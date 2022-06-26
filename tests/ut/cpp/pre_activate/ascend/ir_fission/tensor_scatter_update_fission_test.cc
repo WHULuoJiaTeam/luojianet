@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fission/tensor_scatter_update_fission.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptTensorScatterUpdateFission : public BackendCommon {
  public:
@@ -53,4 +53,4 @@ TEST_F(TestHWOptTensorScatterUpdateFission, test_fission) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

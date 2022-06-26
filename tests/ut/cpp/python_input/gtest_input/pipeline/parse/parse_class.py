@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,10 +22,10 @@
 import logging
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore.common.api import _cell_graph_executor
-from mindspore.common.parameter import Parameter
-from mindspore.common.tensor import Tensor
+import luojianet_ms.nn as nn
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.tensor import Tensor
 
 log = logging.getLogger("test")
 log.setLevel(level=logging.ERROR)

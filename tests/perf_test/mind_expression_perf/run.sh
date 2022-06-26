@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +24,7 @@ work_dir="/opt/npu/me_monitor"
 me_report_path=$work_dir/logs/ME_report_daily.xlsx
 log_dir=logs_$(date "+%m%d-%H%M")
 log_path=$work_dir/logs/$log_dir
-ms_master="https://gitee.com/mindspore/mindspore.git"
+ms_master="https://gitee.com/luojianet_ms/luojianet_ms.git"
 log_data="data.json"
 ci_mode=true
 
@@ -60,22 +61,22 @@ echo "Args: days=$days, iter=$iter, log_path=$log_path"
 cd $work_dir
 
 echo $WORKSPACE
-WORKSPACE=/home/jenkins-slave/workspace/MindSpore_Network_reid_compile_performance
+WORKSPACE=/home/jenkins-slave/workspace/LuoJiaNET_Network_reid_compile_performance
 echo $WORKSPACE
 
 if [ $stage -le 1 ]; then
     echo ""
-    echo "===========Stage 1: Fetching latest mindspore from master==========="
-    if [ -d mindspore ]; then
-        rm -rf mindspore
+    echo "===========Stage 1: Fetching latest luojianet_ms from master==========="
+    if [ -d luojianet_ms ]; then
+        rm -rf luojianet_ms
     fi
     git clone $ms_master
 fi
 
 if [ $stage -le 2 ]; then
     echo ""
-    echo "===========Stage 2: Building mindspore==========="
-    cd $work_dir/mindspore
+    echo "===========Stage 2: Building luojianet_ms==========="
+    cd $work_dir/luojianet_ms
     bash build.sh -e ascend -j $n_worker -p on
 fi
 
@@ -106,13 +107,13 @@ if [ $stage -le 3 ]; then
     cd $work_dir
     for count in $(seq 1 $iter); do
         echo "[INFO] Compiling BERT, iteration $count"
-        pytest -s mindspore/tests/perf_test/bert/test_bert_train.py::test_bert_train | tee $log_path/bert$count.log
+        pytest -s luojianet_ms/tests/perf_test/bert/test_bert_train.py::test_bert_train | tee $log_path/bert$count.log
     done
-    
+
     # Compiling ResNet50
     for count in $(seq 1 $iter); do
         echo "[INFO] Compiling ResNet50, iteration $count"
-        pytest -s mindspore/tests/perf_test/test_resnet_train.py::test_train_step | tee $log_path/resnet$count.log
+        pytest -s luojianet_ms/tests/perf_test/test_resnet_train.py::test_train_step | tee $log_path/resnet$count.log
     done
 
     # Compiling GPT
@@ -140,7 +141,7 @@ if [ $stage -le 5 ]; then
 
     if [ $ci_mode ]; then
         echo "copying file to artifacts"
-        mkdir -p ${WORKSPACE}/archive 
+        mkdir -p ${WORKSPACE}/archive
         cp $log_path/reports/* ${WORKSPACE}/archive
     fi
 fi

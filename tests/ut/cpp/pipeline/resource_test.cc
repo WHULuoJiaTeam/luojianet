@@ -22,10 +22,10 @@
 #include "ir/primitive.h"
 #include "frontend/operator/ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace pipeline {
 
-using MethodMap = mindspore::HashMap<int64_t, mindspore::HashMap<std::string, Any>>;
+using MethodMap = luojianet_ms::HashMap<int64_t, luojianet_ms::HashMap<std::string, Any>>;
 
 extern MethodMap& GetMethodMap();
 
@@ -73,4 +73,4 @@ TEST_F(TestResource, test_built_in_type_map) {
 }
 
 }  // namespace pipeline
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -22,7 +22,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 class SparseApplyProximalAdagradCpuKernelTest : public UT::Common {
  public:
@@ -160,4 +160,4 @@ TEST_F(SparseApplyProximalAdagradCpuKernelTest, sparse_test2) {
   }
 }
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

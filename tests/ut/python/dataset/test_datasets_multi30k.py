@@ -14,9 +14,9 @@
 # ==============================================================================
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.text.transforms as a_c_trans
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text.transforms as a_c_trans
+from luojianet_ms import log as logger
 from util import config_get_set_num_parallel_workers, config_get_set_seed
 
 INVALID_FILE = '../data/dataset/testMulti30kDataset/invalid_dir'

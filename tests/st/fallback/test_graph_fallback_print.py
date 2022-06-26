@@ -20,8 +20,8 @@ import tempfile
 from contextlib import contextmanager
 import pytest
 import numpy as np
-import mindspore.nn as nn
-from mindspore import Tensor, ms_function, context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, ms_function, context
 from tests.security_utils import security_off_wrap
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
@@ -313,7 +313,7 @@ def test_print_string_format():
     """
     @ms_function
     def print_func():
-        print("I'm %s. I'm %d years old." % ('MindSpore', 3))
+        print("I'm %s. I'm %d years old." % ('LuoJiaNET', 3))
         return 0
 
     cap = Capture()
@@ -322,5 +322,5 @@ def test_print_string_format():
         assert res == 0
         time.sleep(0.1)
 
-    patterns = {"I'm MindSpore. I'm 3 years old.\n"}
+    patterns = {"I'm LuoJiaNET. I'm 3 years old.\n"}
     check_output(cap.output, patterns)

@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2022 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,26 +15,26 @@
 # limitations under the License.
 # ============================================================================
 
-# Prepare and Install mindspore ascend by pip on EulerOS 2.8.
+# Prepare and Install luojianet_ms ascend by pip on EulerOS 2.8.
 #
 # This file will:
-#   - install mindspore dependencies via apt like gcc, libgmp
-#   - install conda and set up environment for mindspore
+#   - install luojianet_ms dependencies via apt like gcc, libgmp
+#   - install conda and set up environment for luojianet_ms
 #
 # Augments:
 #   - PYTHON_VERSION: python version to set up. [3.7(default), 3.8, 3.9]
-#   - MINDSPORE_VERSION: mindspore version to install, >=1.6.0, required
+#   - LUOJIANET_MS_VERSION: luojianet_ms version to install, >=1.6.0, required
 #   - LOCAL_ASCEND: Ascend AI software package installed path, default /usr/local/Ascend.
 #   - OPENMPI: whether to install optional package Open MPI for distributed training. [on, off(default)]
 #
 # Usage:
-#   Run script like `MINDSPORE_VERSION=1.7.0 bash ./euleros-ascend-pip.sh`.
-#   To set augments, run it as `PYTHON_VERSION=3.9 MINDSPORE_VERSION=1.6.0 bash ./euleros-ascend-pip.sh`.
+#   Run script like `LUOJIANET_MS_VERSION=1.7.0 bash ./euleros-ascend-pip.sh`.
+#   To set augments, run it as `PYTHON_VERSION=3.9 LUOJIANET_MS_VERSION=1.6.0 bash ./euleros-ascend-pip.sh`.
 
 set -e
 
 PYTHON_VERSION=${PYTHON_VERSION:-3.7}
-MINDSPORE_VERSION=${MINDSPORE_VERSION:-EMPTY}
+LUOJIANET_MS_VERSION=${LUOJIANET_MS_VERSION:-EMPTY}
 LOCAL_ASCEND=${LOCAL_ASCEND:-/usr/local/Ascend}
 OPENMPI=${OPENMPI:-off}
 
@@ -41,8 +42,8 @@ version_less() {
     test "$(echo "$@" | tr ' ' '\n' | sort -rV | head -n 1)" != "$1";
 }
 
-if [ $MINDSPORE_VERSION == "EMPTY" ] || version_less "${MINDSPORE_VERSION}" "1.6.0"; then
-    echo "MINDSPORE_VERSION should be >=1.6.0, please check available versions at https://www.mindspore.cn/versions."
+if [ $LUOJIANET_MS_VERSION == "EMPTY" ] || version_less "${LUOJIANET_MS_VERSION}" "1.6.0"; then
+    echo "LUOJIANET_MS_VERSION should be >=1.6.0, please check available versions at https://www.luojianet_ms.cn/versions."
     exit 1
 fi
 
@@ -58,9 +59,9 @@ if ! (ls ${LOCAL_ASCEND}/ascend-toolkit/latest/fwkacllib/lib64/topi-*-py3-none-a
 fi
 
 declare -A version_map=()
-version_map["3.7"]="${MINDSPORE_VERSION/-/}-cp37-cp37m"
-version_map["3.8"]="${MINDSPORE_VERSION/-/}-cp38-cp38"
-version_map["3.9"]="${MINDSPORE_VERSION/-/}-cp39-cp39"
+version_map["3.7"]="${LUOJIANET_MS_VERSION/-/}-cp37-cp37m"
+version_map["3.8"]="${LUOJIANET_MS_VERSION/-/}-cp38-cp38"
+version_map["3.9"]="${LUOJIANET_MS_VERSION/-/}-cp39-cp39"
 
 # add value to environment variable if value is not in it
 add_env() {
@@ -110,7 +111,7 @@ fi
 set -e
 
 # set up conda env
-env_name=mindspore_py3${PYTHON_VERSION##*.}
+env_name=luojianet_ms_py3${PYTHON_VERSION##*.}
 conda create -n $env_name python=${PYTHON_VERSION} -c conda-forge -y
 conda activate $env_name
 
@@ -136,4 +137,4 @@ if [[ X"$OPENMPI" == "Xon" ]]; then
 fi
 
 ARCH=`uname -m`
-pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MINDSPORE_VERSION}/MindSpore/ascend/${ARCH}/mindspore_ascend-${version_map["$PYTHON_VERSION"]}-linux_${ARCH}.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${LUOJIANET_MS_VERSION}/LuoJiaNET/ascend/${ARCH}/luojianet_ms_ascend-${version_map["$PYTHON_VERSION"]}-linux_${ARCH}.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple

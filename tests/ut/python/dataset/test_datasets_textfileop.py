@@ -13,8 +13,8 @@
 # limitations under the License.
 # ==============================================================================
 import pytest
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 from util import config_get_set_num_parallel_workers, config_get_set_seed
 
 
@@ -184,7 +184,7 @@ def test_textline_dataset_repeat():
 
 def test_textline_dataset_output_tensor():
     """
-    Feature: Test text dataset output string and construct mindspore.Tensor.
+    Feature: Test text dataset output string and construct luojianet_ms.Tensor.
     Description: set output_numpy=False in create_dict_iterator.
     Expectation: output tensor successfully
     """

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +19,10 @@ Testing AmplitudeToDB op in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as c_audio
-from mindspore import log as logger
-from mindspore.dataset.audio.utils import ScaleType
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as c_audio
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.audio.utils import ScaleType
 
 CHANNEL = 1
 FREQ = 20
@@ -54,7 +55,7 @@ def allclose_nparray(data_expected, data_me, rtol, atol, equal_nan=True):
 
 
 def test_func_amplitude_to_db_eager():
-    """ mindspore eager mode normal testcase:amplitude_to_db op"""
+    """ luojianet_ms eager mode normal testcase:amplitude_to_db op"""
 
     logger.info("check amplitude_to_db op output")
     ndarr_in = np.array([[[[-0.2197528, 0.3821656]]],
@@ -74,13 +75,13 @@ def test_func_amplitude_to_db_eager():
                            [[[-1.1358725, -81.13587]]]]).astype(np.float32)
 
     amplitude_to_db_op = c_audio.AmplitudeToDB()
-    out_mindspore = amplitude_to_db_op(ndarr_in)
+    out_luojianet_ms = amplitude_to_db_op(ndarr_in)
 
-    allclose_nparray(out_mindspore, out_expect, 0.0001, 0.0001)
+    allclose_nparray(out_luojianet_ms, out_expect, 0.0001, 0.0001)
 
 
 def test_func_amplitude_to_db_pipeline():
-    """ mindspore pipeline mode normal testcase:amplitude_to_db op"""
+    """ luojianet_ms pipeline mode normal testcase:amplitude_to_db op"""
 
     logger.info("test AmplitudeToDB op with default value")
     generator = gen([CHANNEL, FREQ, TIME])

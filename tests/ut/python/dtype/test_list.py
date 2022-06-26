@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,16 +17,16 @@ import functools
 import numpy as np
 
 import pytest
-import mindspore.nn as nn
-import mindspore.context as context
-import mindspore as ms
-from mindspore import Tensor
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore.common import dtype as mstype
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+import luojianet_ms as ms
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms.common import dtype as mstype
 from tests.ut.python.ut_filter import non_graph_engine
-from tests.mindspore_test_framework.mindspore_test import mindspore_test
-from tests.mindspore_test_framework.pipeline.forward.compile_forward \
+from tests.luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
+from tests.luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config
 
 context.set_context(mode=context.GRAPH_MODE)
@@ -317,7 +318,7 @@ test_exec_case = functools.reduce(lambda x, y: x + y, test_case_lists)
 
 
 @non_graph_engine
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
 def test_exec():
     context.set_context(mode=context.GRAPH_MODE)
     return test_exec_case

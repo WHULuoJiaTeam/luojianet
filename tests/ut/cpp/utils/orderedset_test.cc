@@ -26,7 +26,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
-namespace mindspore {
+namespace luojianet_ms {
 
 class TestOrderedSet : public UT::Common {
  public:
@@ -175,4 +175,4 @@ TEST_F(TestOrderedSet, test_map_assign) {
   ASSERT_EQ(m[30], m1[30]);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

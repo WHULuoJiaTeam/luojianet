@@ -17,8 +17,8 @@ Test OBSMindDataset operator
 """
 import pytest
 
-from mindspore.dataset.engine.datasets_standard_format import OBSMindDataset
-from mindspore import log as logger
+from luojianet_ms.dataset.engine.datasets_standard_format import OBSMindDataset
+from luojianet_ms import log as logger
 
 DATA_DIR = ["s3://dataset/imagenet0", "s3://dataset/imagenet1"]
 

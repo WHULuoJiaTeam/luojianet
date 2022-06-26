@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,14 +18,14 @@
 import math
 import copy
 import numpy as np
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-import mindspore.ops.functional as F
-from mindspore.common.initializer import TruncatedNormal, initializer
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore.common.tensor import Tensor
-from mindspore.common.parameter import Parameter
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.functional as F
+from luojianet_ms.common.initializer import TruncatedNormal, initializer
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.common.parameter import Parameter
 
 
 class BertConfig:
@@ -56,8 +57,8 @@ class BertConfig:
                                  dataset. Default: True.
         token_type_ids_from_dataset (bool): Specifies whether to use the token type ids that loaded
                                      from dataset. Default: True.
-        dtype (:class:`mindspore.dtype`): Data type of the input. Default: mstype.float32.
-        compute_type (:class:`mindspore.dtype`): Compute type in BertTransformer. Default: mstype.float32.
+        dtype (:class:`luojianet_ms.dtype`): Data type of the input. Default: mstype.float32.
+        compute_type (:class:`luojianet_ms.dtype`): Compute type in BertTransformer. Default: mstype.float32.
     """
     def __init__(self,
                  batch_size,
@@ -235,7 +236,7 @@ class BertOutput(nn.Cell):
         out_channels (int): Output channels.
         initializer_range (float): Initialization value of TruncatedNormal. Default: 0.02.
         dropout_prob (float): The dropout probability. Default: 0.1.
-        compute_type (:class:`mindspore.dtype`): Compute type in BertTransformer. Default: mstype.float32.
+        compute_type (:class:`luojianet_ms.dtype`): Compute type in BertTransformer. Default: mstype.float32.
     """
     def __init__(self,
                  in_channels,
@@ -359,8 +360,8 @@ class SaturateCast(nn.Cell):
     the danger that the value will overflow or underflow.
 
     Args:
-        src_type (:class:`mindspore.dtype`): The type of the elements of the input tensor. Default: mstype.float32.
-        dst_type (:class:`mindspore.dtype`): The type of the elements of the output tensor. Default: mstype.float32.
+        src_type (:class:`luojianet_ms.dtype`): The type of the elements of the input tensor. Default: mstype.float32.
+        dst_type (:class:`luojianet_ms.dtype`): The type of the elements of the output tensor. Default: mstype.float32.
     """
     def __init__(self, src_type=mstype.float32, dst_type=mstype.float32):
         super(SaturateCast, self).__init__()
@@ -405,7 +406,7 @@ class BertAttention(nn.Cell):
         do_return_2d_tensor (bool): True for return 2d tensor. False for return 3d
                              tensor. Default: False.
         use_relative_positions (bool): Specifies whether to use relative positions. Default: False.
-        compute_type (:class:`mindspore.dtype`): Compute type in BertAttention. Default: mstype.float32.
+        compute_type (:class:`luojianet_ms.dtype`): Compute type in BertAttention. Default: mstype.float32.
     """
     def __init__(self,
                  batch_size,
@@ -597,7 +598,7 @@ class BertSelfAttention(nn.Cell):
         initializer_range (float): Initialization value of TruncatedNormal. Default: 0.02.
         hidden_dropout_prob (float): The dropout probability for BertOutput. Default: 0.1.
         use_relative_positions (bool): Specifies whether to use relative positions. Default: False.
-        compute_type (:class:`mindspore.dtype`): Compute type in BertSelfAttention. Default: mstype.float32.
+        compute_type (:class:`luojianet_ms.dtype`): Compute type in BertSelfAttention. Default: mstype.float32.
     """
     def __init__(self,
                  batch_size,
@@ -667,7 +668,7 @@ class BertEncoderCell(nn.Cell):
         hidden_dropout_prob (float): The dropout probability for BertOutput. Default: 0.1.
         use_relative_positions (bool): Specifies whether to use relative positions. Default: False.
         hidden_act (str): Activation function. Default: "gelu".
-        compute_type (:class:`mindspore.dtype`): Compute type in attention. Default: mstype.float32.
+        compute_type (:class:`luojianet_ms.dtype`): Compute type in attention. Default: mstype.float32.
     """
     def __init__(self,
                  batch_size,
@@ -735,7 +736,7 @@ class BertTransformer(nn.Cell):
         hidden_dropout_prob (float): The dropout probability for BertOutput. Default: 0.1.
         use_relative_positions (bool): Specifies whether to use relative positions. Default: False.
         hidden_act (str): Activation function used in the encoder cells. Default: "gelu".
-        compute_type (:class:`mindspore.dtype`): Compute type in BertTransformer. Default: mstype.float32.
+        compute_type (:class:`luojianet_ms.dtype`): Compute type in BertTransformer. Default: mstype.float32.
         return_all_encoders (bool): Specifies whether to return all encoders. Default: False.
     """
     def __init__(self,

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 import pytest
 import numpy as np
 
-import mindspore
-from mindspore import Tensor
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore.ops import composite as C
+import luojianet_ms
+from luojianet_ms import Tensor
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms.ops import composite as C
 
 
 class NetBatchDot(nn.Cell):
@@ -70,8 +71,8 @@ def test_batch_dot_fp32():
     axes = (-1, -2)
     x1 = np.ones(shape=shape_x1).astype(np.float32)
     x2 = np.ones(shape=shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -85,8 +86,8 @@ def test_batch_dot_fp32():
     axes = 2
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -100,8 +101,8 @@ def test_batch_dot_fp32():
     axes = -1
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -115,8 +116,8 @@ def test_batch_dot_fp32():
     axes = None
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -130,8 +131,8 @@ def test_batch_dot_fp32():
     axes = None
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -145,8 +146,8 @@ def test_batch_dot_fp32():
     axes = None
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -160,8 +161,8 @@ def test_batch_dot_fp32():
     axes = None
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -175,8 +176,8 @@ def test_batch_dot_fp32():
     axes = -1
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -190,8 +191,8 @@ def test_batch_dot_fp32():
     axes = (-1, -2)
     x1 = np.ones(shape=shape_x1).astype(np.float32)
     x2 = np.ones(shape=shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -204,8 +205,8 @@ def test_batch_dot_fp32():
     axes = -2
     x1 = np.ones(shape=shape_x1).astype(np.float32)
     x2 = np.ones(shape=shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetBatchDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()

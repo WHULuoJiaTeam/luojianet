@@ -22,7 +22,7 @@
 #include "frontend/operator/ops.h"
 #include "abstract/utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 
 class TestData : public UT::Common {
@@ -158,7 +158,7 @@ TEST_F(TestData, test_clone) {
 
   std::vector<AbstractAttribute> attr = {{"x", std::make_shared<AbstractScalar>(kAnyValue, kInt64)},
                                          {"y", std::make_shared<AbstractScalar>(kAnyValue, kInt64)}};
-  mindspore::HashMap<std::string, ValuePtr> methods;
+  luojianet_ms::HashMap<std::string, ValuePtr> methods;
   AbstractBasePtr c1 = std::make_shared<AbstractClass>(Named("Point"), attr, methods);
   AbstractBasePtr c2 = c1->Clone();
   ASSERT_EQ(*c1, *c2);
@@ -197,4 +197,4 @@ TEST_F(TestData, test_broaden) {
 }
 
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms

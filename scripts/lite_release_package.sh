@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2020-2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,12 +21,12 @@ function android_release_package()
 {
     arch=$1
     device=$2
-    pkg_name="mindspore-lite-${version}-android-${arch}"
+    pkg_name="luojianet_ms-lite-${version}-android-${arch}"
 
     rm -rf ${pkg_name}
     tar -xzf ${input_path}/android_${arch}/${device}/${pkg_name}.tar.gz
     # Copy java runtime to Android package
-    cp ${input_path}/aar/mindspore-lite-*.aar ${pkg_name}
+    cp ${input_path}/aar/luojianet_ms-lite-*.aar ${pkg_name}
 
     mkdir -p ${output_path}/release/android/${device}/
     tar -czf ${output_path}/release/android/${device}/${pkg_name}.tar.gz ${pkg_name}
@@ -79,7 +80,7 @@ echo "Usage: bash lite_release_package.sh input_path output_path"
 
 input_path=$1
 output_path=$2
-version=`ls ${input_path}/android_aarch64/npu/mindspore-lite-*-*.tar.gz | awk -F'/' '{print $NF}' | cut -d"-" -f3`
+version=`ls ${input_path}/android_aarch64/npu/luojianet_ms-lite-*-*.tar.gz | awk -F'/' '{print $NF}' | cut -d"-" -f3`
 
 android_release_package aarch32 npu
 android_release_package aarch32 cpu

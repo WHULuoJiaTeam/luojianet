@@ -22,7 +22,7 @@
 #include "pipeline/jit/static_analysis/static_analysis.h"
 #include "include/common/utils/convert_utils_py.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 extern size_t TOTAL_OPS;
 class TestStepParallel : public UT::Common {
@@ -205,14 +205,14 @@ FuncGraphManagerPtr Make_Manager(int64_t condition = 0) {
 
 TEST_F(TestStepParallel, GetPythonPath1) {
   OperatorName operator_name = "AllReduce";
-  const std::string expect = "mindspore.ops.operations";
+  const std::string expect = "luojianet_ms.ops.operations";
   auto temp = parallel::GetOpPythonPath(operator_name);
   ASSERT_EQ(temp, expect);
 }
 
 TEST_F(TestStepParallel, GetPythonPath2) {
   OperatorName operator_name = "Add";
-  const std::string expect = "mindspore.ops.operations";
+  const std::string expect = "luojianet_ms.ops.operations";
   auto temp = parallel::GetOpPythonPath(operator_name);
   ASSERT_EQ(temp, expect);
 }
@@ -220,7 +220,7 @@ TEST_F(TestStepParallel, GetPythonPath2) {
 TEST_F(TestStepParallel, ExtractStrategy) {
   Dimensions v1 = {2, 2};
   Dimensions v2 = {4, 4};
-  mindspore::HashMap<std::string, ValuePtr> attrs;
+  luojianet_ms::HashMap<std::string, ValuePtr> attrs;
   // stage
   ValuePtr val1 = MakeValue(v1);
   ValuePtr val2 = MakeValue(v2);
@@ -296,9 +296,9 @@ TEST_F(TestStepParallel, CreateOpInstance) {
     (void)std::transform(attrs.begin(), attrs.end(), std::back_inserter(arglist),
                          [](Attr attr) { return ValueToPyData(attr.second); });
     py::object allreduce_pyobj = python_adapter::CallPyFn(
-      "mindspore.parallel._utils", "_get_python_op", "AllReduce", "mindspore.ops.operations", "test", arglist);
+      "luojianet_ms.parallel._utils", "_get_python_op", "AllReduce", "luojianet_ms.ops.operations", "test", arglist);
     py::dict opAttr = py::getattr(allreduce_pyobj, "attrs");
-    mindspore::HashMap<std::string, ValuePtr> attributes{};
+    luojianet_ms::HashMap<std::string, ValuePtr> attributes{};
     for (auto item : opAttr) {
       if (!py::isinstance<py::str>(item.first)) {
         MS_LOG(EXCEPTION) << "type error in py dict convert";
@@ -528,4 +528,4 @@ TEST_F(TestStepParallel, GetTensorInLayout) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

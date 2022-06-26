@@ -19,14 +19,14 @@ import os
 import time
 import numpy as np
 
-import mindspore.common.dtype as mstype
-from mindspore import context, Tensor, Parameter
-from mindspore.train.callback import TimeMonitor, FederatedLearningManager
-from mindspore.train import Model
-from mindspore.train.serialization import load_checkpoint, load_param_into_net
-from mindspore.train.serialization import save_checkpoint
-from mindspore.nn import SGD
-from mindspore.common import set_seed
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms import context, Tensor, Parameter
+from luojianet_ms.train.callback import TimeMonitor, FederatedLearningManager
+from luojianet_ms.train import Model
+from luojianet_ms.train.serialization import load_checkpoint, load_param_into_net
+from luojianet_ms.train.serialization import save_checkpoint
+from luojianet_ms.nn import SGD
+from luojianet_ms.common import set_seed
 
 from src.network_define import LossCallBack, WithLossCell, TrainOneStepCell, LossNet
 from src.dataset import create_fasterrcnn_dataset

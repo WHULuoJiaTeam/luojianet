@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,10 +15,10 @@
 # ============================================================================
 """evaluation metric."""
 
-from mindspore.communication.management import GlobalComm
-from mindspore.ops import operations as P
-import mindspore.nn as nn
-import mindspore.common.dtype as mstype
+from luojianet_ms.communication.management import GlobalComm
+from luojianet_ms.ops import operations as P
+import luojianet_ms.nn as nn
+import luojianet_ms.common.dtype as mstype
 
 
 class ClassifyCorrectCell(nn.Cell):

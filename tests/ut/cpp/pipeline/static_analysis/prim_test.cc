@@ -29,7 +29,7 @@
 #include "utils/symbolic.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 namespace py = pybind11;
 class UTPrimUtils {
@@ -110,7 +110,7 @@ static FuncGraphPtr MakeFuncGraph(const PrimitivePtr prim, uint64_t nparam) {
   // build the func_graph manually, eg:
   // MakeFuncGraph(std::make_shared<Primitive>("scalar_add"), 2) means:
   /* python source code:
-   * @mindspore
+   * @luojianet_ms
    * def f(x, y):
    *     return x + y
    */
@@ -1060,4 +1060,4 @@ TEST_F(TestPrim, test_DictGetItem2) {
 */
 
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms

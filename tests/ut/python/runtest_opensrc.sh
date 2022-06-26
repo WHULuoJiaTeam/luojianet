@@ -22,7 +22,7 @@ else
     BUILD_PATH=${PROJECT_PATH}/build
     echo "BUILD_PATH = $BUILD_PATH"
 fi
-cd ${BUILD_PATH}/mindspore/tests/ut
+cd ${BUILD_PATH}/luojianet_ms/tests/ut
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${BUILD_PATH}/third_party/gtest/lib
 export PYTHONPATH=$PYTHONPATH:${PROJECT_PATH}:${PROJECT_PATH}/tests/ut/python_input:${PROJECT_PATH}/tests/python

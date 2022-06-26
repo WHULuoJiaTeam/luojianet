@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestDepthToSpace : public UT::Common {
  public:
@@ -60,4 +60,4 @@ TEST_F(TestDepthToSpace, test_ops_depth_to_space1) {
   EXPECT_EQ(shape_vec[3], 10);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

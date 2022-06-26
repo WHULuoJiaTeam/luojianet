@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 import pytest
 import numpy as np
 
-from mindspore import Tensor, Parameter
-from mindspore.ops import operations as P
-from mindspore.nn import Cell
-import mindspore as ms
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.ops import operations as P
+from luojianet_ms.nn import Cell
+import luojianet_ms as ms
 
 
 def test_zip_operation_args_size():

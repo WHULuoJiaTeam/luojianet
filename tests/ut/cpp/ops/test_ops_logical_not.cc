@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 
 namespace {
@@ -74,4 +74,4 @@ TEST_F(TestLogicalNot, test_ops_logical_not1) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +16,13 @@
 """ test_pynative_layernorm_input_and_argmaxwithvalue """
 import pytest
 import numpy as np
-import mindspore as ms
-import mindspore.ops.operations as op
-from mindspore import Tensor, context
-from mindspore.nn import LayerNorm, Cell
-from mindspore.common import ParameterTuple
-from mindspore.ops.composite import GradOperation
-from mindspore.train.model import Model
+import luojianet_ms as ms
+import luojianet_ms.ops.operations as op
+from luojianet_ms import Tensor, context
+from luojianet_ms.nn import LayerNorm, Cell
+from luojianet_ms.common import ParameterTuple
+from luojianet_ms.ops.composite import GradOperation
+from luojianet_ms.train.model import Model
 
 class _Grad(Cell):
     def __init__(self, grad, network, wrt_params=False, real_inputs_count=None):
@@ -105,7 +106,7 @@ class LayerNormFactory(OpsFactory):
         self.begin_params_axis = params_axis
         self.input_shape = norm_shape
 
-    def forward_mindspore_impl(self):
+    def forward_luojianet_ms_impl(self):
         input_ms = Tensor(self.input_np)
         gamma = Tensor(self.gamma_np)
         beta = Tensor(self.beta_np)
@@ -115,7 +116,7 @@ class LayerNormFactory(OpsFactory):
         out_me = model.predict(Tensor(input_ms))
         return out_me.asnumpy()
 
-    def grad_mindspore_impl(self):
+    def grad_luojianet_ms_impl(self):
         input_nn = Tensor(self.input_np)
         output_grad = Tensor(self.output_grad_np)
         net = LayerNorm(self.input_shape, self.begin_norm_axis, self.begin_params_axis,
@@ -127,19 +128,19 @@ class LayerNormFactory(OpsFactory):
 
     def forward_cmp(self):
         context.set_context(mode=context.GRAPH_MODE, device_target=context.get_context('device_target'))
-        graph_out = self.forward_mindspore_impl()
+        graph_out = self.forward_luojianet_ms_impl()
 
         context.set_context(mode=context.PYNATIVE_MODE, device_target=context.get_context('device_target'))
-        pynative_out = self.forward_mindspore_impl()
+        pynative_out = self.forward_luojianet_ms_impl()
 
         allclose_nparray(graph_out[0], pynative_out[0], self.loss, self.loss)
 
     def grad_cmp(self):
         context.set_context(mode=context.GRAPH_MODE, device_target=context.get_context('device_target'))
-        graph_grad1, graph_grad2, graph_grad3 = self.grad_mindspore_impl()
+        graph_grad1, graph_grad2, graph_grad3 = self.grad_luojianet_ms_impl()
 
         context.set_context(mode=context.PYNATIVE_MODE, device_target=context.get_context('device_target'))
-        pynative_grad1, pynative_grad2, pynative_grad3 = self.grad_mindspore_impl()
+        pynative_grad1, pynative_grad2, pynative_grad3 = self.grad_luojianet_ms_impl()
 
         allclose_nparray(graph_grad1, pynative_grad1, self.loss, self.loss)
         allclose_nparray(graph_grad2, pynative_grad2, self.loss, self.loss)
@@ -167,7 +168,7 @@ class ArgMaxWithValueFactory(OpsFactory):
         self.axis = axis
         self.keep_dims = keep_dims
 
-    def forward_mindspore_impl(self):
+    def forward_luojianet_ms_impl(self):
         input_forward = Tensor(self.input_np)
         net = ArgMaxWithValue(axis=self.axis, keep_dims=self.keep_dims)
         index, value = net(input_forward)
@@ -178,7 +179,7 @@ class ArgMaxWithValueFactory(OpsFactory):
         value = np.amax(self.input_np, axis=self.axis, keepdims=self.keep_dims)
         return index.reshape(1, -1), value.astype(self.dtype)
 
-    def grad_mindspore_impl(self):
+    def grad_luojianet_ms_impl(self):
         input_back = Tensor(self.input_np)
         np.random.seed(1)
         self.output_grad_np = np.random.randn(*input_back[0].shape).astype(self.dtype)
@@ -193,16 +194,16 @@ class ArgMaxWithValueFactory(OpsFactory):
     def forward_cmp(self):
         context.set_context(mode=context.PYNATIVE_MODE, device_target=context.get_context('device_target'))
         out_numpy = self.forward_numpy_impl()
-        out_mindspore = self.forward_mindspore_impl()
-        allclose_nparray(out_numpy[0], out_mindspore[0], self.loss, self.loss)
-        allclose_nparray(out_numpy[1], out_mindspore[1], self.loss, self.loss)
+        out_luojianet_ms = self.forward_luojianet_ms_impl()
+        allclose_nparray(out_numpy[0], out_luojianet_ms[0], self.loss, self.loss)
+        allclose_nparray(out_numpy[1], out_luojianet_ms[1], self.loss, self.loss)
 
     def grad_cmp(self):
         context.set_context(mode=context.GRAPH_MODE, device_target=context.get_context('device_target'))
-        graph_grad = self.grad_mindspore_impl()
+        graph_grad = self.grad_luojianet_ms_impl()
 
         context.set_context(mode=context.PYNATIVE_MODE, device_target=context.get_context('device_target'))
-        pynative_grad = self.grad_mindspore_impl()
+        pynative_grad = self.grad_luojianet_ms_impl()
 
         allclose_nparray(graph_grad, pynative_grad, self.loss, self.loss)
 

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +14,13 @@
 # limitations under the License.
 # ============================================================================
 from typing import Generic
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-import mindspore.numpy as mnp
-import mindspore.common.dtype as mstype
-from mindspore.ops import PrimitiveWithInfer
-from mindspore.ops import prim_attr_register
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+import luojianet_ms.numpy as mnp
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.ops import PrimitiveWithInfer
+from luojianet_ms.ops import prim_attr_register
 import scipy as scp
 import numpy as np
 import pytest
@@ -83,11 +84,11 @@ def test_lu_net(n: int, dtype: Generic):
     a = (np.random.random((n, n)) + np.eye(n)).astype(dtype)
     expect, _ = scp.linalg.lu_factor(a)
     mscp_lu_net = LuNet()
-    # mindspore tensor is row major but gpu cusolver is col major, so we should transpose it.
+    # luojianet_ms tensor is row major but gpu cusolver is col major, so we should transpose it.
     tensor_a = Tensor(a)
     tensor_a = mnp.transpose(tensor_a)
     output, _, _ = mscp_lu_net(tensor_a)
-    # mindspore tensor is row major but gpu cusolver is col major, so we should transpose it.
+    # luojianet_ms tensor is row major but gpu cusolver is col major, so we should transpose it.
     output = mnp.transpose(output)
     rtol = 1.e-4
     atol = 1.e-5

@@ -10,8 +10,8 @@ def get_parser():
       - jarPath
         Specifies the path of the JAR package of the federated learning framework.
         Note, please make sure that only the JAR package is included in the path.
-        For example, '--jarPath' is set to 'jarX86/mindspore-lite-java-flclient.jar', you need to make sure that
-        the 'jarX86' folder contains only one JAR package 'mindspore-lite- java-flclient.jar'.
+        For example, '--jarPath' is set to 'jarX86/luojianet_ms-lite-java-flclient.jar', you need to make sure that
+        the 'jarX86' folder contains only one JAR package 'luojianet_ms-lite- java-flclient.jar'.
       - case_jarPath
         Specifies the path of the JAR package 'quick_start_flclient.jar' corresponding to the model script.
         Note, please make sure that only the JAR package is included in the path.
@@ -125,7 +125,7 @@ def get_parser():
     """
 
     parser = argparse.ArgumentParser(description="Run SyncFLJob.java case")
-    parser.add_argument("--jarPath", type=str, default="jarX86/mindspore-lite-java-flclient.jar")
+    parser.add_argument("--jarPath", type=str, default="jarX86/luojianet_ms-lite-java-flclient.jar")
     parser.add_argument("--case_jarPath", type=str, default="case_jar/quick_start_flclient.jar")
 
     parser.add_argument("--train_dataset", type=str, default="leaf/data/femnist/3500_clients_bin/")
@@ -134,7 +134,7 @@ def get_parser():
     parser.add_argument("--ids_file", type=str, default="null")
     parser.add_argument("--path_regex", type=str, default=",")
 
-    parser.add_argument("--flName", type=str, default="com.mindspore.flclient.demo.lenet.LenetClient")
+    parser.add_argument("--flName", type=str, default="com.luojianet_ms.flclient.demo.lenet.LenetClient")
 
     parser.add_argument("--train_model_path", type=str, default="ms/lenet/")
     parser.add_argument("--infer_model_path", type=str, default="ms/lenet/")

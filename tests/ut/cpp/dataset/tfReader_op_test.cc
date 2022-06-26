@@ -24,12 +24,12 @@
 #include "gtest/gtest.h"
 #include "utils/log_adapter.h"
 
-namespace common = mindspore::common;
+namespace common = luojianet_ms::common;
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
 class MindDataTestTFReaderOp : public UT::DatasetOpTesting {};
 

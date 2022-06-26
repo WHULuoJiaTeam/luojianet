@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +18,12 @@ import os
 
 import numpy as np
 
-import mindspore.communication.management as distributedTool
-import mindspore.nn as nn
-from mindspore import context
-from mindspore.nn.metrics import Accuracy
-from mindspore.train import Model
-from mindspore.train.callback import LossMonitor, TimeMonitor
+import luojianet_ms.communication.management as distributedTool
+import luojianet_ms.nn as nn
+from luojianet_ms import context
+from luojianet_ms.nn.metrics import Accuracy
+from luojianet_ms.train import Model
+from luojianet_ms.train.callback import LossMonitor, TimeMonitor
 from tests.models.official.cv.lenet.src.dataset import create_dataset
 from tests.models.official.cv.lenet.src.lenet import LeNet5
 
@@ -48,7 +49,7 @@ def teardown_module():
 
 
 def test_all_trains():
-    ds_train = create_dataset(os.path.join('/home/workspace/mindspore_dataset/mnist', "train"), 32, 1)
+    ds_train = create_dataset(os.path.join('/home/workspace/luojianet_ms_dataset/mnist', "train"), 32, 1)
 
     network = LeNet5(10)
     net_loss = nn.SoftmaxCrossEntropyWithLogits(sparse=True, reduction="mean")

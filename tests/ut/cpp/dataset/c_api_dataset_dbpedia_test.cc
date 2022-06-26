@@ -17,7 +17,7 @@
 #include "minddata/dataset/engine/ir/datasetops/source/dbpedia_node.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -41,7 +41,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterator the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
 
@@ -87,7 +87,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetUsageAll) {
   EXPECT_NE(iter, nullptr);
 
   // Iterator the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
 
@@ -142,7 +142,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<int64_t> expect_class = {1};
 
@@ -224,7 +224,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetNumSamples) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -271,7 +271,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetDistribution) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -390,7 +390,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("class"), row.end());
@@ -433,7 +433,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetShuffleFilesA) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -494,7 +494,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -552,7 +552,7 @@ TEST_F(MindDataTestPipeline, TestDBpediaDatasetShuffleGlobal) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {

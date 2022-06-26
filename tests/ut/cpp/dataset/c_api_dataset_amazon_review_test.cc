@@ -19,7 +19,7 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "minddata/dataset/engine/ir/datasetops/source/amazon_review_node.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
 protected:
@@ -43,7 +43,7 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewPolarityDatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("label"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -81,7 +81,7 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewFullDatasetBasic) {
 
   std::string dataset_dir = datasets_root_path_ + "/testAmazonReview/full";
   std::vector<std::string> column_names = {"label", "title", "content"};
-  
+
   std::shared_ptr<Dataset> ds = AmazonReview(dataset_dir, "test", 0, ShuffleMode::kFalse);
   EXPECT_NE(ds, nullptr);
 
@@ -91,15 +91,15 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewFullDatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("label"), row.end());
-  std::vector<std::vector<std::string>> expected_result = {                
+  std::vector<std::vector<std::string>> expected_result = {
     {"1", "amazing", "unlimited buyback!"},
     {"4", "delightful", "a funny book!"},
     {"3", "Small", "It is a small ball!"}
-  };  
-    
+  };
+
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -141,7 +141,7 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewDatasetUsageAll) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("label"), row.end());
     std::vector<std::vector<std::string>> expected_result = {
@@ -208,7 +208,7 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewNumSamples) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("label"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -257,7 +257,7 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewDatasetDistribution) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("label"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -378,7 +378,7 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewDatasetBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("label"), row.end());
@@ -422,16 +422,16 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewDatasetShuffleFilesA) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("label"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
-    {"3", "Satisfied", "good quality."}, 
+    {"3", "Satisfied", "good quality."},
     {"1", "amazing", "unlimited buyback!"},
     {"5", "good", "This is an very good product."},
     {"4", "delightful", "a funny book!"},
     {"1", "bad", "work badly."},
-    {"3", "Small", "It is a small ball!"}    
+    {"3", "Small", "It is a small ball!"}
   };
 
   uint64_t i = 0;
@@ -484,16 +484,16 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewDatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("label"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
-    {"3", "Satisfied", "good quality."}, 
+    {"3", "Satisfied", "good quality."},
     {"1", "amazing", "unlimited buyback!"},
     {"5", "good", "This is an very good product."},
     {"4", "delightful", "a funny book!"},
     {"1", "bad", "work badly."},
-    {"3", "Small", "It is a small ball!"}  
+    {"3", "Small", "It is a small ball!"}
   };
 
   uint64_t i = 0;
@@ -546,7 +546,7 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewDatasetShuffleFilesGlobal) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("label"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -580,5 +580,5 @@ TEST_F(MindDataTestPipeline, TestAmazonReviewDatasetShuffleFilesGlobal) {
 
   // Restore configuration
   GlobalContext::config_manager()->set_seed(original_seed);
-  GlobalContext::config_manager()->set_num_parallel_workers(original_num_parallel_workers); 
+  GlobalContext::config_manager()->set_num_parallel_workers(original_num_parallel_workers);
 }

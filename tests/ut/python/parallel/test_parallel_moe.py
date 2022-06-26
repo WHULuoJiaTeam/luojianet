@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,17 +15,17 @@
 
 import pytest
 import numpy as np
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-import mindspore.ops as P
-from mindspore import Tensor
-from mindspore.context import set_auto_parallel_context, ParallelMode
-from mindspore.ops import composite as C
-from mindspore.ops import functional as F
-from mindspore.parallel.nn import Transformer, TransformerOpParallelConfig, MoEConfig, CrossEntropyLoss
-from mindspore.nn.optim import AdamWeightDecay
-from mindspore.nn.wrap.cell_wrapper import TrainOneStepCell, _VirtualDatasetCell
-from mindspore.train import Model
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+import luojianet_ms.ops as P
+from luojianet_ms import Tensor
+from luojianet_ms.context import set_auto_parallel_context, ParallelMode
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import functional as F
+from luojianet_ms.parallel.nn import Transformer, TransformerOpParallelConfig, MoEConfig, CrossEntropyLoss
+from luojianet_ms.nn.optim import AdamWeightDecay
+from luojianet_ms.nn.wrap.cell_wrapper import TrainOneStepCell, _VirtualDatasetCell
+from luojianet_ms.train import Model
 from tests.dataset_mock import MindData
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 

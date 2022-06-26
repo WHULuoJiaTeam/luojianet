@@ -20,7 +20,7 @@
 #include "common/common.h"
 #include "gtest/gtest.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestMemoryPool : public UT::Common {
  public:

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +18,7 @@ import csv
 import os
 import json
 import tempfile
-from mindspore.profiler.parser.framework_parser import FrameworkParser
+from luojianet_ms.profiler.parser.framework_parser import FrameworkParser
 from tests.ut.python.profiler import FRAMEWORK_RAW_DATA
 
 

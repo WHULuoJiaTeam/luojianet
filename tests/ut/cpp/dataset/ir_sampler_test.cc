@@ -28,8 +28,8 @@
 #include "minddata/dataset/engine/ir/datasetops/source/samplers/subset_sampler_ir.h"
 #include "minddata/dataset/engine/ir/datasetops/source/samplers/weighted_random_sampler_ir.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestIrSampler : public UT::DatasetOpTesting {
  protected:

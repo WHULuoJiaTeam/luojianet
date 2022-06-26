@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,14 +18,14 @@ import functools
 import pytest
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import Tensor, ms_function, context
-from mindspore.ops import operations as P
-from mindspore.ops import functional as F
-from mindspore.nn.probability import distribution
-import mindspore.common.dtype as mstype
-import mindspore.common._monad as monad
-import mindspore.scipy.linalg as alg
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, ms_function, context
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import functional as F
+from luojianet_ms.nn.probability import distribution
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.common._monad as monad
+import luojianet_ms.scipy.linalg as alg
 
 context.set_context(mode=context.GRAPH_MODE)
 

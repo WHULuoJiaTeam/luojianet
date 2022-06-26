@@ -14,12 +14,12 @@
 # ============================================================================
 """test vmap in graph mode"""
 import pytest
-import mindspore.nn as nn
-import mindspore.context as context
-import mindspore.ops.operations as P
-from mindspore import Tensor
-from mindspore import dtype as mstype
-from mindspore.ops.functional import vmap
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+import luojianet_ms.ops.operations as P
+from luojianet_ms import Tensor
+from luojianet_ms import dtype as mstype
+from luojianet_ms.ops.functional import vmap
 
 context.set_context(mode=context.GRAPH_MODE)
 

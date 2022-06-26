@@ -29,7 +29,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWLayerNormGradSplit : public BackendCommon {
  public:
@@ -62,4 +62,4 @@ TEST_F(TestHWLayerNormGradSplit, test_layer_norm_grad_split) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

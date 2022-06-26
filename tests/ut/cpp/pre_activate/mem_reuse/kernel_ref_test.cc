@@ -24,10 +24,10 @@
 #include "common/common_test.h"
 #include "common/py_func_graph_fetcher.h"
 
-using mindspore::memreuse::KernelRefCount;
-using mindspore::memreuse::KernelRefCountPtr;
-using mindspore::memreuse::RefCountType;
-namespace mindspore {
+using luojianet_ms::memreuse::KernelRefCount;
+using luojianet_ms::memreuse::KernelRefCountPtr;
+using luojianet_ms::memreuse::RefCountType;
+namespace luojianet_ms {
 class TestKernelRefCount : public UT::Common {
  public:
   TestKernelRefCount() {}
@@ -67,4 +67,4 @@ TEST_F(TestKernelRefCount, test_SetKernelRefInfo) {
   ASSERT_EQ(kernel_ref_count_ptr->index_, index);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -15,15 +15,15 @@ diff -Npur glog/CMakeLists.txt glog-patch/CMakeLists.txt
  check_include_file (unistd.h HAVE_UNISTD_H)
 -check_include_file (unwind.h HAVE_UNWIND_H)
  check_include_file (pwd.h HAVE_PWD_H)
- 
+
  check_include_file_cxx ("ext/hash_map" HAVE_EXT_HASH_MAP)
 @@ -116,12 +114,8 @@ check_cxx_compiler_flag (-Wunnamed-type-
  # snprintf as an inline function
  check_symbol_exists (snprintf stdio.h HAVE_SNPRINTF)
- 
+
 -check_library_exists (unwind get_static_proc_name "" HAVE_LIB_UNWIND)
  check_library_exists (dbghelp UnDecorateSymbolName "" HAVE_DBGHELP)
- 
+
 -find_library (UNWIND_LIBRARY NAMES unwind DOC "unwind library")
 -mark_as_advanced (UNWIND_LIBRARY)
 -
@@ -32,13 +32,13 @@ diff -Npur glog/CMakeLists.txt glog-patch/CMakeLists.txt
  static void foo(void) __attribute__ ((unused));
 @@ -470,10 +464,7 @@ add_library (glog
  add_library(glog::glog ALIAS glog)
- 
+
  set_target_properties (glog PROPERTIES POSITION_INDEPENDENT_CODE ON)
 -
 -if (UNWIND_LIBRARY)
 -  target_link_libraries (glog PUBLIC ${UNWIND_LIBRARY})
 -endif (UNWIND_LIBRARY)
-+set_target_properties (glog PROPERTIES OUTPUT_NAME mindspore_glog)
- 
++set_target_properties (glog PROPERTIES OUTPUT_NAME luojianet_ms_glog)
+
  if (HAVE_DBGHELP)
     target_link_libraries (glog PUBLIC dbghelp)

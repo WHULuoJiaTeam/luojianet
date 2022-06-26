@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/hal/device/dump/data_dumper.h"
 #endif
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace device {
 namespace ascend {
 namespace tasksink {
@@ -37,4 +37,4 @@ DataDumper::~DataDumper() {}
 #endif
 }  // namespace ascend
 }  // namespace device
-}  // namespace mindspore
+}  // namespace luojianet_ms

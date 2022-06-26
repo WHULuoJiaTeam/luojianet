@@ -38,7 +38,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 using KernelBuildInfoBuilder = kernel::KernelBuildInfo::KernelBuildInfoBuilder;
 
@@ -279,4 +279,4 @@ TEST_F(TestHWEliminateRedundantOp, test_eliminate_cast_depend_cast) {
 }
 
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

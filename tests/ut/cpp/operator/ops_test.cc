@@ -25,7 +25,7 @@
 #include "frontend/operator/ops.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace prim {
 
 class TestOps : public UT::Common {
@@ -442,7 +442,7 @@ TEST_F(TestOps, GetConv2DPrimPyTest) {
 
     py::object conv2d_pyobj = python_adapter::GetPyFn("gtest_input.pynative", "conv2d_prim");
     py::dict opAttrs = py::getattr(conv2d_pyobj, "attrs");
-    mindspore::HashMap<std::string, ValuePtr> attrs{};
+    luojianet_ms::HashMap<std::string, ValuePtr> attrs{};
     for (auto item : opAttrs) {
       if (!py::isinstance<py::str>(item.first)) {
         MS_LOG(EXCEPTION) << "type error in py dict convert";
@@ -461,4 +461,4 @@ TEST_F(TestOps, GetConv2DPrimPyTest) {
 }
 
 }  // namespace prim
-}  // namespace mindspore
+}  // namespace luojianet_ms

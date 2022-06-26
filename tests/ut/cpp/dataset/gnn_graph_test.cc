@@ -26,8 +26,8 @@
 #include "minddata/dataset/engine/gnn/graph_data_impl.h"
 #include "minddata/dataset/engine/gnn/graph_loader.h"
 
-using namespace mindspore::dataset;
-using namespace mindspore::dataset::gnn;
+using namespace luojianet_ms::dataset;
+using namespace luojianet_ms::dataset::gnn;
 
 #define print_int_vec(_i, _str)                                           \
   do {                                                                    \

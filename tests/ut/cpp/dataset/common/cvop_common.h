@@ -23,7 +23,7 @@
 
 namespace UT {
 namespace CVOP {
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class CVOpCommon : public Common {
  public:

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +17,14 @@
 """AdamWeightDecayForBert, a customized Adam for bert. Input: gradient, overflow flag."""
 import numpy as np
 
-from mindspore.common import dtype as mstype
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore.ops import functional as F
-from mindspore.common.tensor import Tensor
-from mindspore._checkparam import Validator as validator
-from mindspore._checkparam import Rel
-from mindspore.nn.optim.optimizer import Optimizer
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import functional as F
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms._checkparam import Validator as validator
+from luojianet_ms._checkparam import Rel
+from luojianet_ms.nn.optim.optimizer import Optimizer
 
 _adam_opt = C.MultitypeFuncGraph("adam_opt")
 _scaler_one = Tensor(1, mstype.int32)

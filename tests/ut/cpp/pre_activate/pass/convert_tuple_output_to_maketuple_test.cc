@@ -24,7 +24,7 @@
 #include "backend/common/pass/convert_tuple_output_to_maketuple.h"
 #include "include/common/utils/utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWTupleOutputToMakeTuple : public BackendCommon {
  public:
@@ -62,4 +62,4 @@ TEST_F(TestHWTupleOutputToMakeTuple, test_convert_tuple_output_to_maketuple) {
   EXPECT_TRUE(CheckEqualGraph(func_graph, g_after));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

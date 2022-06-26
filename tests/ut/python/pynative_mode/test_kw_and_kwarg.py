@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 """ test dtype and shape as attr"""
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore import dtype as mstype
-from mindspore.ops.composite import base as C
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms import dtype as mstype
+from luojianet_ms.ops.composite import base as C
 
 
 def test_kw_nested():

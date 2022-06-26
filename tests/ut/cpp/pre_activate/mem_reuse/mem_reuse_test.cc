@@ -33,7 +33,7 @@
 #include "common/common_test.h"
 #include "common/py_func_graph_fetcher.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace memreuse {
 using session::KernelGraph;
 using KernelBuildInfoBuilder = kernel::KernelBuildInfo::KernelBuildInfoBuilder;
@@ -48,7 +48,7 @@ class TestMemReuseWithPy : public UT::Common {
 };
 static KernelGraphPtr CreateKernelGraph() {
   /* CreateKernelGraph()
-   * @mindspore
+   * @luojianet_ms
    * def f(x):
    *     z=conv2d(x, y)
    *     ret=relu(z)
@@ -97,7 +97,7 @@ static KernelGraphPtr CreateKernelGraph() {
   builder.SetOutputsFormat({kOpFormat_NCHW});
   builder.SetOutputsDeviceType({kFloat32->type_id()});
   builder.SetKernelType(KernelType::TBE_KERNEL);
-  builder.SetFusionType(mindspore::kernel::CONV);
+  builder.SetFusionType(luojianet_ms::kernel::CONV);
   builder.SetProcessor(kernel::Processor::AICORE);
   AnfAlgo::SetSelectKernelBuildInfo(builder.Build(), kernelptr_first.get());
 
@@ -219,7 +219,7 @@ TEST_F(TestMemReuseWithPy, KernelRef) {
   ASSERT_EQ(index, -1);
   index = 3;
   size = 512;
-  RefCountType ref_count_type_in = mindspore::memreuse::kDynamicRefCount;
+  RefCountType ref_count_type_in = luojianet_ms::memreuse::kDynamicRefCount;
   kernel_ref_count_ptr->SetKernelRefCountInfo(index, size, ref_count_type_in);
   ASSERT_EQ(kernel_ref_count_ptr->index_, 3);
   ASSERT_EQ(kernel_ref_count_ptr->size_, 512);
@@ -251,4 +251,4 @@ TEST_F(TestMemReuseWithPy, TestSetInfo) {
   ASSERT_NE(exec_graph, nullptr);
 }
 }  // namespace memreuse
-}  // namespace mindspore
+}  // namespace luojianet_ms

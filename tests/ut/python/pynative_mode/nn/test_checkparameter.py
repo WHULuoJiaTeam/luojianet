@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 """ test_checkparameter """
 import pytest
 
-from mindspore._checkparam import Validator, check_input_format, _expand_tuple
+from luojianet_ms._checkparam import Validator, check_input_format, _expand_tuple
 
 once = _expand_tuple(1)
 twice = _expand_tuple(2)

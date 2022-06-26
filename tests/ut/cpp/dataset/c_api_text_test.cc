@@ -28,15 +28,15 @@
 #include "minddata/dataset/text/glove.h"
 #include "minddata/dataset/text/vectors.h"
 
-using namespace mindspore::dataset;
-using mindspore::Status;
-using mindspore::dataset::CharNGram;
-using mindspore::dataset::FastText;
-using mindspore::dataset::GloVe;
-using mindspore::dataset::ShuffleMode;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::Vectors;
-using mindspore::dataset::Vocab;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::Status;
+using luojianet_ms::dataset::CharNGram;
+using luojianet_ms::dataset::FastText;
+using luojianet_ms::dataset::GloVe;
+using luojianet_ms::dataset::ShuffleMode;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::Vectors;
+using luojianet_ms::dataset::Vocab;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -69,7 +69,7 @@ TEST_F(MindDataTestPipeline, TestBasicTokenizerSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -89,8 +89,8 @@ TEST_F(MindDataTestPipeline, TestBasicTokenizerSuccess1) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -130,14 +130,14 @@ TEST_F(MindDataTestPipeline, TestBasicTokenizerSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"this", "is", "a", "funky", "string"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -181,7 +181,7 @@ TEST_F(MindDataTestPipeline, TestBasicTokenizerSuccess3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected_tokens = {"this", "is", "a", "funky", "string"};
@@ -190,18 +190,18 @@ TEST_F(MindDataTestPipeline, TestBasicTokenizerSuccess3) {
 
   std::shared_ptr<Tensor> de_expected_tokens;
   ASSERT_OK(Tensor::CreateFromVector(expected_tokens, &de_expected_tokens));
-  mindspore::MSTensor ms_expected_tokens =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tokens));
+  luojianet_ms::MSTensor ms_expected_tokens =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tokens));
 
   std::shared_ptr<Tensor> de_expected_offsets_start;
   ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start, &de_expected_offsets_start));
-  mindspore::MSTensor ms_expected_offsets_start =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_start));
+  luojianet_ms::MSTensor ms_expected_offsets_start =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_start));
 
   std::shared_ptr<Tensor> de_expected_offsets_limit;
   ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit, &de_expected_offsets_limit));
-  mindspore::MSTensor ms_expected_offsets_limit =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_limit));
+  luojianet_ms::MSTensor ms_expected_offsets_limit =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_limit));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -263,7 +263,7 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {{"床", "前", "明", "月", "光"},
@@ -276,8 +276,8 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess1) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -327,15 +327,15 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"i",   "am",     "mak",  "##ing", "small", "mistake",
                                        "##s", "during", "work", "##ing", "hour",  "##s"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -388,7 +388,7 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -399,8 +399,8 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess3) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -450,14 +450,14 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess4) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"[UNK]", " ", "[CLS]"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -510,14 +510,14 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess5) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"unused", " ", "[CLS]"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -570,14 +570,14 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess6) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"unused", " ", "[", "CLS", "]"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -630,7 +630,7 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess7) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected_tokens = {"i",   "am",     "mak",  "##ing", "small", "mistake",
@@ -640,18 +640,18 @@ TEST_F(MindDataTestPipeline, TestBertTokenizerSuccess7) {
 
   std::shared_ptr<Tensor> de_expected_tokens;
   ASSERT_OK(Tensor::CreateFromVector(expected_tokens, &de_expected_tokens));
-  mindspore::MSTensor ms_expected_tokens =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tokens));
+  luojianet_ms::MSTensor ms_expected_tokens =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tokens));
 
   std::shared_ptr<Tensor> de_expected_offsets_start;
   ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start, &de_expected_offsets_start));
-  mindspore::MSTensor ms_expected_offsets_start =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_start));
+  luojianet_ms::MSTensor ms_expected_offsets_start =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_start));
 
   std::shared_ptr<Tensor> de_expected_offsets_limit;
   ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit, &de_expected_offsets_limit));
-  mindspore::MSTensor ms_expected_offsets_limit =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_limit));
+  luojianet_ms::MSTensor ms_expected_offsets_limit =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_limit));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -745,7 +745,7 @@ TEST_F(MindDataTestPipeline, TestCaseFoldSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"welcome to beijing!", "北京欢迎您!", "我喜欢english!", "  "};
@@ -755,8 +755,8 @@ TEST_F(MindDataTestPipeline, TestCaseFoldSuccess) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -794,7 +794,7 @@ TEST_F(MindDataTestPipeline, TestFilterWikipediaXMLSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<std::string> expected = {"welcome to beijing", "", ""};
 
@@ -804,8 +804,8 @@ TEST_F(MindDataTestPipeline, TestFilterWikipediaXMLSuccess) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -843,14 +843,14 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"今天天气", "太好了", "我们", "一起", "去", "外面", "玩吧"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -892,14 +892,14 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"今天", "天气", "太", "好", "了", "我们", "一起", "去", "外面", "玩", "吧"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -942,7 +942,7 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected_tokens = {"今天天气", "太好了", "我们", "一起", "去", "外面", "玩吧"};
@@ -951,18 +951,18 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerSuccess2) {
 
   std::shared_ptr<Tensor> de_expected_tokens;
   ASSERT_OK(Tensor::CreateFromVector(expected_tokens, &de_expected_tokens));
-  mindspore::MSTensor ms_expected_tokens =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tokens));
+  luojianet_ms::MSTensor ms_expected_tokens =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tokens));
 
   std::shared_ptr<Tensor> de_expected_offsets_start;
   ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start, &de_expected_offsets_start));
-  mindspore::MSTensor ms_expected_offsets_start =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_start));
+  luojianet_ms::MSTensor ms_expected_offsets_start =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_start));
 
   std::shared_ptr<Tensor> de_expected_offsets_limit;
   ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit, &de_expected_offsets_limit));
-  mindspore::MSTensor ms_expected_offsets_limit =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_limit));
+  luojianet_ms::MSTensor ms_expected_offsets_limit =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_limit));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -1116,14 +1116,14 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerAddWord) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"男默女泪", "市", "长江大桥"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -1168,14 +1168,14 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerAddWord1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"男默女泪", "市", "长江大桥"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -1220,14 +1220,14 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerAddWord2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"男默女泪", "市", "长江大桥"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -1272,14 +1272,14 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerAddWord3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"江州", "市长", "江大桥", "参加", "了", "长江大桥", "的", "通车", "仪式"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -1348,14 +1348,14 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerAddDict) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"江州", "市长", "江大桥", "参加", "了", "长江大桥", "的", "通车", "仪式"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -1404,14 +1404,14 @@ TEST_F(MindDataTestPipeline, TestJiebaTokenizerAddDictFromFile) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"今天天气", "太好了", "我们", "一起", "去", "外面", "玩吧"};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -1453,7 +1453,7 @@ TEST_F(MindDataTestPipeline, TestSlidingWindowSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {{"This", "is", "a", "is", "a", "text", "a", "text", "file."},
@@ -1467,8 +1467,8 @@ TEST_F(MindDataTestPipeline, TestSlidingWindowSuccess) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size() / 3;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x, 3}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -1507,7 +1507,7 @@ TEST_F(MindDataTestPipeline, TestSlidingWindowSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {{"This", "is", "is", "a", "a", "text", "text", "file."},
@@ -1520,8 +1520,8 @@ TEST_F(MindDataTestPipeline, TestSlidingWindowSuccess1) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size() / 2;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x, 2}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -1597,7 +1597,7 @@ TEST_F(MindDataTestPipeline, TestToNumberSuccess1) {
   EXPECT_NE(ds, nullptr);
 
   // Create ToNumber operation on ds
-  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(mindspore::DataType::kNumberTypeInt64);
+  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(luojianet_ms::DataType::kNumberTypeInt64);
   EXPECT_NE(to_number, nullptr);
 
   // Create a Map operation on ds
@@ -1610,7 +1610,7 @@ TEST_F(MindDataTestPipeline, TestToNumberSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {-121, 14, -2219, 7623, -8162536, 162371864, -1726483716, 98921728421};
@@ -1620,8 +1620,8 @@ TEST_F(MindDataTestPipeline, TestToNumberSuccess1) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -1653,7 +1653,7 @@ TEST_F(MindDataTestPipeline, TestToNumberSuccess2) {
 
   // Create ToNumber operation on ds
   std::shared_ptr<TensorTransform> to_number =
-    std::make_shared<text::ToNumber>(mindspore::DataType::kNumberTypeFloat64);
+    std::make_shared<text::ToNumber>(luojianet_ms::DataType::kNumberTypeFloat64);
   EXPECT_NE(to_number, nullptr);
 
   // Create a Map operation on ds
@@ -1666,7 +1666,7 @@ TEST_F(MindDataTestPipeline, TestToNumberSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<double_t> expected = {-1.1, 1.4, -2219.321, 7623.453, -816256.234282, 162371864.243243};
@@ -1676,8 +1676,8 @@ TEST_F(MindDataTestPipeline, TestToNumberSuccess2) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -1708,7 +1708,7 @@ TEST_F(MindDataTestPipeline, TestToNumberFail1) {
   EXPECT_NE(ds, nullptr);
 
   // Create ToNumber operation on ds
-  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(mindspore::DataType::kNumberTypeInt8);
+  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(luojianet_ms::DataType::kNumberTypeInt8);
   EXPECT_NE(to_number, nullptr);
 
   // Create a Map operation on ds
@@ -1721,7 +1721,7 @@ TEST_F(MindDataTestPipeline, TestToNumberFail1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   // Expect error: input out of bounds of int8
   EXPECT_ERROR(iter->GetNextRow(&row));
@@ -1759,7 +1759,7 @@ TEST_F(MindDataTestPipeline, TestToNumberFail2) {
 
   // Create ToNumber operation on ds
   std::shared_ptr<TensorTransform> to_number =
-    std::make_shared<text::ToNumber>(mindspore::DataType::kNumberTypeFloat16);
+    std::make_shared<text::ToNumber>(luojianet_ms::DataType::kNumberTypeFloat16);
   EXPECT_NE(to_number, nullptr);
 
   // Create a Map operation on ds
@@ -1772,7 +1772,7 @@ TEST_F(MindDataTestPipeline, TestToNumberFail2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   // Expect error: input out of bounds of float16
   EXPECT_ERROR(iter->GetNextRow(&row));
@@ -1805,7 +1805,7 @@ TEST_F(MindDataTestPipeline, TestToNumberFail3) {
   EXPECT_NE(ds, nullptr);
 
   // Create ToNumber operation on ds
-  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(mindspore::DataType::kNumberTypeInt64);
+  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(luojianet_ms::DataType::kNumberTypeInt64);
   EXPECT_NE(to_number, nullptr);
 
   // Create a Map operation on ds
@@ -1818,7 +1818,7 @@ TEST_F(MindDataTestPipeline, TestToNumberFail3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   // Expect error: invalid input which is non numerical
   EXPECT_ERROR(iter->GetNextRow(&row));
@@ -1847,7 +1847,7 @@ TEST_F(MindDataTestPipeline, TestToNumberFail4) {
   EXPECT_NE(ds, nullptr);
 
   // Create ToNumber operation on ds
-  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(mindspore::DataType::kObjectTypeString);
+  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(luojianet_ms::DataType::kObjectTypeString);
   EXPECT_NE(to_number, nullptr);
 
   // Create a Map operation on ds
@@ -1870,7 +1870,7 @@ TEST_F(MindDataTestPipeline, TestToNumberFail5) {
   EXPECT_NE(ds, nullptr);
 
   // Create ToNumber operation on ds
-  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(mindspore::DataType::kNumberTypeBool);
+  std::shared_ptr<TensorTransform> to_number = std::make_shared<text::ToNumber>(luojianet_ms::DataType::kNumberTypeBool);
   EXPECT_NE(to_number, nullptr);
 
   // Create a Map operation on ds
@@ -1898,8 +1898,8 @@ TEST_F(MindDataTestPipeline, TestTruncateSequencePairSuccess1) {
 
   // Create a RandomDataset which has column names "col1" and "col2"
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeInt16, {5}));
-  ASSERT_OK(schema->add_column("col2", mindspore::DataType::kNumberTypeInt32, {3}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeInt16, {5}));
+  ASSERT_OK(schema->add_column("col2", luojianet_ms::DataType::kNumberTypeInt32, {3}));
   std::shared_ptr<Dataset> ds = RandomData(3, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1917,7 +1917,7 @@ TEST_F(MindDataTestPipeline, TestTruncateSequencePairSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<int16_t>> expected1 = {{-29556, -29556}, {-18505, -18505}, {-25958, -25958}};
@@ -1931,14 +1931,14 @@ TEST_F(MindDataTestPipeline, TestTruncateSequencePairSuccess1) {
 
     std::shared_ptr<Tensor> de_expected_tensor1;
     ASSERT_OK(Tensor::CreateFromVector(expected1[i], &de_expected_tensor1));
-    mindspore::MSTensor expected_tensor1 =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor1));
+    luojianet_ms::MSTensor expected_tensor1 =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor1));
     EXPECT_MSTENSOR_EQ(ind1, expected_tensor1);
 
     std::shared_ptr<Tensor> de_expected_tensor2;
     ASSERT_OK(Tensor::CreateFromVector(expected2[i], &de_expected_tensor2));
-    mindspore::MSTensor expected_tensor2 =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor2));
+    luojianet_ms::MSTensor expected_tensor2 =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor2));
     EXPECT_MSTENSOR_EQ(ind2, expected_tensor2);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -1973,8 +1973,8 @@ TEST_F(MindDataTestPipeline, TestTruncateSequencePairSuccess2) {
 
   // Create a RandomDataset which has column names "col1" and "col2"
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeInt32, {4}));
-  ASSERT_OK(schema->add_column("col2", mindspore::DataType::kNumberTypeInt64, {4}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeInt32, {4}));
+  ASSERT_OK(schema->add_column("col2", luojianet_ms::DataType::kNumberTypeInt64, {4}));
   std::shared_ptr<Dataset> ds = RandomData(4, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1992,7 +1992,7 @@ TEST_F(MindDataTestPipeline, TestTruncateSequencePairSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<int32_t>> expected1 = {{1785358954, 1785358954, 1785358954},
@@ -2009,14 +2009,14 @@ TEST_F(MindDataTestPipeline, TestTruncateSequencePairSuccess2) {
 
     std::shared_ptr<Tensor> de_expected_tensor1;
     ASSERT_OK(Tensor::CreateFromVector(expected1[i], &de_expected_tensor1));
-    mindspore::MSTensor expected_tensor1 =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor1));
+    luojianet_ms::MSTensor expected_tensor1 =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor1));
     EXPECT_MSTENSOR_EQ(ind1, expected_tensor1);
 
     std::shared_ptr<Tensor> de_expected_tensor2;
     ASSERT_OK(Tensor::CreateFromVector(expected2[i], &de_expected_tensor2));
-    mindspore::MSTensor expected_tensor2 =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor2));
+    luojianet_ms::MSTensor expected_tensor2 =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor2));
     EXPECT_MSTENSOR_EQ(ind2, expected_tensor2);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -2041,8 +2041,8 @@ TEST_F(MindDataTestPipeline, TestTruncateSequencePairFail) {
 
   // Create a RandomDataset which has column names "col1" and "col2"
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeInt8, {3}));
-  ASSERT_OK(schema->add_column("col2", mindspore::DataType::kNumberTypeInt8, {3}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeInt8, {3}));
+  ASSERT_OK(schema->add_column("col2", luojianet_ms::DataType::kNumberTypeInt8, {3}));
   std::shared_ptr<Dataset> ds = RandomData(3, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2085,7 +2085,7 @@ TEST_F(MindDataTestPipeline, TestNgramSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {{"_ This", "This is", "is a", "a text", "text file.", "file. _"},
@@ -2099,8 +2099,8 @@ TEST_F(MindDataTestPipeline, TestNgramSuccess) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -2138,7 +2138,7 @@ TEST_F(MindDataTestPipeline, TestNgramSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -2156,8 +2156,8 @@ TEST_F(MindDataTestPipeline, TestNgramSuccess1) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -2308,7 +2308,7 @@ TEST_F(MindDataTestPipeline, TestNormalizeUTF8Success) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"ṩ", "ḍ̇", "q̣̇", "fi", "25", "ṩ"};
@@ -2318,8 +2318,8 @@ TEST_F(MindDataTestPipeline, TestNormalizeUTF8Success) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -2354,7 +2354,7 @@ TEST_F(MindDataTestPipeline, TestNormalizeUTF8Success1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"ṩ", "ḍ̇", "q̣̇", "ﬁ", "2⁵", "ẛ̣"};
@@ -2364,8 +2364,8 @@ TEST_F(MindDataTestPipeline, TestNormalizeUTF8Success1) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -2400,7 +2400,7 @@ TEST_F(MindDataTestPipeline, TestNormalizeUTF8Success2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"ṩ", "ḍ̇", "q̣̇", "ﬁ", "2⁵", "ẛ̣"};
@@ -2410,8 +2410,8 @@ TEST_F(MindDataTestPipeline, TestNormalizeUTF8Success2) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -2446,7 +2446,7 @@ TEST_F(MindDataTestPipeline, TestNormalizeUTF8Success3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"ṩ", "ḍ̇", "q̣̇", "fi", "25", "ṩ"};
@@ -2456,8 +2456,8 @@ TEST_F(MindDataTestPipeline, TestNormalizeUTF8Success3) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -2492,7 +2492,7 @@ TEST_F(MindDataTestPipeline, TestRegexReplaceSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"Hello_World", "Let's_Go",          "1:hello",        "2:world",
@@ -2503,8 +2503,8 @@ TEST_F(MindDataTestPipeline, TestRegexReplaceSuccess) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -2539,7 +2539,7 @@ TEST_F(MindDataTestPipeline, TestRegexReplaceSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::string> expected = {"Hello_World", "Let's_Go",          "1:hello",          "2:world",
@@ -2550,8 +2550,8 @@ TEST_F(MindDataTestPipeline, TestRegexReplaceSuccess1) {
     auto ind = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_tensor));
-    mindspore::MSTensor ms_expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor ms_expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -2586,7 +2586,7 @@ TEST_F(MindDataTestPipeline, TestRegexTokenizerSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {{"Hello", " ", "World"},
@@ -2605,8 +2605,8 @@ TEST_F(MindDataTestPipeline, TestRegexTokenizerSuccess) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -2643,7 +2643,7 @@ TEST_F(MindDataTestPipeline, TestRegexTokenizerSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected_tokens = {{"Hello", " ", "World"},
@@ -2669,20 +2669,20 @@ TEST_F(MindDataTestPipeline, TestRegexTokenizerSuccess1) {
     std::shared_ptr<Tensor> de_expected_tokens;
     int x = expected_tokens[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected_tokens[i], TensorShape({x}), &de_expected_tokens));
-    mindspore::MSTensor ms_expected_tokens =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tokens));
+    luojianet_ms::MSTensor ms_expected_tokens =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tokens));
     EXPECT_MSTENSOR_EQ(token, ms_expected_tokens);
 
     std::shared_ptr<Tensor> de_expected_offsets_start;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start[i], TensorShape({x}), &de_expected_offsets_start));
-    mindspore::MSTensor ms_expected_offsets_start =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_start));
+    luojianet_ms::MSTensor ms_expected_offsets_start =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_start));
     EXPECT_MSTENSOR_EQ(start, ms_expected_offsets_start);
 
     std::shared_ptr<Tensor> de_expected_offsets_limit;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit[i], TensorShape({x}), &de_expected_offsets_limit));
-    mindspore::MSTensor ms_expected_offsets_limit =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_limit));
+    luojianet_ms::MSTensor ms_expected_offsets_limit =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_limit));
     EXPECT_MSTENSOR_EQ(limit, ms_expected_offsets_limit);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -2718,7 +2718,7 @@ TEST_F(MindDataTestPipeline, TestUnicodeCharTokenizerSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -2734,8 +2734,8 @@ TEST_F(MindDataTestPipeline, TestUnicodeCharTokenizerSuccess) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -2772,7 +2772,7 @@ TEST_F(MindDataTestPipeline, TestUnicodeCharTokenizerSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected_tokens = {
@@ -2802,20 +2802,20 @@ TEST_F(MindDataTestPipeline, TestUnicodeCharTokenizerSuccess1) {
     std::shared_ptr<Tensor> de_expected_tokens;
     int x = expected_tokens[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected_tokens[i], TensorShape({x}), &de_expected_tokens));
-    mindspore::MSTensor ms_expected_tokens =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tokens));
+    luojianet_ms::MSTensor ms_expected_tokens =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tokens));
     EXPECT_MSTENSOR_EQ(token, ms_expected_tokens);
 
     std::shared_ptr<Tensor> de_expected_offsets_start;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start[i], TensorShape({x}), &de_expected_offsets_start));
-    mindspore::MSTensor ms_expected_offsets_start =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_start));
+    luojianet_ms::MSTensor ms_expected_offsets_start =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_start));
     EXPECT_MSTENSOR_EQ(start, ms_expected_offsets_start);
 
     std::shared_ptr<Tensor> de_expected_offsets_limit;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit[i], TensorShape({x}), &de_expected_offsets_limit));
-    mindspore::MSTensor ms_expected_offsets_limit =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_limit));
+    luojianet_ms::MSTensor ms_expected_offsets_limit =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_limit));
     EXPECT_MSTENSOR_EQ(limit, ms_expected_offsets_limit);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -2865,7 +2865,7 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -2876,8 +2876,8 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess1) {
     auto txt = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(txt, expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -2922,7 +2922,7 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -2933,8 +2933,8 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess2) {
     auto txt = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(txt, expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -2979,7 +2979,7 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {{"my"},    {"[UNK]"}, {"book"},  {"is"},  {"love"},
@@ -2990,8 +2990,8 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess3) {
     auto txt = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(txt, expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -3040,7 +3040,7 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess4) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {{"我"}, {"最"}, {"喜"}, {"欢"}, {"的"}, {"书"}, {"是"},   {"霍"},
@@ -3051,8 +3051,8 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess4) {
     auto txt = row["text"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(txt, expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -3097,7 +3097,7 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess5) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -3110,22 +3110,22 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess5) {
     auto txt = row["token"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(txt, expected_tensor);
 
     auto start = row["offsets_start"];
     std::shared_ptr<Tensor> de_expected_start_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start[i], &de_expected_start_tensor));
-    mindspore::MSTensor expected_start_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_start_tensor));
+    luojianet_ms::MSTensor expected_start_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_start_tensor));
     EXPECT_MSTENSOR_EQ(start, expected_start_tensor);
 
     auto limit = row["offsets_limit"];
     std::shared_ptr<Tensor> de_expected_limit_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit[i], &de_expected_limit_tensor));
-    mindspore::MSTensor expected_limit_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_limit_tensor));
+    luojianet_ms::MSTensor expected_limit_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_limit_tensor));
     EXPECT_MSTENSOR_EQ(limit, expected_limit_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -3170,7 +3170,7 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess6) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {{"[UNK]"}, {"[UNK]"}, {"[UNK]"}, {"[UNK]"}, {"[UNK]"},
@@ -3181,8 +3181,8 @@ TEST_F(MindDataTestPipeline, TestWordpieceTokenizerSuccess6) {
     auto txt = row["token"];
     std::shared_ptr<Tensor> de_expected_tensor;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(txt, expected_tensor);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -3266,7 +3266,7 @@ TEST_F(MindDataTestPipeline, TestUnicodeScriptTokenizerSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -3279,8 +3279,8 @@ TEST_F(MindDataTestPipeline, TestUnicodeScriptTokenizerSuccess) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3317,7 +3317,7 @@ TEST_F(MindDataTestPipeline, TestUnicodeScriptTokenizerSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -3330,8 +3330,8 @@ TEST_F(MindDataTestPipeline, TestUnicodeScriptTokenizerSuccess1) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3370,7 +3370,7 @@ TEST_F(MindDataTestPipeline, TestUnicodeScriptTokenizerSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected_tokens = {
@@ -3388,20 +3388,20 @@ TEST_F(MindDataTestPipeline, TestUnicodeScriptTokenizerSuccess2) {
     std::shared_ptr<Tensor> de_expected_tokens;
     int x = expected_tokens[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected_tokens[i], TensorShape({x}), &de_expected_tokens));
-    mindspore::MSTensor ms_expected_tokens =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tokens));
+    luojianet_ms::MSTensor ms_expected_tokens =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tokens));
     EXPECT_MSTENSOR_EQ(token, ms_expected_tokens);
 
     std::shared_ptr<Tensor> de_expected_offsets_start;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start[i], TensorShape({x}), &de_expected_offsets_start));
-    mindspore::MSTensor ms_expected_offsets_start =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_start));
+    luojianet_ms::MSTensor ms_expected_offsets_start =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_start));
     EXPECT_MSTENSOR_EQ(start, ms_expected_offsets_start);
 
     std::shared_ptr<Tensor> de_expected_offsets_limit;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit[i], TensorShape({x}), &de_expected_offsets_limit));
-    mindspore::MSTensor ms_expected_offsets_limit =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_limit));
+    luojianet_ms::MSTensor ms_expected_offsets_limit =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_limit));
     EXPECT_MSTENSOR_EQ(limit, ms_expected_offsets_limit);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3439,7 +3439,7 @@ TEST_F(MindDataTestPipeline, TestUnicodeScriptTokenizerSuccess3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected_tokens = {
@@ -3457,20 +3457,20 @@ TEST_F(MindDataTestPipeline, TestUnicodeScriptTokenizerSuccess3) {
     std::shared_ptr<Tensor> de_expected_tokens;
     int x = expected_tokens[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected_tokens[i], TensorShape({x}), &de_expected_tokens));
-    mindspore::MSTensor ms_expected_tokens =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tokens));
+    luojianet_ms::MSTensor ms_expected_tokens =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tokens));
     EXPECT_MSTENSOR_EQ(token, ms_expected_tokens);
 
     std::shared_ptr<Tensor> de_expected_offsets_start;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start[i], TensorShape({x}), &de_expected_offsets_start));
-    mindspore::MSTensor ms_expected_offsets_start =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_start));
+    luojianet_ms::MSTensor ms_expected_offsets_start =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_start));
     EXPECT_MSTENSOR_EQ(start, ms_expected_offsets_start);
 
     std::shared_ptr<Tensor> de_expected_offsets_limit;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit[i], TensorShape({x}), &de_expected_offsets_limit));
-    mindspore::MSTensor ms_expected_offsets_limit =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_limit));
+    luojianet_ms::MSTensor ms_expected_offsets_limit =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_limit));
     EXPECT_MSTENSOR_EQ(limit, ms_expected_offsets_limit);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3506,7 +3506,7 @@ TEST_F(MindDataTestPipeline, TestWhitespaceTokenizerSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected = {
@@ -3519,8 +3519,8 @@ TEST_F(MindDataTestPipeline, TestWhitespaceTokenizerSuccess) {
     std::shared_ptr<Tensor> de_expected_tensor;
     int x = expected[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({x}), &de_expected_tensor));
-    mindspore::MSTensor expected_tensor =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+    luojianet_ms::MSTensor expected_tensor =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
     EXPECT_MSTENSOR_EQ(ind, expected_tensor);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3557,7 +3557,7 @@ TEST_F(MindDataTestPipeline, TestWhitespaceTokenizerSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<std::vector<std::string>> expected_tokens = {
@@ -3575,20 +3575,20 @@ TEST_F(MindDataTestPipeline, TestWhitespaceTokenizerSuccess1) {
     std::shared_ptr<Tensor> de_expected_tokens;
     int x = expected_tokens[i].size();
     ASSERT_OK(Tensor::CreateFromVector(expected_tokens[i], TensorShape({x}), &de_expected_tokens));
-    mindspore::MSTensor ms_expected_tokens =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tokens));
+    luojianet_ms::MSTensor ms_expected_tokens =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tokens));
     EXPECT_MSTENSOR_EQ(token, ms_expected_tokens);
 
     std::shared_ptr<Tensor> de_expected_offsets_start;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_start[i], TensorShape({x}), &de_expected_offsets_start));
-    mindspore::MSTensor ms_expected_offsets_start =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_start));
+    luojianet_ms::MSTensor ms_expected_offsets_start =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_start));
     EXPECT_MSTENSOR_EQ(start, ms_expected_offsets_start);
 
     std::shared_ptr<Tensor> de_expected_offsets_limit;
     ASSERT_OK(Tensor::CreateFromVector(expected_offsets_limit[i], TensorShape({x}), &de_expected_offsets_limit));
-    mindspore::MSTensor ms_expected_offsets_limit =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_offsets_limit));
+    luojianet_ms::MSTensor ms_expected_offsets_limit =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_offsets_limit));
     EXPECT_MSTENSOR_EQ(limit, ms_expected_offsets_limit);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3630,7 +3630,7 @@ TEST_F(MindDataTestPipeline, TestVectorsDefaultParam) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -3648,8 +3648,8 @@ TEST_F(MindDataTestPipeline, TestVectorsDefaultParam) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3691,7 +3691,7 @@ TEST_F(MindDataTestPipeline, TestVectorsAllBuildfromfileParams) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -3709,8 +3709,8 @@ TEST_F(MindDataTestPipeline, TestVectorsAllBuildfromfileParams) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3753,7 +3753,7 @@ TEST_F(MindDataTestPipeline, TestVectorsUnknownInit) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -3771,8 +3771,8 @@ TEST_F(MindDataTestPipeline, TestVectorsUnknownInit) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3815,7 +3815,7 @@ TEST_F(MindDataTestPipeline, TestVectorsAllParams) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -3833,8 +3833,8 @@ TEST_F(MindDataTestPipeline, TestVectorsAllParams) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -3894,7 +3894,7 @@ TEST_F(MindDataTestPipeline, TestVectorsWithHeadInfo) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -3912,8 +3912,8 @@ TEST_F(MindDataTestPipeline, TestVectorsWithHeadInfo) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4027,7 +4027,7 @@ TEST_F(MindDataTestPipeline, TestFastTextDefaultParam) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4045,8 +4045,8 @@ TEST_F(MindDataTestPipeline, TestFastTextDefaultParam) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4088,7 +4088,7 @@ TEST_F(MindDataTestPipeline, TestFastTextAllBuildfromfileParams) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4106,8 +4106,8 @@ TEST_F(MindDataTestPipeline, TestFastTextAllBuildfromfileParams) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4150,7 +4150,7 @@ TEST_F(MindDataTestPipeline, TestFastTextUnknownInit) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4168,8 +4168,8 @@ TEST_F(MindDataTestPipeline, TestFastTextUnknownInit) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4212,7 +4212,7 @@ TEST_F(MindDataTestPipeline, TestFastTextAllParams) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4230,8 +4230,8 @@ TEST_F(MindDataTestPipeline, TestFastTextAllParams) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4381,7 +4381,7 @@ TEST_F(MindDataTestPipeline, TestGloVeDefaultParam) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4399,8 +4399,8 @@ TEST_F(MindDataTestPipeline, TestGloVeDefaultParam) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4442,7 +4442,7 @@ TEST_F(MindDataTestPipeline, TestGloVeAllBuildfromfileParams) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4460,8 +4460,8 @@ TEST_F(MindDataTestPipeline, TestGloVeAllBuildfromfileParams) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4504,7 +4504,7 @@ TEST_F(MindDataTestPipeline, TestGloVeUnknownInit) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4522,8 +4522,8 @@ TEST_F(MindDataTestPipeline, TestGloVeUnknownInit) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4566,7 +4566,7 @@ TEST_F(MindDataTestPipeline, TestGloVeAllParams) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4584,8 +4584,8 @@ TEST_F(MindDataTestPipeline, TestGloVeAllParams) {
     TensorPtr de_expected_item;
     dsize_t dim = 6;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], TensorShape({dim}), &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -4734,7 +4734,7 @@ TEST_F(MindDataTestPipeline, TestCharNGramDefaultParam) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4751,8 +4751,8 @@ TEST_F(MindDataTestPipeline, TestCharNGramDefaultParam) {
     TEST_MS_LOG_MSTENSOR(INFO, "ind: ", ind);
     TensorPtr de_expected_item;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     std::vector<int64_t> ind_shape = ind.Shape();
     std::vector<int64_t> ms_expected_shape = ms_expected_item.Shape();
     EXPECT_EQ(ind_shape, ms_expected_shape);
@@ -4796,7 +4796,7 @@ TEST_F(MindDataTestPipeline, TestCharNGramAllBuildfromfileParams) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4813,8 +4813,8 @@ TEST_F(MindDataTestPipeline, TestCharNGramAllBuildfromfileParams) {
     TEST_MS_LOG_MSTENSOR(INFO, "ind: ", ind);
     TensorPtr de_expected_item;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     std::vector<int64_t> ind_shape = ind.Shape();
     std::vector<int64_t> ms_expected_shape = ms_expected_item.Shape();
     EXPECT_EQ(ind_shape, ms_expected_shape);
@@ -4859,7 +4859,7 @@ TEST_F(MindDataTestPipeline, TestCharNGramUnknownInit) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4876,8 +4876,8 @@ TEST_F(MindDataTestPipeline, TestCharNGramUnknownInit) {
     TEST_MS_LOG_MSTENSOR(INFO, "ind: ", ind);
     TensorPtr de_expected_item;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     std::vector<int64_t> ind_shape = ind.Shape();
     std::vector<int64_t> ms_expected_shape = ms_expected_item.Shape();
     EXPECT_EQ(ind_shape, ms_expected_shape);
@@ -4922,7 +4922,7 @@ TEST_F(MindDataTestPipeline, TestCharNGramAllParams) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -4939,8 +4939,8 @@ TEST_F(MindDataTestPipeline, TestCharNGramAllParams) {
     TEST_MS_LOG_MSTENSOR(INFO, "ind: ", ind);
     TensorPtr de_expected_item;
     ASSERT_OK(Tensor::CreateFromVector(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     std::vector<int64_t> ind_shape = ind.Shape();
     std::vector<int64_t> ms_expected_shape = ms_expected_item.Shape();
     EXPECT_EQ(ind_shape, ms_expected_shape);

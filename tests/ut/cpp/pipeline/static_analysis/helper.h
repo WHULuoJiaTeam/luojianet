@@ -19,10 +19,10 @@
 
 #include "pipeline/jit/static_analysis/evaluator.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 AnalysisEnginePtr SetupAnalysisEngine();
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms
 
 #endif  // TESTS_UT_PIPELINE_STATIC_ANALYSIS_HELPER_H_

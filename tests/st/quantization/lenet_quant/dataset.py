@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 Produce the dataset
 """
 
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as CV
-import mindspore.dataset.transforms.c_transforms as C
-from mindspore.dataset.vision import Inter
-from mindspore.common import dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as CV
+import luojianet_ms.dataset.transforms.c_transforms as C
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.common import dtype as mstype
 
 
 def create_dataset(data_path, batch_size=32, repeat_size=1,

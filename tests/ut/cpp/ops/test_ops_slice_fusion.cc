@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 
 class TestSliceFusion : public UT::Common {
@@ -66,4 +66,4 @@ TEST_F(TestSliceFusion, test_ops_slice_fusion1) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

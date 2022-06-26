@@ -2,7 +2,7 @@ if(ENABLE_GITEE_EULER)
     set(GIT_REPOSITORY "https://gitee.com/src-openeuler/sentencepiece.git")
     set(GIT_TAG "master")
     set(MD5 "4f88df28544b5f1a351f3dbf6b6413b8")
-    set(SENTENCEPIECE_SRC "${TOP_DIR}/build/mindspore/_deps/sentencepiece-src")
+    set(SENTENCEPIECE_SRC "${TOP_DIR}/build/luojianet_ms/_deps/sentencepiece-src")
     __download_pkg_with_git(sentencepiece ${GIT_REPOSITORY} ${GIT_TAG} ${MD5})
     execute_process(COMMAND tar -xf ${SENTENCEPIECE_SRC}/v0.1.92.tar.gz --strip-components 1 -C ${SENTENCEPIECE_SRC})
 else()
@@ -20,7 +20,7 @@ if(WIN32)
     set(sentencepiece_CXXFLAGS "-D_FORTIFY_SOURCE=2 -O2 -Wno-unused-result -Wno-stringop-overflow \
         -Wno-format-extra-args -Wno-format")
     set(sentencepiece_CFLAGS "-D_FORTIFY_SOURCE=2 -O2")
-    mindspore_add_pkg(sentencepiece
+    luojianet_ms_add_pkg(sentencepiece
         VER 0.1.92
         LIBS sentencepiece sentencepiece_train
         URL ${REQ_URL}
@@ -31,7 +31,7 @@ else()
     set(sentencepiece_CXXFLAGS "-D_FORTIFY_SOURCE=2 -O2 -Wno-unused-result -Wno-sign-compare")
     set(sentencepiece_CFLAGS "-D_FORTIFY_SOURCE=2 -O2")
     if(ENABLE_GLIBCXX)
-        mindspore_add_pkg(sentencepiece
+        luojianet_ms_add_pkg(sentencepiece
             VER 0.1.92
             LIBS sentencepiece sentencepiece_train
             URL ${REQ_URL}
@@ -41,7 +41,7 @@ else()
             PATCHES ${CMAKE_SOURCE_DIR}/third_party/patch/sentencepiece/sentencepiece.patch001_cpu
             )
     else()
-        mindspore_add_pkg(sentencepiece
+        luojianet_ms_add_pkg(sentencepiece
             VER 0.1.92
             LIBS sentencepiece sentencepiece_train
             URL ${REQ_URL}
@@ -53,6 +53,6 @@ else()
     endif()
 endif()
 include_directories(${sentencepiece_INC})
-add_library(mindspore::sentencepiece ALIAS sentencepiece::sentencepiece)
-add_library(mindspore::sentencepiece_train ALIAS sentencepiece::sentencepiece_train)
+add_library(luojianet_ms::sentencepiece ALIAS sentencepiece::sentencepiece)
+add_library(luojianet_ms::sentencepiece_train ALIAS sentencepiece::sentencepiece_train)
 

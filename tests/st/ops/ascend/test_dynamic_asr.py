@@ -17,11 +17,11 @@ import math
 import numpy as np
 import pytest
 
-from mindspore import ops, nn, context, set_seed
-from mindspore.train import DatasetHelper, connect_network_with_dataset
-import mindspore.dataset as ds
-from mindspore.common.tensor import Tensor
-import mindspore.common.dtype as mstype
+from luojianet_ms import ops, nn, context, set_seed
+from luojianet_ms.train import DatasetHelper, connect_network_with_dataset
+import luojianet_ms.dataset as ds
+from luojianet_ms.common.tensor import Tensor
+import luojianet_ms.common.dtype as mstype
 
 context.set_context(mode=context.GRAPH_MODE)
 context.set_context(device_target="Ascend")

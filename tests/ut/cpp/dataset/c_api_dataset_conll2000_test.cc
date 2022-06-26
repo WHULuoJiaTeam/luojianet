@@ -17,9 +17,9 @@
 #include "minddata/dataset/core/global_context.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
-using mindspore::dataset::ShuffleMode;
+using luojianet_ms::dataset::ShuffleMode;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
 protected:
@@ -31,7 +31,7 @@ protected:
 TEST_F(MindDataTestPipeline, TestCoNLL2000DatasetBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestCoNLL2000DatasetBasic.";
   // Test CoNLL2000 Dataset with single text file and many default inputs.
-  
+
   // Set configuration.
   uint32_t original_seed = GlobalContext::config_manager()->seed();
   uint32_t original_num_parallel_workers = GlobalContext::config_manager()->num_parallel_workers();
@@ -52,9 +52,9 @@ TEST_F(MindDataTestPipeline, TestCoNLL2000DatasetBasic) {
   // This will trigger the creation of the Execution Tree and launch it.
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
-  
+
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("word"), row.end());
 
@@ -126,7 +126,7 @@ TEST_F(MindDataTestPipeline, TestCoNLL2000DatasetBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "pos_tag", "chunk_tag"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -339,7 +339,7 @@ TEST_F(MindDataTestPipeline, TestCoNLL2000DatasetShuffleFalse) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "pos_tag", "chunk_tag"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -403,7 +403,7 @@ TEST_F(MindDataTestPipeline, TestCoNLL2000DatasetShuffleFilesA) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "pos_tag", "chunk_tag"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -467,7 +467,7 @@ TEST_F(MindDataTestPipeline, TestCoNLL2000DatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "pos_tag", "chunk_tag"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -530,7 +530,7 @@ TEST_F(MindDataTestPipeline, TestCoNLL2000DatasetShuffleGlobal1A) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "pos_tag", "chunk_tag"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -591,7 +591,7 @@ TEST_F(MindDataTestPipeline, TestCoNLL2000DatasetShuffleGlobalB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "pos_tag", "chunk_tag"};
   ASSERT_OK(iter->GetNextRow(&row));
 

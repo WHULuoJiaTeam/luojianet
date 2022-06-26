@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 namespace {
 template <typename T>
@@ -201,4 +201,4 @@ EXPECT_EQ(shape_vec.size(), 1);
 EXPECT_EQ(shape_vec[0], 2);
 }*/
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2019 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -86,12 +87,12 @@ cd "${SCRIPTS_PATH}/.." || exit 1
 CHECK_LIST_FILE='__checked_files_list__'
 
 if [ "X${mode}" == "Xall" ]; then
-  find mindspore/{ccsrc,core,lite} -type f -name "*" | grep "\.h$\|\.cc$\|\.c$" > "${CHECK_LIST_FILE}" || true
+  find luojianet_ms/{ccsrc,core,lite} -type f -name "*" | grep "\.h$\|\.cc$\|\.c$" > "${CHECK_LIST_FILE}" || true
 elif [ "X${mode}" == "Xchanged" ]; then
   # --diff-filter=ACMRTUXB will ignore deleted files in commit
-  git diff --diff-filter=ACMRTUXB --name-only | grep "mindspore/ccsrc\|mindspore/core\|mindspore/lite" | grep "\.h$\|\.cc$\|\.c$" > "${CHECK_LIST_FILE}" || true
+  git diff --diff-filter=ACMRTUXB --name-only | grep "luojianet_ms/ccsrc\|luojianet_ms/core\|luojianet_ms/lite" | grep "\.h$\|\.cc$\|\.c$" > "${CHECK_LIST_FILE}" || true
 else  # "X${mode}" == "Xlastcommit"
-  git diff --diff-filter=ACMRTUXB --name-only HEAD~ HEAD | grep "mindspore/ccsrc\|mindspore/core\|mindspore/lite" | grep "\.h$\|\.cc$\|\.c$" > "${CHECK_LIST_FILE}" || true
+  git diff --diff-filter=ACMRTUXB --name-only HEAD~ HEAD | grep "luojianet_ms/ccsrc\|luojianet_ms/core\|luojianet_ms/lite" | grep "\.h$\|\.cc$\|\.c$" > "${CHECK_LIST_FILE}" || true
 fi
 
 CHECK_RESULT_FILE=__code_format_check_result__

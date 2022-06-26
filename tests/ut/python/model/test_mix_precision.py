@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,18 +16,18 @@
 """test_mix_precision"""
 import numpy as np
 
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-from mindspore import Tensor, context
-from mindspore.common import ParameterTuple
-from mindspore.common.api import _cell_graph_executor
-from mindspore.common.parameter import Parameter
-from mindspore.nn import Momentum
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
-from mindspore.ops import functional as F
-from mindspore.context import ParallelMode
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, context
+from luojianet_ms.common import ParameterTuple
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.nn import Momentum
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import functional as F
+from luojianet_ms.context import ParallelMode
 from tests.ops_common import convert
 from ....train_step_wrap import train_step_with_loss_warp
 

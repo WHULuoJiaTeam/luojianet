@@ -10,7 +10,7 @@ endif()
 
 set(INCLUDE "./")
 
-mindspore_add_pkg(${cmsis_pkg_name}
+luojianet_ms_add_pkg(${cmsis_pkg_name}
         VER 5.7.0
         HEAD_ONLY ${INCLUDE}
         URL ${REQ_URL}

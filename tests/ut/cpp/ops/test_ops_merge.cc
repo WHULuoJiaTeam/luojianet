@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 
 class TestMerge : public UT::Common {
@@ -71,4 +71,4 @@ TEST_F(TestMerge, test_ops_merge1) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

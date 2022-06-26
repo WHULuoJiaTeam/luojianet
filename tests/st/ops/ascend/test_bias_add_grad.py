@@ -14,10 +14,10 @@
 # ============================================================================
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore.common.api import ms_function
-from mindspore.ops.operations import _grad_ops as G
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.ops.operations import _grad_ops as G
 
 context.set_context(device_target="Ascend")
 

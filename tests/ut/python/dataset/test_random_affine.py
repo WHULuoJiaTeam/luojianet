@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 Testing RandomAffine op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as py_vision
-import mindspore.dataset.vision.c_transforms as c_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+from luojianet_ms import log as logger
 from util import visualize_list, save_and_check_md5, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -42,13 +43,13 @@ def test_random_affine_op(plot=False):
         py_vision.RandomAffine(degrees=15, translate=(0.1, 0.1), scale=(0.9, 1.1)),
         py_vision.ToTensor()
     ]
-    transform1 = mindspore.dataset.transforms.py_transforms.Compose(transforms1)
+    transform1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms1)
 
     transforms2 = [
         py_vision.Decode(),
         py_vision.ToTensor()
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(transforms2)
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms2)
 
     #  First dataset
     data1 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
@@ -117,7 +118,7 @@ def test_random_affine_md5():
                                scale=(0.9, 1.1), shear=(-10, 10, -5, 5)),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
 
     #  Generate dataset
     data = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
@@ -192,7 +193,7 @@ def test_random_affine_py_exception_non_pil_images():
     logger.info("test_random_affine_exception_negative_degrees")
     dataset = ds.MnistDataset(MNIST_DATA_DIR, num_samples=3, num_parallel_workers=3)
     try:
-        transform = mindspore.dataset.transforms.py_transforms.Compose([py_vision.ToTensor(),
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose([py_vision.ToTensor(),
                                                                         py_vision.RandomAffine(degrees=(15, 15))])
         dataset = dataset.map(operations=transform, input_columns=["image"], num_parallel_workers=3)
         for _ in dataset.create_dict_iterator(num_epochs=1):

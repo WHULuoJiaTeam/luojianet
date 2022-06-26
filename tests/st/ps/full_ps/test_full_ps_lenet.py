@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,21 +17,21 @@
 import os
 import argparse
 
-import mindspore.context as context
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.vision.c_transforms as CV
-import mindspore.nn as nn
-from mindspore.common import dtype as mstype
-from mindspore.dataset.vision import Inter
-from mindspore.nn.metrics import Accuracy
-from mindspore.train import Model
-from mindspore.train.callback import LossMonitor
-from mindspore.common.initializer import TruncatedNormal
+import luojianet_ms.context as context
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.vision.c_transforms as CV
+import luojianet_ms.nn as nn
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.nn.metrics import Accuracy
+from luojianet_ms.train import Model
+from luojianet_ms.train.callback import LossMonitor
+from luojianet_ms.common.initializer import TruncatedNormal
 
 parser = argparse.ArgumentParser(description='test_ps_lenet')
 parser.add_argument("--device_target", type=str, default="Ascend")
-parser.add_argument("--dataset_path", type=str, default="/home/workspace/mindspore_dataset/mnist")
+parser.add_argument("--dataset_path", type=str, default="/home/workspace/luojianet_ms_dataset/mnist")
 args, _ = parser.parse_known_args()
 device_target = args.device_target
 dataset_path = args.dataset_path

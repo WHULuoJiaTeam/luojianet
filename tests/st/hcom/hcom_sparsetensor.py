@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +15,16 @@
 # ============================================================================
 import os
 import numpy as np
-from mindspore.communication.management import get_rank
-from mindspore import Tensor
-from mindspore import Parameter
-from mindspore import context
-from mindspore.ops import operations as P
-import mindspore.nn as nn
-from mindspore.train import Model
-from mindspore.context import ParallelMode
-from mindspore.communication.management import init
-from mindspore.communication.management import get_group_size
+from luojianet_ms.communication.management import get_rank
+from luojianet_ms import Tensor
+from luojianet_ms import Parameter
+from luojianet_ms import context
+from luojianet_ms.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms.train import Model
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.communication.management import init
+from luojianet_ms.communication.management import get_group_size
 
 
 class FakeDataInitMode:
@@ -143,7 +144,7 @@ class NetWithSparseGatherV2(nn.Cell):
         x = self.gather(self.weight, indices, self.axis)
         return x
 
-    def train_mindspore_impl(self, indices, epoch, batch_size, use_parallel=True):
+    def train_luojianet_ms_impl(self, indices, epoch, batch_size, use_parallel=True):
         ds = FakeData(size=8, batch_size=batch_size, num_class=8, image_size=(), use_parallel=use_parallel)
         ds.set_image_data_type(np.int32)
         net = self
@@ -167,7 +168,7 @@ def test_allreduce_sparsegatherv2_adam_auto_parallel():
     batch_size = 1
     context.set_context(enable_sparse=True)
     net = NetWithSparseGatherV2(sparse=True)
-    output_sparse = net.train_mindspore_impl(indices, epoch, batch_size)
+    output_sparse = net.train_luojianet_ms_impl(indices, epoch, batch_size)
     net = NetWithSparseGatherV2(sparse=False)
-    output = net.train_mindspore_impl(indices, epoch, batch_size)
+    output = net.train_luojianet_ms_impl(indices, epoch, batch_size)
     assert np.allclose(output.asnumpy(), output_sparse.asnumpy(), 0.001, 0.001)

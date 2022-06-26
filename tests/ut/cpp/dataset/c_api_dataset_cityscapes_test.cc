@@ -19,8 +19,8 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -44,7 +44,7 @@ TEST_F(MindDataTestPipeline, TestCityscapesBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -102,7 +102,7 @@ TEST_F(MindDataTestPipeline, TestCityscapesBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -160,7 +160,7 @@ TEST_F(MindDataTestPipeline, TestCityscapesTaskJson) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::string json_file_path = dataset_path + "/gtFine/train/aa/aa_000000_gtFine_polygons.json";
@@ -171,7 +171,7 @@ TEST_F(MindDataTestPipeline, TestCityscapesTaskJson) {
   Tensor::CreateScalar(contents_js.dump(), &t_expect_item);
   file_handle.close();
 
-  mindspore::MSTensor expect_item = mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(t_expect_item));
+  luojianet_ms::MSTensor expect_item = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(t_expect_item));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -210,7 +210,7 @@ TEST_F(MindDataTestPipeline, TestCityscapesDecode) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -250,7 +250,7 @@ TEST_F(MindDataTestPipeline, TestCityscapesNumSamplers) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

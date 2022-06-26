@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""setup for pytest in mindspore.numpy"""
-import mindspore.context as context
+"""setup for pytest in luojianet_ms.numpy"""
+import luojianet_ms.context as context
 
 
 # pylint: disable=unused-argument

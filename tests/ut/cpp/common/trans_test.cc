@@ -20,7 +20,7 @@
 #include "include/common/utils/utils.h"
 
 using namespace std;
-namespace mindspore {
+namespace luojianet_ms {
 namespace trans {
 class FormatTransTest : public UT::Common {
  public:
@@ -147,4 +147,4 @@ TEST_F(ShapeTransTest, nd_rnn_bias_dynamic_device_shape) {
   }
 }
 }  // namespace trans
-}  // namespace mindspore
+}  // namespace luojianet_ms

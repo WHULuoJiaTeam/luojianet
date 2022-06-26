@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,9 +14,9 @@
 # limitations under the License.
 # ============================================================================
 
-from mindspore.ops import Primitive
-from mindspore.ops.operations import _grad_ops as G
-from mindspore.ops import _constants as Constants
+from luojianet_ms.ops import Primitive
+from luojianet_ms.ops.operations import _grad_ops as G
+from luojianet_ms.ops import _constants as Constants
 
 batch_norm_grad = G.BatchNormGrad(is_training=False)
 bn_infer_grad = Primitive('BNInferGrad')

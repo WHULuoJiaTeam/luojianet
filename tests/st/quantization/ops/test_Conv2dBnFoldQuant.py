@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +19,11 @@ train Conv2dBnFoldQuant Cell
 
 import pytest
 import numpy as np
-from mindspore import nn
-from mindspore import context
-from mindspore import Tensor
-from mindspore.common import set_seed
-from mindspore.compression.quant import create_quant_config
+from luojianet_ms import nn
+from luojianet_ms import context
+from luojianet_ms import Tensor
+from luojianet_ms.common import set_seed
+from luojianet_ms.compression.quant import create_quant_config
 
 class Net(nn.Cell):
     def __init__(self, qconfig):

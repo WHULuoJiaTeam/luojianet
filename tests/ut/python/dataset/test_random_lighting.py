@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +19,11 @@ Testing RandomLighting op in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as F
-import mindspore.dataset.vision.c_transforms as C
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as F
+import luojianet_ms.dataset.vision.c_transforms as C
+from luojianet_ms import log as logger
 from util import visualize_list, diff_mse, save_and_check_md5, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -43,7 +44,7 @@ def test_random_lighting_py(alpha=1, plot=False):
     # Original Images
     data = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_original = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_original = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                               F.Resize((224, 224)),
                                                                               F.ToTensor()])
 
@@ -63,7 +64,7 @@ def test_random_lighting_py(alpha=1, plot=False):
     alpha = alpha if alpha is not None else 0.05
     py_op = F.RandomLighting(alpha)
 
-    transforms_random_lighting = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_random_lighting = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                                      F.Resize((224, 224)),
                                                                                      py_op,
                                                                                      F.ToTensor()])
@@ -105,7 +106,7 @@ def test_random_lighting_py_md5():
         F.RandomLighting(1),
         F.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
 
     #  Generate dataset
     data = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
@@ -124,7 +125,7 @@ def test_random_lighting_c(alpha=1, plot=False):
     """
     Feature: RandomLighting
     Description: test RandomLighting cpp op
-    Expectation: equal results from Mindspore and benchmark
+    Expectation: equal results from LuoJiaNET and benchmark
     """
     logger.info("Test RandomLighting cpp op")
     # Original Images
@@ -186,7 +187,7 @@ def test_random_lighting_c_py(alpha=1, plot=False):
     python_op = F.RandomLighting(alpha)
     c_op = C.RandomLighting(alpha)
 
-    transforms_op = mindspore.dataset.transforms.py_transforms.Compose([lambda img: F.ToPIL()(img.astype(np.uint8)),
+    transforms_op = luojianet_ms.dataset.transforms.py_transforms.Compose([lambda img: F.ToPIL()(img.astype(np.uint8)),
                                                                         python_op,
                                                                         np.array])
 

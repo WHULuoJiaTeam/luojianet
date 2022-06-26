@@ -14,9 +14,9 @@
 # ============================================================================
 import numpy as np
 
-from mindspore import Tensor
-from mindspore.common.api import ms_function
-from mindspore.ops import operations as P
+from luojianet_ms import Tensor
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.ops import operations as P
 
 
 def test_nest_range_transpose():

@@ -20,9 +20,9 @@ import numpy as np
 import pytest
 import cv2
 
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as vision
+from luojianet_ms import log as logger
 
 DATA_DIR = ["../data/dataset/test_tf_file_3_images/train-0000-of-0001.data"]
 SCHEMA_DIR = "../data/dataset/test_tf_file_3_images/datasetSchema.json"

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,19 +18,19 @@ import os
 
 import numpy as np
 from sklearn.metrics import roc_auc_score
-import mindspore.common.dtype as mstype
-from mindspore.ops import functional as F
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
-from mindspore.nn import Dropout
-from mindspore.nn.optim import Adam
-from mindspore.nn.metrics import Metric
-from mindspore import nn, Tensor, ParameterTuple, Parameter
-from mindspore.common.initializer import Uniform, initializer
-from mindspore.train.callback import ModelCheckpoint, CheckpointConfig
-from mindspore.parallel._utils import _get_device_num, _get_parallel_mode, _get_gradients_mean
-from mindspore.context import ParallelMode
-from mindspore.nn.wrap.grad_reducer import DistributedGradReducer
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
+from luojianet_ms.nn import Dropout
+from luojianet_ms.nn.optim import Adam
+from luojianet_ms.nn.metrics import Metric
+from luojianet_ms import nn, Tensor, ParameterTuple, Parameter
+from luojianet_ms.common.initializer import Uniform, initializer
+from luojianet_ms.train.callback import ModelCheckpoint, CheckpointConfig
+from luojianet_ms.parallel._utils import _get_device_num, _get_parallel_mode, _get_gradients_mean
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.nn.wrap.grad_reducer import DistributedGradReducer
 
 from .callback import EvalCallBack, LossCallBack
 

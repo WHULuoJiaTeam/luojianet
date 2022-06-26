@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +15,11 @@
 # ============================================================================
 """ test syntax for logic expression """
 
-import mindspore.nn as nn
-import mindspore
-from mindspore import context
-from mindspore.common.parameter import Parameter
-from mindspore.common.tensor import Tensor
+import luojianet_ms.nn as nn
+import luojianet_ms
+from luojianet_ms import context
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.tensor import Tensor
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -26,7 +27,7 @@ context.set_context(mode=context.GRAPH_MODE)
 class Net(nn.Cell):
     def __init__(self):
         super().__init__()
-        self.weight = Parameter(Tensor(3, mindspore.float32), name="w")
+        self.weight = Parameter(Tensor(3, luojianet_ms.float32), name="w")
         self.m = 2
 
     def construct(self, x, y):
@@ -38,7 +39,7 @@ class Net(nn.Cell):
         return x
 
 def test_attr_ref():
-    x = Tensor(4, mindspore.float32)
+    x = Tensor(4, luojianet_ms.float32)
     net_y = Net()
     net = Net()
     ret = net(x, net_y)

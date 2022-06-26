@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2022 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,33 +15,33 @@
 # limitations under the License.
 # ============================================================================
 
-# Prepare and Install mindspore cpu by conda on Ubuntu 18.04.
+# Prepare and Install luojianet_ms cpu by conda on Ubuntu 18.04.
 #
 # This file will:
 #   - change deb source to huaweicloud mirror
-#   - install mindspore dependencies via apt like gcc, libgmp
-#   - install conda and set up environment for mindspore
-#   - install mindspore-cpu by conda
+#   - install luojianet_ms dependencies via apt like gcc, libgmp
+#   - install conda and set up environment for luojianet_ms
+#   - install luojianet_ms-cpu by conda
 #
 # Augments:
 #   - PYTHON_VERSION: python version to set up. [3.7(default), 3.8, 3.9]
-#   - MINDSPORE_VERSION: mindspore version to install, >=1.6.0
+#   - LUOJIANET_MS_VERSION: luojianet_ms version to install, >=1.6.0
 #
 # Usage:
 #   Run script like `bash ./ubuntu-cpu-conda.sh`.
-#   To set augments, run it as `PYTHON_VERSION=3.9 MINDSPORE_VERSION=1.6.0 bash ./ubuntu-cpu-conda.sh`.
+#   To set augments, run it as `PYTHON_VERSION=3.9 LUOJIANET_MS_VERSION=1.6.0 bash ./ubuntu-cpu-conda.sh`.
 
 set -e
 
 PYTHON_VERSION=${PYTHON_VERSION:-3.7}
-MINDSPORE_VERSION=${MINDSPORE_VERSION:-EMPTY}
+LUOJIANET_MS_VERSION=${LUOJIANET_MS_VERSION:-EMPTY}
 
 version_less() {
     test "$(echo "$@" | tr ' ' '\n' | sort -rV | head -n 1)" != "$1";
 }
 
-if version_less "${MINDSPORE_VERSION}" "1.6.0"; then
-    echo "MINDSPORE_VERSION should be >=1.6.0, please check available versions at https://www.mindspore.cn/versions."
+if version_less "${LUOJIANET_MS_VERSION}" "1.6.0"; then
+    echo "LUOJIANET_MS_VERSION should be >=1.6.0, please check available versions at https://www.luojianet_ms.cn/versions."
     exit 1
 fi
 
@@ -50,8 +51,8 @@ if [[ " ${available_py_version[*]} " != *" $PYTHON_VERSION "* ]]; then
     exit 1
 fi
 
-if [[ "$PYTHON_VERSION" == "3.8" && ${MINDSPORE_VERSION:0:3} == "1.6" ]]; then
-    echo "PYTHON_VERSION==3.8 is not compatible with MINDSPORE_VERSION==1.6.x, please use PYTHON_VERSION==3.7 or 3.9 for MINDSPORE_VERSION==1.6.x."
+if [[ "$PYTHON_VERSION" == "3.8" && ${LUOJIANET_MS_VERSION:0:3} == "1.6" ]]; then
+    echo "PYTHON_VERSION==3.8 is not compatible with LUOJIANET_MS_VERSION==1.6.x, please use PYTHON_VERSION==3.7 or 3.9 for LUOJIANET_MS_VERSION==1.6.x."
     exit 1
 fi
 
@@ -99,15 +100,15 @@ else
 fi
 set -e
 
-# set up conda env and install mindspore-cpu
-env_name=mindspore_py3${PYTHON_VERSION##*.}
+# set up conda env and install luojianet_ms-cpu
+env_name=luojianet_ms_py3${PYTHON_VERSION##*.}
 conda create -n $env_name python=${PYTHON_VERSION} -c conda-forge -y
 conda activate $env_name
-install_name="mindspore-cpu"
-if [[ $MINDSPORE_VERSION != "EMPTY" ]]; then
-    install_name="${install_name}=${MINDSPORE_VERSION}"
+install_name="luojianet_ms-cpu"
+if [[ $LUOJIANET_MS_VERSION != "EMPTY" ]]; then
+    install_name="${install_name}=${LUOJIANET_MS_VERSION}"
 fi
-conda install ${install_name} -c mindspore -c conda-forge -y
+conda install ${install_name} -c luojianet_ms -c conda-forge -y
 
-# check mindspore installation
-python -c "import mindspore;mindspore.run_check()"
+# check luojianet_ms installation
+python -c "import luojianet_ms;luojianet_ms.run_check()"

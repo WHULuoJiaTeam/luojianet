@@ -20,11 +20,11 @@ import tempfile
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
-from mindspore.train.summary.summary_record import SummaryRecord
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train.summary.summary_record import SummaryRecord
 from tests.summary_utils import SummaryReader
 from tests.security_utils import security_off_wrap
 

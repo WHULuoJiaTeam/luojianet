@@ -17,13 +17,13 @@ Testing RandomCrop op in DE
 """
 import numpy as np
 
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.transforms.c_transforms as ops
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-import mindspore.dataset.vision.utils as mode
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.transforms.c_transforms as ops
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+import luojianet_ms.dataset.vision.utils as mode
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 from util import save_and_check_md5, visualize_list, config_get_set_seed, \
     config_get_set_num_parallel_workers, diff_mse
 
@@ -75,7 +75,7 @@ def test_random_crop_op_py(plot=False):
         py_vision.RandomCrop([512, 512], [200, 200, 200, 200]),
         py_vision.ToTensor()
     ]
-    transform1 = mindspore.dataset.transforms.py_transforms.Compose(transforms1)
+    transform1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms1)
     data1 = data1.map(operations=transform1, input_columns=["image"])
     # Second dataset
     # Second dataset for comparison
@@ -84,7 +84,7 @@ def test_random_crop_op_py(plot=False):
         py_vision.Decode(),
         py_vision.ToTensor()
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(transforms2)
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms2)
     data2 = data2.map(operations=transform2, input_columns=["image"])
 
     crop_images = []
@@ -137,7 +137,7 @@ def test_random_crop_01_py():
         py_vision.RandomCrop(512),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     filename = "random_crop_01_py_result.npz"
@@ -186,7 +186,7 @@ def test_random_crop_02_py():
         py_vision.RandomCrop([512, 375]),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     filename = "random_crop_02_py_result.npz"
@@ -235,7 +235,7 @@ def test_random_crop_03_py():
         py_vision.RandomCrop([2268, 4032]),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     filename = "random_crop_03_py_result.npz"
@@ -279,7 +279,7 @@ def test_random_crop_04_py():
         py_vision.RandomCrop([2268, 4033]),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
     try:
         data.create_dict_iterator(num_epochs=1).__next__()
@@ -330,7 +330,7 @@ def test_random_crop_05_py():
         py_vision.RandomCrop([2268, 4033], [200, 200, 200, 200], pad_if_needed=True),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     filename = "random_crop_05_py_result.npz"
@@ -375,7 +375,7 @@ def test_random_crop_06_py():
             py_vision.RandomCrop([512, 512, 375]),
             py_vision.ToTensor()
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data = data.map(operations=transform, input_columns=["image"])
     except TypeError as e:
         logger.info("Got an exception in DE: {}".format(str(e)))
@@ -424,7 +424,7 @@ def test_random_crop_07_py():
         py_vision.RandomCrop(512, [200, 200, 200, 200], fill_value=(255, 255, 255)),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     filename = "random_crop_07_py_result.npz"
@@ -475,7 +475,7 @@ def test_random_crop_08_py():
         py_vision.RandomCrop(512, [200, 200, 200, 200], padding_mode=mode.Border.EDGE),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     filename = "random_crop_08_py_result.npz"
@@ -499,7 +499,7 @@ def test_random_crop_09():
         # Note: if input is not PIL image, TypeError will raise
         py_vision.RandomCrop(512)
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
     try:
         data.create_dict_iterator(num_epochs=1).__next__()
@@ -528,7 +528,7 @@ def test_random_crop_comp(plot=False):
         py_vision.RandomCrop(cropped_size),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = data2.map(operations=transform, input_columns=["image"])
 
     image_c_cropped = []

@@ -24,7 +24,7 @@
 #include "mindapi/ir/tensor.h"
 #include "mindapi/ir/utils.h"
 
-namespace mindspore::api {
+namespace luojianet_ms::api {
 class TestMindApi : public UT::Common {
  public:
   TestMindApi() = default;
@@ -94,7 +94,7 @@ TEST_F(TestMindApi, test_values) {
   auto b = MakeValue(true);
   auto f = MakeValue(3.14f);
   auto seq = MakeValue(std::vector<int64_t>{3, 4, 5});
-  auto seq_str = MakeValue(std::vector<std::string>({"this", "is", "mindspore", "api"}));
+  auto seq_str = MakeValue(std::vector<std::string>({"this", "is", "luojianet_ms", "api"}));
 
   ASSERT_TRUE(s->isa<StringImm>());
   ASSERT_TRUE(i->isa<Int64Imm>());
@@ -134,7 +134,7 @@ TEST_F(TestMindApi, test_values) {
   ASSERT_EQ(str_values.size(), 4);
   ASSERT_EQ(str_values[0], "this");
   ASSERT_EQ(str_values[1], "is");
-  ASSERT_EQ(str_values[2], "mindspore");
+  ASSERT_EQ(str_values[2], "luojianet_ms");
   ASSERT_EQ(str_values[3], "api");
 
   auto value_list = GetValue<ValuePtrList>(seq);
@@ -456,7 +456,7 @@ TEST_F(TestMindApi, test_api_utils) {
 /// Description: test logging API.
 /// Expectation: logging work as expected.
 TEST_F(TestMindApi, test_api_logging) {
-  std::string name = "mindspore";
+  std::string name = "luojianet_ms";
   MS_LOG(DEBUG) << "hello debug";
   MS_LOG(INFO) << "hello info";
   MS_LOG(WARNING) << "hello warning";
@@ -498,4 +498,4 @@ TEST_F(TestMindApi, test_abstract_sequence) {
   abs_tuple->elements()[4]->set_shape(MakeShared<Shape>(shape2));
   ASSERT_EQ(abs_tuple->elements()[4]->shape()->shape(), shape2);
 }
-}  // namespace mindspore::api
+}  // namespace luojianet_ms::api

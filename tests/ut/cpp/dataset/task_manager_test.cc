@@ -18,7 +18,7 @@
 #include "gtest/gtest.h"
 #include "minddata/dataset/util/task_manager.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestTaskManager : public UT::Common {
  public:

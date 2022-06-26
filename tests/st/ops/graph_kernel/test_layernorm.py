@@ -17,11 +17,11 @@ import copy
 import numpy as np
 import pytest
 
-import mindspore.context as context
-from mindspore import Tensor
-import mindspore.nn as nn
-from mindspore.ops.operations import _grad_ops as G
-import mindspore.ops.operations as P
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+import luojianet_ms.nn as nn
+from luojianet_ms.ops.operations import _grad_ops as G
+import luojianet_ms.ops.operations as P
 
 
 class LayerNormNet(nn.Cell):

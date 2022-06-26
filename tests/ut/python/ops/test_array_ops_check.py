@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,12 @@
 """ test ops """
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import context, Tensor
-from mindspore.common import dtype as mstype
-from mindspore.ops import operations as P
-from ....mindspore_test_framework.mindspore_test import mindspore_test
-from ....mindspore_test_framework.pipeline.forward.compile_forward \
+import luojianet_ms.nn as nn
+from luojianet_ms import context, Tensor
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.ops import operations as P
+from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
+from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception
 
 context.set_context(mode=context.PYNATIVE_MODE)
@@ -140,6 +141,6 @@ raise_set = [
 ]
 
 
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception)
 def test_check_exception():
     return raise_set

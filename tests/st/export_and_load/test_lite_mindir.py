@@ -1,7 +1,9 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,14 +22,14 @@ import os
 import numpy as np
 import pytest
 
-from mindspore import Tensor
-from mindspore.train.serialization import export, load_checkpoint
-from mindspore import context
+from luojianet_ms import Tensor
+from luojianet_ms.train.serialization import export, load_checkpoint
+from luojianet_ms import context
 from tests.models.official.cv.mobilenetv2.src.mobilenetV2 import MobileNetV2Backbone, MobileNetV2Head, mobilenet_v2
 
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
-ckpt_path = '/home/workspace/mindspore_dataset/checkpoint/mobilenetv2/mobilenetv2_gpu.ckpt'
+ckpt_path = '/home/workspace/luojianet_ms_dataset/checkpoint/mobilenetv2/mobilenetv2_gpu.ckpt'
 
 @pytest.mark.level0
 @pytest.mark.platform_x86_gpu_training

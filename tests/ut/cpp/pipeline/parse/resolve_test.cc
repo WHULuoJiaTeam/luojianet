@@ -22,7 +22,7 @@
 #include "pipeline/jit/parse/parse.h"
 #include "include/common/debug/draw.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parse {
 
 class TestResolve : public UT::Common {
@@ -70,4 +70,4 @@ TEST_F(TestResolve, TestParseGraphTestClosureResolve) {
   ASSERT_EQ(manager->func_graphs().size(), (size_t)2);
 }
 }  // namespace parse
-}  // namespace mindspore
+}  // namespace luojianet_ms

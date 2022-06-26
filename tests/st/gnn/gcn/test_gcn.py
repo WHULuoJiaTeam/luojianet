@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +17,15 @@
 import time
 import pytest
 import numpy as np
-from mindspore import context
-from mindspore import Tensor
+from luojianet_ms import context
+from luojianet_ms import Tensor
 from tests.models.official.gnn.gcn.src.gcn import GCN
 from tests.models.official.gnn.gcn.src.metrics import LossAccuracyWrapper, TrainNetWrapper
 from tests.models.official.gnn.gcn.src.config import ConfigGCN
 from tests.models.official.gnn.gcn.src.dataset import get_adj_features_labels, get_mask
 
 
-DATA_DIR = '/home/workspace/mindspore_dataset/cora/cora_mr/cora_mr'
+DATA_DIR = '/home/workspace/luojianet_ms_dataset/cora/cora_mr/cora_mr'
 TRAIN_NODE_NUM = 140
 EVAL_NODE_NUM = 500
 TEST_NODE_NUM = 1000

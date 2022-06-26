@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +14,11 @@
 # limitations under the License.
 # ============================================================================
 """ResNet based DeepLab."""
-import mindspore.nn as nn
-from mindspore.ops import operations as P
-from mindspore.common.initializer import initializer
-from mindspore._checkparam import twice
-from mindspore.common.parameter import Parameter
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms._checkparam import twice
+from luojianet_ms.common.parameter import Parameter
 
 
 def _conv_bn_relu(in_channel,

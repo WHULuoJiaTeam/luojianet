@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/clip_by_norm_no_div_square_sum_fusion.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptimizeClipByNormNodivsquaresumFusion : public BackendCommon {
  public:
@@ -51,4 +51,4 @@ TEST_F(TestHWOptimizeClipByNormNodivsquaresumFusion, test_clip_by_norm_no_div_sq
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

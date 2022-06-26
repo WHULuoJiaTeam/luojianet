@@ -14,14 +14,14 @@
 
 import numpy as np
 import pytest
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore.common.api import _cell_graph_executor
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
-from mindspore.parallel._utils import _reset_op_id as reset_op_id
-from mindspore import context, Tensor, Parameter
-from mindspore.parallel import set_algo_parameters
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
+from luojianet_ms.parallel._utils import _reset_op_id as reset_op_id
+from luojianet_ms import context, Tensor, Parameter
+from luojianet_ms.parallel import set_algo_parameters
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 grad_all = C.GradOperation(get_all=True)

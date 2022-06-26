@@ -15,10 +15,10 @@
 """
 convert resnet pretrain model to faster_rcnn backbone pretrain model
 """
-from mindspore.train.serialization import load_checkpoint, save_checkpoint
-from mindspore.common.parameter import Parameter
-from mindspore.common.tensor import Tensor
-import mindspore.common.dtype as mstype
+from luojianet_ms.train.serialization import load_checkpoint, save_checkpoint
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.tensor import Tensor
+import luojianet_ms.common.dtype as mstype
 from .model_utils.config import config
 
 

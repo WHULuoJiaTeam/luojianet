@@ -28,7 +28,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
-namespace mindspore {
+namespace luojianet_ms {
 
 class TestAny : public UT::Common {
  public:
@@ -85,4 +85,4 @@ TEST_F(TestAny, test_unordered_map1) {
   ASSERT_EQ(1, ids[1].cast<int>());
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

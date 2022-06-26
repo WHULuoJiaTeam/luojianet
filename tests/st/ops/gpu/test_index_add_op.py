@@ -16,12 +16,12 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter, ParameterTuple
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter, ParameterTuple
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
 
 
 class NetIndexAdd(nn.Cell):
@@ -278,7 +278,7 @@ def index_add_grad_with_type(nptype):
                             [69., 70., 71.],
                             [72., 73., 74.],
                             [75., 76., 77.]]).astype(nptype))
-    index = Tensor(np.array([1]), dtype=mindspore.int32)
+    index = Tensor(np.array([1]), dtype=luojianet_ms.int32)
     output = grad_net(index, y, dout)
     ygrad = output[0][1]
     xgrad = output[1][0]

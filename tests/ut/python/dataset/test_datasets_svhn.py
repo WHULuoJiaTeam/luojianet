@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,8 +23,8 @@ import numpy as np
 import pytest
 from scipy.io import loadmat
 
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 DATA_DIR = "../data/dataset/testSVHNData"
 WRONG_DIR = "../data/dataset/testMnistData"

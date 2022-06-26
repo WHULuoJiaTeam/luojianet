@@ -26,7 +26,7 @@
 #include "include/common/utils/callbacks_ge.h"
 #endif
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestCallback : public UT::Common {
  public:
   TestCallback() {}
@@ -96,4 +96,4 @@ MS_LOG(INFO) << "ret=" << ret;
     ASSERT_TRUE(ret == 0);
 }
 */
-}  // namespace mindspore
+}  // namespace luojianet_ms

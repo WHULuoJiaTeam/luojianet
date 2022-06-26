@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/tensor_layout/tensor_redistribution.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class SoftmaxCrossEntropyWithLogitsInfo;
@@ -55,7 +55,7 @@ void TestSoftmaxLoss::SetUp() {
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
   ValuePtr is_grad = MakeValue(true);
-  mindspore::HashMap<std::string, ValuePtr> attr = {{"is_grad", is_grad}};
+  luojianet_ms::HashMap<std::string, ValuePtr> attr = {{"is_grad", is_grad}};
 
   Shapes inputs_shape = {{2, 4, 8, 16}, {2, 4, 8, 16}};
   Shapes outputs_shape = {{2}, {2, 4, 8, 16}};
@@ -193,4 +193,4 @@ TEST_F(TestSoftmaxLoss, CheckStrategy2) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

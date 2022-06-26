@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-from mindspore.ops import Primitive
-from mindspore.ops import operations as P
-from mindspore.ops import _constants as Constants
+from luojianet_ms.ops import Primitive
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import _constants as Constants
 
 # pylint: disable=unused-variable
 

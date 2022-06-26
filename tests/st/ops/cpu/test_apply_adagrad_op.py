@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore.ops import operations as P
-import mindspore.common.dtype as mstype
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.ops import operations as P
+import luojianet_ms.common.dtype as mstype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
@@ -52,9 +53,9 @@ def test_apply_adagrad():
     lr = Tensor(0.001, mstype.float32)
     grad = Tensor(grident_np)
     out = net(lr, grad)
-    res_var_mindspore = out[0].asnumpy()
-    res_accum_mindspore = out[1].asnumpy()
+    res_var_luojianet_ms = out[0].asnumpy()
+    res_accum_luojianet_ms = out[1].asnumpy()
     eps = np.array([1e-6 for i in range(9)]).reshape(3, 3)
 
-    assert np.all(expect_var_np - res_var_mindspore < eps)
-    assert np.all(expect_accum_np - res_accum_mindspore < eps)
+    assert np.all(expect_var_np - res_var_luojianet_ms < eps)
+    assert np.all(expect_accum_np - res_accum_luojianet_ms < eps)

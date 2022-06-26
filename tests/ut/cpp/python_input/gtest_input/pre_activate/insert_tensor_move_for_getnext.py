@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +14,10 @@
 # limitations under the License.
 # ============================================================================
 
-import mindspore as ms
-from mindspore.ops import Primitive
-from mindspore.ops import _constants as Constants
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+from luojianet_ms.ops import Primitive
+from luojianet_ms.ops import _constants as Constants
+from luojianet_ms.ops import operations as P
 
 get_next = P.GetNext([ms.float32, ms.int32], [[32, 64], [32]], 2, "")
 tensor_move = Primitive('TensorMove')

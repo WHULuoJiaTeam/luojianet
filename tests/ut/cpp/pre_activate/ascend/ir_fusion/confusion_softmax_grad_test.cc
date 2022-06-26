@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/confusion_softmax_grad_rule.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptimizeConfusionSoftmaxGradRule : public BackendCommon {
  public:
@@ -52,4 +52,4 @@ TEST_F(TestHWOptimizeConfusionSoftmaxGradRule, test_confusion_softmax_grad_rule)
 }
 
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -7,7 +7,7 @@ else()
 endif()
 
 set(nccl_CFLAGS "-D_FORTIFY_SOURCE=2 -O2")
-mindspore_add_pkg(nccl
+luojianet_ms_add_pkg(nccl
         VER 2.7.6-1
         LIBS nccl
         URL ${REQ_URL}
@@ -16,4 +16,4 @@ mindspore_add_pkg(nccl
         INSTALL_INCS build/include/*
         INSTALL_LIBS build/lib/*)
 include_directories(${nccl_INC})
-add_library(mindspore::nccl ALIAS nccl::nccl)
+add_library(luojianet_ms::nccl ALIAS nccl::nccl)

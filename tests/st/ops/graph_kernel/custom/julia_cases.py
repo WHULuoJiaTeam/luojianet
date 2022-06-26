@@ -17,10 +17,10 @@ import os
 import platform
 import numpy as np
 import pytest
-from mindspore import context, Tensor
-from mindspore.common import dtype as mstype
-from mindspore.nn import Cell
-import mindspore.ops as ops
+from luojianet_ms import context, Tensor
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.nn import Cell
+import luojianet_ms.ops as ops
 
 
 class JuliaTwoInputsNet(Cell):

@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestFullConnection : public UT::Common {
  public:
@@ -122,4 +122,4 @@ TEST_F(TestFullConnection, test_full_connection_3) {
   EXPECT_EQ(shape_vec[1], 2);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

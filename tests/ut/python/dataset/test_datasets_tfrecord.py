@@ -18,9 +18,9 @@ Test TFRecordDataset Ops
 import numpy as np
 import pytest
 
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 from util import save_and_check_dict
 
 FILES = ["../data/dataset/testTFTestAllTypes/test.data"]

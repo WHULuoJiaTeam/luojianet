@@ -28,11 +28,11 @@
 #include "minddata/mindrecord/include/shard_sample.h"
 #include "ut_common.h"
 
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace mindrecord {
 class TestShardReader : public UT::Common {
  public:
@@ -244,4 +244,4 @@ TEST_F(TestShardReader, TestShardReaderConsumer) {
   dataset.Close();
 }
 }  // namespace mindrecord
-}  // namespace mindspore
+}  // namespace luojianet_ms

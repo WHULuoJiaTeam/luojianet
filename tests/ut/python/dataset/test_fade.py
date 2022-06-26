@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +18,10 @@ Testing fade op in DE
 """
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore.dataset.audio.utils import FadeShape
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms.dataset.audio.utils import FadeShape
+from luojianet_ms import log as logger
 
 
 def test_fade_linear():

@@ -23,12 +23,12 @@
 #include "utils/log_adapter.h"
 #include "securec.h"
 
-namespace common = mindspore::common;
+namespace common = luojianet_ms::common;
 
-using namespace mindspore::dataset;
-using mindspore::MsLogLevel::ERROR;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::LogStream;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::MsLogLevel::ERROR;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::LogStream;
 
 class MindDataTestSchema : public UT::DatasetOpTesting {
  protected:

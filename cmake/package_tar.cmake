@@ -8,7 +8,7 @@ file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/output)
 
 # cpack variables
 string(TOLOWER linux_${CMAKE_HOST_SYSTEM_PROCESSOR} PLATFORM_NAME)
-set(CPACK_PACKAGE_FILE_NAME mindspore_ascend-${VERSION_NUMBER}-${PLATFORM_NAME})
+set(CPACK_PACKAGE_FILE_NAME luojianet_ms_ascend-${VERSION_NUMBER}-${PLATFORM_NAME})
 set(CPACK_GENERATOR "TGZ")
 set(CPACK_PACKAGE_CHECKSUM SHA256)
 set(CPACK_PACKAGE_DIRECTORY ${CMAKE_SOURCE_DIR}/output)
@@ -21,23 +21,23 @@ set(INSTALL_LIB_DIR "lib")
 
 # set package files
 install(
-        TARGETS mindspore_shared_lib
+        TARGETS luojianet_ms_shared_lib
         DESTINATION ${INSTALL_LIB_DIR}
-        COMPONENT mindspore
+        COMPONENT luojianet_ms
 )
 
 install(
-        TARGETS mindspore_core mindspore_common mindspore_backend
+        TARGETS luojianet_ms_core luojianet_ms_common luojianet_ms_backend
         DESTINATION ${INSTALL_LIB_DIR}
-        COMPONENT mindspore
+        COMPONENT luojianet_ms
 )
 
 if(USE_GLOG)
-    file(GLOB_RECURSE GLOG_LIB_LIST ${glog_LIBPATH}/libmindspore_glog*)
+    file(GLOB_RECURSE GLOG_LIB_LIST ${glog_LIBPATH}/libluojianet_ms_glog*)
     install(
             FILES ${GLOG_LIB_LIST}
             DESTINATION ${INSTALL_LIB_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
 endif()
 
@@ -49,20 +49,20 @@ file(GLOB_RECURSE LIBEVENT_LIB_LIST
 install(
         FILES ${LIBEVENT_LIB_LIST}
         DESTINATION ${INSTALL_LIB_DIR}
-        COMPONENT mindspore
+        COMPONENT luojianet_ms
 )
 
 if(ENABLE_MINDDATA)
     install(
             TARGETS _c_dataengine _c_mindrecord
             DESTINATION ${INSTALL_BASE_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
     install(
             TARGETS cache_admin cache_server
             OPTIONAL
             DESTINATION ${INSTALL_BIN_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
     file(GLOB_RECURSE OPENCV_LIB_LIST
             ${opencv_LIBPATH}/libopencv_core*
@@ -72,13 +72,13 @@ if(ENABLE_MINDDATA)
     install(
             FILES ${OPENCV_LIB_LIST}
             DESTINATION ${INSTALL_LIB_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
     file(GLOB_RECURSE TINYXML2_LIB_LIST ${tinyxml2_LIBPATH}/libtinyxml2*)
     install(
             FILES ${TINYXML2_LIB_LIST}
             DESTINATION ${INSTALL_LIB_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
     file(GLOB_RECURSE ICU4C_LIB_LIST
             ${icu4c_LIBPATH}/libicuuc*
@@ -88,7 +88,7 @@ if(ENABLE_MINDDATA)
     install(
             FILES ${ICU4C_LIB_LIST}
             DESTINATION ${INSTALL_LIB_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
 endif()
 
@@ -97,7 +97,7 @@ if(ENABLE_CPU AND NOT WIN32)
     install(
             TARGETS ps_cache
             DESTINATION ${INSTALL_LIB_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
 endif()
 
@@ -112,62 +112,62 @@ if(ENABLE_CPU)
     install(
             FILES ${DNNL_LIB_LIST}
             DESTINATION ${INSTALL_LIB_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
     install(
             TARGETS nnacl
             DESTINATION ${INSTALL_LIB_DIR}
-            COMPONENT mindspore
+            COMPONENT luojianet_ms
     )
 endif()
 
 if(MS_BUILD_GRPC)
-    install(FILES ${grpc_LIBPATH}/libmindspore_grpc++.so.1.36.1
-            DESTINATION ${INSTALL_LIB_DIR} RENAME libmindspore_grpc++.so.1 COMPONENT mindspore)
-    install(FILES ${grpc_LIBPATH}/libmindspore_grpc.so.15.0.0
-            DESTINATION ${INSTALL_LIB_DIR} RENAME libmindspore_grpc.so.15 COMPONENT mindspore)
-    install(FILES ${grpc_LIBPATH}/libmindspore_gpr.so.15.0.0
-            DESTINATION ${INSTALL_LIB_DIR} RENAME libmindspore_gpr.so.15 COMPONENT mindspore)
-    install(FILES ${grpc_LIBPATH}/libmindspore_upb.so.15.0.0
-            DESTINATION ${INSTALL_LIB_DIR} RENAME libmindspore_upb.so.15 COMPONENT mindspore)
-    install(FILES ${grpc_LIBPATH}/libmindspore_address_sorting.so.15.0.0
-            DESTINATION ${INSTALL_LIB_DIR} RENAME libmindspore_address_sorting.so.15 COMPONENT mindspore)
+    install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpc++.so.1.36.1
+            DESTINATION ${INSTALL_LIB_DIR} RENAME libluojianet_ms_grpc++.so.1 COMPONENT luojianet_ms)
+    install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpc.so.15.0.0
+            DESTINATION ${INSTALL_LIB_DIR} RENAME libluojianet_ms_grpc.so.15 COMPONENT luojianet_ms)
+    install(FILES ${grpc_LIBPATH}/libluojianet_ms_gpr.so.15.0.0
+            DESTINATION ${INSTALL_LIB_DIR} RENAME libluojianet_ms_gpr.so.15 COMPONENT luojianet_ms)
+    install(FILES ${grpc_LIBPATH}/libluojianet_ms_upb.so.15.0.0
+            DESTINATION ${INSTALL_LIB_DIR} RENAME libluojianet_ms_upb.so.15 COMPONENT luojianet_ms)
+    install(FILES ${grpc_LIBPATH}/libluojianet_ms_address_sorting.so.15.0.0
+            DESTINATION ${INSTALL_LIB_DIR} RENAME libluojianet_ms_address_sorting.so.15 COMPONENT luojianet_ms)
 endif()
 
 ## Public header files
 install(
         DIRECTORY ${CMAKE_SOURCE_DIR}/include
         DESTINATION ${INSTALL_BASE_DIR}
-        COMPONENT mindspore
+        COMPONENT luojianet_ms
 )
 
 ## Public header files for mindapi
 install(
-        DIRECTORY ${CMAKE_SOURCE_DIR}/mindspore/core/mindapi/base
-        ${CMAKE_SOURCE_DIR}/mindspore/core/mindapi/ir
+        DIRECTORY ${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindapi/base
+        ${CMAKE_SOURCE_DIR}/luojianet_ms/core/mindapi/ir
         DESTINATION ${INSTALL_BASE_DIR}/include/mindapi
-        COMPONENT mindspore
+        COMPONENT luojianet_ms
 )
 
 ## Public header files for minddata
 install(
-        FILES ${CMAKE_SOURCE_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/config.h
-        ${CMAKE_SOURCE_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/constants.h
-        ${CMAKE_SOURCE_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/execute.h
-        ${CMAKE_SOURCE_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/text.h
-        ${CMAKE_SOURCE_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/transforms.h
-        ${CMAKE_SOURCE_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision.h
-        ${CMAKE_SOURCE_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision_lite.h
-        ${CMAKE_SOURCE_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision_ascend.h
+        FILES ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/config.h
+        ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/constants.h
+        ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/execute.h
+        ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/text.h
+        ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/transforms.h
+        ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision.h
+        ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision_lite.h
+        ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision_ascend.h
         DESTINATION ${INSTALL_BASE_DIR}/include/dataset
-        COMPONENT mindspore
+        COMPONENT luojianet_ms
 )
 
 ## config files
 install(
         FILES ${CMAKE_SOURCE_DIR}/config/op_info.config
         DESTINATION ${INSTALL_CFG_DIR}
-        COMPONENT mindspore
+        COMPONENT luojianet_ms
 )
 
 include(CPack)

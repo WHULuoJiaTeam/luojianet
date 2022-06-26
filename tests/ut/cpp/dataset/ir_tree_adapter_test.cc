@@ -26,8 +26,8 @@
 #include "minddata/dataset/engine/tree_modifier.h"
 #include "minddata/dataset/engine/serdes.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestTreeAdapter : public UT::DatasetOpTesting {};
 
@@ -156,7 +156,7 @@ TEST_F(MindDataTestTreeAdapter, TestOptimizedTreeSerializeDeserializeForAutoTune
   ASSERT_NE(ds, nullptr);
   ds = ds->Repeat(2);
   ASSERT_NE(ds, nullptr);
-  auto to_number = std::make_shared<text::ToNumber>(mindspore::DataType::kNumberTypeInt32);
+  auto to_number = std::make_shared<text::ToNumber>(luojianet_ms::DataType::kNumberTypeInt32);
   ASSERT_NE(to_number, nullptr);
   ds = ds->Map({to_number}, {"col1"}, {"col1"});
   ds->SetNumWorkers(1);
@@ -269,7 +269,7 @@ TEST_F(MindDataTestTreeAdapter, TestSimpleTreeModifier) {
   ASSERT_NE(ds, nullptr);
   ds = ds->Repeat(2);
   ASSERT_NE(ds, nullptr);
-  auto to_number = std::make_shared<text::ToNumber>(mindspore::DataType::kNumberTypeInt32);
+  auto to_number = std::make_shared<text::ToNumber>(luojianet_ms::DataType::kNumberTypeInt32);
   ASSERT_NE(to_number, nullptr);
   ds = ds->Map({to_number}, {"col1"}, {"col1"});
   ds->SetNumWorkers(1);

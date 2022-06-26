@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,12 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-import mindspore.ops.operations as ops
-from mindspore import Tensor
-from mindspore.ops.operations import _inner_ops as inner
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.operations as ops
+from luojianet_ms import Tensor
+from luojianet_ms.ops.operations import _inner_ops as inner
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
@@ -44,8 +45,8 @@ def test_net_float32():
     Description: test cases for dynamic_broadcastto.
     Expectation: the result match expected array.
     """
-    data = Tensor(np.array([1, 2, 3]), mindspore.float32)
-    shape = Tensor(np.zeros((2, 3)), mindspore.int64)
+    data = Tensor(np.array([1, 2, 3]), luojianet_ms.float32)
+    shape = Tensor(np.zeros((2, 3)), luojianet_ms.int64)
     expect_data = np.array([[1, 2, 3], [1, 2, 3]]).astype(np.float32)
     net = Net()
     output = net(data, shape)

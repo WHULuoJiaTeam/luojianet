@@ -14,16 +14,16 @@
 
 import re
 import numpy as np
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.train import Model
-from mindspore.common.initializer import initializer
-from mindspore.common.parameter import Parameter
-import mindspore.common.dtype as mstype
-from mindspore.ops import operations as P
-from mindspore.parallel import set_algo_parameters
-from mindspore.common.api import _cell_graph_executor
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.train import Model
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common.parameter import Parameter
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.ops import operations as P
+from luojianet_ms.parallel import set_algo_parameters
+from luojianet_ms.common.api import _cell_graph_executor
 from tests.dataset_mock import MindData
 
 
@@ -102,4 +102,3 @@ def test_rec_shared_param_strmodif():
         if re.search("Gather", k) is not None:
             assert v == [[4, 1], [2, 1]]
     context.reset_auto_parallel_context()
-    

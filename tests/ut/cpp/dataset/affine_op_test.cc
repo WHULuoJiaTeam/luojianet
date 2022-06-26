@@ -22,8 +22,8 @@
 #include "lite_cv/lite_mat.h"
 #include "lite_cv/image_process.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::InterpolationMode;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::InterpolationMode;
 
 class MindDataTestAffineOp : public UT::CVOP::CVOpCommon {
  public:

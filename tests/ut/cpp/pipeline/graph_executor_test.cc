@@ -21,7 +21,7 @@
 #include "pipeline/jit/action.h"
 #include "pipeline/jit/pipeline.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace pipeline {
 class TestGraphExecutor : public UT::Common {
  public:
@@ -87,4 +87,4 @@ TEST_F(TestGraphExecutor, test_jit_config_with_unused_config) {
   ASSERT_TRUE(ret == true);
 }
 }  // namespace pipeline
-}  // namespace mindspore
+}  // namespace luojianet_ms

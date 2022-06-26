@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +17,12 @@
 import functools
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore.ops import operations as P
-from ....mindspore_test_framework.mindspore_test import mindspore_test
-from ....mindspore_test_framework.pipeline.forward.compile_forward \
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import operations as P
+from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
+from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config
-from ....mindspore_test_framework.pipeline.gradient.compile_gradient \
+from ....luojianet_ms_test_framework.pipeline.gradient.compile_gradient \
     import pipeline_for_compile_grad_ge_graph_for_case_by_case_config
 from ....ops_common import convert
 
@@ -162,11 +163,11 @@ test_backward_exec_case = filter(lambda x: 'skip' not in x[1] or
                                  not in x[1]['skip'], test_case)
 
 
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
 def test_exec():
     return test_exec_case
 
 
-@mindspore_test(pipeline_for_compile_grad_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_grad_ge_graph_for_case_by_case_config)
 def test_backward_exec():
     return test_backward_exec_case

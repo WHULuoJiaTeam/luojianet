@@ -19,21 +19,21 @@ import os
 import time
 import numpy as np
 
-import mindspore
-from mindspore import context
-from mindspore import Tensor
-from mindspore.nn.optim import Momentum, LARS
-from mindspore.context import ParallelMode
-from mindspore.nn.loss import SoftmaxCrossEntropyWithLogits
-from mindspore.train.amp import build_train_network
-from mindspore.train.loss_scale_manager import FixedLossScaleManager
-from mindspore.train.serialization import load_checkpoint, load_param_into_net
-from mindspore.communication.management import init
-from mindspore.common import set_seed
-from mindspore.parallel import set_algo_parameters
-import mindspore.nn as nn
-import mindspore.common.initializer as weight_init
-import mindspore.log as logger
+import luojianet_ms
+from luojianet_ms import context
+from luojianet_ms import Tensor
+from luojianet_ms.nn.optim import Momentum, LARS
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.nn.loss import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.train.amp import build_train_network
+from luojianet_ms.train.loss_scale_manager import FixedLossScaleManager
+from luojianet_ms.train.serialization import load_checkpoint, load_param_into_net
+from luojianet_ms.communication.management import init
+from luojianet_ms.common import set_seed
+from luojianet_ms.parallel import set_algo_parameters
+import luojianet_ms.nn as nn
+import luojianet_ms.common.initializer as weight_init
+import luojianet_ms.log as logger
 
 from src.lr_generator import get_lr, warmup_cosine_annealing_lr
 from src.CrossEntropySmooth import CrossEntropySmooth
@@ -239,8 +239,8 @@ def train_net():
     if config.run_distribute:
         train_network.set_auto_parallel()
     for _ in range(500):
-        image = Tensor(np.random.rand(32, 3, 224, 224), dtype=mindspore.float32)
-        label = Tensor(np.random.randint(0, 10, [32]), dtype=mindspore.int32)
+        image = Tensor(np.random.rand(32, 3, 224, 224), dtype=luojianet_ms.float32)
+        label = Tensor(np.random.randint(0, 10, [32]), dtype=luojianet_ms.int32)
         begin_time = time.time()
         _ = train_network(image, label)
         print("train one step cost time: {} ms".format((time.time() - begin_time) * 1000))

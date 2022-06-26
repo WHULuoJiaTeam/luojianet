@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,10 +16,10 @@
 """ test_cont_break """
 import numpy as np
 
-import mindspore as ms
-from mindspore import Tensor, context, nn, ms_function
-from mindspore.nn import Cell
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+from luojianet_ms import Tensor, context, nn, ms_function
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import operations as P
 
 
 class WhileSubGraphParam(Cell):

@@ -15,10 +15,10 @@
 
 import numpy as np
 import pytest
-from mindspore import Tensor
-from mindspore import context
-from mindspore.ops import operations as P
-from mindspore import dtype as mstype
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.ops import operations as P
+from luojianet_ms import dtype as mstype
 
 
 @pytest.mark.level0

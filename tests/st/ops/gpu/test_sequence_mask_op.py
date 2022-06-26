@@ -15,11 +15,11 @@
 import numpy as np
 import pytest
 
-from mindspore import Tensor
-from mindspore.ops import composite as C
-from mindspore.ops.operations import _inner_ops as inner
-import mindspore.nn as nn
-import mindspore.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops.operations import _inner_ops as inner
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
 
 def sequence_mask(x, maxlen):
     return C.sequence_mask(Tensor(x.astype(np.int32)), maxlen)

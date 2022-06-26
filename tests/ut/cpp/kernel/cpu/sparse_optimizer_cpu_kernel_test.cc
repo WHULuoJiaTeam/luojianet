@@ -18,7 +18,7 @@
 #include "common/common_test.h"
 #include "plugin/device/cpu/kernel/sparse_optimizer_cpu_kernel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 class CommonUtilTest : public UT::Common {
  public:
@@ -131,4 +131,4 @@ TEST_F(CommonUtilTest, BucketReduceSparseGradient2) {
   }
 }
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

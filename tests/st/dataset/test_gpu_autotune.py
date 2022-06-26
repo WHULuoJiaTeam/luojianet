@@ -18,16 +18,16 @@ import time
 import pytest
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.transforms.py_transforms as py_transforms
-import mindspore.dataset.vision.c_transforms as CV
-import mindspore.dataset.vision.py_transforms as py_vision
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.transforms.py_transforms as py_transforms
+import luojianet_ms.dataset.vision.c_transforms as CV
+import luojianet_ms.dataset.vision.py_transforms as py_vision
 
-from mindspore import context, nn
-from mindspore.common import dtype as mstype, set_seed
-from mindspore.dataset.vision import Inter
-from mindspore.train import Model
+from luojianet_ms import context, nn
+from luojianet_ms.common import dtype as mstype, set_seed
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.train import Model
 
 
 def create_model():
@@ -101,7 +101,7 @@ def test_autotune_train_simple_model(tmp_path):
     original_autotune = ds.config.get_enable_autotune()
     ds.config.set_enable_autotune(True, str(tmp_path / at_config_filename))
 
-    ds_train = create_dataset(os.path.join("/home/workspace/mindspore_dataset/mnist", "train"), 32)
+    ds_train = create_dataset(os.path.join("/home/workspace/luojianet_ms_dataset/mnist", "train"), 32)
     model = create_model()
 
     print("Start training.")
@@ -196,7 +196,7 @@ def test_autotune_pymultiproc_train_simple_model():
     original_interval = ds.config.get_autotune_interval()
     ds.config.set_autotune_interval(100)
 
-    ds_train = create_dataset_pyfunc_multiproc(os.path.join("/home/workspace/mindspore_dataset/mnist", "train"), 32, 2)
+    ds_train = create_dataset_pyfunc_multiproc(os.path.join("/home/workspace/luojianet_ms_dataset/mnist", "train"), 32, 2)
     model = create_model()
 
     print("Start Model Training.")

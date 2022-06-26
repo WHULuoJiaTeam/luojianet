@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +18,8 @@
 import pytest
 import numpy as onp
 
-import mindspore.numpy as mnp
-from mindspore import context
+import luojianet_ms.numpy as mnp
+from luojianet_ms import context
 
 from .utils import rand_int, rand_bool, run_binop_test, run_logical_test, match_res, \
     match_all_arrays, to_tensor

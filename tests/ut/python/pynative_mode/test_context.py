@@ -17,8 +17,8 @@ import os
 import shutil
 import pytest
 
-from mindspore import context
-from mindspore._c_expression import security
+from luojianet_ms import context
+from luojianet_ms._c_expression import security
 from tests.security_utils import security_off_wrap
 
 
@@ -111,12 +111,12 @@ def test_set_context():
     """ test_set_context """
     context.set_context.__wrapped__(device_id=0)
     context.set_context(mode=context.GRAPH_MODE, device_target="Ascend",
-                        save_graphs=True, save_graphs_path="mindspore_ir_path")
+                        save_graphs=True, save_graphs_path="luojianet_ms_ir_path")
     assert context.get_context("device_id") == 0
     assert context.get_context("device_target") == "Ascend"
     assert context.get_context("save_graphs")
-    assert os.path.exists("mindspore_ir_path")
-    assert context.get_context("save_graphs_path").find("mindspore_ir_path") > 0
+    assert os.path.exists("luojianet_ms_ir_path")
+    assert context.get_context("save_graphs_path").find("luojianet_ms_ir_path") > 0
     assert context.get_context("mode") == context.GRAPH_MODE
 
     context.set_context(mode=context.PYNATIVE_MODE)
@@ -128,7 +128,7 @@ def test_set_context():
 
 
 def teardown_module():
-    dirs = ['mindspore_ir_path']
+    dirs = ['luojianet_ms_ir_path']
     for item in dirs:
         item_name = './' + item
         if not os.path.exists(item_name):

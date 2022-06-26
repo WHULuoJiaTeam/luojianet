@@ -20,7 +20,7 @@
 #include "ir/dtype/type.h"
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestMaximum : public UT::Common {
  public:
@@ -58,4 +58,4 @@ TEST_F(TestMaximum, test_ops_maximum) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

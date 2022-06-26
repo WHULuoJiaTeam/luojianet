@@ -15,11 +15,11 @@
 
 import pytest
 import numpy as np
-from mindspore import Tensor
-from mindspore.ops import operations as P
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore.common.api import ms_function
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms.common.api import ms_function
 
 context.set_context(mode=context.PYNATIVE_MODE, device_target="CPU")
 

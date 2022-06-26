@@ -21,11 +21,11 @@
 #include "minddata/dataset/include/dataset/transforms.h"
 #include "minddata/dataset/kernels/ir/data/transforms_ir.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::DatasetNode;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::DatasetNode;
 
-using mindspore::dataset::ShuffleMode;
-using mindspore::dataset::Tensor;
+using luojianet_ms::dataset::ShuffleMode;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestDeserialize : public UT::DatasetOpTesting {
  protected:
@@ -408,8 +408,8 @@ TEST_F(MindDataTestDeserialize, TestDeserializeTFRecord) {
   std::vector<std::string> dataset_files = {"./data/dataset/testTFTestAllTypes/test.data"};
 
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeInt32, {4}));
-  ASSERT_OK(schema->add_column("col2", mindspore::DataType::kNumberTypeInt64, {4}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeInt32, {4}));
+  ASSERT_OK(schema->add_column("col2", luojianet_ms::DataType::kNumberTypeInt64, {4}));
 
   std::shared_ptr<DatasetNode> ds =
     std::make_shared<TFRecordNode>(dataset_files, schema, columns_list, num_samples, ShuffleMode::kFiles, num_shards,

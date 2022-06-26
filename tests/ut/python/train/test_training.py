@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +18,11 @@ import logging
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import Model, context
-from mindspore import Tensor
-from mindspore.train.callback import Callback
-from mindspore.nn.optim import Momentum
+import luojianet_ms.nn as nn
+from luojianet_ms import Model, context
+from luojianet_ms import Tensor
+from luojianet_ms.train.callback import Callback
+from luojianet_ms.nn.optim import Momentum
 from ..ut_filter import non_graph_engine
 from ....dataset_mock import MindData
 

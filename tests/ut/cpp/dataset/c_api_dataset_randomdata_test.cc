@@ -19,7 +19,7 @@
 
 #include "ir/dtype/type_id.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -30,8 +30,8 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic1) {
 
   // Create a RandomDataset
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {2}));
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt8, {1}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {2}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt8, {1}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -48,7 +48,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if RandomData() read correct columns
@@ -74,8 +74,8 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasicWithPipeline) {
 
   // Create two RandomDataset
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {2}));
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt8, {1}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {2}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt8, {1}));
   std::shared_ptr<Dataset> ds1 = RandomData(50, schema);
   std::shared_ptr<Dataset> ds2 = RandomData(50, schema);
   EXPECT_NE(ds1, nullptr);
@@ -106,7 +106,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if RandomData() read correct columns
@@ -132,8 +132,8 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetGetters) {
 
   // Create a RandomDataset
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {2}));
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt8, {1}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {2}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt8, {1}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -162,7 +162,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if RandomData() read correct columns
@@ -202,7 +202,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expect_num = {1};
@@ -243,14 +243,14 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic3) {
     ASSERT_EQ(col_binary.Shape().size(), 1);
 
     // Validate type
-    ASSERT_EQ(col_sint16.DataType(), mindspore::DataType::kNumberTypeInt16);
-    ASSERT_EQ(col_sint32.DataType(), mindspore::DataType::kNumberTypeInt32);
-    ASSERT_EQ(col_sint64.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_float.DataType(), mindspore::DataType::kNumberTypeFloat32);
-    ASSERT_EQ(col_1d.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_2d.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_3d.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_binary.DataType(), mindspore::DataType::kNumberTypeUInt8);
+    ASSERT_EQ(col_sint16.DataType(), luojianet_ms::DataType::kNumberTypeInt16);
+    ASSERT_EQ(col_sint32.DataType(), luojianet_ms::DataType::kNumberTypeInt32);
+    ASSERT_EQ(col_sint64.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_float.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col_1d.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_2d.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_3d.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_binary.DataType(), luojianet_ms::DataType::kNumberTypeUInt8);
 
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -284,7 +284,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic4) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expect_num = {1};
@@ -325,14 +325,14 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic4) {
     ASSERT_EQ(col_binary.Shape().size(), 1);
 
     // Validate type
-    ASSERT_EQ(col_sint16.DataType(), mindspore::DataType::kNumberTypeInt16);
-    ASSERT_EQ(col_sint32.DataType(), mindspore::DataType::kNumberTypeInt32);
-    ASSERT_EQ(col_sint64.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_float.DataType(), mindspore::DataType::kNumberTypeFloat32);
-    ASSERT_EQ(col_1d.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_2d.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_3d.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_binary.DataType(), mindspore::DataType::kNumberTypeUInt8);
+    ASSERT_EQ(col_sint16.DataType(), luojianet_ms::DataType::kNumberTypeInt16);
+    ASSERT_EQ(col_sint32.DataType(), luojianet_ms::DataType::kNumberTypeInt32);
+    ASSERT_EQ(col_sint64.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_float.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col_1d.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_2d.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_3d.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_binary.DataType(), luojianet_ms::DataType::kNumberTypeUInt8);
 
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -366,7 +366,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic5) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expect_num = {1};
@@ -392,9 +392,9 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic5) {
     ASSERT_EQ(col_1d.Shape().size(), 1);
 
     // Validate type
-    ASSERT_EQ(col_sint32.DataType(), mindspore::DataType::kNumberTypeInt32);
-    ASSERT_EQ(col_sint64.DataType(), mindspore::DataType::kNumberTypeInt64);
-    ASSERT_EQ(col_1d.DataType(), mindspore::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_sint32.DataType(), luojianet_ms::DataType::kNumberTypeInt32);
+    ASSERT_EQ(col_sint64.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_1d.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
 
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -424,7 +424,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic6) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if RandomData() read correct columns
@@ -458,7 +458,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic7) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if RandomData() read correct columns
@@ -505,7 +505,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetBasic8) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if RandomData() read correct columns
@@ -529,7 +529,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetUInt8) {
   u_int32_t curr_seed = GlobalContext::config_manager()->seed();
   GlobalContext::config_manager()->set_seed(963);
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeUInt8, {4}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeUInt8, {4}));
   std::shared_ptr<Dataset> ds = RandomData(3, schema);
   EXPECT_NE(ds, nullptr);
   ds = ds->SetNumWorkers(3);
@@ -541,7 +541,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetUInt8) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -567,7 +567,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetFloat) {
   u_int32_t curr_seed = GlobalContext::config_manager()->seed();
   GlobalContext::config_manager()->set_seed(369);
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeFloat16, {2, 3}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeFloat16, {2, 3}));
   std::shared_ptr<Dataset> ds = RandomData(4, schema);
   EXPECT_NE(ds, nullptr);
   ds = ds->SetNumWorkers(2);
@@ -579,7 +579,7 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetFloat) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -603,8 +603,8 @@ TEST_F(MindDataTestPipeline, TestRandomDatasetDuplicateColumnName) {
 
   // Create a RandomDataset
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {2}));
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt8, {1}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {2}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt8, {1}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema, {"image", "image"});
   // Expect failure: duplicate column names
   EXPECT_EQ(ds->CreateIterator(), nullptr);

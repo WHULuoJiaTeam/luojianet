@@ -14,7 +14,7 @@
 # ============================================================================
 """ test graph fallback buildin python function type"""
 import numpy as np
-from mindspore import ms_function, context, Tensor
+from luojianet_ms import ms_function, context, Tensor
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -113,4 +113,4 @@ def test_fallback_type_with_input_tensor():
         x = type(Tensor([1, 2, 3]))
         return x
     out = foo()
-    assert str(out) == "<class 'mindspore.common.tensor.Tensor'>"
+    assert str(out) == "<class 'luojianet_ms.common.tensor.Tensor'>"

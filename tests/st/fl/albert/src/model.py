@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +17,15 @@
 import math
 import copy
 import numpy as np
-from mindspore import nn
-from mindspore import context
-from mindspore.common import dtype as mstype
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore.common.initializer import TruncatedNormal, initializer
-from mindspore.common.tensor import Tensor
-from mindspore.common.parameter import Parameter
+from luojianet_ms import nn
+from luojianet_ms import context
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms.common.initializer import TruncatedNormal, initializer
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.common.parameter import Parameter
 
 
 class AlbertConfig:
@@ -51,8 +52,8 @@ class AlbertConfig:
         type_vocab_size (int): Size of token type vocab. Default: 16.
         initializer_range (float): Initialization value of TruncatedNormal. Default: 0.02.
         use_relative_positions (bool): Specifies whether to use relative positions. Default: False.
-        dtype (:class:`mindspore.dtype`): Data type of the input. Default: mstype.float32.
-        compute_type (:class:`mindspore.dtype`): Compute type in BertTransformer. Default: mstype.float32.
+        dtype (:class:`luojianet_ms.dtype`): Data type of the input. Default: mstype.float32.
+        compute_type (:class:`luojianet_ms.dtype`): Compute type in BertTransformer. Default: mstype.float32.
     """
 
     def __init__(self,
@@ -354,8 +355,8 @@ class SaturateCast(nn.Cell):
     the danger that the value will overflow or underflow.
 
     Args:
-        src_type (:class:`mindspore.dtype`): The type of the elements of the input tensor. Default: mstype.float32.
-        dst_type (:class:`mindspore.dtype`): The type of the elements of the output tensor. Default: mstype.float32.
+        src_type (:class:`luojianet_ms.dtype`): The type of the elements of the input tensor. Default: mstype.float32.
+        dst_type (:class:`luojianet_ms.dtype`): The type of the elements of the output tensor. Default: mstype.float32.
     """
 
     def __init__(self, src_type=mstype.float32, dst_type=mstype.float32):

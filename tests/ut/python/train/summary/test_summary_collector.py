@@ -22,17 +22,17 @@ from unittest import mock
 import numpy as np
 import pytest
 
-from mindspore import Tensor
-from mindspore import Parameter
-from mindspore.train.callback import SummaryCollector
-from mindspore.train.callback import _InternalCallbackParam
-from mindspore.train.summary.enums import ModeEnum, PluginEnum
-from mindspore.train.summary import SummaryRecord
-from mindspore.train.summary.summary_record import _DEFAULT_EXPORT_OPTIONS
-from mindspore.nn import Cell
-from mindspore.nn.optim.optimizer import Optimizer
-from mindspore.ops.operations import Add
-from mindspore._c_expression import security
+from luojianet_ms import Tensor
+from luojianet_ms import Parameter
+from luojianet_ms.train.callback import SummaryCollector
+from luojianet_ms.train.callback import _InternalCallbackParam
+from luojianet_ms.train.summary.enums import ModeEnum, PluginEnum
+from luojianet_ms.train.summary import SummaryRecord
+from luojianet_ms.train.summary.summary_record import _DEFAULT_EXPORT_OPTIONS
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn.optim.optimizer import Optimizer
+from luojianet_ms.ops.operations import Add
+from luojianet_ms._c_expression import security
 from tests.security_utils import security_off_wrap
 
 
@@ -332,7 +332,7 @@ class TestSummaryCollector:
     @mock.patch.object(SummaryRecord, 'add_value')
     def test_collect_dataset_graph_success(self, mock_add_value):
         """Test collect dataset graph."""
-        dataset = import_module('mindspore.dataset')
+        dataset = import_module('luojianet_ms.dataset')
         mock_add_value.side_effect = add_value
         cb_params = _InternalCallbackParam()
         cb_params.train_dataset = dataset.MnistDataset(dataset_dir=tempfile.mkdtemp(dir=self.base_summary_dir))

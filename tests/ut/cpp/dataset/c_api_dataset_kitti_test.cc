@@ -18,10 +18,10 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "minddata/dataset/core/tensor.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::DataType;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::TensorShape;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::DataType;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
 protected:
@@ -44,7 +44,7 @@ TEST_F(MindDataTestPipeline, TestKITTIPipeline) {
  EXPECT_NE(iter, nullptr);
 
  // Iterate the dataset and get each row.
- std::unordered_map<std::string, mindspore::MSTensor> row;
+ std::unordered_map<std::string, luojianet_ms::MSTensor> row;
  ASSERT_OK(iter->GetNextRow(&row));
 
  // Check if KITTI() read correct images.
@@ -57,7 +57,7 @@ TEST_F(MindDataTestPipeline, TestKITTIPipeline) {
    MS_LOG(INFO) << "Tensor image shape: " << image.Shape();
    MS_LOG(INFO) << "Tensor label shape: " << label.Shape();
 
-   mindspore::MSTensor expect_image =
+   luojianet_ms::MSTensor expect_image =
      ReadFileToTensor(folder_path + "/data_object_image_2/training/image_2/" + expect_file[i] + ".png");
    EXPECT_MSTENSOR_EQ(image, expect_image);
 
@@ -186,7 +186,7 @@ TEST_F(MindDataTestPipeline, TestKITTIPipelineDistributedSampler) {
  // Iterate the dataset and get each row
  std::shared_ptr<Iterator> iter = ds->CreateIterator();
  EXPECT_NE(iter, nullptr);
- std::unordered_map<std::string, mindspore::MSTensor> row;
+ std::unordered_map<std::string, luojianet_ms::MSTensor> row;
  ASSERT_OK(iter->GetNextRow(&row));
 
  uint64_t i = 0;

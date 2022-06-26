@@ -27,9 +27,9 @@
 #include "frontend/optimizer/irpass/gradient_eliminate.h"
 #include "include/common/debug/draw.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
-using Var = mindspore::Var;
+using Var = luojianet_ms::Var;
 
 class TestOptOptimizer : public UT::Common {
  public:
@@ -63,4 +63,4 @@ TEST_F(TestOptOptimizer, test_step_opt) {
 }
 
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

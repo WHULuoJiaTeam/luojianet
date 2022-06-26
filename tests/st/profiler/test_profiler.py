@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,17 +21,17 @@ import sys
 from tests.security_utils import security_off_wrap
 import pytest
 
-from mindspore import dataset as ds
-from mindspore import nn, Tensor, context
-from mindspore.nn.metrics import Accuracy
-from mindspore.nn.optim import Momentum
-from mindspore.dataset.transforms import c_transforms as C
-from mindspore.dataset.vision import c_transforms as CV
-from mindspore.dataset.vision import Inter
-from mindspore.common import dtype as mstype
-from mindspore.common.initializer import TruncatedNormal
-from mindspore.train import Model
-from mindspore.profiler import Profiler
+from luojianet_ms import dataset as ds
+from luojianet_ms import nn, Tensor, context
+from luojianet_ms.nn.metrics import Accuracy
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.dataset.transforms import c_transforms as C
+from luojianet_ms.dataset.vision import c_transforms as CV
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common.initializer import TruncatedNormal
+from luojianet_ms.train import Model
+from luojianet_ms.profiler import Profiler
 
 
 def conv(in_channels, out_channels, kernel_size, stride=1, padding=0):
@@ -132,7 +133,7 @@ def cleanup():
 class TestProfiler:
     device_id = int(os.getenv('DEVICE_ID')) if os.getenv('DEVICE_ID') else 0
     rank_id = int(os.getenv('RANK_ID')) if os.getenv('RANK_ID') else 0
-    mnist_path = '/home/workspace/mindspore_dataset/mnist'
+    mnist_path = '/home/workspace/luojianet_ms_dataset/mnist'
 
     @classmethod
     def setup_class(cls):

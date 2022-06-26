@@ -23,8 +23,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import PIL
 # import jsbeautifier
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 # These are list of plot title in different visualize modes
 PLOT_TITLE_DICT = {

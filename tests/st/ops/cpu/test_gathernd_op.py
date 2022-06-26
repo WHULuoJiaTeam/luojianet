@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
@@ -41,8 +42,8 @@ def test_case1_basic_func():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[0, 0], [1, 1]]), mindspore.int32)
-    params = Tensor(np.array([[0, 1], [2, 3]]), mindspore.float32)
+    indices = Tensor(np.array([[0, 0], [1, 1]]), luojianet_ms.int32)
+    params = Tensor(np.array([[0, 1], [2, 3]]), luojianet_ms.float32)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [0, 3]
@@ -56,8 +57,8 @@ def test_case2_indices_to_matrix():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[1], [0]]), mindspore.int32)
-    params = Tensor(np.array([[0, 1], [2, 3]]), mindspore.float32)
+    indices = Tensor(np.array([[1], [0]]), luojianet_ms.int32)
+    params = Tensor(np.array([[0, 1], [2, 3]]), luojianet_ms.float32)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [[2, 3], [0, 1]]
@@ -71,9 +72,9 @@ def test_case3_indices_to_3d_tensor():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[1]]), mindspore.int32)  # (1, 1)
+    indices = Tensor(np.array([[1]]), luojianet_ms.int32)  # (1, 1)
     params = Tensor(np.array([[[0, 1], [2, 3]],
-                              [[4, 5], [6, 7]]]), mindspore.float32)  # (2, 2, 2)
+                              [[4, 5], [6, 7]]]), luojianet_ms.float32)  # (2, 2, 2)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [[[4, 5], [6, 7]]]  # (1, 2, 2)
@@ -87,9 +88,9 @@ def test_case4():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[0, 1], [1, 0]]), mindspore.int32)  # (2, 2)
+    indices = Tensor(np.array([[0, 1], [1, 0]]), luojianet_ms.int32)  # (2, 2)
     params = Tensor(np.array([[[0, 1], [2, 3]],
-                              [[4, 5], [6, 7]]]), mindspore.float32)  # (2, 2, 2)
+                              [[4, 5], [6, 7]]]), luojianet_ms.float32)  # (2, 2, 2)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [[2, 3], [4, 5]]  # (2, 2)
@@ -103,9 +104,9 @@ def test_case5():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[0, 0, 1], [1, 0, 1]]), mindspore.int32)  # (2, 3)
+    indices = Tensor(np.array([[0, 0, 1], [1, 0, 1]]), luojianet_ms.int32)  # (2, 3)
     params = Tensor(np.array([[[0, 1], [2, 3]],
-                              [[4, 5], [6, 7]]]), mindspore.float32)  # (2, 2, 2)
+                              [[4, 5], [6, 7]]]), luojianet_ms.float32)  # (2, 2, 2)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [1, 5]  # (2,)
@@ -119,9 +120,9 @@ def test_case6():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[[0, 0]], [[0, 1]]]), mindspore.int32)  # (2, 1, 2)
+    indices = Tensor(np.array([[[0, 0]], [[0, 1]]]), luojianet_ms.int32)  # (2, 1, 2)
     params = Tensor(np.array([[[0, 1], [2, 3]],
-                              [[4, 5], [6, 7]]]), mindspore.float32)  # (2, 2, 2)
+                              [[4, 5], [6, 7]]]), luojianet_ms.float32)  # (2, 2, 2)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [[[0, 1]], [[2, 3]]]  # (2, 1, 2)
@@ -135,9 +136,9 @@ def test_case7():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[[1]], [[0]]]), mindspore.int32)  # (2, 1, 1)
+    indices = Tensor(np.array([[[1]], [[0]]]), luojianet_ms.int32)  # (2, 1, 1)
     params = Tensor(np.array([[[0, 1], [2, 3]],
-                              [[4, 5], [6, 7]]]), mindspore.float32)  # (2, 2, 2)
+                              [[4, 5], [6, 7]]]), luojianet_ms.float32)  # (2, 2, 2)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [[[[4, 5], [6, 7]]], [[[0, 1], [2, 3]]]]  # (2, 1, 2, 2)
@@ -151,9 +152,9 @@ def test_case8():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[[0, 1], [1, 0]], [[0, 0], [1, 1]]]), mindspore.int32)  # (2, 2, 2)
+    indices = Tensor(np.array([[[0, 1], [1, 0]], [[0, 0], [1, 1]]]), luojianet_ms.int32)  # (2, 2, 2)
     params = Tensor(np.array([[[0, 1], [2, 3]],
-                              [[4, 5], [6, 7]]]), mindspore.float32)  # (2, 2, 2)
+                              [[4, 5], [6, 7]]]), luojianet_ms.float32)  # (2, 2, 2)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [[[2, 3], [4, 5]], [[0, 1], [6, 7]]]  # (2, 2, 2)
@@ -167,9 +168,9 @@ def test_case9():
     op = P.GatherNd()
     op_wrapper = OpNetWrapper(op)
 
-    indices = Tensor(np.array([[[0, 0, 1], [1, 0, 1]], [[0, 1, 1], [1, 1, 0]]]), mindspore.int32)  # (2, 2, 3)
+    indices = Tensor(np.array([[[0, 0, 1], [1, 0, 1]], [[0, 1, 1], [1, 1, 0]]]), luojianet_ms.int32)  # (2, 2, 3)
     params = Tensor(np.array([[[0, 1], [2, 3]],
-                              [[4, 5], [6, 7]]]), mindspore.int64)  # (2, 2, 2)
+                              [[4, 5], [6, 7]]]), luojianet_ms.int64)  # (2, 2, 2)
     outputs = op_wrapper(params, indices)
     print(outputs)
     expected = [[1, 5], [3, 6]]  # (2, 2, 2)

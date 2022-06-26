@@ -15,8 +15,8 @@
 import numpy as np
 import pytest
 
-import mindspore.dataset.audio.utils as audio
-from mindspore import log as logger
+import luojianet_ms.dataset.audio.utils as audio
+from luojianet_ms import log as logger
 
 
 def count_unequal_element(data_expected, data_me, rtol, atol):

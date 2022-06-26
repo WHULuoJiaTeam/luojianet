@@ -14,11 +14,11 @@
 # ============================================================================
 import numpy as np
 
-import mindspore.common.dtype as mstype
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_id=5, device_target="Ascend")
 

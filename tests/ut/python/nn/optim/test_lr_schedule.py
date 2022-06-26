@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 """ test_lr_schedule """
 import numpy as np
 
-from mindspore import Parameter, ParameterTuple, Tensor
-from mindspore.nn import Cell
-from mindspore.nn.optim import Optimizer
-from mindspore.ops.operations import BiasAdd, MatMul
-import mindspore.ops.composite as C
+from luojianet_ms import Parameter, ParameterTuple, Tensor
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn.optim import Optimizer
+from luojianet_ms.ops.operations import BiasAdd, MatMul
+import luojianet_ms.ops.composite as C
 
 
 grad_by_list = C.GradOperation(get_by_list=True)

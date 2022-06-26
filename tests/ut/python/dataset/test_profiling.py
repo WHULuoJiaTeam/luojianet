@@ -19,11 +19,11 @@ import json
 import os
 import numpy as np
 import pytest
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.vision.c_transforms as vision
-import mindspore._c_dataengine as cde
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.vision.c_transforms as vision
+import luojianet_ms._c_dataengine as cde
 
 FILES = ["../data/dataset/testTFTestAllTypes/test.data"]
 DATASET_ROOT = "../data/dataset/testTFTestAllTypes/"

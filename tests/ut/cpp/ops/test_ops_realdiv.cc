@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestRealDiv : public UT::Common {
  public:
@@ -61,4 +61,4 @@ TEST_F(TestRealDiv, test_ops_realdiv1) {
   EXPECT_EQ(shape_vec[3], 5);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

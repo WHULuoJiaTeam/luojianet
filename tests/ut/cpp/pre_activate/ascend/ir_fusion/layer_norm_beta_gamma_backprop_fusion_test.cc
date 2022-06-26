@@ -26,7 +26,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 
 class TestHWLayerNormBetaGammaBackpropFusion : public BackendCommon {
@@ -341,4 +341,4 @@ TEST_F(TestHWLayerNormBetaGammaBackpropFusion, layernorm_beta_gamma_backprop_fus
   EXPECT_FALSE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

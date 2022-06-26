@@ -19,7 +19,7 @@
 #include "common/common_test.h"
 #include "ps/core/communicator/tcp_client.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ps {
 namespace core {
 class TestTcpClient : public UT::Common {
@@ -54,4 +54,4 @@ TEST_F(TestTcpClient, InitClientPortErrorNoException) {
 
 }  // namespace core
 }  // namespace ps
-}  // namespace mindspore
+}  // namespace luojianet_ms

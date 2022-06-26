@@ -18,8 +18,8 @@
 #include "minddata/dataset/include/dataset/transforms.h"
 #include "minddata/dataset/include/dataset/vision.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::BorderType;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::BorderType;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -43,12 +43,12 @@ TEST_F(MindDataTestPipeline, TestAdjustGamma3Channel) {
 
   std::shared_ptr<Iterator> iter1 = ds1->CreateIterator();
   EXPECT_NE(iter1, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row1;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row1;
   iter1->GetNextRow(&row1);
 
   std::shared_ptr<Iterator> iter2 = ds2->CreateIterator();
   EXPECT_NE(iter2, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row2;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row2;
   iter2->GetNextRow(&row2);
 
   uint64_t i = 0;
@@ -81,12 +81,12 @@ TEST_F(MindDataTestPipeline, TestAdjustGamma1Channel) {
 
   std::shared_ptr<Iterator> iter1 = ds1->CreateIterator();
   EXPECT_NE(iter1, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row1;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row1;
   iter1->GetNextRow(&row1);
 
   std::shared_ptr<Iterator> iter2 = ds2->CreateIterator();
   EXPECT_NE(iter2, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row2;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row2;
   iter2->GetNextRow(&row2);
 
   uint64_t i = 0;
@@ -152,7 +152,7 @@ TEST_F(MindDataTestPipeline, TestAutoContrastSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -201,7 +201,7 @@ TEST_F(MindDataTestPipeline, TestAutoContrastSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -250,7 +250,7 @@ TEST_F(MindDataTestPipeline, TestCenterCrop) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -296,7 +296,7 @@ TEST_F(MindDataTestPipeline, TestCropSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -395,7 +395,7 @@ TEST_F(MindDataTestPipeline, TestCutMixBatchSuccess1) {
   EXPECT_NE(ds, nullptr);
 
   std::shared_ptr<TensorTransform> cutmix_batch_op =
-    std::make_shared<vision::CutMixBatch>(mindspore::dataset::ImageBatchFormat::kNCHW, 1.0, 1.0);
+    std::make_shared<vision::CutMixBatch>(luojianet_ms::dataset::ImageBatchFormat::kNCHW, 1.0, 1.0);
   // Note: No need to check for output after calling API class constructor
 
   // Create a Map operation on ds
@@ -408,7 +408,7 @@ TEST_F(MindDataTestPipeline, TestCutMixBatchSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -456,7 +456,7 @@ TEST_F(MindDataTestPipeline, TestCutMixBatchSuccess2) {
   EXPECT_NE(ds, nullptr);
 
   std::shared_ptr<TensorTransform> cutmix_batch_op =
-    std::make_shared<vision::CutMixBatch>(mindspore::dataset::ImageBatchFormat::kNHWC);
+    std::make_shared<vision::CutMixBatch>(luojianet_ms::dataset::ImageBatchFormat::kNHWC);
   // Note: No need to check for output after calling API class constructor
 
   // Create a Map operation on ds
@@ -469,7 +469,7 @@ TEST_F(MindDataTestPipeline, TestCutMixBatchSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -517,7 +517,7 @@ TEST_F(MindDataTestPipeline, TestCutMixBatchFail1) {
 
   // Create CutMixBatch operation with invalid input, alpha<0
   std::shared_ptr<TensorTransform> cutmix_batch_op =
-    std::make_shared<vision::CutMixBatch>(mindspore::dataset::ImageBatchFormat::kNHWC, -1, 0.5);
+    std::make_shared<vision::CutMixBatch>(luojianet_ms::dataset::ImageBatchFormat::kNHWC, -1, 0.5);
   // Note: No need to check for output after calling API class constructor
 
   // Create a Map operation on ds
@@ -552,7 +552,7 @@ TEST_F(MindDataTestPipeline, TestCutMixBatchFail2) {
 
   // Create CutMixBatch operation with invalid input, prob<0
   std::shared_ptr<TensorTransform> cutmix_batch_op =
-    std::make_shared<vision::CutMixBatch>(mindspore::dataset::ImageBatchFormat::kNHWC, 1, -0.5);
+    std::make_shared<vision::CutMixBatch>(luojianet_ms::dataset::ImageBatchFormat::kNHWC, 1, -0.5);
   // Note: No need to check for output after calling API class constructor
 
   // Create a Map operation on ds
@@ -587,7 +587,7 @@ TEST_F(MindDataTestPipeline, TestCutMixBatchFail3) {
 
   // Create CutMixBatch operation with invalid input, alpha=0 (boundary case)
   std::shared_ptr<TensorTransform> cutmix_batch_op =
-    std::make_shared<vision::CutMixBatch>(mindspore::dataset::ImageBatchFormat::kNHWC, 0.0, 0.5);
+    std::make_shared<vision::CutMixBatch>(luojianet_ms::dataset::ImageBatchFormat::kNHWC, 0.0, 0.5);
   // Note: No need to check for output after calling API class constructor
 
   // Create a Map operation on ds
@@ -621,7 +621,7 @@ TEST_F(MindDataTestPipeline, TestCutMixBatchFail4) {
 
   // Create CutMixBatch operation with invalid input, prob>1
   std::shared_ptr<TensorTransform> cutmix_batch_op =
-    std::make_shared<vision::CutMixBatch>(mindspore::dataset::ImageBatchFormat::kNHWC, 1, 1.5);
+    std::make_shared<vision::CutMixBatch>(luojianet_ms::dataset::ImageBatchFormat::kNHWC, 1, 1.5);
   // Note: No need to check for output after calling API class constructor
 
   // Create a Map operation on ds
@@ -666,7 +666,7 @@ TEST_F(MindDataTestPipeline, TestCutOut) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -715,7 +715,7 @@ TEST_F(MindDataTestPipeline, TestDecode) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -763,7 +763,7 @@ TEST_F(MindDataTestPipeline, TestHwcToChw) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -805,7 +805,7 @@ TEST_F(MindDataTestPipeline, TestInvert) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -923,7 +923,7 @@ TEST_F(MindDataTestPipeline, TestMixUpBatchSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -974,7 +974,7 @@ TEST_F(MindDataTestPipeline, TestMixUpBatchSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1023,7 +1023,7 @@ TEST_F(MindDataTestPipeline, TestNormalize) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1068,7 +1068,7 @@ TEST_F(MindDataTestPipeline, TestNormalizePad) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1121,7 +1121,7 @@ TEST_F(MindDataTestPipeline, TestPad) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1146,7 +1146,7 @@ TEST_F(MindDataTestPipeline, TestConvertColorSuccess1) {
   EXPECT_NE(ds, nullptr);
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> resize_op(new vision::Resize({500, 1000}));
-  std::shared_ptr<TensorTransform> convert(new mindspore::dataset::vision::ConvertColor(ConvertMode::COLOR_RGB2GRAY));
+  std::shared_ptr<TensorTransform> convert(new luojianet_ms::dataset::vision::ConvertColor(ConvertMode::COLOR_RGB2GRAY));
 
   ds = ds->Map({resize_op, convert});
   EXPECT_NE(ds, nullptr);
@@ -1157,7 +1157,7 @@ TEST_F(MindDataTestPipeline, TestConvertColorSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1183,7 +1183,7 @@ TEST_F(MindDataTestPipeline, TestConvertColorSuccess2) {
   EXPECT_NE(ds, nullptr);
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> resize_op(new vision::Resize({500, 1000}));
-  std::shared_ptr<TensorTransform> convert(new mindspore::dataset::vision::ConvertColor(ConvertMode::COLOR_RGB2BGR));
+  std::shared_ptr<TensorTransform> convert(new luojianet_ms::dataset::vision::ConvertColor(ConvertMode::COLOR_RGB2BGR));
 
   ds = ds->Map({resize_op, convert});
   EXPECT_NE(ds, nullptr);
@@ -1194,7 +1194,7 @@ TEST_F(MindDataTestPipeline, TestConvertColorSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1220,7 +1220,7 @@ TEST_F(MindDataTestPipeline, TestConvertColorSuccess3) {
   EXPECT_NE(ds, nullptr);
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> resize_op(new vision::Resize({500, 1000}));
-  std::shared_ptr<TensorTransform> convert(new mindspore::dataset::vision::ConvertColor(ConvertMode::COLOR_RGB2RGBA));
+  std::shared_ptr<TensorTransform> convert(new luojianet_ms::dataset::vision::ConvertColor(ConvertMode::COLOR_RGB2RGBA));
 
   ds = ds->Map({resize_op, convert});
   EXPECT_NE(ds, nullptr);
@@ -1231,7 +1231,7 @@ TEST_F(MindDataTestPipeline, TestConvertColorSuccess3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1260,7 +1260,7 @@ TEST_F(MindDataTestPipeline, TestConvertColorFail) {
 
     // Create objects for the tensor ops
     std::shared_ptr<TensorTransform> resize_op(new vision::Resize({500, 1000}));
-    std::shared_ptr<TensorTransform> convert(new mindspore::dataset::vision::ConvertColor(error_convert_mode));
+    std::shared_ptr<TensorTransform> convert(new luojianet_ms::dataset::vision::ConvertColor(error_convert_mode));
 
     ds = ds->Map({resize_op, convert});
     EXPECT_NE(ds, nullptr);
@@ -1290,7 +1290,7 @@ TEST_F(MindDataTestPipeline, TestAutoAugment) {
 
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

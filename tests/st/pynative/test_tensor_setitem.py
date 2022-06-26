@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,9 +17,9 @@
 import numpy as onp
 import pytest
 
-from mindspore import Tensor, context
-from mindspore.nn import Cell
-from mindspore import dtype as mstype
+from luojianet_ms import Tensor, context
+from luojianet_ms.nn import Cell
+from luojianet_ms import dtype as mstype
 
 
 def setup_module():

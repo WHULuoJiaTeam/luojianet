@@ -17,10 +17,10 @@
 
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::DataType;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::TensorShape;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::DataType;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -51,8 +51,8 @@ TEST_F(MindDataTestPipeline, TestTedliumDataset) {
   EXPECT_NE(iter3, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row1;
-  std::unordered_map<std::string, mindspore::MSTensor> row3;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row1;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row3;
   ASSERT_OK(iter1->GetNextRow(&row1));
 
   EXPECT_NE(row1.find("waveform"), row1.end());
@@ -153,8 +153,8 @@ TEST_F(MindDataTestPipeline, TestTedliumDatasetWithPipeline) {
   EXPECT_NE(iter3, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row1;
-  std::unordered_map<std::string, mindspore::MSTensor> row3;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row1;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row3;
   ASSERT_OK(iter1->GetNextRow(&row1));
   ASSERT_OK(iter3->GetNextRow(&row3));
 
@@ -216,7 +216,7 @@ TEST_F(MindDataTestPipeline, TestTedliumDatasetIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

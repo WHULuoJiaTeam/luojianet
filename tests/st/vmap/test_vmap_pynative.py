@@ -16,12 +16,12 @@
 
 import pytest
 import numpy as np
-import mindspore.context as context
-import mindspore.ops.functional as F
-from mindspore import dtype as mstype
-from mindspore.common import Tensor
-from mindspore.ops.functional import vmap
-from mindspore.common.api import ms_function
+import luojianet_ms.context as context
+import luojianet_ms.ops.functional as F
+from luojianet_ms import dtype as mstype
+from luojianet_ms.common import Tensor
+from luojianet_ms.ops.functional import vmap
+from luojianet_ms.common.api import ms_function
 
 context.set_context(mode=context.PYNATIVE_MODE)
 

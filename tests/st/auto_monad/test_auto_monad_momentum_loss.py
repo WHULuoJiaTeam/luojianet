@@ -14,16 +14,16 @@
 # ==============================================================================
 import pytest
 import numpy as np
-import mindspore.ops.operations as P
-from mindspore.common.parameter import Parameter
-from mindspore import context
-from mindspore import Tensor
-from mindspore.nn import Cell
-from mindspore.nn.optim import Momentum
-from mindspore.nn.wrap.cell_wrapper import WithLossCell
-from mindspore.nn.wrap.loss_scale import TrainOneStepWithLossScaleCell
-from mindspore.ops import functional as F
-from mindspore.common import dtype as mstype
+import luojianet_ms.ops.operations as P
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms import context
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.nn.wrap.cell_wrapper import WithLossCell
+from luojianet_ms.nn.wrap.loss_scale import TrainOneStepWithLossScaleCell
+from luojianet_ms.ops import functional as F
+from luojianet_ms.common import dtype as mstype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 

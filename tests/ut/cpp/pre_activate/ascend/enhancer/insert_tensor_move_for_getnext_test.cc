@@ -26,7 +26,7 @@
 #include "backend/common/optimizer/optimizer.h"
 #include "plugin/device/ascend/optimizer/enhancer/insert_tensor_move_for_getnext.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 using KernelBuildInfoBuilder = kernel::KernelBuildInfo::KernelBuildInfoBuilder;
 
@@ -65,4 +65,4 @@ TEST_F(TestHWInsertTensorMoveForGetNext, test_insert_tensor_move_for_getnext_mul
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

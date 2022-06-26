@@ -17,11 +17,11 @@ import os
 import pytest
 from utils import get_data, get_nlp_data, get_mkv_data
 
-from mindspore import log as logger
-from mindspore.mindrecord import FileWriter, FileReader
-from mindspore.mindrecord import MRMAddIndexError
-from mindspore.mindrecord import ShardHeader, SUCCESS, FAILED, ParamValueError
-from mindspore.mindrecord import ShardWriter, ShardIndexGenerator, ShardReader
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import FileWriter, FileReader
+from luojianet_ms.mindrecord import MRMAddIndexError
+from luojianet_ms.mindrecord import ShardHeader, SUCCESS, FAILED, ParamValueError
+from luojianet_ms.mindrecord import ShardWriter, ShardIndexGenerator, ShardReader
 
 FILES_NUM = 4
 CV_FILE_NAME = "./imagenet.mindrecord"

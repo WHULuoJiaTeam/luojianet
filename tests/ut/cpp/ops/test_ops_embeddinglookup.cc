@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestEmbeddingLookup : public UT::Common {
  public:
@@ -64,4 +64,4 @@ TEST_F(TestEmbeddingLookup, test_ops_embedding_lookup1) {
   EXPECT_EQ(shape_vec[2], 3);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

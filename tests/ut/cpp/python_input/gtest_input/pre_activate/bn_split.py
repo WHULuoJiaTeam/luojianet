@@ -13,12 +13,12 @@
 # limitations under the License.
 # ============================================================================
 
-from mindspore.ops import Primitive
-from mindspore.ops import operations as P
-from mindspore.ops.operations import _inner_ops as inner
-from mindspore.ops import _constants as Constants
-from mindspore.common.tensor import Tensor
-import mindspore.common.dtype as mstype
+from luojianet_ms.ops import Primitive
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations import _inner_ops as inner
+from luojianet_ms.ops import _constants as Constants
+from luojianet_ms.common.tensor import Tensor
+import luojianet_ms.common.dtype as mstype
 
 make_tuple = Primitive('MakeTuple')
 tuple_getitem = Primitive(Constants.kTupleGetItem)

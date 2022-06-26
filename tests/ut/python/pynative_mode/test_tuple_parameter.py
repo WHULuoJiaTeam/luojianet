@@ -1,9 +1,9 @@
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import context, Tensor
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
+import luojianet_ms.nn as nn
+from luojianet_ms import context, Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
 
 
 

@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/square_sum_fusion.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 
 class TestHWOptimizeSquareSumFusion : public BackendCommon {
@@ -70,4 +70,4 @@ TEST_F(TestHWOptimizeSquareSumFusion, test_square_sumv2_fusion) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

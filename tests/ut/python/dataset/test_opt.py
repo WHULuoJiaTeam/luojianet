@@ -14,7 +14,7 @@
 # ==============================================================================
 import numpy as np
 
-import mindspore.dataset as ds
+import luojianet_ms.dataset as ds
 from util import config_get_set_seed, config_get_set_num_parallel_workers
 
 

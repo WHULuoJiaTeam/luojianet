@@ -2,7 +2,7 @@
 
 ## 文档功能与适用场景
 
-  在MindSpore进行计算调试，怀疑遇到精度问题时可以选择dump文件进行对比。此时用户希望知道dump文件夹下的每个数据文件对应的Python源码。
+  在LuoJiaNET进行计算调试，怀疑遇到精度问题时可以选择dump文件进行对比。此时用户希望知道dump文件夹下的每个数据文件对应的Python源码。
   本文的主要目的为指导用户使用该工具进行数据文件到python源码的映射。
   此指导文档适合运行在 **Ascend硬件** 环境下的计算。
 
@@ -10,12 +10,12 @@
 
  1. 使用脚本的3步操作：  
    - 用户在训练脚本里设置context.set_context(mode=context.GRAPH_MODE, save_graphs=True)，进行图文件的保存。  
-   - 用户开启dump数据功能，参考<https://www.mindspore.cn/tutorial/training/zh-CN/r1.1/advanced_use/custom_debugging_info.html#dump>  
+   - 用户开启dump数据功能，参考<https://www.luojianet_ms.cn/tutorial/training/zh-CN/r1.1/advanced_use/custom_debugging_info.html#dump>  
    - 获取dump数据文件的op_num，然后通过辅助脚本进行解析。如数据文件：`Default--network-TrainOneStepCell--network-WithLossCell--_backbone-
    ResNet--layer2-SequentialCell--0-ResidualBlock--conv2-Conv2d--Cast-op954_input_0_shape_128_128_3_3_kNumberTypeFloat32_DefaultFormat.bin`.  
    可观察到Cast-op954，说明该算子的op_num为op954, 如下图所示。
    ![image](./images/op_image.png)  
-   脚本名： **[map_file_to_code.py](https://gitee.com/mindspore/mindspore/blob/master/scripts/map_dump_file_to_code/map_file_to_code.py)**; &nbsp; 执行方式:  
+   脚本名： **[map_file_to_code.py](https://gitee.com/luojianet_ms/luojianet_ms/blob/master/scripts/map_dump_file_to_code/map_file_to_code.py)**; &nbsp; 执行方式:  
 
      ```ruby
      python3 map_file_to_code.py
@@ -32,19 +32,19 @@
     ```ruby
     [INFO] Start to map the dump file to source code.
     [INFO] Find operation 'Cast'.
-           In file /data1/jzg/mindspore/mindspore/nn/layer/conv.py(253)/
+           In file /data1/jzg/luojianet_ms/luojianet_ms/nn/layer/conv.py(253)/
                    output = self.conv2d(x, self.weight)
            In file /data1/jzg/dump_to_code/resnet/scripts/train/src/resnet.py(166)/
                    out = self.conv2(out)
-           In file /data1/jzg/mindspore/mindspore/nn/layer/container.py(173)/
+           In file /data1/jzg/luojianet_ms/luojianet_ms/nn/layer/container.py(173)/
                    for cell in self.cell_list:
            In file /data1/jzg/dump_to_code/resnet/scripts/train/src/resnet.py(323)/     # 用户代码行
                    c3 = self.layer2(c2)
-           In file /data1/jzg/mindspore/mindspore/train/amp.py(101)/
+           In file /data1/jzg/luojianet_ms/luojianet_ms/train/amp.py(101)/
                    out = self._backbone(data)
-           In file /data1/jzg/mindspore/mindspore/nn/wrap/cell_wrapper.py(247)/
+           In file /data1/jzg/luojianet_ms/luojianet_ms/nn/wrap/cell_wrapper.py(247)/
                    loss = self.network(*inputs)
-           In file /data1/jzg/mindspore/mindspore/train/dataset_helper.py(87)/
+           In file /data1/jzg/luojianet_ms/luojianet_ms/train/dataset_helper.py(87)/
                    return self.network(*outputs)
     ```
 

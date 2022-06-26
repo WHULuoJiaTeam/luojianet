@@ -17,8 +17,8 @@
 import os
 import pytest
 
-import mindspore.dataset as ds
-from mindspore.mindrecord import FileWriter
+import luojianet_ms.dataset as ds
+from luojianet_ms.mindrecord import FileWriter
 
 
 def create_cv_mindrecord(file_name, files_num):

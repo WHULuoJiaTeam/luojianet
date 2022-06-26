@@ -14,12 +14,12 @@
 # ============================================================================
 
 import numpy as np
-import mindspore.nn as nn
-import mindspore.common.dtype as mstype
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore import Tensor
-from mindspore.nn import Dense, ReLU
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Dense, ReLU
+from luojianet_ms.ops import operations as P
 
 
 class WeightDecaySchdule(nn.Cell):

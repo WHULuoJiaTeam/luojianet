@@ -34,7 +34,7 @@
 #include "include/common/utils/cse.h"
 #include "include/common/utils/convert_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestOptOpt : public UT::Common {
  public:
@@ -334,4 +334,4 @@ TEST_F(TestOptOpt, SimpleCallTupleTupleTrans) {
   abstract::AnalysisContext::ClearContext();
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

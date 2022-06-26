@@ -39,11 +39,11 @@
 #include "securec.h"
 #include "ut_common.h"
 
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace mindrecord {
 class TestShardHeader : public UT::Common {
  public:
@@ -153,4 +153,4 @@ TEST_F(TestShardHeader, AddIndexFields) {
   ASSERT_EQ(header_data_new.GetFields().size(), 2);
 }
 }  // namespace mindrecord
-}  // namespace mindspore
+}  // namespace luojianet_ms

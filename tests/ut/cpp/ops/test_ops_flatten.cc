@@ -20,7 +20,7 @@
 #include "ir/dtype/type.h"
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestFlatten : public UT::Common {
  public:
@@ -57,4 +57,4 @@ TEST_F(TestFlatten, test_ops_flatten) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

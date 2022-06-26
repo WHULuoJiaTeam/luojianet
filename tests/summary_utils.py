@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 """Summary reader."""
 import struct
 
-import mindspore.train.summary_pb2 as summary_pb2
+import luojianet_ms.train.summary_pb2 as summary_pb2
 
 _HEADER_SIZE = 8
 _HEADER_CRC_SIZE = 4

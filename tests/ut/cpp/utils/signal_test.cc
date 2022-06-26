@@ -26,7 +26,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestSignal : public UT::Common {
  public:
   TestSignal() {}
@@ -104,4 +104,4 @@ TEST_F(TestSignal, test_sigs_Named) {
   sigs.signal1(a);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

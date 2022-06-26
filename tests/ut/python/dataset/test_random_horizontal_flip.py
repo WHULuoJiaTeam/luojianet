@@ -16,12 +16,12 @@
 Testing the random horizontal flip op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.transforms.c_transforms as ops
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.transforms.c_transforms as ops
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import save_and_check_md5, visualize_list, visualize_image, diff_mse, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -117,7 +117,7 @@ def test_random_horizontal_valid_prob_py():
         py_vision.RandomHorizontalFlip(0.8),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     filename = "random_horizontal_01_py_result.npz"
@@ -163,7 +163,7 @@ def test_random_horizontal_invalid_prob_py():
             py_vision.RandomHorizontalFlip(1.5),
             py_vision.ToTensor()
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data = data.map(operations=transform, input_columns=["image"])
     except ValueError as e:
         logger.info("Got an exception in DE: {}".format(str(e)))
@@ -191,7 +191,7 @@ def test_random_horizontal_comp(plot=False):
         py_vision.RandomHorizontalFlip(1),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = data2.map(operations=transform, input_columns=["image"])
 
     images_list_c = []

@@ -16,9 +16,9 @@
 import numpy as np
 import pytest
 
-from mindspore import Tensor
-from mindspore.common.parameter import Parameter
-from mindspore.nn.optim import Optimizer, SGD, Adam, AdamWeightDecay
+from luojianet_ms import Tensor
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.nn.optim import Optimizer, SGD, Adam, AdamWeightDecay
 
 
 class IterableObjc:

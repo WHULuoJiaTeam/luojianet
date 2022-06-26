@@ -24,7 +24,7 @@
 #include "backend/common/pass/convert_tuple_input_to_dynamic_input.h"
 #include "include/common/utils/utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWConstTupleInputToDynamicInput : public BackendCommon {
  public:
@@ -56,4 +56,4 @@ TEST_F(TestHWConstTupleInputToDynamicInput, test_convert_tuple_input_to_dynamic_
   EXPECT_TRUE(CheckEqualGraph(func_graph, g_after));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

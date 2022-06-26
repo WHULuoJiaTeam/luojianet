@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/confusion_mul_grad_fusion.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptimizeConfusionMulGradFusion : public BackendCommon {
  public:
@@ -50,4 +50,4 @@ TEST_F(TestHWOptimizeConfusionMulGradFusion, test_fusion) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

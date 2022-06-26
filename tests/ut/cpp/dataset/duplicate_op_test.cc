@@ -19,7 +19,7 @@
 #include "minddata/dataset/core/tensor.h"
 #include "minddata/dataset/kernels/data/duplicate_op.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 namespace py = pybind11;
 

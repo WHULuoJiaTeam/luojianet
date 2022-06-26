@@ -1,5 +1,6 @@
 /**
- * Copyright 2021 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_C_API_MODEL_C_H
-#define MINDSPORE_INCLUDE_C_API_MODEL_C_H
+#ifndef LUOJIANET_MS_INCLUDE_C_API_MODEL_C_H
+#define LUOJIANET_MS_INCLUDE_C_API_MODEL_C_H
 
 #include "include/c_api/tensor_c.h"
 #include "include/c_api/context_c.h"
@@ -141,4 +142,4 @@ MS_API MSTensorHandle MSModelGetOutputByTensorName(const MSModelHandle model, co
 #ifdef __cplusplus
 }
 #endif
-#endif  // MINDSPORE_INCLUDE_C_API_MODEL_C_H
+#endif  // LUOJIANET_MS_INCLUDE_C_API_MODEL_C_H

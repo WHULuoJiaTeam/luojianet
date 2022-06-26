@@ -25,7 +25,7 @@ if(ENABLE_GITEE_EULER)
     set(GIT_REPOSITORY "https://gitee.com/src-openeuler/opencv.git")
     set(GIT_TAG "openEuler-22.03-LTS")
     set(MD5 "e2b5aa4946559d0a397148d6e1ab7284")
-    set(OPENCV_SRC "${TOP_DIR}/build/mindspore/_deps/opencv-src")
+    set(OPENCV_SRC "${TOP_DIR}/build/luojianet_ms/_deps/opencv-src")
     __download_pkg_with_git(opencv ${GIT_REPOSITORY} ${GIT_TAG} ${MD5})
     execute_process(COMMAND tar -xf ${OPENCV_SRC}/opencv-4.5.2.tar.gz --strip-components 1 -C ${OPENCV_SRC})
 else()
@@ -39,7 +39,7 @@ endif()
 endif()
 
 if(MSVC)
-    mindspore_add_pkg(opencv
+    luojianet_ms_add_pkg(opencv
             VER 4.5.2
             LIBS opencv_core452.lib opencv_imgcodecs452.lib opencv_imgproc452.lib
             LIB_PATH x64/*/lib
@@ -66,7 +66,7 @@ if(MSVC)
             -DTIFF_INCLUDE_DIR=${tiff_INC}
             -DTIFF_LIBRARY=${tiff_LIB})
 elseif(WIN32)
-    mindspore_add_pkg(opencv
+    luojianet_ms_add_pkg(opencv
                 VER 4.5.2
                 LIBS libopencv_core452.dll.a libopencv_imgcodecs452.dll.a libopencv_imgproc452.dll.a
                 LIB_PATH x64/mingw/lib
@@ -94,7 +94,7 @@ elseif(WIN32)
                 -DTIFF_INCLUDE_DIR=${tiff_INC}
                 -DTIFF_LIBRARY=${tiff_LIB})
 else()
-    mindspore_add_pkg(opencv
+    luojianet_ms_add_pkg(opencv
                 VER 4.5.2
                 LIBS opencv_core opencv_imgcodecs opencv_imgproc
                 URL ${REQ_URL}
@@ -123,17 +123,17 @@ endif()
 
 if(MSVC)
     include_directories(${opencv_INC})
-    add_library(mindspore::opencv_core ALIAS opencv::opencv_core452.lib)
-    add_library(mindspore::opencv_imgcodecs ALIAS opencv::opencv_imgcodecs452.lib)
-    add_library(mindspore::opencv_imgproc ALIAS opencv::opencv_imgproc452.lib)
+    add_library(luojianet_ms::opencv_core ALIAS opencv::opencv_core452.lib)
+    add_library(luojianet_ms::opencv_imgcodecs ALIAS opencv::opencv_imgcodecs452.lib)
+    add_library(luojianet_ms::opencv_imgproc ALIAS opencv::opencv_imgproc452.lib)
 elseif(WIN32)
     include_directories(${opencv_INC})
-    add_library(mindspore::opencv_core ALIAS opencv::libopencv_core452.dll.a)
-    add_library(mindspore::opencv_imgcodecs ALIAS opencv::libopencv_imgcodecs452.dll.a)
-    add_library(mindspore::opencv_imgproc ALIAS opencv::libopencv_imgproc452.dll.a)
+    add_library(luojianet_ms::opencv_core ALIAS opencv::libopencv_core452.dll.a)
+    add_library(luojianet_ms::opencv_imgcodecs ALIAS opencv::libopencv_imgcodecs452.dll.a)
+    add_library(luojianet_ms::opencv_imgproc ALIAS opencv::libopencv_imgproc452.dll.a)
 else()
     include_directories(${opencv_INC}/opencv4)
-    add_library(mindspore::opencv_core ALIAS opencv::opencv_core)
-    add_library(mindspore::opencv_imgcodecs ALIAS opencv::opencv_imgcodecs)
-    add_library(mindspore::opencv_imgproc ALIAS opencv::opencv_imgproc)
+    add_library(luojianet_ms::opencv_core ALIAS opencv::opencv_core)
+    add_library(luojianet_ms::opencv_imgcodecs ALIAS opencv::opencv_imgcodecs)
+    add_library(luojianet_ms::opencv_imgproc ALIAS opencv::opencv_imgproc)
 endif()

@@ -20,7 +20,7 @@
 #include <memory>
 #include <thread>
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ps {
 namespace core {
 class TestCommUtil : public UT::Common {
@@ -61,4 +61,4 @@ TEST_F(TestCommUtil, Retry) {
 }
 }  // namespace core
 }  // namespace ps
-}  // namespace mindspore
+}  // namespace luojianet_ms

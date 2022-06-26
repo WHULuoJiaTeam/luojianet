@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +16,13 @@
 """ test_pynative_hook_grad """
 import numpy as np
 import pytest
-import mindspore.nn as nn
-import mindspore.ops.operations as P
-from mindspore.nn import Cell
-from mindspore import context
-from mindspore.common.tensor import Tensor
-from mindspore.ops.composite import GradOperation
-from mindspore.common import ParameterTuple
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.operations as P
+from luojianet_ms.nn import Cell
+from luojianet_ms import context
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops.composite import GradOperation
+from luojianet_ms.common import ParameterTuple
 
 class MetaFactory:
     def __init__(self):

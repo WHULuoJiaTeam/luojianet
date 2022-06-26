@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +14,10 @@
 # limitations under the License.
 # ============================================================================
 """OhemLoss."""
-import mindspore.nn as nn
-import mindspore.common.dtype as mstype
-from mindspore.ops import operations as P
-from mindspore.ops import functional as F
+import luojianet_ms.nn as nn
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import functional as F
 
 
 class OhemLoss(nn.Cell):

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 
 import numpy as np
 
-import mindspore.nn as nn
-import mindspore
-from mindspore import context
-from mindspore.common.tensor import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+import luojianet_ms
+from luojianet_ms import context
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -35,8 +36,8 @@ class Net(nn.Cell):
         return out
 
 def test_call():
-    x = Tensor(np.ones(shape=[1, 3]), mindspore.float32)
-    y = Tensor(np.ones(shape=[3, 4]), mindspore.float32)
+    x = Tensor(np.ones(shape=[1, 3]), luojianet_ms.float32)
+    y = Tensor(np.ones(shape=[3, 4]), luojianet_ms.float32)
     net = Net()
     ret = net(x, y)
     print(ret)

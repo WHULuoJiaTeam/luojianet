@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,14 +23,14 @@ import glob
 from enum import Enum
 import numpy as np
 import pytest
-from mindspore import Tensor, set_dump, ops
-from mindspore.ops import operations as P
-from mindspore.nn import Cell
-from mindspore.nn import Dense
-from mindspore.nn import SoftmaxCrossEntropyWithLogits
-from mindspore.nn import Momentum
-from mindspore.nn import TrainOneStepCell
-from mindspore.nn import WithLossCell
+from luojianet_ms import Tensor, set_dump, ops
+from luojianet_ms.ops import operations as P
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Dense
+from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn import Momentum
+from luojianet_ms.nn import TrainOneStepCell
+from luojianet_ms.nn import WithLossCell
 from dump_test_utils import generate_cell_dump_json, check_dump_structure
 from tests.security_utils import security_off_wrap
 
@@ -92,7 +93,7 @@ def test_ascend_cell_dump():
         dump_path = os.path.join(tmp_dir, 'cell_dump')
         dump_config_path = os.path.join(tmp_dir, 'cell_dump.json')
         generate_cell_dump_json(dump_path, dump_config_path, 'test_async_dump', 2)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         run_multi_layer_train(IsDump.SET_DUMP_TRUE)
@@ -115,7 +116,7 @@ def test_ascend_cell_dump():
                               "-ReluReduceMeanDenseRelu_gradReLU_ReluGrad-op*.*.*.*"
         relu_grad_file1 = glob.glob(os.path.join(dump_file_path, relu_grad_file_name))[0]
         assert relu_grad_file1
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0
@@ -135,7 +136,7 @@ def test_ascend_not_cell_dump():
         dump_path = os.path.join(tmp_dir, 'cell_dump')
         dump_config_path = os.path.join(tmp_dir, 'cell_dump.json')
         generate_cell_dump_json(dump_path, dump_config_path, 'test_async_dump', 0)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         run_multi_layer_train(IsDump.SET_DUMP_TRUE)
@@ -147,7 +148,7 @@ def test_ascend_not_cell_dump():
 
         # make sure set_dump is ignored and all cell layer are dumped
         assert len(os.listdir(dump_file_path)) == 11
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0
@@ -167,7 +168,7 @@ def test_ascend_cell_empty_dump():
         dump_path = os.path.join(tmp_dir, 'cell_dump')
         dump_config_path = os.path.join(tmp_dir, 'cell_dump.json')
         generate_cell_dump_json(dump_path, dump_config_path, 'test_async_dump', 2)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         run_multi_layer_train(IsDump.SET_NONE)
@@ -176,7 +177,7 @@ def test_ascend_cell_empty_dump():
 
         # make sure no files are dumped
         assert not os.path.exists(dump_file_path)
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0
@@ -196,7 +197,7 @@ def test_ascend_cell_dump_set_enable_false():
         dump_path = os.path.join(tmp_dir, 'cell_dump')
         dump_config_path = os.path.join(tmp_dir, 'cell_dump.json')
         generate_cell_dump_json(dump_path, dump_config_path, 'test_async_dump', 2)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         run_multi_layer_train(IsDump.SET_DUMP_FALSE)
@@ -211,7 +212,7 @@ def test_ascend_cell_dump_set_enable_false():
         mean_file_name = "ReduceMean.Default_network-WithLossCell__backbone-ReluReduceMeanDenseRelu_ReduceMean-*.*.*.*"
         mean_file = glob.glob(os.path.join(dump_file_path, mean_file_name))[0]
         assert mean_file
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 class OperateSymbolNet(Cell):
@@ -239,7 +240,7 @@ def test_ascend_cell_dump_with_operate_symbol():
         dump_path = os.path.join(tmp_dir, 'cell_dump')
         dump_config_path = os.path.join(tmp_dir, 'cell_dump.json')
         generate_cell_dump_json(dump_path, dump_config_path, 'test_async_dump', 2)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
 
@@ -256,4 +257,4 @@ def test_ascend_cell_dump_with_operate_symbol():
 
         # make sure directory has dumped files with enabled=True
         assert len(os.listdir(dump_file_path)) == 3
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']

@@ -20,9 +20,9 @@ import json
 import random
 import numpy as np
 import pytest
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as c_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as c_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
 
 MNIST_DATA_DIR = "../data/dataset/testMnistData"
 DATA_DIR = "../data/dataset/testPK/data"

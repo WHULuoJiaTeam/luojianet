@@ -14,11 +14,11 @@ if(NOT WIN32 AND NOT APPLE)
     set(tinyxml2_LDFLAGS "-Wl,-z,relro,-z,now,-z,noexecstack")
 endif()
 
-mindspore_add_pkg(tinyxml2
+luojianet_ms_add_pkg(tinyxml2
         VER 8.0.0
         LIBS tinyxml2
         URL ${REQ_URL}
         CMAKE_OPTION -DCMAKE_BUILD_TYPE=Release
         MD5 ${MD5})
 include_directories(${tinyxml2_INC})
-add_library(mindspore::tinyxml2 ALIAS tinyxml2::tinyxml2)
+add_library(luojianet_ms::tinyxml2 ALIAS tinyxml2::tinyxml2)

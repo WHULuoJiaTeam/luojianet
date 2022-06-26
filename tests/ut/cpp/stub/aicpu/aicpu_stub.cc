@@ -16,7 +16,7 @@
 #include "kernel/kernel.h"
 #include "plugin/device/ascend/kernel/aicpu/aicpu_kernel_load.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 
 /*
@@ -27,4 +27,4 @@ KernelModPtr AicpuOpBuild(const AnfNodePtr &anf_node) { return nullptr; }
 bool AicpuOpKernelLoad::LaunchAicpuKernelSo() { return true; }
 void AicpuOpKernelLoad::FreeDeviceMemory() {}
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

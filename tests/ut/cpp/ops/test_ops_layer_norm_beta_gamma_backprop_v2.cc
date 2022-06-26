@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestLayerNormBetaGammaBackpropV2 : public UT::Common {
  public:
@@ -73,4 +73,4 @@ TEST_F(TestLayerNormBetaGammaBackpropV2, test_ops_layer_norm_beta_gamma_backprop
   EXPECT_EQ(data1_type->type_id(), kNumberTypeFloat16);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

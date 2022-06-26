@@ -10,7 +10,7 @@ if(NOT ENABLE_GLIBCXX)
     set(re2_CXXFLAGS "${re2_CXXFLAGS} -D_GLIBCXX_USE_CXX11_ABI=0")
 endif()
 
-mindspore_add_pkg(re2
+luojianet_ms_add_pkg(re2
         VER 20191201
         LIBS re2
         URL ${REQ_URL}
@@ -18,5 +18,5 @@ mindspore_add_pkg(re2
         CMAKE_OPTION -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=TRUE)
 
 include_directories(${re2_INC})
-add_library(mindspore::re2 ALIAS re2::re2)
+add_library(luojianet_ms::re2 ALIAS re2::re2)
 

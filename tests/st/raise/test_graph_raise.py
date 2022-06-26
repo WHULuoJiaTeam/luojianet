@@ -15,10 +15,10 @@
 """ test graph raise """
 import pytest
 import numpy as np
-import mindspore.nn as nn
-from mindspore import Tensor, context
-import mindspore.common.dtype as mstype
-from mindspore.common.api import _cell_graph_executor
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, context
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.common.api import _cell_graph_executor
 
 context.set_context(mode=context.GRAPH_MODE)
 

@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +25,7 @@ build_option_proc_n()
     echo "Invalid value ${OPTARG} for option -n"
     usage
     exit 1
-  fi  
+  fi
 }
 
 build_option_proc_upper_i()
@@ -47,7 +48,7 @@ build_option_proc_upper_a()
   export COMPILE_LITE="on"
   if [[ "$OPTARG" == "on" ]]; then
     export LITE_ENABLE_AAR="on"
-  fi  
+  fi
 }
 
 build_option_proc_upper_w()
@@ -62,5 +63,5 @@ build_option_proc_upper_w()
   fi
   if [[ "$OPTARG" == "neon" ]]; then
     export ARM_SIMD="$OPTARG"
-  fi  
+  fi
 }

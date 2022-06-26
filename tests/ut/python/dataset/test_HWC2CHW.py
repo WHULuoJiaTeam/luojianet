@@ -17,11 +17,11 @@ Testing HWC2CHW op in DE
 """
 import numpy as np
 import pytest
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import diff_mse, visualize_list, save_and_check_md5
 
 GENERATE_GOLDEN = False
@@ -153,7 +153,7 @@ def test_HWC2CHW_comp(plot=False):
         py_vision.ToTensor(),
         py_vision.HWC2CHW()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = data2.map(operations=transform, input_columns=["image"])
 
     image_c_transposed = []

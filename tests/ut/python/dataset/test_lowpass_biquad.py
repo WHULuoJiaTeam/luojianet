@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +20,9 @@ Testing LowpassBiquad op in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms import log as logger
 
 
 def count_unequal_element(data_expected, data_me, rtol, atol):
@@ -35,7 +36,7 @@ def count_unequal_element(data_expected, data_me, rtol, atol):
 
 
 def test_lowpass_biquad_eager():
-    """ mindspore eager mode normal testcase:lowpass_biquad op"""
+    """ luojianet_ms eager mode normal testcase:lowpass_biquad op"""
     # Original waveform
     waveform = np.array([[0.8236, 0.2049, 0.3335], [0.5933, 0.9911, 0.2482],
                          [0.3007, 0.9054, 0.7598], [0.5394, 0.2842, 0.5634], [0.6363, 0.2226, 0.2288]])
@@ -49,7 +50,7 @@ def test_lowpass_biquad_eager():
 
 
 def test_lowpass_biquad_pipeline():
-    """ mindspore pipeline mode normal testcase:lowpass_biquad op"""
+    """ luojianet_ms pipeline mode normal testcase:lowpass_biquad op"""
     # Original waveform
     waveform = np.array([[3.5, 3.2, 2.5, 7.1], [5.5, 0.3, 4.9, 5.0],
                          [1.3, 7.4, 7.1, 3.8], [3.4, 3.3, 3.7, 1.1]])

@@ -16,7 +16,7 @@
 #include "include/common/debug/dump_proto.h"
 #include "proto/mind_ir.pb.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 
 void DumpIRProto(const FuncGraphPtr &func_graph, const std::string &suffix) { return; }
 
@@ -30,4 +30,4 @@ bool DumpBinaryProto(const FuncGraphPtr &func_graph, const std::string &file_pat
                      const FuncGraphPtr &param_layout_fg) {
   return true;
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

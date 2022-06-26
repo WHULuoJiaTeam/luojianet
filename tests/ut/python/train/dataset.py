@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,18 +16,18 @@
 """dataset base and LeNet."""
 import os
 
-from mindspore import dataset as ds
-from mindspore.common import dtype as mstype
-from mindspore.dataset.transforms import c_transforms as C
-from mindspore.dataset.vision import Inter
-from mindspore.dataset.vision import c_transforms as CV
-from mindspore import nn, Tensor
-from mindspore.common.initializer import Normal
-from mindspore.ops import operations as P
+from luojianet_ms import dataset as ds
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.dataset.transforms import c_transforms as C
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.dataset.vision import c_transforms as CV
+from luojianet_ms import nn, Tensor
+from luojianet_ms.common.initializer import Normal
+from luojianet_ms.ops import operations as P
 
 def create_mnist_dataset(mode='train', num_samples=2, batch_size=2):
     """create dataset for train or test"""
-    mnist_path = '/home/workspace/mindspore_dataset/mnist'
+    mnist_path = '/home/workspace/luojianet_ms_dataset/mnist'
     num_parallel_workers = 1
 
     # define dataset

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 Testing ToType op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import save_and_check_md5
 
 GENERATE_GOLDEN = False
@@ -42,7 +43,7 @@ def test_to_type_op():
         # Note: Convert the datatype from float32 to int16
         py_vision.ToType(np.int16)
     ]
-    transform1 = mindspore.dataset.transforms.py_transforms.Compose(transforms1)
+    transform1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms1)
     data1 = data1.map(operations=transform1, input_columns=["image"])
 
     # Second dataset
@@ -51,7 +52,7 @@ def test_to_type_op():
         py_vision.Decode(),
         py_vision.ToTensor()
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(transforms2)
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms2)
     data2 = data2.map(operations=transform2, input_columns=["image"])
 
     for item1, item2 in zip(data1.create_dict_iterator(num_epochs=1, output_numpy=True),
@@ -81,7 +82,7 @@ def test_to_type_01():
         # Note: Convert the datatype from float32 to int32
         py_vision.ToType(np.int32)
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     # Compare with expected md5 from images
@@ -103,7 +104,7 @@ def test_to_type_02():
         # Note: Convert to type int
         py_vision.ToType('int')
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     # Compare with expected md5 from images
@@ -126,7 +127,7 @@ def test_to_type_03():
             # Note: If the object is not numpy, e.g. PIL image, TypeError will raise
             py_vision.ToType(np.int32)
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data = data.map(operations=transform, input_columns=["image"])
     except Exception as e:
         logger.info("Got an exception in DE: {}".format(str(e)))
@@ -149,7 +150,7 @@ def test_to_type_04():
             # Note: if output_type is not explicitly given
             py_vision.ToType()
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data = data.map(operations=transform, input_columns=["image"])
     except Exception as e:
         logger.info("Got an exception in DE: {}".format(str(e)))
@@ -172,7 +173,7 @@ def test_to_type_05():
             # Note: if output_type is not explicitly given
             py_vision.ToType('invalid')
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data = data.map(operations=transform, input_columns=["image"])
     except Exception as e:
         logger.info("Got an exception in DE: {}".format(str(e)))

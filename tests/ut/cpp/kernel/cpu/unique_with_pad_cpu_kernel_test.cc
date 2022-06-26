@@ -22,7 +22,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 class UniqueWithPadCpuKernelTest : public UT::Common {
  public:
@@ -80,4 +80,4 @@ TEST_F(UniqueWithPadCpuKernelTest, compute_test) {
   EXPECT_TRUE(idx_ == expect_idx);
 }
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

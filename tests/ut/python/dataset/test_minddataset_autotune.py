@@ -17,9 +17,9 @@ Testing Autotune support in DE for MindDataset
 """
 import os
 import pytest
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as vision
-from mindspore.dataset.vision import Inter
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as vision
+from luojianet_ms.dataset.vision import Inter
 from util_minddataset import add_and_remove_cv_file
 
 

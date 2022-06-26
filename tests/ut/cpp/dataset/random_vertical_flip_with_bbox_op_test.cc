@@ -18,10 +18,10 @@
 #include "minddata/dataset/kernels/image/random_vertical_flip_with_bbox_op.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
 const bool kSaveExpected = false;
 const char kOpName[] = "random_vertical_flip_with_bbox_c";

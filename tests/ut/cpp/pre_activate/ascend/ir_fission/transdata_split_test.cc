@@ -30,7 +30,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 using KernelBuildInfoBuilder = kernel::KernelBuildInfo::KernelBuildInfoBuilder;
 class TestHWTransdataSplit : public BackendCommon {
@@ -195,4 +195,4 @@ TEST_F(TestHWTransdataSplit, test_transdata_split_nchw_fraz) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

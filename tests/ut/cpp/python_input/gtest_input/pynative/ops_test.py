@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +16,9 @@
 """ ops_test """
 import numpy as np
 
-from mindspore.common.tensor import Tensor
-from mindspore.ops import operations as P
-from mindspore.ops.vm_impl_registry import vm_impl_registry as vm_impl_getters
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.vm_impl_registry import vm_impl_registry as vm_impl_getters
 
 
 def im2col(img, filter_h, filter_w, stride=1, pad=0, dilation=1):

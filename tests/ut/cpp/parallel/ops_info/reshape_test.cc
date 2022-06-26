@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class ReshapeInfo;
@@ -54,7 +54,7 @@ void TestReshapeInfo::SetUp() {
   g_device_manager = std::make_shared<DeviceManager>();
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
-  mindspore::HashMap<std::string, ValuePtr> attr;
+  luojianet_ms::HashMap<std::string, ValuePtr> attr;
 
   Shapes inputs_shape = {{32, 512, 7, 7}};
   Shapes outputs_shape = {{32, 25088}};
@@ -220,4 +220,4 @@ TEST_F(TestReshapeInfo, CheckStrategy3) {
   ASSERT_EQ(ret, SUCCESS);
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

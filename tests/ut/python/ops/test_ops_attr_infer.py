@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,14 +18,14 @@ import numpy as np
 from numpy.random import normal
 import pytest
 
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore.ops.composite import core
-from mindspore.common.api import ms_function
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms.ops.composite import core
+from luojianet_ms.common.api import ms_function
 
-from mindspore import Tensor
-from mindspore.ops import functional as F
-from mindspore.ops import prim_attr_register, PrimitiveWithInfer
+from luojianet_ms import Tensor
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import prim_attr_register, PrimitiveWithInfer
 
 context.set_context(mode=context.GRAPH_MODE)
 

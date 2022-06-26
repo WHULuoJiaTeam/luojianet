@@ -1,5 +1,6 @@
 /**
- * Copyright 2021 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_CALLBACK_TRAIN_ACCURACY_H
-#define MINDSPORE_INCLUDE_API_CALLBACK_TRAIN_ACCURACY_H
+#ifndef LUOJIANET_MS_INCLUDE_API_CALLBACK_TRAIN_ACCURACY_H
+#define LUOJIANET_MS_INCLUDE_API_CALLBACK_TRAIN_ACCURACY_H
 
 #include <cstddef>
 #include <string>
@@ -24,7 +25,7 @@
 #include "include/api/callback/callback.h"
 #include "include/api/metrics/accuracy.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 
 class TrainAccuracy: public TrainCallBack {
  public:
@@ -35,5 +36,5 @@ class TrainAccuracy: public TrainCallBack {
   virtual ~TrainAccuracy();
   const std::vector<GraphPoint> &GetAccuracyPoints();
 };
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_CALLBACK_TRAIN_ACCURACY_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_CALLBACK_TRAIN_ACCURACY_H

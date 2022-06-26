@@ -19,7 +19,7 @@
 #include "ps/core/worker_node.h"
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ps {
 namespace core {
 class TestAbstractNode : public UT::Common {
@@ -39,4 +39,4 @@ TEST_F(TestAbstractNode, NextExpectedRankRequestId) {
 }
 }  // namespace core
 }  // namespace ps
-}  // namespace mindspore
+}  // namespace luojianet_ms

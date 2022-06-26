@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +20,8 @@ import multiprocessing
 import cv2
 from PIL import Image
 from pycocotools.coco import COCO
-import mindspore.dataset as de
-import mindspore.dataset.vision.c_transforms as CV
+import luojianet_ms.dataset as de
+import luojianet_ms.dataset.vision.c_transforms as CV
 
 from src.distributed_sampler import DistributedSampler
 from src.transforms import reshape_fn, MultiScaleTrans

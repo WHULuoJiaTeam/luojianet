@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 
 class NetBoundingBoxDecode(nn.Cell):
@@ -40,8 +41,8 @@ def test_boundingbox_decode():
     deltas = np.array([[3, 1, 2, 2], [1, 2, 1, 4]], np.float32)
     means = (0.1, 0.1, 0.2, 0.2)
     stds = (2.0, 2.0, 3.0, 3.0)
-    anchor_box = Tensor(anchor, mindspore.float32)
-    deltas_box = Tensor(deltas, mindspore.float32)
+    anchor_box = Tensor(anchor, luojianet_ms.float32)
+    deltas_box = Tensor(deltas, luojianet_ms.float32)
     expect_deltas = np.array([[28.6500, 0.0000, 0.0000, 33.8500],
                               [0.0000, 0.0000, 15.8663, 72.7000]], np.float32)
 

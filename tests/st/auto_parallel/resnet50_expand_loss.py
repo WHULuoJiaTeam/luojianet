@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,20 +17,20 @@
 import os
 import numpy as np
 
-import mindspore.common.dtype as mstype
-import mindspore.context as context
-import mindspore.nn as nn
-import mindspore.ops.functional as F
-from mindspore import Tensor
-from mindspore.common.initializer import TruncatedNormal
-from mindspore.communication.management import init
-from mindspore.nn.loss.loss import LossBase
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.ops import operations as P
-from mindspore.parallel import set_algo_parameters
-from mindspore.train.callback import Callback
-from mindspore.train.model import Model
-from mindspore.context import ParallelMode
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.functional as F
+from luojianet_ms import Tensor
+from luojianet_ms.common.initializer import TruncatedNormal
+from luojianet_ms.communication.management import init
+from luojianet_ms.nn.loss.loss import LossBase
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.parallel import set_algo_parameters
+from luojianet_ms.train.callback import Callback
+from luojianet_ms.train.model import Model
+from luojianet_ms.context import ParallelMode
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 context.set_context(device_id=int(os.getenv('DEVICE_ID')))

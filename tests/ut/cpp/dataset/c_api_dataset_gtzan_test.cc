@@ -18,8 +18,8 @@
 #include "include/dataset/datasets.h"
 #include "include/dataset/transforms.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -42,7 +42,7 @@ TEST_F(MindDataTestPipeline, TestGTZANBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::string_view label_idx;
   uint32_t rate = 0;
@@ -103,7 +103,7 @@ TEST_F(MindDataTestPipeline, TestGTZANBasicWithPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   iter->GetNextRow(&row);
   std::vector<uint32_t> expected_rate = {22050, 22050, 22050, 22050, 22050};
   std::vector<std::string> expected_label = {"blues", "blues", "blues", "blues", "blues"};
@@ -117,14 +117,14 @@ TEST_F(MindDataTestPipeline, TestGTZANBasicWithPipeline) {
 
     std::shared_ptr<Tensor> de_expected_rate;
     ASSERT_OK(Tensor::CreateFromVector(expected_rate, &de_expected_rate));
-    mindspore::MSTensor fix_expected_rate =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_rate));
+    luojianet_ms::MSTensor fix_expected_rate =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_rate));
     EXPECT_MSTENSOR_EQ(sample_rate, fix_expected_rate);
 
     std::shared_ptr<Tensor> de_expected_label;
     ASSERT_OK(Tensor::CreateFromVector(expected_label, &de_expected_label));
-    mindspore::MSTensor fix_expected_label =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_label));
+    luojianet_ms::MSTensor fix_expected_label =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_label));
     EXPECT_MSTENSOR_EQ(label, fix_expected_label);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -245,7 +245,7 @@ TEST_F(MindDataTestPipeline, TestGTZANNumSamplers) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   uint32_t rate = 0;
   uint64_t i = 0;

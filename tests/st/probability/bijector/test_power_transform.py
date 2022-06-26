@@ -14,11 +14,11 @@
 # ============================================================================
 """test cases for powertransform"""
 import numpy as np
-import mindspore.context as context
-import mindspore.nn as nn
-import mindspore.nn.probability.bijector as msb
-from mindspore import Tensor
-from mindspore import dtype
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+import luojianet_ms.nn.probability.bijector as msb
+from luojianet_ms import Tensor
+from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 

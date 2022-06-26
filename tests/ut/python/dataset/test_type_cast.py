@@ -17,13 +17,13 @@ Testing TypeCast op in DE
 """
 import numpy as np
 
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as data_util
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as data_util
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 
 DATA_DIR = ["../data/dataset/test_tf_file_3_images/train-0000-of-0001.data"]
 SCHEMA_DIR = "../data/dataset/test_tf_file_3_images/datasetSchema.json"
@@ -51,7 +51,7 @@ def test_type_cast():
     transforms = [py_vision.Decode(),
                   py_vision.ToTensor()
                   ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
     data2 = data2.map(operations=transform, input_columns=["image"])
 
@@ -92,7 +92,7 @@ def test_type_cast_string():
     transforms = [py_vision.Decode(),
                   py_vision.ToTensor()
                   ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
     data2 = data2.map(operations=transform, input_columns=["image"])
 

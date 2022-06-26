@@ -19,7 +19,7 @@ import os
 import pytest
 import numpy as np
 
-import mindspore.dataset as ds
+import luojianet_ms.dataset as ds
 from util_minddataset import add_and_remove_cv_file # pylint: disable=unused-import
 
 

@@ -18,9 +18,9 @@
 #include "minddata/dataset/include/dataset/config.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::ShuffleMode;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::ShuffleMode;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -128,7 +128,7 @@ TEST_F(MindDataTestPipeline, TestShuffleWithSeed) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
 
@@ -193,7 +193,7 @@ TEST_F(MindDataTestPipeline, TestCallShuffleTwice) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
 

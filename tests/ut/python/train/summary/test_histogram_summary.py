@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +20,9 @@ import os
 import tempfile
 import numpy as np
 
-from mindspore.common.tensor import Tensor
-from mindspore.train.summary._summary_adapter import _calc_histogram_bins
-from mindspore.train.summary.summary_record import SummaryRecord, _cache_summary_tensor_data
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.train.summary._summary_adapter import _calc_histogram_bins
+from luojianet_ms.train.summary.summary_record import SummaryRecord, _cache_summary_tensor_data
 from tests.summary_utils import SummaryReader
 from tests.security_utils import security_off_wrap
 

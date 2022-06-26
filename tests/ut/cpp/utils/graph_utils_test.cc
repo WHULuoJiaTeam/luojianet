@@ -27,7 +27,7 @@
 #include "pipeline/jit/parse/parse_base.h"
 #include "pipeline/jit/parse/parse.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 
 class TestGraphUtils : public UT::Common {
  public:
@@ -53,4 +53,4 @@ TEST_F(TestGraphUtils, Isomorphic) {
   ASSERT_FALSE(Isomorphic(g1, g3, &equiv_graph, &equiv_node));
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore.nn.optim import Rprop
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.nn.optim import Rprop
+from luojianet_ms.ops import operations as P
 
 class Net(nn.Cell):
     """ Net definition """
@@ -114,7 +115,7 @@ def test_rprop_etas():
         Rprop(net.get_parameters(), etas=(-0.1, 1.2), learning_rate=0.1)
 
 
-def test_rprop_mindspore_with_empty_params():
+def test_rprop_luojianet_ms_with_empty_params():
     """
     Feature: Test Rprop optimizer.
     Description: Test if error is raised when there is no trainable_params.

@@ -1,5 +1,6 @@
 /**
- * Copyright 2021 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef MINDSPORE_INCLUDE_API_DELEGATE_H
-#define MINDSPORE_INCLUDE_API_DELEGATE_H
+#ifndef LUOJIANET_MS_INCLUDE_API_DELEGATE_H
+#define LUOJIANET_MS_INCLUDE_API_DELEGATE_H
 
 #include <map>
 #include <vector>
@@ -24,7 +25,7 @@
 #include "include/api/kernel.h"
 #include "include/api/status.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 typedef enum {
   SCHEMA_INVALID = -1, /**< invalid version */
   SCHEMA_CUR,          /**< current version for ms model defined in model.fbs*/
@@ -36,13 +37,13 @@ using KernelIter = std::vector<kernel::Kernel *>::iterator;
 template <class T>
 class MS_API DelegateModel {
  public:
-  /// \brief Constructor of MindSpore Lite DelegateModel.
+  /// \brief Constructor of LuoJiaNET Lite DelegateModel.
   DelegateModel(std::vector<kernel::Kernel *> *kernels, const std::vector<MSTensor> &inputs,
                 const std::vector<MSTensor> &outputs, const std::map<kernel::Kernel *, const T *> &primitives,
                 SchemaVersion version)
       : kernels_(kernels), inputs_(inputs), outputs_(outputs), primitives_(primitives), version_(version) {}
 
-  /// \brief Destructor of MindSpore Lite DelegateModel.
+  /// \brief Destructor of LuoJiaNET Lite DelegateModel.
   ~DelegateModel() = default;
 
   /// \brief Get Primitive of kernel::Kernel.
@@ -87,12 +88,12 @@ class MS_API DelegateModel {
   /// \brief Get the input tensors of DelegateModel.
   ///
   /// \return The input tensor vector of DelegateModel.
-  const std::vector<mindspore::MSTensor> &inputs() { return this->inputs_; }
+  const std::vector<luojianet_ms::MSTensor> &inputs() { return this->inputs_; }
 
   /// \brief Get the output tensors of DelegateModel.
   ///
   /// \return The ioutput tensor vector of DelegateModel.
-  const std::vector<mindspore::MSTensor> &outputs() { return this->outputs_; }
+  const std::vector<luojianet_ms::MSTensor> &outputs() { return this->outputs_; }
 
   /// \brief Get the ms model version.
   ///
@@ -101,33 +102,33 @@ class MS_API DelegateModel {
 
  protected:
   std::vector<kernel::Kernel *> *kernels_;
-  const std::vector<mindspore::MSTensor> &inputs_;
-  const std::vector<mindspore::MSTensor> &outputs_;
+  const std::vector<luojianet_ms::MSTensor> &inputs_;
+  const std::vector<luojianet_ms::MSTensor> &outputs_;
   const std::map<kernel::Kernel *, const T *> &primitives_;
   SchemaVersion version_;
 };
 
 class MS_API Delegate {
  public:
-  /// \brief Constructor of MindSpore Lite Delegate.
+  /// \brief Constructor of LuoJiaNET Lite Delegate.
   Delegate() = default;
 
-  /// \brief Destructor of MindSpore Lite Delegate.
+  /// \brief Destructor of LuoJiaNET Lite Delegate.
   virtual ~Delegate() = default;
 
   /// \brief Init delegate.
   ///
   /// \note Init willed be called in Model::Build.
   ///
-  /// \return Status. If Status is kLiteNotSupport, the program will return to the MindSpore Lite inner inference.
+  /// \return Status. If Status is kLiteNotSupport, the program will return to the LuoJiaNET Lite inner inference.
   virtual Status Init() = 0;
 
-  /// \brief Build delegate graph for MindSpore Lite model.
+  /// \brief Build delegate graph for LuoJiaNET Lite model.
   ///
   /// \note Build willed be called in Model::Build.
   ///
   /// \param[in] model Define the delegate model to be built.
   virtual Status Build(DelegateModel<schema::Primitive> *model) = 0;
 };
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_DELEGATE_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_DELEGATE_H

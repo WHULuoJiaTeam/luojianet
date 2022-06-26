@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,17 +23,17 @@ import secrets
 import numpy as np
 import pytest
 
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-from mindspore import context
-from mindspore.common.parameter import Parameter
-from mindspore.common.tensor import Tensor
-from mindspore.nn import SoftmaxCrossEntropyWithLogits
-from mindspore.nn import WithLossCell, TrainOneStepCell
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.ops import operations as P
-from mindspore.train.callback import _CheckpointManager
-from mindspore.train.serialization import save_checkpoint, load_checkpoint, load_param_into_net, \
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+from luojianet_ms import context
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn import WithLossCell, TrainOneStepCell
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train.callback import _CheckpointManager
+from luojianet_ms.train.serialization import save_checkpoint, load_checkpoint, load_param_into_net, \
      export, _save_graph, load
 from tests.security_utils import security_off_wrap
 from ..ut_filter import non_graph_engine

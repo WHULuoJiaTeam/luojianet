@@ -15,15 +15,15 @@
 """ test_insert_grad_of """
 import numpy as np
 
-import mindspore
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.common.api import ms_function
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
-from ....mindspore_test_framework.utils.bprop_util import bprop
-from ....mindspore_test_framework.utils.debug_util import PrintShapeTypeCell, PrintGradShapeTypeCell
+import luojianet_ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
+from ....luojianet_ms_test_framework.utils.bprop_util import bprop
+from ....luojianet_ms_test_framework.utils.debug_util import PrintShapeTypeCell, PrintGradShapeTypeCell
 
 
 grad_by_list = C.GradOperation(get_by_list=True)
@@ -119,7 +119,7 @@ def test_cell_assign():
         def __init__(self, net):
             super(GradNetWrap, self).__init__()
             self.net = net
-            self.weights = mindspore.ParameterTuple(net.get_parameters())
+            self.weights = luojianet_ms.ParameterTuple(net.get_parameters())
 
         def construct(self, x, y):
             return grad_by_list(self.net, self.weights)(x, y)
@@ -127,8 +127,8 @@ def test_cell_assign():
     class Mul(nn.Cell):
         def __init__(self):
             super(Mul, self).__init__()
-            self.matrix_w = mindspore.Parameter(Tensor(np.ones([2, 2], np.float32)), name="matrix_w")
-            self.matrix_g = mindspore.Parameter(Tensor(np.ones([2, 2], np.float32)), name="matrix_g")
+            self.matrix_w = luojianet_ms.Parameter(Tensor(np.ones([2, 2], np.float32)), name="matrix_w")
+            self.matrix_g = luojianet_ms.Parameter(Tensor(np.ones([2, 2], np.float32)), name="matrix_g")
             self.get_g = P.InsertGradientOf(self.save_gradient)
 
         def save_gradient(self, dout):

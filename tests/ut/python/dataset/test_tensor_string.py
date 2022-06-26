@@ -13,11 +13,11 @@
 # limitations under the License.
 # ==============================================================================
 import numpy as np
-import mindspore._c_dataengine as cde
+import luojianet_ms._c_dataengine as cde
 
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-from mindspore.dataset.text import to_str, to_bytes
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+from luojianet_ms.dataset.text import to_str, to_bytes
 
 
 def test_basic():
@@ -164,7 +164,7 @@ def test_tfrecord3():
 
 def create_text_mindrecord():
     # methood to create mindrecord with string data, used to generate testTextMindRecord/test.mindrecord
-    from mindspore.mindrecord import FileWriter
+    from luojianet_ms.mindrecord import FileWriter
 
     mindrecord_file_name = "test.mindrecord"
     data = [{"english": "This is a text file.",

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +16,8 @@
 import cv2
 import numpy as np
 from PIL import Image
-import mindspore.dataset.vision.c_transforms as C
-from mindspore import log as logger
+import luojianet_ms.dataset.vision.c_transforms as C
+from luojianet_ms import log as logger
 
 
 def test_eager_decode():
@@ -133,4 +134,3 @@ if __name__ == '__main__':
     test_eager_HWC2CHW()
     test_eager_pad()
     test_eager_exceptions()
-  

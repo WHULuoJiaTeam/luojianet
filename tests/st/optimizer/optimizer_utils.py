@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +15,11 @@
 # ============================================================================
 
 import numpy as np
-import mindspore
-from mindspore import nn, Tensor
-from mindspore.ops import operations as P
-from mindspore.nn.optim import ASGD
-from mindspore.nn.optim import Rprop
+import luojianet_ms
+from luojianet_ms import nn, Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.nn.optim import ASGD
+from luojianet_ms.nn.optim import Rprop
 np.random.seed(1024)
 
 fc1_weight = np.array([[0.72346634, 0.95608497, 0.4084163, 0.18627149,
@@ -43,8 +44,8 @@ def make_fake_data():
     """
     data, label = [], []
     for i in range(20):
-        data.append(mindspore.Tensor(np.array(np.ones((2, 8)) * i, dtype=np.float32)))
-        label.append(mindspore.Tensor(np.array(np.ones((2, 1)) * (i + 1), dtype=np.float32)))
+        data.append(luojianet_ms.Tensor(np.array(np.ones((2, 8)) * i, dtype=np.float32)))
+        label.append(luojianet_ms.Tensor(np.array(np.ones((2, 1)) * (i + 1), dtype=np.float32)))
     return data, label
 
 
@@ -121,7 +122,7 @@ def build_network(opt_config, is_group=False):
         net_opt = Rprop(params, learning_rate=opt_config['lr'], etas=opt_config['etas'],
                         step_sizes=opt_config['step_sizes'], weight_decay=0.0)
 
-    trainonestepcell = mindspore.nn.TrainOneStepCell(networkwithloss, net_opt)
+    trainonestepcell = luojianet_ms.nn.TrainOneStepCell(networkwithloss, net_opt)
     data, label = make_fake_data()
     for i in range(20):
         loss = trainonestepcell(data[i], label[i])

@@ -17,9 +17,9 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "minddata/dataset/core/tensor.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::TensorShape;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -41,7 +41,7 @@ TEST_F(MindDataTestPipeline, TestCelebADataset) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if CelebA() read correct images/attr
@@ -56,13 +56,13 @@ TEST_F(MindDataTestPipeline, TestCelebADataset) {
     auto image = row["image"];
     auto attr = row["attr"];
 
-    mindspore::MSTensor expect_image = ReadFileToTensor(folder_path + expect_file[i]);
+    luojianet_ms::MSTensor expect_image = ReadFileToTensor(folder_path + expect_file[i]);
     EXPECT_MSTENSOR_EQ(image, expect_image);
 
     std::shared_ptr<Tensor> de_expect_attr;
     ASSERT_OK(Tensor::CreateFromVector(expect_attr_vector[i], TensorShape({40}), &de_expect_attr));
-    mindspore::MSTensor expect_attr =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_attr));
+    luojianet_ms::MSTensor expect_attr =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_attr));
     EXPECT_MSTENSOR_EQ(attr, expect_attr);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -89,7 +89,7 @@ TEST_F(MindDataTestPipeline, TestCelebADefault) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if CelebA() read correct images/attr
@@ -126,7 +126,7 @@ TEST_F(MindDataTestPipeline, TestCelebARepeat) {
   ASSERT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -162,7 +162,7 @@ TEST_F(MindDataTestPipeline, TestCelebASubsetRandomSampler) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -286,7 +286,7 @@ TEST_F(MindDataTestPipeline, TestImageFolderFailWithWrongExtensionFail) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   // Expect no data: cannot find files with specified extension
   EXPECT_ERROR(iter->GetNextRow(&row));
   EXPECT_EQ(row.size(), 0);

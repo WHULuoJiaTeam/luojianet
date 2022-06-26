@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 
 class NetIOU(nn.Cell):
@@ -38,8 +39,8 @@ def test_iou():
     pos1 = [101, 169, 246, 429]
     pos2 = [121, 138, 304, 374]
     mode = "iou"
-    pos1_box = Tensor(np.array(pos1).reshape(1, 4), mindspore.float32)
-    pos2_box = Tensor(np.array(pos2).reshape(1, 4), mindspore.float32)
+    pos1_box = Tensor(np.array(pos1).reshape(1, 4), luojianet_ms.float32)
+    pos2_box = Tensor(np.array(pos2).reshape(1, 4), luojianet_ms.float32)
     expect_result = np.array(0.46551168, np.float32)
 
     error = np.ones(shape=[1]) * 1.0e-6

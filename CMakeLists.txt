@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14.0)
-project(MindSpore)
+project(LuoJiaNet)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.3.0)
@@ -90,16 +90,16 @@ message("PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
 message("PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-set(MS_CCSRC_PATH ${CMAKE_SOURCE_DIR}/mindspore/ccsrc)
-set(MS_CCSRC_BUILD_PATH ${BUILD_PATH}/mindspore/mindspore/ccsrc)
+set(MS_CCSRC_PATH ${CMAKE_SOURCE_DIR}/luojianet_ms/ccsrc)
+set(MS_CCSRC_BUILD_PATH ${BUILD_PATH}/luojianet_ms/luojianet_ms/ccsrc)
 
 if(ENABLE_D OR ENABLE_ACL OR ENABLE_TESTCASES)
     include(${CMAKE_SOURCE_DIR}/cmake/dependency_graphengine.cmake)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
-add_subdirectory(mindspore/ccsrc)
-add_subdirectory(mindspore/core)
+add_subdirectory(luojianet_ms/ccsrc)
+add_subdirectory(luojianet_ms/core)
 if(ENABLE_TESTCASES OR ENABLE_CPP_ST)
     add_subdirectory(tests)
 endif()

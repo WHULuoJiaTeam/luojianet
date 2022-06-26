@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TransposeInfo;
@@ -54,7 +54,7 @@ void TestTransposeInfo::SetUp() {
   g_device_manager = std::make_shared<DeviceManager>();
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
-  mindspore::HashMap<std::string, ValuePtr> attr;
+  luojianet_ms::HashMap<std::string, ValuePtr> attr;
 
   Shapes inputs_shape = {{128, 64}};
   Shapes outputs_shape = {{64, 128}};
@@ -190,4 +190,4 @@ TEST_F(TestTransposeInfo, AutoStrategy1) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

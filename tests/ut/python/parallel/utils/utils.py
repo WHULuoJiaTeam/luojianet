@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mindspore import context
-from mindspore.nn import Cell
-from mindspore.common.api import _cell_graph_executor
+from luojianet_ms import context
+from luojianet_ms.nn import Cell
+from luojianet_ms.common.api import _cell_graph_executor
 
 
 class ParallelValidator:
@@ -25,7 +25,7 @@ class ParallelValidator:
         net (Cell): `auto_parallel_mode` = True for networks where compile has been executed.
 
     Examples:
-        >>> from mindspore.common.api import _cell_graph_executor
+        >>> from luojianet_ms.common.api import _cell_graph_executor
         >>> from parallel.util.utils import ParallelValidator
         >>> net = Net()
         >>> net.set_auto_parallel()

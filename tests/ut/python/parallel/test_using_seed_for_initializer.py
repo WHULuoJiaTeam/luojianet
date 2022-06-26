@@ -13,10 +13,10 @@
 # limitations under the License.
 
 from numpy import allclose
-from mindspore.common import set_seed
-import mindspore.common.initializer as init
-import mindspore.nn as nn
-from mindspore import Parameter
+from luojianet_ms.common import set_seed
+import luojianet_ms.common.initializer as init
+import luojianet_ms.nn as nn
+from luojianet_ms import Parameter
 
 parameter_shape = [16, 4]
 

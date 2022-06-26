@@ -14,13 +14,13 @@
 # ============================================================================
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.common.initializer import initializer
-from mindspore.common.parameter import Parameter
-from mindspore.communication.management import init, NCCL_WORLD_COMM_GROUP, get_rank, get_group_size
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.communication.management import init, NCCL_WORLD_COMM_GROUP, get_rank, get_group_size
+from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target='GPU')
 

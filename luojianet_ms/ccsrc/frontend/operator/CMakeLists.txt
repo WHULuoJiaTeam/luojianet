@@ -1,0 +1,4 @@
+file(GLOB_RECURSE _OPERATOR_SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cc")
+set_property(SOURCE ${_OPERATOR_SRC_FILES} PROPERTY COMPILE_DEFINITIONS
+  SUBMODULE_ID=luojianet_ms::SubModuleId::SM_ANALYZER)
+add_library(_luojianet_ms_frontend_operator_obj OBJECT ${_OPERATOR_SRC_FILES})

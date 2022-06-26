@@ -16,13 +16,13 @@ import copy
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.engine.iterators as it
-from mindspore import log as logger
-from mindspore import Tensor
-import mindspore.ops as ops
+import luojianet_ms
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.engine.iterators as it
+from luojianet_ms import log as logger
+from luojianet_ms import Tensor
+import luojianet_ms.ops as ops
 
 
 # Generate 1d int numpy array from 0 - 63
@@ -59,7 +59,7 @@ class DatasetGeneratorMixed:
 
     def __getitem__(self, item):
         flatten = ops.Flatten()
-        x = Tensor(np.ones(shape=[2, 3]), mindspore.float32)
+        x = Tensor(np.ones(shape=[2, 3]), luojianet_ms.float32)
         output = flatten(x)
         return (output.asnumpy(),)
 
@@ -956,7 +956,7 @@ def test_func_generator_dataset_with_zip_source():
     features, labels = synthetic_data(true_w, true_b, 10)
 
     def load_array(data_arrays, column_names, batch_size, is_train=True):
-        """构造一个MindSpore数据迭代器。"""
+        """构造一个LuoJiaNET数据迭代器。"""
         dataset = ds.GeneratorDataset(data_arrays, column_names, shuffle=is_train)
         dataset = dataset.batch(batch_size)
         return dataset

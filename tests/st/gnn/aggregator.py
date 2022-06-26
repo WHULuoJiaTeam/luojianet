@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +14,14 @@
 # limitations under the License.
 # ============================================================================
 """Aggregator."""
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore._checkparam import Validator
-from mindspore._extends import cell_attr_register
-from mindspore.common.initializer import initializer
-from mindspore.nn.layer.activation import get_activation
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms._checkparam import Validator
+from luojianet_ms._extends import cell_attr_register
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.nn.layer.activation import get_activation
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
 
 
 class GNNFeatureTransform(nn.Cell):
@@ -59,7 +60,7 @@ class GNNFeatureTransform(nn.Cell):
 
     Examples:
         >>> net = nn.GNNFeatureTransform(3, 4)
-        >>> input = Tensor(np.random.randint(0, 255, [2, 3]), mindspore.float32)
+        >>> input = Tensor(np.random.randint(0, 255, [2, 3]), luojianet_ms.float32)
         >>> net(input)
         [[ 2.5246444   2.2738023   0.5711005  -3.9399147 ]
          [ 1.0739875   4.0155234   0.94188046 -5.459526  ]]

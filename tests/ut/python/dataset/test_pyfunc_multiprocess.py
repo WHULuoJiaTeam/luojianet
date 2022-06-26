@@ -17,9 +17,9 @@ Test Python Multiprocessing with Python functions/ops
 """
 import numpy as np
 import pytest
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms as py_transforms
-import mindspore.dataset.vision.py_transforms as py_vision
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms as py_transforms
+import luojianet_ms.dataset.vision.py_transforms as py_vision
 from util import visualize_list
 
 MNIST_DATA_DIR = "../data/dataset/testMnistData"

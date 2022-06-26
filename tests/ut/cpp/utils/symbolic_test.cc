@@ -17,7 +17,7 @@
 #include "pipeline/jit/static_analysis/static_analysis.h"
 #include "utils/symbolic.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestSymbolic : public UT::Common {
  public:
   TestSymbolic() {}
@@ -33,4 +33,4 @@ TEST_F(TestSymbolic, test_symbolic) {
   ASSERT_EQ(*sk1, *sk1b);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

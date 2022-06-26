@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 """ test distribute predict """
 import numpy as np
 import pytest
-import mindspore.nn as nn
-from mindspore import Tensor, Model
-from mindspore.ops import operations as P
-from mindspore import context
-from mindspore.parallel._utils import _infer_rank_list
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Model
+from luojianet_ms.ops import operations as P
+from luojianet_ms import context
+from luojianet_ms.parallel._utils import _infer_rank_list
 
 
 class Net(nn.Cell):

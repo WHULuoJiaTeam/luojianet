@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestBinaryCrossEntropyGrad : public UT::Common {
  public:
@@ -95,4 +95,4 @@ TEST_F(TestBinaryCrossEntropyGrad, test_ops_binary_cross_entropy_grad2) {
   EXPECT_EQ(shape_vec[0], 1);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

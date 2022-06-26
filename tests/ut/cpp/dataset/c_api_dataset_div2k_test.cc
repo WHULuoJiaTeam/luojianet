@@ -16,8 +16,8 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -44,7 +44,7 @@ TEST_F(MindDataTestPipeline, TestDIV2KBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -107,7 +107,7 @@ TEST_F(MindDataTestPipeline, TestDIV2KBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -149,7 +149,7 @@ TEST_F(MindDataTestPipeline, TestDIV2KIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -234,7 +234,7 @@ TEST_F(MindDataTestPipeline, TestDIV2KDecode) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -279,7 +279,7 @@ TEST_F(MindDataTestPipeline, TestDIV2KNumSamplers) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,9 +17,9 @@
 create train or eval dataset.
 """
 import multiprocessing
-import mindspore as ms
-import mindspore.dataset as ds
-from mindspore.communication.management import init, get_rank, get_group_size
+import luojianet_ms as ms
+import luojianet_ms.dataset as ds
+from luojianet_ms.communication.management import init, get_rank, get_group_size
 
 
 def create_dataset1(dataset_path, do_train, batch_size=32, train_image_size=224, eval_image_size=224,

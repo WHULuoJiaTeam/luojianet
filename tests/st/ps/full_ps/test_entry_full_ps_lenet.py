@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +23,6 @@ import pytest
 @pytest.mark.env_onecard
 def test_full_ps_ascend_lenet():
     return_code = os.system(
-        "bash shell_run_test.sh Ascend /home/workspace/mindspore_dataset/mnist 1 1 127.0.0.1 8082"
+        "bash shell_run_test.sh Ascend /home/workspace/luojianet_ms_dataset/mnist 1 1 127.0.0.1 8082"
     )
     assert return_code == 0

@@ -17,12 +17,12 @@ Test Python Multiprocessing with AutoTuning
 """
 import numpy as np
 import pytest
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as c_transforms
-import mindspore.dataset.transforms.py_transforms as py_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore.dataset.vision import Inter
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as c_transforms
+import luojianet_ms.dataset.transforms.py_transforms as py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms.dataset.vision import Inter
 
 CIFAR10_DATA_DIR = "../data/dataset/testCifar10Data"
 CIFAR100_DATA_DIR = "../data/dataset/testCifar100Data"

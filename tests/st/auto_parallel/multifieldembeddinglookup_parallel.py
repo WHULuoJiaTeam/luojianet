@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,22 +17,22 @@
 import os
 import numpy as np
 
-import mindspore.ops.operations as P
-from mindspore.nn import Cell
-from mindspore.nn import Adam
-from mindspore.nn import MultiFieldEmbeddingLookup as embedding
-from mindspore import Tensor
-from mindspore import context
-from mindspore.train import Model
-from mindspore.train.callback import CheckpointConfig
-from mindspore.train.callback import ModelCheckpoint
-from mindspore.train.serialization import load_checkpoint
-from mindspore.train.serialization import load_param_into_net
-from mindspore.communication.management import init
-from mindspore.communication.management import release
-from mindspore.communication.management import get_rank
-from mindspore.communication.management import get_group_size
-from mindspore.context import ParallelMode
+import luojianet_ms.ops.operations as P
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Adam
+from luojianet_ms.nn import MultiFieldEmbeddingLookup as embedding
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.train import Model
+from luojianet_ms.train.callback import CheckpointConfig
+from luojianet_ms.train.callback import ModelCheckpoint
+from luojianet_ms.train.serialization import load_checkpoint
+from luojianet_ms.train.serialization import load_param_into_net
+from luojianet_ms.communication.management import init
+from luojianet_ms.communication.management import release
+from luojianet_ms.communication.management import get_rank
+from luojianet_ms.communication.management import get_group_size
+from luojianet_ms.context import ParallelMode
 
 
 context.set_context(mode=context.GRAPH_MODE, device_target='GPU')
@@ -261,7 +262,7 @@ class ParallelMultiHotFactory:
         newest_ckpt_file = find_newest_ckpt_file(ckpt_path)
         return load_checkpoint(newest_ckpt_file)
 
-    def mindspore_auto_parallel_impl(self, dataset, epoch, device_num):
+    def luojianet_ms_auto_parallel_impl(self, dataset, epoch, device_num):
         context.set_auto_parallel_context(parallel_mode=ParallelMode.AUTO_PARALLEL,
                                           device_num=device_num)
         parallel_mode_net = MultiHotNet(vocab_size=self.vocab_size, embedding_size=self.embedding_size,
@@ -270,7 +271,7 @@ class ParallelMultiHotFactory:
                                         indices=self.indices, field_ids=self.field_ids)
         self.parallel_ckpt = self._model_train_and_save_ckpt(net=parallel_mode_net, epoch=epoch, dataset=dataset)
 
-    def mindspore_standalone_impl(self, epoch, dataset):
+    def luojianet_ms_standalone_impl(self, epoch, dataset):
         context.set_auto_parallel_context(parallel_mode=ParallelMode.STAND_ALONE)
         stand_alone_net = MultiHotNet(vocab_size=self.vocab_size, embedding_size=self.embedding_size,
                                       field_size=self.field_size, param_init=self.param_init, target=self.target,
@@ -305,11 +306,11 @@ def test_auto_parallel_multifieldembeddinglookup_device_table_column_slice_mean(
 
     #stand alone
     standalone_dataset = FakeData(size=64, batch_size=64, image_size=(64,))
-    fact.mindspore_standalone_impl(dataset=standalone_dataset, epoch=2)
+    fact.luojianet_ms_standalone_impl(dataset=standalone_dataset, epoch=2)
 
     #auto parallel
     parallel_dataset = FakeData(size=64, batch_size=8, image_size=(64,), use_parallel=True)
-    fact.mindspore_auto_parallel_impl(dataset=parallel_dataset, epoch=2, device_num=8)
+    fact.luojianet_ms_auto_parallel_impl(dataset=parallel_dataset, epoch=2, device_num=8)
 
     #compare
     fact.checkpoint_cmp(inputs_np=inputs_np, label=label)

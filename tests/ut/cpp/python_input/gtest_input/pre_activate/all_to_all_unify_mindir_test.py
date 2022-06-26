@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-import mindspore as ms
-from mindspore import context
-from mindspore.ops.operations.comm_ops import AlltoAll, NeighborExchange
-from mindspore.communication.management import GlobalComm, init
+import luojianet_ms as ms
+from luojianet_ms import context
+from luojianet_ms.ops.operations.comm_ops import AlltoAll, NeighborExchange
+from luojianet_ms.communication.management import GlobalComm, init
 
 context.set_context(device_target="Ascend")
 GlobalComm.CHECK_ENVS = False

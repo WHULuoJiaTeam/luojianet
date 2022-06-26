@@ -14,14 +14,14 @@
 
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore import context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import TrainOneStepCell
-from mindspore.nn.optim import Momentum, LARS
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms import context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import TrainOneStepCell
+from luojianet_ms.nn.optim import Momentum, LARS
+from luojianet_ms.ops import operations as P
 
 
 class NetWithLoss(nn.Cell):

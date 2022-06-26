@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""utility functions for mindspore.numpy st tests"""
+"""utility functions for luojianet_ms.numpy st tests"""
 import functools
 import numpy as onp
-from mindspore import Tensor
-import mindspore.numpy as mnp
+from luojianet_ms import Tensor
+import luojianet_ms.numpy as mnp
 
 
 def match_array(actual, expected, error=0):
@@ -32,14 +33,14 @@ def match_array(actual, expected, error=0):
 
 
 def check_all_results(onp_results, mnp_results, error=0):
-    """Check all results from numpy and mindspore.numpy"""
+    """Check all results from numpy and luojianet_ms.numpy"""
     for i, _ in enumerate(onp_results):
         match_array(onp_results[i], mnp_results[i].asnumpy())
 
 
 def check_all_unique_results(onp_results, mnp_results):
     """
-    Check all results from numpy and mindspore.numpy.
+    Check all results from numpy and luojianet_ms.numpy.
 
     Args:
         onp_results (Union[tuple of numpy.arrays, numpy.array])

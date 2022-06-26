@@ -23,7 +23,7 @@
 #include "include/common/utils/convert_utils.h"
 #include "include/common/utils/utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace transform {
 const size_t kErrorSize = 0;
 static std::map<MeDataType, size_t> datatype_size_map = {
@@ -43,4 +43,4 @@ size_t TransformUtil::GetDataTypeSize(const MeDataType &type) {
   }
 }
 }  // namespace transform
-}  // namespace mindspore
+}  // namespace luojianet_ms

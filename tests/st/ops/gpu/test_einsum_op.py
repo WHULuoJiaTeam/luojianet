@@ -14,11 +14,11 @@
 # ============================================================================
 import numpy as np
 import pytest
-import mindspore.context as context
-import mindspore.nn as nn
-import mindspore.ops.operations as P
-from mindspore import Tensor
-from mindspore.ops.operations import _grad_ops as G
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.operations as P
+from luojianet_ms import Tensor
+from luojianet_ms.ops.operations import _grad_ops as G
 
 class Einsum(nn.Cell):
     def __init__(self, equation):

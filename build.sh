@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2019-2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,11 +23,11 @@ export BUILD_PATH="${BASEPATH}/build/"
 source ./scripts/build/usage.sh
 source ./scripts/build/default_options.sh
 source ./scripts/build/option_proc_debug.sh
-source ./scripts/build/option_proc_mindspore.sh
+source ./scripts/build/option_proc_luojianet_ms.sh
 source ./scripts/build/option_proc_lite.sh
 source ./scripts/build/process_options.sh
 source ./scripts/build/parse_device.sh
-source ./scripts/build/build_mindspore.sh
+source ./scripts/build/build_luojianet_ms.sh
 
 # check value of input is 'on' or 'off'
 # usage: check_on_off arg_value arg_name
@@ -64,11 +65,11 @@ build_exit()
 make_clean()
 {
   echo "enable make clean"
-  cd "${BUILD_PATH}/mindspore"
+  cd "${BUILD_PATH}/luojianet_ms"
   cmake --build . --target clean
 }
 
-echo "---------------- MindSpore: build start ----------------"
+echo "---------------- LuoJiaNET: build start ----------------"
 init_default_options
 process_options "$@"
 parse_device
@@ -78,12 +79,12 @@ if [[ "X$COMPILE_LITE" = "Xon" ]]; then
   export ENABLE_VERBOSE
   export LITE_PLATFORM
   export LITE_ENABLE_AAR
-  source mindspore/lite/build_lite.sh
+  source luojianet_ms/lite/build_lite.sh
 else
-  mkdir -pv "${BUILD_PATH}/package/mindspore/lib"
+  mkdir -pv "${BUILD_PATH}/package/luojianet_ms/lib"
   update_submodule
 
-  build_mindspore
+  build_luojianet_ms
 
   if [[ "X$ENABLE_MAKE_CLEAN" = "Xon" ]]; then
     make_clean
@@ -92,8 +93,8 @@ else
       echo "acl mode, skipping deploy phase"
       rm -rf ${BASEPATH}/output/_CPack_Packages/
     else
-      cp -rf ${BUILD_PATH}/package/mindspore/lib ${BASEPATH}/mindspore/python/mindspore
-      cp -rf ${BUILD_PATH}/package/mindspore/*.so ${BASEPATH}/mindspore/python/mindspore
+      cp -rf ${BUILD_PATH}/package/luojianet_ms/lib ${BASEPATH}/luojianet_ms/python/luojianet_ms
+      cp -rf ${BUILD_PATH}/package/luojianet_ms/*.so ${BASEPATH}/luojianet_ms/python/luojianet_ms
   fi
 fi
-echo "---------------- MindSpore: build end   ----------------"
+echo "---------------- LuoJiaNET: build end   ----------------"

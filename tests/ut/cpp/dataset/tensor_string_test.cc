@@ -23,7 +23,7 @@
 #include "minddata/dataset/core/cv_tensor.h"
 #include "minddata/dataset/core/data_type.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 namespace py = pybind11;
 
@@ -120,7 +120,7 @@ TEST_F(MindDataTestStringTensorDE, Empty) {
 TEST_F(MindDataTestStringTensorDE, EmptyData) {
   std::shared_ptr<Tensor> t;
   Tensor::CreateScalar<std::string>("", &t);
-  // empty string has 1 element 
+  // empty string has 1 element
   ASSERT_TRUE(t->HasData());
 
   std::shared_ptr<Tensor> t1;

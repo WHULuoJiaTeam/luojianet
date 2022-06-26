@@ -33,7 +33,7 @@
 #include "utils/log_adapter.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace compile {
 using Tensor = tensor::Tensor;
 
@@ -50,7 +50,7 @@ TEST_F(TestCompileSegmentRunner, test_MsVmConvert1) {
   FuncGraphPtr g = get_py_fun_(prim::kScalarAdd);
   // g was managed by local variable manager in get_py_fun_ and that manager will be freed as no reference.
   // so a new manager should be declared to make get_outputs() in segment_runner.cc happy.
-  std::shared_ptr<mindspore::FuncGraphManager> manager = mindspore::Manage(g);
+  std::shared_ptr<luojianet_ms::FuncGraphManager> manager = luojianet_ms::Manage(g);
 
   BackendPtr b = std::make_shared<Backend>("vm");
   auto graph_partition = std::make_shared<GraphPartition>(nonlinear_ops, b->name());
@@ -64,7 +64,7 @@ TEST_F(TestCompileSegmentRunner, test_MsVmConvert1) {
 
 TEST_F(TestCompileSegmentRunner, test_MsVmConvert2) {
   FuncGraphPtr g = get_py_fun_(prim::kScalarMul);
-  std::shared_ptr<mindspore::FuncGraphManager> manager = mindspore::Manage(g);
+  std::shared_ptr<luojianet_ms::FuncGraphManager> manager = luojianet_ms::Manage(g);
 
   BackendPtr b = std::make_shared<Backend>("vm");
   auto graph_partition = std::make_shared<GraphPartition>(nonlinear_ops, b->name());
@@ -78,7 +78,7 @@ TEST_F(TestCompileSegmentRunner, test_MsVmConvert2) {
 
 TEST_F(TestCompileSegmentRunner, test_if) {
   FuncGraphPtr g = get_py_fun_("test_if");
-  std::shared_ptr<mindspore::FuncGraphManager> manager = mindspore::Manage(g);
+  std::shared_ptr<luojianet_ms::FuncGraphManager> manager = luojianet_ms::Manage(g);
 
   BackendPtr b = std::make_shared<Backend>("vm");
   auto graph_partition = std::make_shared<GraphPartition>(nonlinear_ops, b->name());
@@ -104,4 +104,4 @@ TEST_F(TestCompileSegmentRunner, test_RunOperation2) {
   ASSERT_EQ(py::cast<bool>(BaseRefToPyData(res)), false);
 }
 }  // namespace compile
-}  // namespace mindspore
+}  // namespace luojianet_ms

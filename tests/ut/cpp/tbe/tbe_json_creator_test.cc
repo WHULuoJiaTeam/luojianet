@@ -27,7 +27,7 @@
 #include "plugin/device/ascend/kernel/tbe/tbe_json/fusion_tbe_json_creator.h"
 #include "include/common/utils/anfalgo.h"
 
-namespace mindspore::kernel {
+namespace luojianet_ms::kernel {
 
 using KernelBuildInfoBuilder = kernel::KernelBuildInfo::KernelBuildInfoBuilder;
 constexpr int64_t kShape4D = 4;
@@ -371,4 +371,4 @@ TEST_F(TestHWTBEJsonCreator, test_fusion_add_conv2d) {
   EXPECT_EQ(tbe_json_creator->GetJsonHash(), 3371595473173037387U);
 }
 
-}  // namespace mindspore::kernel
+}  // namespace luojianet_ms::kernel

@@ -18,7 +18,7 @@
 """
 
 import pytest
-from mindspore.dataset.engine.iterators import _cleanup, _unset_iterator_cleanup
+from luojianet_ms.dataset.engine.iterators import _cleanup, _unset_iterator_cleanup
 
 
 @pytest.fixture(scope="function", autouse=True)

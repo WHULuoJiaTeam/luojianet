@@ -16,11 +16,11 @@
 import sys
 import pytest
 import numpy as np
-import mindspore
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops.operations._rl_inner_ops import PriorityReplayBufferCreate, PriorityReplayBufferPush
-from mindspore.ops.operations._rl_inner_ops import PriorityReplayBufferSample, PriorityReplayBufferUpdate
+import luojianet_ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops.operations._rl_inner_ops import PriorityReplayBufferCreate, PriorityReplayBufferPush
+from luojianet_ms.ops.operations._rl_inner_ops import PriorityReplayBufferSample, PriorityReplayBufferUpdate
 
 
 class PriorityReplayBuffer(nn.Cell):
@@ -56,8 +56,8 @@ def test_priority_replay_buffer_ops():
 
     capacity = 200
     batch_size = 32
-    state_shape, state_dtype = (17,), mindspore.float32
-    action_shape, action_dtype = (6,), mindspore.int32
+    state_shape, state_dtype = (17,), luojianet_ms.float32
+    action_shape, action_dtype = (6,), luojianet_ms.int32
     shapes = (state_shape, action_shape)
     dtypes = (state_dtype, action_dtype)
     prb = PriorityReplayBuffer(capacity, 1., 1., batch_size, shapes, dtypes, seed0=0, seed1=42)
@@ -77,7 +77,7 @@ def test_priority_replay_buffer_ops():
     assert np.allclose(actions.asnumpy(), actions_expect)
 
     # Minimize the priority, these transition will not be sampled next time.
-    priorities = Tensor(np.ones(weights.shape) * 1e-7, mindspore.float32)
+    priorities = Tensor(np.ones(weights.shape) * 1e-7, luojianet_ms.float32)
     prb.update_priorities(indices, priorities)
 
     indices_new, _, states_new, actions_new = prb.sample()

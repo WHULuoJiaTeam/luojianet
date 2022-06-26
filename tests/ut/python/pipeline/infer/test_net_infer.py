@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 """ test_net_infer """
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import Tensor, context
-from mindspore.common.parameter import Parameter
-from mindspore.common.initializer import initializer
-import mindspore.ops.operations as op
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, context
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.initializer import initializer
+import luojianet_ms.ops.operations as op
 
 def test_net_infer():
     """ test_net_infer """

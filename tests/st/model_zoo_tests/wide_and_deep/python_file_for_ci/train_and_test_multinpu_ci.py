@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +18,11 @@
 
 import os
 import sys
-from mindspore import Model, context
-from mindspore.train.callback import TimeMonitor
-from mindspore.context import ParallelMode
-from mindspore.communication.management import get_rank, get_group_size, init
-from mindspore.nn.wrap.cell_wrapper import VirtualDatasetCellTriple
+from luojianet_ms import Model, context
+from luojianet_ms.train.callback import TimeMonitor
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.communication.management import get_rank, get_group_size, init
+from luojianet_ms.nn.wrap.cell_wrapper import VirtualDatasetCellTriple
 
 from src.wide_and_deep import PredictWithSigmoid, TrainStepWrap, NetWithLossClass, WideDeepModel
 from src.callbacks import LossCallBack, EvalCallBack

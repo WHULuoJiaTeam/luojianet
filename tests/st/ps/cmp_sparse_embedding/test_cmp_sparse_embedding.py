@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,15 +19,15 @@ import sys
 import argparse
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.common import dtype as mstype
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.optim import Adam
-from mindspore.common import set_seed
-from mindspore.ops import operations as P
-from mindspore.parallel._ps_context import _is_role_pserver, _is_role_worker
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.optim import Adam
+from luojianet_ms.common import set_seed
+from luojianet_ms.ops import operations as P
+from luojianet_ms.parallel._ps_context import _is_role_pserver, _is_role_worker
 
 parser = argparse.ArgumentParser(description="test_sparse_embedding")
 parser.add_argument("--device_target", type=str, default="Ascend")

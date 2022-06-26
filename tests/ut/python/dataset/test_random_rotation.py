@@ -18,12 +18,12 @@ Testing RandomRotation op in DE
 import numpy as np
 import cv2
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore.dataset.vision.utils import Inter
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms.dataset.vision.utils import Inter
+from luojianet_ms import log as logger
 from util import visualize_image, visualize_list, diff_mse, save_and_check_md5, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -77,14 +77,14 @@ def test_random_rotation_op_py(plot=False):
     # First dataset
     data1 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, shuffle=False)
     # use [90, 90] to force rotate 90 degrees, expand is set to be True to match output size
-    transform1 = mindspore.dataset.transforms.py_transforms.Compose([py_vision.Decode(),
+    transform1 = luojianet_ms.dataset.transforms.py_transforms.Compose([py_vision.Decode(),
                                                                      py_vision.RandomRotation((90, 90), expand=True),
                                                                      py_vision.ToTensor()])
     data1 = data1.map(operations=transform1, input_columns=["image"])
 
     # Second dataset
     data2 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose([py_vision.Decode(),
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose([py_vision.Decode(),
                                                                      py_vision.ToTensor()])
     data2 = data2.map(operations=transform2, input_columns=["image"])
 
@@ -113,7 +113,7 @@ def test_random_rotation_op_py_ANTIALIAS():
     # First dataset
     data1 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, shuffle=False)
     # use [90, 90] to force rotate 90 degrees, expand is set to be True to match output size
-    transform1 = mindspore.dataset.transforms.py_transforms.Compose([py_vision.Decode(),
+    transform1 = luojianet_ms.dataset.transforms.py_transforms.Compose([py_vision.Decode(),
                                                                      py_vision.RandomRotation((90, 90),
                                                                                               expand=True,
                                                                                               resample=Inter.ANTIALIAS),
@@ -167,7 +167,7 @@ def test_random_rotation_md5():
 
     # Second dataset
     data2 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, shuffle=False)
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose([py_vision.Decode(),
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose([py_vision.Decode(),
                                                                      py_vision.RandomRotation((0, 90),
                                                                                               expand=True,
                                                                                               resample=Inter.BILINEAR,
@@ -210,7 +210,7 @@ def test_rotation_diff(plot=False):
         py_vision.RandomRotation((45, 45)),
         py_vision.ToTensor(),
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
     data2 = data2.map(operations=transform, input_columns=["image"])
 

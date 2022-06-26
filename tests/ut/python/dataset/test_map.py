@@ -13,11 +13,11 @@
 # limitations under the License.
 # ==============================================================================
 import pytest
-import mindspore.dataset as ds
-from mindspore.dataset.transforms import c_transforms
-from mindspore.dataset.transforms import py_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
+import luojianet_ms.dataset as ds
+from luojianet_ms.dataset.transforms import c_transforms
+from luojianet_ms.dataset.transforms import py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
 
 DATA_DIR = "../data/dataset/testPK/data"
 

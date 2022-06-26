@@ -17,9 +17,9 @@ Testing FilterWikipediaXML op
 """
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.text.transforms as a_c_trans
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text.transforms as a_c_trans
+from luojianet_ms import log as logger
 
 
 def count_unequal_element(data_expected, data_me):

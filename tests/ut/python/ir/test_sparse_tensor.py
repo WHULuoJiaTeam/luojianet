@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +17,15 @@
 @File  : test_sparse_tensor.py
 @Author:
 @Date  : 2020-07-16
-@Desc  : test mindspore sparse_tensor's operation
+@Desc  : test luojianet_ms sparse_tensor's operation
 """
 import numpy as np
 import pytest
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore.ops import composite as C
-from mindspore import Tensor, COOTensor, context
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import composite as C
+from luojianet_ms import Tensor, COOTensor, context
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_teardown():

@@ -16,9 +16,9 @@
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms import log as logger
 
 
 def gen(shape):
@@ -48,7 +48,7 @@ def allclose_nparray(data_expected, data_me, rtol, atol, equal_nan=True):
 def test_phase_vocoder_compare():
     """
     Feature: PhaseVocoder
-    Description: mindspore eager mode checking precision
+    Description: luojianet_ms eager mode checking precision
     Expectation: the returned result is as expected
     """
     indata_0 = np.array([[[[0.43189, 2.3049924],
@@ -91,7 +91,7 @@ def test_phase_vocoder_compare():
 def test_phase_vocoder_eager():
     """
     Feature: PhaseVocoder
-    Description: mindspore eager mode with normal testcase
+    Description: luojianet_ms eager mode with normal testcase
     Expectation: the returned result is as expected
     """
     logger.info("test PhaseVocoder op in eager mode")
@@ -103,7 +103,7 @@ def test_phase_vocoder_eager():
 def test_phase_vocoder_pipeline():
     """
     Feature: PhaseVocoder
-    Description: mindspore pipeline mode with normal testcase
+    Description: luojianet_ms pipeline mode with normal testcase
     Expectation: the returned result is as expected
     """
     logger.info("test PhaseVocoder op in pipeline mode")
@@ -122,7 +122,7 @@ def test_phase_vocoder_pipeline():
 def test_phase_vocoder_invalid_input():
     """
     Feature: PhaseVocoder
-    Description: mindspore eager mode with invalid input
+    Description: luojianet_ms eager mode with invalid input
     Expectation: the returned result is as expected
     """
     def test_invalid_param(test_name, rate, phase_advance, error, error_msg):

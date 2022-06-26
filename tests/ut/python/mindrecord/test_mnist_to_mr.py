@@ -18,9 +18,9 @@ import pytest
 import numpy as np
 import cv2
 
-from mindspore import log as logger
-from mindspore.mindrecord import FileReader
-from mindspore.mindrecord import MnistToMR
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import FileReader
+from luojianet_ms.mindrecord import MnistToMR
 
 MNIST_DIR = "../data/mindrecord/testMnistData"
 PARTITION_NUM = 4

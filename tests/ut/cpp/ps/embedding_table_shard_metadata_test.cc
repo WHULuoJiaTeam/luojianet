@@ -17,7 +17,7 @@
 #include "common/common_test.h"
 #include "ps/embedding_table_shard_metadata.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ps {
 class TestEmbeddingTableShardMetadata : public UT::Common {
  public:
@@ -35,4 +35,4 @@ TEST_F(TestEmbeddingTableShardMetadata, EmbeddingTable) {
   EXPECT_EQ(embedding_table_shard.size(), 99);
 }
 }  // namespace ps
-}  // namespace mindspore
+}  // namespace luojianet_ms

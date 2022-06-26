@@ -31,7 +31,7 @@
 #include "pipeline/jit/parse/data_converter.h"
 #include "include/common/utils/convert_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 using abstract::AnalysisResult;
 
@@ -97,7 +97,7 @@ TEST_F(TestOptLib, test_inline) {
   FuncGraphPtr before1 = getPyFun.CallAndParseRet("test_inline", "before");
   FuncGraphPtr after = getPyFun.CallAndParseRet("test_inline", "after");
   // add infer and renormalize
-  std::shared_ptr<mindspore::pipeline::Resource> res = std::make_shared<mindspore::pipeline::Resource>();
+  std::shared_ptr<luojianet_ms::pipeline::Resource> res = std::make_shared<luojianet_ms::pipeline::Resource>();
   AbstractBasePtrList args_spec_list;
   tensor::TensorPtr x_tensor = std::make_shared<tensor::Tensor>(kFloat32->type_id(), std::vector<int64_t>{2, 3});
   tensor::TensorPtr y_tensor = std::make_shared<tensor::Tensor>(kFloat32->type_id(), std::vector<int64_t>{2, 3});
@@ -610,4 +610,4 @@ TEST_F(TestOptLib, test_sparse_tensor) {
   ASSERT_TRUE(CheckOpt(before_get_dense_shape, after_get_dense_shape, patterns));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

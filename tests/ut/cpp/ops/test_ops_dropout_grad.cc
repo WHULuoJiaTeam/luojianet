@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 
 class TestDropoutGrad : public UT::Common {
@@ -60,4 +60,4 @@ TEST_F(TestDropoutGrad, test_ops_dropout_grad1) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

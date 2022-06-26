@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +19,12 @@ import stat
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import context
-from mindspore.common.parameter import Parameter
-from mindspore.common.tensor import Tensor
-from mindspore.ops import operations as P
-from mindspore.train.serialization import export
+import luojianet_ms.nn as nn
+from luojianet_ms import context
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train.serialization import export
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -128,7 +129,7 @@ class DepthwiseConv2dAndReLU6(nn.Cell):
     def __init__(self, input_channel, kernel_size):
         super(DepthwiseConv2dAndReLU6, self).__init__()
         weight_shape = [1, input_channel, kernel_size, kernel_size]
-        from mindspore.common.initializer import initializer
+        from luojianet_ms.common.initializer import initializer
         self.weight = Parameter(initializer('ones', weight_shape), name='weight')
         self.depthwise_conv = P.DepthwiseConv2dNative(channel_multiplier=1, kernel_size=(kernel_size, kernel_size))
         self.relu6 = nn.ReLU6()

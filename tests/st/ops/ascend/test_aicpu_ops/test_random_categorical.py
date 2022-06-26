@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,17 +14,17 @@
 # limitations under the License.
 # ============================================================================
 import numpy as np
-import mindspore
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 class Net(nn.Cell):
     def __init__(self, num_sample):
         super(Net, self).__init__()
-        self.random_categorical = P.RandomCategorical(mindspore.int64)
+        self.random_categorical = P.RandomCategorical(luojianet_ms.int64)
         self.num_sample = num_sample
 
     def construct(self, logits, seed=0):

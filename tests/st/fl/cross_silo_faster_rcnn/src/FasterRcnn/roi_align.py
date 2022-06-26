@@ -15,12 +15,12 @@
 """FasterRcnn ROIAlign module."""
 
 import numpy as np
-import mindspore.nn as nn
-import mindspore.common.dtype as mstype
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore.nn import layer as L
-from mindspore.common.tensor import Tensor
+import luojianet_ms.nn as nn
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms.nn import layer as L
+from luojianet_ms.common.tensor import Tensor
 
 class ROIAlign(nn.Cell):
     """

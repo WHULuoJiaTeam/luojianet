@@ -18,8 +18,8 @@ Testing dataset pipeline failover Reset
 import os
 import numpy as np
 import pytest
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as c_vision
 from util_minddataset import add_and_remove_cv_file
 
 np.random.seed(0)

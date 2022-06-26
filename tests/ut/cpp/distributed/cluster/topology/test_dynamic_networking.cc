@@ -20,7 +20,7 @@
 #include "utils/ms_utils.h"
 #include "common/common_test.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace distributed {
 namespace cluster {
 namespace topology {
@@ -52,4 +52,4 @@ TEST_F(TestDynamicNetworking, NodeRegister) {
 }  // namespace topology
 }  // namespace cluster
 }  // namespace distributed
-}  // namespace mindspore
+}  // namespace luojianet_ms

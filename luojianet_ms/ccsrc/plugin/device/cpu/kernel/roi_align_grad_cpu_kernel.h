@@ -1,0 +1,58 @@
+/**
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#ifndef LUOJIANET_MS_CCSRC_BACKEND_KERNEL_COMPILER_CPU_ROI_ALIGN_CPU_KERNEL_H_
+#define LUOJIANET_MS_CCSRC_BACKEND_KERNEL_COMPILER_CPU_ROI_ALIGN_CPU_KERNEL_H_
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <memory>
+#include "plugin/device/cpu/kernel/cpu_kernel.h"
+#include "plugin/factory/ms_factory.h"
+
+namespace luojianet_ms {
+namespace kernel {
+constexpr int ROIS_COLS = 5;
+constexpr size_t DY_DIMS = 4;
+constexpr int BATCH = 0;
+constexpr int CHANNEL = 1;
+constexpr int HEIGHT = 2;
+constexpr int WIDTH = 3;
+constexpr size_t INPUT_NUM = 2;
+constexpr size_t OUTPUT_NUM = 1;
+
+class ROIAlignGradCpuKernelMod : public NativeCpuKernelMod {
+ public:
+  ROIAlignGradCpuKernelMod() = default;
+  ~ROIAlignGradCpuKernelMod() override = default;
+
+  void InitKernel(const CNodePtr &kernel_node) override;
+
+  bool Launch(const std::vector<AddressPtr> &inputs, const std::vector<AddressPtr> &workspace,
+              const std::vector<AddressPtr> &outputs) override {
+    return func_obj_->RunFunc(inputs, workspace, outputs);
+  }
+
+ protected:
+  std::vector<KernelAttr> GetOpSupport() override;
+
+ private:
+  std::shared_ptr<CpuKernelFunc> func_obj_;
+};
+}  // namespace kernel
+}  // namespace luojianet_ms
+
+#endif  // LUOJIANET_MS_CCSRC_BACKEND_KERNEL_COMPILER_CPU_ROI_ALIGN_GRAD_CPU_KERNEL_H_

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,14 +18,14 @@ import os
 import re
 import pytest
 import numpy as np
-from mindspore.common import dtype
-from mindspore import nn
-from mindspore import ops
-from mindspore import amp
-from mindspore import Tensor
-from mindspore import context
-from mindspore.train.loss_scale_manager import FixedLossScaleManager
-from mindspore.train.model import Model
+from luojianet_ms.common import dtype
+from luojianet_ms import nn
+from luojianet_ms import ops
+from luojianet_ms import amp
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.train.loss_scale_manager import FixedLossScaleManager
+from luojianet_ms.train.model import Model
 from utils import FakeData
 from utils import allclose_nparray
 from utils import FakeDataInitMode

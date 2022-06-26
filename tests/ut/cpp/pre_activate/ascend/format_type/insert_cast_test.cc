@@ -28,7 +28,7 @@
 #include "include/common/utils/utils.h"
 #include "utils/ms_context.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWInsertCast : public BackendCommon {
  public:
@@ -150,4 +150,4 @@ TEST_F(TestHWInsertCast, test_insert_cast_op_for_multiple_output) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

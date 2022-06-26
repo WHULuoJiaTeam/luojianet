@@ -25,7 +25,7 @@
 #include "frontend/operator/ops.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace validator {
 class TestValidator : public UT::Common {
  public:
@@ -61,4 +61,4 @@ TEST_F(TestValidator, ValidateValueNode01) {
   EXPECT_TRUE(true);
 }
 }  // namespace validator
-}  // namespace mindspore
+}  // namespace luojianet_ms

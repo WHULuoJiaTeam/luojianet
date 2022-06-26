@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,10 +22,10 @@ import glob
 import json
 import numpy as np
 import pytest
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 from dump_test_utils import generate_dump_json, generate_dump_json_with_overflow, check_dump_structure
 from tests.security_utils import security_off_wrap
 
@@ -48,7 +49,7 @@ def run_async_dump(test_name):
         dump_path = os.path.join(tmp_dir, 'async_dump')
         dump_config_path = os.path.join(tmp_dir, 'async_dump.json')
         generate_dump_json(dump_path, dump_config_path, test_name)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         dump_file_path = os.path.join(dump_path, 'rank_0', 'Net', '0', '0')
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
@@ -67,7 +68,7 @@ def run_async_dump(test_name):
             output = np.load(real_path)
             expect = np.array([[8, 10, 12], [14, 16, 18]], np.float32)
             assert np.array_equal(output, expect)
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0
@@ -107,7 +108,7 @@ def run_overflow_dump(test_name):
         dump_path = os.path.join(tmp_dir, 'overflow_dump')
         dump_config_path = os.path.join(tmp_dir, 'overflow_dump.json')
         generate_dump_json_with_overflow(dump_path, dump_config_path, test_name, 3)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         add = Net()
@@ -132,7 +133,7 @@ def run_overflow_dump(test_name):
         with open(overflow_path, 'rb') as json_file:
             data = json.load(json_file)
             assert data
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0

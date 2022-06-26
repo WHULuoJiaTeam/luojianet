@@ -25,7 +25,7 @@
 #include <vector>
 #include <unordered_set>
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestSubsetSampler : public UT::Common {
  public:

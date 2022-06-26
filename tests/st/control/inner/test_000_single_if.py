@@ -13,10 +13,10 @@
 # limitations under the License.
 # ============================================================================
 import pytest
-from mindspore import context
-from mindspore import Tensor, nn
-from mindspore.ops import composite as C
-from mindspore.common import dtype as mstype
+from luojianet_ms import context
+from luojianet_ms import Tensor, nn
+from luojianet_ms.ops import composite as C
+from luojianet_ms.common import dtype as mstype
 
 grad_all = C.GradOperation(get_all=True)
 

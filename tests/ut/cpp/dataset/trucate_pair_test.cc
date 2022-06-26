@@ -20,9 +20,9 @@
 #include "gtest/gtest.h"
 #include "securec.h"
 #include "minddata/dataset/core/tensor.h"
-#include "mindspore/ccsrc/minddata/dataset/text/kernels/truncate_sequence_pair_op.h"
+#include "luojianet_ms/ccsrc/minddata/dataset/text/kernels/truncate_sequence_pair_op.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 namespace py = pybind11;
 

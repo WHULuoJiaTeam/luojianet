@@ -19,7 +19,7 @@
 
 #include "minddata/dataset/engine/ir/datasetops/source/ag_news_node.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
 protected:
@@ -41,7 +41,7 @@ TEST_F(MindDataTestPipeline, TestAGNewsDatasetBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("index"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -165,7 +165,7 @@ TEST_F(MindDataTestPipeline, TestAGNewsDatasetNumSamples) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("index"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -214,7 +214,7 @@ TEST_F(MindDataTestPipeline, TestAGNewsDatasetDistribution) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("index"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -263,7 +263,7 @@ TEST_F(MindDataTestPipeline, TestAGNewsDatasetMultiFiles) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("index"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -321,7 +321,7 @@ TEST_F(MindDataTestPipeline, TestAGNewsDatasetHeader) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("index"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -377,7 +377,7 @@ TEST_F(MindDataTestPipeline, TestAGNewsDatasetShuffleFilesA) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("index"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -448,7 +448,7 @@ TEST_F(MindDataTestPipeline, TestAGNewsDatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("index"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -520,7 +520,7 @@ TEST_F(MindDataTestPipeline, TestAGNewsDatasetShuffleGlobal) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("index"), row.end());
   std::vector<std::vector<std::string>> expected_result = {

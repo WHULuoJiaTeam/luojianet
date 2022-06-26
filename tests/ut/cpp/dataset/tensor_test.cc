@@ -23,7 +23,7 @@
 #include "minddata/dataset/core/cv_tensor.h"
 #include "minddata/dataset/core/data_type.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 namespace py = pybind11;
 

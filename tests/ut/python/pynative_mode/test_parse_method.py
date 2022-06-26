@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,14 +25,14 @@ from dataclasses import dataclass
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import context
-from mindspore._extends.parse.standard_method import ms_len
-from mindspore.common.api import ms_function
-from mindspore.common.tensor import Tensor
-from mindspore.ops.composite import core
-from mindspore.ops.primitive import constexpr
-from mindspore.ops import functional as F
+import luojianet_ms.nn as nn
+from luojianet_ms import context
+from luojianet_ms._extends.parse.standard_method import ms_len
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops.composite import core
+from luojianet_ms.ops.primitive import constexpr
+from luojianet_ms.ops import functional as F
 from ..ut_filter import non_graph_engine
 
 
@@ -76,7 +77,7 @@ def test_bool_exp():
     bool_exp(1, 2)
 
 
-# Test case: use the variable parameter for @mindspore
+# Test case: use the variable parameter for @luojianet_ms
 @ms_function
 def var_parameter_f(x, *args):
     """ var_parameter_f """
@@ -235,7 +236,7 @@ def test_call_no_self_other_object_attr_value():
     return
 
 
-# Test case: use the * to unlock the varargs for @mindspore
+# Test case: use the * to unlock the varargs for @luojianet_ms
 def vararg1(x, y):
     """ vararg1 """
     z = x + y

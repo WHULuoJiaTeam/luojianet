@@ -17,9 +17,9 @@
 import pytest
 import numpy as np
 
-from mindspore import Tensor, COOTensor, ms_function, nn, ops
-from mindspore.common import dtype as mstype
-from mindspore.ops import functional as F
+from luojianet_ms import Tensor, COOTensor, ms_function, nn, ops
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.ops import functional as F
 
 from .sparse_utils import get_platform, compare_res
 

@@ -18,7 +18,7 @@
 #include "common/common_test.h"
 #include "pipeline/jit/static_analysis/static_analysis.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 class TestUtils : public UT::Common {
  public:
@@ -54,4 +54,4 @@ TEST_F(TestUtils, test_join) {
 }
 
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms

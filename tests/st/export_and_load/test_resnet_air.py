@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,18 +17,18 @@ import os
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.nn import Dense
-from mindspore.nn.cell import Cell
-from mindspore.nn.layer.basic import Flatten
-from mindspore.nn.layer.conv import Conv2d
-from mindspore.nn.layer.normalization import BatchNorm2d
-from mindspore.nn.layer.pooling import MaxPool2d
-from mindspore.ops import operations as P
-from mindspore.ops.operations import Add
-from mindspore.train.serialization import export
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Dense
+from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.layer.basic import Flatten
+from luojianet_ms.nn.layer.conv import Conv2d
+from luojianet_ms.nn.layer.normalization import BatchNorm2d
+from luojianet_ms.nn.layer.pooling import MaxPool2d
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations import Add
+from luojianet_ms.train.serialization import export
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 

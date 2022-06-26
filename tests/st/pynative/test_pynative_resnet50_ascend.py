@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,27 +21,27 @@ from multiprocessing import Process, Queue
 import numpy as np
 import pytest
 
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.vision.c_transforms as vision
-import mindspore.nn as nn
-import mindspore.ops.functional as F
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.vision.c_transforms as vision
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.functional as F
 
-from mindspore import Tensor
-from mindspore import context
-from mindspore import ParameterTuple
-from mindspore.nn import Cell
-from mindspore.ops import operations as P
-from mindspore.ops import composite as CP
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.train.callback import Callback
-from mindspore.nn.loss import SoftmaxCrossEntropyWithLogits
-from mindspore.train.loss_scale_manager import FixedLossScaleManager
-from mindspore.train.model import Model
-from mindspore.context import ParallelMode
-import mindspore.communication.management as D
-MINDSPORE_HCCL_CONFIG_PATH = "/home/workspace/mindspore_config/hccl/rank_table_8p.json"
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms import ParameterTuple
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as CP
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.train.callback import Callback
+from luojianet_ms.nn.loss import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.train.loss_scale_manager import FixedLossScaleManager
+from luojianet_ms.train.model import Model
+from luojianet_ms.context import ParallelMode
+import luojianet_ms.communication.management as D
+LUOJIANET_MS_HCCL_CONFIG_PATH = "/home/workspace/luojianet_ms_config/hccl/rank_table_8p.json"
 
 np.random.seed(1)
 os.environ['GLOG_v'] = str(2)
@@ -343,7 +344,7 @@ def resnet50(batch_size, num_classes):
 
 
 def create_dataset(repeat_num=1, training=True, batch_size=32, num_samples=1600):
-    data_home = "/home/workspace/mindspore_dataset"
+    data_home = "/home/workspace/luojianet_ms_dataset"
     data_dir = data_home + "/cifar-10-batches-bin"
     if not training:
         data_dir = data_home + "/cifar-10-verify-bin"
@@ -445,7 +446,7 @@ def test_pynative_resnet50_with_env(queue, device_id, device_num):
     os.system("mkdir " + str(device_id))
     os.chdir(str(device_id))
     context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend", device_id=device_id, runtime_num_threads=20)
-    os.environ['MINDSPORE_HCCL_CONFIG_PATH'] = MINDSPORE_HCCL_CONFIG_PATH
+    os.environ['LUOJIANET_MS_HCCL_CONFIG_PATH'] = LUOJIANET_MS_HCCL_CONFIG_PATH
     os.environ['RANK_ID'] = str(device_id)
     os.environ['RANK_SIZE'] = str(device_num)
     D.init()

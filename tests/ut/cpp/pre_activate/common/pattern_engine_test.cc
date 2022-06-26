@@ -29,7 +29,7 @@
 #include "ir/anf.h"
 #include "include/common/utils/utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 using PatternListType = std::initializer_list<BaseRef>;
 
 bool Equal(const BaseRef &a, const BaseRef &b) { return a == b; }
@@ -295,4 +295,4 @@ TEST_F(TestMatchEngine, Match_Prim) {
   d = TU.Match(pattern_node, sub_cnode, *primitive_vars, equiv_null);
   ASSERT_EQ(d, nullptr);
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

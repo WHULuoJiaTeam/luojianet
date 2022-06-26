@@ -14,13 +14,13 @@
 
 import numpy as np
 
-import mindspore.nn as nn
-import mindspore as ms
-from mindspore import Tensor, context, Parameter
-from mindspore.common.api import _cell_graph_executor
-from mindspore.ops import operations as P
-from mindspore.common.initializer import initializer
-from mindspore.context import _Context
+import luojianet_ms.nn as nn
+import luojianet_ms as ms
+from luojianet_ms import Tensor, context, Parameter
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.context import _Context
 from ....train_step_wrap import train_step_with_loss_warp
 
 class MatMulCell(nn.Cell):

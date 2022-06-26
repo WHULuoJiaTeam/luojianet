@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +18,11 @@ Testing Equalize op in DE
 """
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as C
-import mindspore.dataset.vision.py_transforms as F
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as C
+import luojianet_ms.dataset.vision.py_transforms as F
+from luojianet_ms import log as logger
 from util import visualize_list, visualize_one_channel_dataset, diff_mse, save_and_check_md5
 
 DATA_DIR = "../data/dataset/testImageNetData/train/"
@@ -39,7 +40,7 @@ def test_equalize_py(plot=False):
     # Original Images
     data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_original = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_original = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                               F.Resize((224, 224)),
                                                                               F.ToTensor()])
 
@@ -58,7 +59,7 @@ def test_equalize_py(plot=False):
             # Color Equalized Images
     data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_equalize = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_equalize = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                               F.Resize((224, 224)),
                                                                               F.Equalize(),
                                                                               F.ToTensor()])
@@ -161,7 +162,7 @@ def test_equalize_py_c(plot=False):
     data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
     data_set = data_set.map(operations=[C.Decode(), C.Resize((224, 224))], input_columns=["image"])
 
-    transforms_p_equalize = mindspore.dataset.transforms.py_transforms.Compose([lambda img: img.astype(np.uint8),
+    transforms_p_equalize = luojianet_ms.dataset.transforms.py_transforms.Compose([lambda img: img.astype(np.uint8),
                                                                                 F.ToPIL(),
                                                                                 F.Equalize(),
                                                                                 np.array])
@@ -243,7 +244,7 @@ def test_equalize_md5_py():
 
     # First dataset
     data1 = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
-    transforms = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                      F.Equalize(),
                                                                      F.ToTensor()])
 

@@ -32,7 +32,7 @@
 #include "include/common/utils/utils.h"
 #include "backend/common/session/anf_runtime_algorithm.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestPass : public PatternProcessPass {
  public:
@@ -81,4 +81,4 @@ TEST_F(TestPatternProcessPass, test_GetOrigNodes) {
   ASSERT_EQ(orig_nodes.size(), std::size_t(2));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

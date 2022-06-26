@@ -24,7 +24,7 @@
 #include "backend/common/optimizer/optimizer.h"
 #include "plugin/device/ascend/optimizer/enhancer/getnext_tensor_move_elimination.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestGetNextTensorMoveElimination : public BackendCommon {
  public:
@@ -95,4 +95,4 @@ TEST_F(TestGetNextTensorMoveElimination, test_getnext_tensor_move_elimination_ne
 }
 
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

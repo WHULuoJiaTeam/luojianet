@@ -20,7 +20,7 @@
 // need for CsvRecord
 #include "minddata/dataset/engine/ir/datasetops/source/csv_node.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -41,7 +41,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("col1"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -108,7 +108,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetMultiFiles) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("col1"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -157,7 +157,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetNumSamples) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("col1"), row.end());
   std::vector<std::vector<std::string>> expected_result = {{"1", "2", "3", "4"}, {"5", "6", "7", "8"}};
@@ -199,7 +199,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetDistribution) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("col1"), row.end());
   std::vector<std::vector<std::string>> expected_result = {{"1", "2", "3", "4"}, {"5", "6", "7", "8"}};
@@ -247,7 +247,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetType) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<std::vector<std::shared_ptr<CsvBase>>> expected = {
     {
@@ -311,7 +311,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetHeader) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("col1"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -420,7 +420,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetShuffleFilesA) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("col1"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -477,7 +477,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("col1"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -535,7 +535,7 @@ TEST_F(MindDataTestPipeline, TestCSVDatasetShuffleGlobal) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("col1"), row.end());
   std::vector<std::vector<std::string>> expected_result = {

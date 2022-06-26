@@ -19,12 +19,12 @@
 #include "frontend/operator/ops.h"
 #include "backend/common/session/kernel_graph.h"
 #include "backend/common/session/anf_runtime_algorithm.h"
-#include "mindspore/ccsrc/runtime/device/kernel_info.h"
-#include "mindspore/ccsrc/plugin/device/ascend/hal/device/ascend_device_address.h"
+#include "luojianet_ms/ccsrc/runtime/device/kernel_info.h"
+#include "luojianet_ms/ccsrc/plugin/device/ascend/hal/device/ascend_device_address.h"
 #include "include/common/utils/utils.h"
 #include "include/common/utils/anfalgo.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace session {
 using device::KernelInfo;
 using KernelBuildInfoBuilder = kernel::KernelBuildInfo::KernelBuildInfoBuilder;
@@ -795,4 +795,4 @@ TEST_F(AnfRuntimeAlgorithmTest, SetStreamId) {
 }
 
 }  // namespace session
-}  // namespace mindspore
+}  // namespace luojianet_ms

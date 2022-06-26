@@ -1,12 +1,12 @@
 set(grpc_USE_STATIC_LIBS OFF)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(grpc_CXXFLAGS "-fstack-protector-all -Wno-uninitialized -Wno-unused-parameter -fPIC -D_FORTIFY_SOURCE=2 -O2 \
-        -Dgrpc=mindspore_grpc -Dgrpc_impl=mindspore_grpc_impl -Dgrpc_core=mindspore_grpc_core")
+        -Dgrpc=luojianet_ms_grpc -Dgrpc_impl=luojianet_ms_grpc_impl -Dgrpc_core=luojianet_ms_grpc_core")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(grpc_CXXFLAGS "-fstack-protector-all -Wno-maybe-uninitialized -Wno-unused-parameter -D_FORTIFY_SOURCE=2 -O2")
 else()
     set(grpc_CXXFLAGS "-fstack-protector-all -Wno-maybe-uninitialized -Wno-unused-parameter -D_FORTIFY_SOURCE=2 -O2 \
-        -Dgrpc=mindspore_grpc -Dgrpc_impl=mindspore_grpc_impl -Dgrpc_core=mindspore_grpc_core")
+        -Dgrpc=luojianet_ms_grpc -Dgrpc_impl=luojianet_ms_grpc_impl -Dgrpc_core=luojianet_ms_grpc_core")
     if(NOT ENABLE_GLIBCXX)
         set(grpc_CXXFLAGS "${grpc_CXXFLAGS} -D_GLIBCXX_USE_CXX11_ABI=0")
     endif()
@@ -49,9 +49,9 @@ else()
     set(MD5 "90c93203e95e89af5f46738588217057")
 endif()
 
-mindspore_add_pkg(grpc
+luojianet_ms_add_pkg(grpc
         VER 1.36.1
-        LIBS mindspore_grpc++ mindspore_grpc mindspore_gpr mindspore_upb mindspore_address_sorting
+        LIBS luojianet_ms_grpc++ luojianet_ms_grpc luojianet_ms_gpr luojianet_ms_upb luojianet_ms_address_sorting
         EXE grpc_cpp_plugin
         URL ${REQ_URL}
         MD5 ${MD5}
@@ -77,16 +77,16 @@ mindspore_add_pkg(grpc
 
 include_directories(${grpc_INC})
 
-add_library(mindspore::grpc++ ALIAS grpc::mindspore_grpc++)
+add_library(luojianet_ms::grpc++ ALIAS grpc::luojianet_ms_grpc++)
 
 # link other grpc libs
-target_link_libraries(grpc::mindspore_grpc++ INTERFACE grpc::mindspore_grpc grpc::mindspore_gpr grpc::mindspore_upb
-    grpc::mindspore_address_sorting)
+target_link_libraries(grpc::luojianet_ms_grpc++ INTERFACE grpc::luojianet_ms_grpc grpc::luojianet_ms_gpr grpc::luojianet_ms_upb
+    grpc::luojianet_ms_address_sorting)
 
-# modify mindspore macro define
-add_compile_definitions(grpc=mindspore_grpc)
-add_compile_definitions(grpc_impl=mindspore_grpc_impl)
-add_compile_definitions(grpc_core=mindspore_grpc_core)
+# modify luojianet_ms macro define
+add_compile_definitions(grpc=luojianet_ms_grpc)
+add_compile_definitions(grpc_impl=luojianet_ms_grpc_impl)
+add_compile_definitions(grpc_core=luojianet_ms_grpc_core)
 
 function(ms_grpc_generate c_var h_var)
     if(NOT ARGN)

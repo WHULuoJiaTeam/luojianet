@@ -19,7 +19,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/group_manager.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestDevice : public UT::Common {
@@ -144,4 +144,4 @@ TEST_F(TestDeviceManager, test_StageID) {
   ASSERT_EQ(dev_list_1.size(), 2);
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

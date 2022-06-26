@@ -21,7 +21,7 @@
 #include "ir/anf.h"
 #include "base/base_ref.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace utils {
 class TestBaseRef : public UT::Common {
  public:
@@ -97,4 +97,4 @@ TEST_F(TestBaseRef, TestVector) {
   ASSERT_EQ(e1 == e, true);
 }
 }  // namespace utils
-}  // namespace mindspore
+}  // namespace luojianet_ms

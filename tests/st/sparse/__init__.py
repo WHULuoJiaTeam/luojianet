@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""setup for pytest in mindspore.sparse"""
-import mindspore.context as context
+"""setup for pytest in luojianet_ms.sparse"""
+import luojianet_ms.context as context
 
 
 # pylint: disable=unused-argument

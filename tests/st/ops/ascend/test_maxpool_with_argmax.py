@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore.common.api import ms_function
-from mindspore.common.initializer import initializer
-from mindspore.common.parameter import Parameter
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.ops import operations as P
 
 context.set_context(device_target="Ascend")
 

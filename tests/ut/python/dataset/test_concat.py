@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,12 +15,12 @@
 # ==============================================================================
 import numpy as np
 
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as F
-from mindspore import log as logger
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as F
+from luojianet_ms import log as logger
 
 
 # In generator dataset: Number of rows is 3; its values are 0, 1, 2
@@ -332,7 +333,7 @@ def test_concat_14():
     data1 = ds.ImageFolderDataset(DATA_DIR, num_samples=3)
     data2 = ds.ImageFolderDataset(DATA_DIR2, num_samples=2)
 
-    transforms1 = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms1 = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                       F.Resize((224, 224)),
                                                                       F.ToTensor()])
 

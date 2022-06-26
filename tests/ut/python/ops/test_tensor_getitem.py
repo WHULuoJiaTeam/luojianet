@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +17,12 @@
 import numpy as np
 import pytest
 
-from mindspore import Tensor
-from mindspore import context
-from mindspore import dtype as mstype
-from mindspore.nn import Cell
-from ....mindspore_test_framework.mindspore_test import mindspore_test
-from ....mindspore_test_framework.pipeline.forward.compile_forward \
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms import dtype as mstype
+from luojianet_ms.nn import Cell
+from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
+from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config, \
     pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception
 
@@ -178,12 +179,12 @@ test_error_cases = [
 ]
 
 
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
 def test_exec():
     context.set_context(mode=context.GRAPH_MODE)
     return test_cases
 
 
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception)
 def test_check_exception():
     return test_error_cases

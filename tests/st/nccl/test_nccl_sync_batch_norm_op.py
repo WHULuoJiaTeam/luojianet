@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +14,11 @@
 # limitations under the License.
 # ============================================================================
 import numpy as np
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.communication.management import init
-from mindspore.ops import composite as C
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.communication.management import init
+from luojianet_ms.ops import composite as C
 
 # define target and input values here
 x_fwd_input = np.array([[

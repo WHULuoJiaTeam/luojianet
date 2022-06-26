@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,16 +17,16 @@
 """YOLOv3 based on ResNet18."""
 
 import numpy as np
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import context, Tensor
-from mindspore.context import ParallelMode
-from mindspore.parallel._auto_parallel_context import auto_parallel_context
-from mindspore.communication.management import get_group_size
-from mindspore.common.initializer import TruncatedNormal
-from mindspore.ops import operations as P
-from mindspore.ops import functional as F
-from mindspore.ops import composite as C
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import context, Tensor
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.parallel._auto_parallel_context import auto_parallel_context
+from luojianet_ms.communication.management import get_group_size
+from luojianet_ms.common.initializer import TruncatedNormal
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import composite as C
 
 
 def weight_variable():

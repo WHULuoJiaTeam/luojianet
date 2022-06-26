@@ -14,12 +14,12 @@
 # ============================================================================
 import pytest
 import numpy as np
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.ops import GradOperation
-from mindspore.common import ParameterTuple
-from mindspore.common.api import ms_function
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.ops import GradOperation
+from luojianet_ms.common import ParameterTuple
+from luojianet_ms.common.api import ms_function
 
 
 def forward_pre_hook_fn_bn(cell_id, inp):

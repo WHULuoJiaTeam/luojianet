@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import mindspore.dataset as ds
-import mindspore.dataset.text as text
-import mindspore.dataset.vision.c_transforms as vision
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text as text
+import luojianet_ms.dataset.vision.c_transforms as vision
 
 DATA_DIR = "../data/dataset/testVOC2012"
 IMAGE_ID = ["32", "33", "39", "42", "61", "63", "68", "121", "123", "129"]

@@ -18,7 +18,7 @@
 #include "common/py_func_graph_fetcher.h"
 #include "frontend/parallel/tensor_layout/shape_util.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 /*
@@ -209,4 +209,4 @@ TEST(ShapeUtilTest, ExpandShape2) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

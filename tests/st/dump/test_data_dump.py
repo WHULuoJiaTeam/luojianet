@@ -23,18 +23,18 @@ from importlib import import_module
 from pathlib import Path
 import numpy as np
 import pytest
-import mindspore.context as context
+import luojianet_ms.context as context
 
-import mindspore.nn as nn
-import mindspore.ops as ops
-from mindspore import Tensor
-from mindspore.ops import operations as P, constexpr
-from mindspore.nn import Cell
-from mindspore.nn import Dense
-from mindspore.nn import SoftmaxCrossEntropyWithLogits
-from mindspore.nn import Momentum
-from mindspore.nn import TrainOneStepCell
-from mindspore.nn import WithLossCell
+import luojianet_ms.nn as nn
+import luojianet_ms.ops as ops
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P, constexpr
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Dense
+from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn import Momentum
+from luojianet_ms.nn import TrainOneStepCell
+from luojianet_ms.nn import WithLossCell
 from dump_test_utils import generate_dump_json, generate_dump_json_with_overflow, \
     generate_statistic_dump_json, check_dump_structure, find_nth_pos
 from tests.security_utils import security_off_wrap
@@ -59,7 +59,7 @@ def run_async_dump(test_name):
         dump_path = os.path.join(tmp_dir, 'async_dump')
         dump_config_path = os.path.join(tmp_dir, 'async_dump.json')
         generate_dump_json(dump_path, dump_config_path, test_name)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         dump_file_path = os.path.join(dump_path, 'rank_0', 'Net', '0', '0')
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
@@ -70,7 +70,7 @@ def run_async_dump(test_name):
                 time.sleep(2)
         check_dump_structure(dump_path, dump_config_path, 1, 1, 1)
         assert len(os.listdir(dump_file_path)) == 1
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level1
@@ -94,7 +94,7 @@ def run_e2e_dump():
         dump_path = os.path.join(tmp_dir, 'e2e_dump')
         dump_config_path = os.path.join(tmp_dir, 'e2e_dump.json')
         generate_dump_json(dump_path, dump_config_path, 'test_e2e_dump')
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         dump_file_path = os.path.join(dump_path, 'rank_0', 'Net', '0', '0')
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
@@ -119,7 +119,7 @@ def run_e2e_dump():
             if not os.path.exists(dump_file_path):
                 time.sleep(2)
         check_dump_structure(dump_path, dump_config_path, 1, 1, 1)
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0
@@ -216,7 +216,7 @@ def test_async_dump_net_multi_layer_mode1():
         dump_path = os.path.join(tmp_dir, 'async_dump_net_multi_layer_mode1')
         json_file_path = os.path.join(tmp_dir, "test_async_dump_net_multi_layer_mode1.json")
         generate_dump_json(dump_path, json_file_path, 'test_async_dump_net_multi_layer_mode1')
-        os.environ['MINDSPORE_DUMP_CONFIG'] = json_file_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = json_file_path
         weight = Tensor(np.ones((1000, 2048)).astype(np.float32))
         bias = Tensor(np.ones((1000,)).astype(np.float32))
         net = ReluReduceMeanDenseRelu(weight, bias, 2048, 1000)
@@ -238,7 +238,7 @@ def test_async_dump_net_multi_layer_mode1():
         os.mkdir(npy_path)
         tool_path_search_list = list(Path('/usr/local/Ascend').rglob('msaccucmp.py*'))
         if tool_path_search_list:
-            converter = import_module("mindspore.offline_debug.convert_async")
+            converter = import_module("luojianet_ms.offline_debug.convert_async")
             converter.AsyncDumpConverter([dump_file_full_path], npy_path).convert_files()
             npy_result_file = list(Path(npy_path).rglob("*output.0.*.npy"))[0]
             dump_result = np.load(os.path.join(npy_path, npy_result_file))
@@ -246,7 +246,7 @@ def test_async_dump_net_multi_layer_mode1():
                 assert value.asnumpy() == dump_result[index]
         else:
             print('Failed to find hisi convert tools: msaccucmp.py or msaccucmp.pyc.')
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0
@@ -263,7 +263,7 @@ def test_dump_with_diagnostic_path():
     with tempfile.TemporaryDirectory(dir='/tmp') as tmp_dir:
         dump_config_path = os.path.join(tmp_dir, 'e2e_dump.json')
         generate_dump_json('', dump_config_path, 'test_e2e_dump')
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         diagnose_path = os.path.join(tmp_dir, 'e2e_dump')
         os.environ['MS_DIAGNOSTIC_DATA_PATH'] = diagnose_path
         dump_file_path = os.path.join(diagnose_path, 'debug_dump', 'rank_0', 'Net', '0', '0')
@@ -272,7 +272,7 @@ def test_dump_with_diagnostic_path():
         add = Net()
         add(Tensor(x), Tensor(y))
         assert len(os.listdir(dump_file_path)) == 3
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
         del os.environ['MS_DIAGNOSTIC_DATA_PATH']
 
 
@@ -284,14 +284,14 @@ def run_e2e_dump_execution_graph():
         dump_path = os.path.join(tmp_dir, 'e2e_dump_exe_graph')
         dump_config_path = os.path.join(tmp_dir, 'e2e_dump.json')
         generate_dump_json(dump_path, dump_config_path, 'test_e2e_dump')
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         add = Net()
         add(Tensor(x), Tensor(y))
         exe_graph_path = os.path.join(dump_path, 'rank_0', 'execution_order')
         assert len(os.listdir(exe_graph_path)) == 2
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0
@@ -313,7 +313,7 @@ def run_overflow_dump():
         dump_path = os.path.join(tmp_dir, 'overflow_dump')
         dump_config_path = os.path.join(tmp_dir, 'overflow_dump.json')
         generate_dump_json_with_overflow(dump_path, dump_config_path, 'test_async_dump', 3)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         add = Net()
@@ -353,7 +353,7 @@ def run_overflow_dump():
             stream_id_infile = int.from_bytes(raw_data[16:17], 'little')
             assert output_task_id == str(task_id_infile)
             assert output_stream_id == str(stream_id_infile)
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 def run_not_overflow_dump():
@@ -366,7 +366,7 @@ def run_not_overflow_dump():
         dump_path = os.path.join(tmp_dir, 'overflow_dump')
         dump_config_path = os.path.join(tmp_dir, 'overflow_dump.json')
         generate_dump_json_with_overflow(dump_path, dump_config_path, 'test_async_dump', 3)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         add = Net()
@@ -374,7 +374,7 @@ def run_not_overflow_dump():
         exe_graph_path = os.path.join(dump_path, 'rank_0', 'Net', '0', '0')
         # check no overflow is happening, and path should not be generated
         assert not os.path.exists(exe_graph_path)
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 @pytest.mark.level0
 @pytest.mark.platform_arm_ascend_training
@@ -447,7 +447,7 @@ def run_saved_data_dump_test(scenario, saved_data):
         dump_path = os.path.join(tmp_dir, 'test_saved_data')
         dump_config_path = os.path.join(tmp_dir, 'test_saved_data.json')
         generate_statistic_dump_json(dump_path, dump_config_path, scenario, saved_data)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         dump_file_path = os.path.join(dump_path, 'rank_0', 'Net', '0', '0')
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
@@ -468,7 +468,7 @@ def run_saved_data_dump_test(scenario, saved_data):
             # assert only tensor data is saved, not statistics
             stat_path = os.path.join(dump_file_path, 'statistic.csv')
             assert not os.path.isfile(stat_path)
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 @pytest.mark.level0
 @pytest.mark.platform_x86_gpu_training
@@ -527,7 +527,7 @@ def test_stat_dump_nulls():
         dump_path = os.path.join(tmp_dir, 'test_saved_data')
         dump_config_path = os.path.join(tmp_dir, 'test_saved_data.json')
         generate_statistic_dump_json(dump_path, dump_config_path, 'test_gpu_e2e_dump', 'statistic')
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         dump_file_path = os.path.join(dump_path, 'rank_0', 'Net', '0', '0')
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
@@ -640,7 +640,7 @@ def test_constant_async_ascend_dump():
         dump_path = os.path.join(tmp_dir, 'constant_dump')
         dump_config_path = os.path.join(tmp_dir, 'constant_dump.json')
         generate_dump_json(dump_path, dump_config_path, 'test_async_dump')
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         net = ConstantNet()
@@ -656,7 +656,7 @@ def test_constant_async_ascend_dump():
         real_path = os.path.realpath(output_path)
         output = np.load(real_path)
         assert np.array_equal(output, expect)
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 def run_constant_e2e_dump():
@@ -666,7 +666,7 @@ def run_constant_e2e_dump():
         dump_path = os.path.join(tmp_dir, 'constant_dump')
         dump_config_path = os.path.join(tmp_dir, 'constant_dump.json')
         generate_dump_json(dump_path, dump_config_path, 'test_e2e_dump')
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)
         net = ConstantNet()
@@ -682,7 +682,7 @@ def run_constant_e2e_dump():
         real_path = os.path.realpath(output_path)
         output = np.load(real_path)
         assert np.array_equal(output, expect)
-        del os.environ['MINDSPORE_DUMP_CONFIG']
+        del os.environ['LUOJIANET_MS_DUMP_CONFIG']
 
 
 @pytest.mark.level0

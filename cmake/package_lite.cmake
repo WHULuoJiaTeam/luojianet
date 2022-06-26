@@ -6,7 +6,7 @@ set(CODEGEN_ROOT_DIR ${RUNTIME_PKG_NAME}/tools/codegen)
 set(CONVERTER_ROOT_DIR ${RUNTIME_PKG_NAME}/tools/converter)
 set(OBFUSCATOR_ROOT_DIR ${RUNTIME_PKG_NAME}/tools/obfuscator)
 set(CROPPER_ROOT_DIR ${RUNTIME_PKG_NAME}/tools/cropper)
-set(TEST_CASE_DIR ${TOP_DIR}/mindspore/lite/test/build)
+set(TEST_CASE_DIR ${TOP_DIR}/luojianet_ms/lite/test/build)
 
 set(RUNTIME_DIR ${RUNTIME_PKG_NAME}/runtime)
 set(RUNTIME_INC_DIR ${RUNTIME_PKG_NAME}/runtime/include)
@@ -16,17 +16,17 @@ set(MIND_DATA_INC_DIR ${RUNTIME_PKG_NAME}/runtime/include/dataset)
 set(TURBO_DIR ${RUNTIME_PKG_NAME}/runtime/third_party/libjpeg-turbo)
 set(GLOG_DIR ${RUNTIME_PKG_NAME}/runtime/third_party/glog)
 set(SECUREC_DIR ${RUNTIME_PKG_NAME}/runtime/third_party/securec)
-set(MINDSPORE_LITE_LIB_NAME libmindspore-lite)
-set(MINDSPORE_CORE_LIB_NAME libmindspore_core)
+set(LUOJIANET_MS_LITE_LIB_NAME libluojianet_ms-lite)
+set(LUOJIANET_MS_CORE_LIB_NAME libluojianet_ms_core)
 set(BENCHMARK_NAME benchmark)
 set(MSLITE_NNIE_LIB_NAME libmslite_nnie)
 set(MSLITE_PROPOSAL_LIB_NAME libmslite_proposal)
 set(MICRO_NNIE_LIB_NAME libmicro_nnie)
 set(DPICO_ACL_ADAPTER_LIB_NAME libdpico_acl_adapter)
 set(BENCHMARK_ROOT_DIR ${RUNTIME_PKG_NAME}/tools/benchmark)
-set(MICRO_DIR ${TOP_DIR}/mindspore/lite/tools/converter/micro)
+set(MICRO_DIR ${TOP_DIR}/luojianet_ms/lite/tools/converter/micro)
 
-set(MINDSPORE_LITE_TRAIN_LIB_NAME libmindspore-lite-train)
+set(LUOJIANET_MS_LITE_TRAIN_LIB_NAME libluojianet_ms-lite-train)
 set(BENCHMARK_TRAIN_NAME benchmark_train)
 set(BENCHMARK_TRAIN_ROOT_DIR ${RUNTIME_PKG_NAME}/tools/benchmark_train)
 file(GLOB JPEGTURBO_LIB_LIST ${jpeg_turbo_LIBPATH}/*.so)
@@ -35,63 +35,63 @@ file(GLOB JPEGTURBO_LIB_LIST ${jpeg_turbo_LIBPATH}/*.so)
 if(MSLITE_MINDDATA_IMPLEMENT STREQUAL "full")
     # full header files
     install(FILES
-            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/constants.h
-            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/data_helper.h
-            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/execute.h
-            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/iterator.h
-            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/samplers.h
-            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/transforms.h
-            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision_lite.h
-            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/liteapi/include/datasets.h
+            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/constants.h
+            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/data_helper.h
+            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/execute.h
+            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/iterator.h
+            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/samplers.h
+            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/transforms.h
+            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision_lite.h
+            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/liteapi/include/datasets.h
         DESTINATION ${MIND_DATA_INC_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
 
     if(PLATFORM_ARM64)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.a DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.a DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${JPEGTURBO_LIB_LIST} DESTINATION ${TURBO_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/securec/src/libsecurec.a
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/securec/src/libsecurec.a
                 DESTINATION ${SECUREC_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     elseif(PLATFORM_ARM32)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.a DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.a DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${JPEGTURBO_LIB_LIST} DESTINATION ${TURBO_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/securec/src/libsecurec.a
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/securec/src/libsecurec.a
                 DESTINATION ${SECUREC_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     else()
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.a DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.a DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${jpeg_turbo_LIBPATH}/libjpeg.so.62.3.0 DESTINATION ${TURBO_DIR}/lib
                 RENAME libjpeg.so.62 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${jpeg_turbo_LIBPATH}/libturbojpeg.so.0.2.0 DESTINATION ${TURBO_DIR}/lib
                 RENAME libturbojpeg.so.0 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/securec/src/libsecurec.a
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/securec/src/libsecurec.a
                 DESTINATION ${SECUREC_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     endif()
 
     # lite_cv header files
-    install(DIRECTORY ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/kernels/image/lite_cv
+    install(DIRECTORY ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/kernels/image/lite_cv
             DESTINATION ${MIND_DATA_INC_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
 endif()
 
 if(MSLITE_MINDDATA_IMPLEMENT STREQUAL "wrapper")
-    install(DIRECTORY ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/ DESTINATION ${MIND_DATA_INC_DIR}
+    install(DIRECTORY ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/ DESTINATION ${MIND_DATA_INC_DIR}
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "vision.h" EXCLUDE)
     if(PLATFORM_ARM64)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${JPEGTURBO_LIB_LIST} DESTINATION ${TURBO_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
     elseif(PLATFORM_ARM32)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${JPEGTURBO_LIB_LIST} DESTINATION ${TURBO_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
     else()
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${jpeg_turbo_LIBPATH}/libjpeg.so.62.3.0 DESTINATION ${TURBO_DIR}/lib RENAME libjpeg.so.62
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
@@ -101,24 +101,24 @@ if(MSLITE_MINDDATA_IMPLEMENT STREQUAL "wrapper")
 endif()
 
 if(MSLITE_MINDDATA_IMPLEMENT STREQUAL "lite")
-    install(DIRECTORY ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/ DESTINATION ${MIND_DATA_INC_DIR}
+    install(DIRECTORY ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/ DESTINATION ${MIND_DATA_INC_DIR}
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
     if(PLATFORM_ARM64)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${TOP_DIR}/third_party/libjpeg-turbo/lib/libjpeg.so DESTINATION ${TURBO_DIR}/lib
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${TOP_DIR}/third_party/libjpeg-turbo/lib/libturbojpeg.so DESTINATION ${TURBO_DIR}/lib
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
     elseif(PLATFORM_ARM32)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${TOP_DIR}/third_party/libjpeg-turbo/lib/libjpeg.so DESTINATION ${TURBO_DIR}/lib
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${TOP_DIR}/third_party/libjpeg-turbo/lib/libturbojpeg.so DESTINATION ${TURBO_DIR}/lib
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
     else()
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${TOP_DIR}/third_party/libjpeg-turbo/lib/libjpeg.so.62.3.0
                 DESTINATION ${TURBO_DIR}/lib RENAME libjpeg.so.62 COMPONENT ${RUNTIME_COMPONENT_NAME})
@@ -129,19 +129,19 @@ endif()
 
 if(MSLITE_MINDDATA_IMPLEMENT STREQUAL "lite_cv")
     if(PLATFORM_ARM64)
-        install(DIRECTORY ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/kernels/image/lite_cv
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/kernels/image/lite_cv
                 DESTINATION ${MIND_DATA_INC_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so
                 DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     elseif(PLATFORM_ARM32)
-        install(DIRECTORY ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/kernels/image/lite_cv
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/kernels/image/lite_cv
                 DESTINATION ${MIND_DATA_INC_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
     else()
-        install(DIRECTORY ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/kernels/image/lite_cv
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/kernels/image/lite_cv
                 DESTINATION ${MIND_DATA_INC_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
-        install(FILES ${TOP_DIR}/mindspore/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/minddata/libminddata-lite.so DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
     endif()
 endif()
@@ -178,7 +178,7 @@ if(WIN32)
     install(FILES ${TOP_DIR}/build/.commit_id DESTINATION ${RUNTIME_PKG_NAME}
             COMPONENT ${RUNTIME_COMPONENT_NAME})
 else()
-    install(FILES ${TOP_DIR}/mindspore/lite/build/.commit_id DESTINATION ${RUNTIME_PKG_NAME}
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/.commit_id DESTINATION ${RUNTIME_PKG_NAME}
             COMPONENT ${RUNTIME_COMPONENT_NAME})
 endif()
 install(DIRECTORY ${flatbuffers_INC}/ DESTINATION ${RUNTIME_INC_DIR}/third_party COMPONENT ${RUNTIME_COMPONENT_NAME})
@@ -195,41 +195,41 @@ if(PLATFORM_ARM64)
                     DESTINATION ${RUNTIME_DIR}/third_party/hiai_ddk/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
         endif()
     endif()
-    install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/registry/ DESTINATION ${RUNTIME_INC_DIR}/registry
+    install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/registry/ DESTINATION ${RUNTIME_INC_DIR}/registry
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "register_kernel_interface.h"
             PATTERN "register_kernel.h")
     if(SUPPORT_TRAIN)
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "registry*" EXCLUDE)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_TRAIN_LIB_NAME}.so DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_TRAIN_LIB_NAME}.so DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_TRAIN_LIB_NAME}.a DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_TRAIN_LIB_NAME}.a DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     else()
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "train*" EXCLUDE
                 PATTERN "registry*" EXCLUDE)
     endif()
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/model_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/model_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/ops_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/ops_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/ops_types_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/ops_types_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_LIB_NAME}.so DESTINATION ${RUNTIME_LIB_DIR}
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_LIB_NAME}.so DESTINATION ${RUNTIME_LIB_DIR}
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_LIB_NAME}.a DESTINATION ${RUNTIME_LIB_DIR}
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_LIB_NAME}.a DESTINATION ${RUNTIME_LIB_DIR}
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     if(ENABLE_MODEL_OBF)
-        install(FILES ${TOP_DIR}/mindspore/lite/tools/obfuscator/lib/android-aarch64/libmsdeobfuscator-lite.so
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/tools/obfuscator/lib/android-aarch64/libmsdeobfuscator-lite.so
                 DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     endif()
-    install(FILES ${TOP_DIR}/mindspore/core/ir/dtype/type_id.h DESTINATION ${RUNTIME_INC_DIR}/ir/dtype
+    install(FILES ${TOP_DIR}/luojianet_ms/core/ir/dtype/type_id.h DESTINATION ${RUNTIME_INC_DIR}/ir/dtype
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     install(FILES
-            ${TOP_DIR}/mindspore/core/mindapi/base/format.h
-            ${TOP_DIR}/mindspore/core/mindapi/base/type_id.h
-            ${TOP_DIR}/mindspore/core/mindapi/base/types.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/format.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/type_id.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/types.h
             DESTINATION ${RUNTIME_INC_DIR}/mindapi/base
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     install(DIRECTORY ${TOP_DIR}/include/api/ DESTINATION ${RUNTIME_INC_DIR}/api
@@ -249,17 +249,17 @@ if(PLATFORM_ARM64)
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
             if(TARGET_HIMIX)
                 if(${MSLITE_REGISTRY_DEVICE}  STREQUAL "Hi3559A")
-                    install(FILES ${TOP_DIR}/mindspore/lite/build/tools/benchmark/nnie/${MSLITE_NNIE_LIB_NAME}.so
+                    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/benchmark/nnie/${MSLITE_NNIE_LIB_NAME}.so
                             DESTINATION ${PROVIDERS_LIB_DIR}/${MSLITE_REGISTRY_DEVICE}
                             COMPONENT ${RUNTIME_COMPONENT_NAME})
                     install(FILES
-                            ${TOP_DIR}/mindspore/lite/build/tools/benchmark/nnie_proposal/${MSLITE_PROPOSAL_LIB_NAME}.so
+                            ${TOP_DIR}/luojianet_ms/lite/build/tools/benchmark/nnie_proposal/${MSLITE_PROPOSAL_LIB_NAME}.so
                             DESTINATION ${PROVIDERS_LIB_DIR}/${MSLITE_REGISTRY_DEVICE}
                             COMPONENT ${RUNTIME_COMPONENT_NAME})
                 endif()
             elseif(TARGET_MIX210)
                 if(${MSLITE_REGISTRY_DEVICE}  STREQUAL "SD3403")
-                    install(FILES ${TOP_DIR}/mindspore/lite/build/tools/benchmark/dpico/${DPICO_ACL_ADAPTER_LIB_NAME}.so
+                    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/benchmark/dpico/${DPICO_ACL_ADAPTER_LIB_NAME}.so
                             DESTINATION ${PROVIDERS_LIB_DIR}/${MSLITE_REGISTRY_DEVICE}
                             COMPONENT ${RUNTIME_COMPONENT_NAME})
                 endif()
@@ -270,7 +270,7 @@ if(PLATFORM_ARM64)
                     ${RUNTIME_COMPONENT_NAME})
         endif()
         if(MSLITE_ENABLE_CONVERTER)
-            install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${CONVERTER_ROOT_DIR}/include
+            install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${CONVERTER_ROOT_DIR}/include
                     COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h"
                     PATTERN "train*" EXCLUDE PATTERN "delegate.h" EXCLUDE PATTERN "lite_session.h" EXCLUDE)
             install(FILES ${API_HEADER}  DESTINATION ${CONVERTER_ROOT_DIR}/include/api
@@ -289,11 +289,11 @@ if(PLATFORM_ARM64)
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
             install(FILES ${IR_HEADER} DESTINATION ${CONVERTER_ROOT_DIR}/include/core/ir
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
-            install(DIRECTORY ${TOP_DIR}/mindspore/core/ops/ DESTINATION ${CONVERTER_ROOT_DIR}/include/core/ops
+            install(DIRECTORY ${TOP_DIR}/luojianet_ms/core/ops/ DESTINATION ${CONVERTER_ROOT_DIR}/include/core/ops
                     COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
             install(FILES ${UTILS_HEADER} DESTINATION ${CONVERTER_ROOT_DIR}/include/core/utils
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
-            install(DIRECTORY ${TOP_DIR}/mindspore/lite/build/schema/
+            install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/build/schema/
                     DESTINATION ${CONVERTER_ROOT_DIR}/include/schema
                     COMPONENT ${RUNTIME_COMPONENT_NAME}
                     FILES_MATCHING PATTERN "*.h" PATTERN "schema_generated.h" EXCLUDE)
@@ -307,11 +307,11 @@ if(PLATFORM_ARM64)
                     COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
             install(TARGETS converter_lite RUNTIME DESTINATION ${CONVERTER_ROOT_DIR}/converter
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
-            install(FILES ${TOP_DIR}/mindspore/lite/build/tools/converter/registry/libmslite_converter_plugin.so
+            install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/converter/registry/libmslite_converter_plugin.so
                     DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
             install(FILES ${glog_LIBPATH}/libglog.so.0.4.0 DESTINATION ${CONVERTER_ROOT_DIR}/lib RENAME libglog.so.0
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
-            install(TARGETS mindspore_core DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
+            install(TARGETS luojianet_ms_core DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
             install(FILES ${opencv_LIBPATH}/libopencv_core.so.4.5.2
                     DESTINATION ${CONVERTER_ROOT_DIR}/lib RENAME libopencv_core.so.4.5
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
@@ -323,15 +323,15 @@ if(PLATFORM_ARM64)
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
 
             if(MSLITE_ENABLE_ACL)
-                set(LITE_ACL_DIR ${TOP_DIR}/mindspore/lite/build/tools/converter/adapter/acl)
-                install(FILES ${LITE_ACL_DIR}/mindspore_shared_lib/libmindspore_shared_lib.so
+                set(LITE_ACL_DIR ${TOP_DIR}/luojianet_ms/lite/build/tools/converter/adapter/acl)
+                install(FILES ${LITE_ACL_DIR}/luojianet_ms_shared_lib/libluojianet_ms_shared_lib.so
                         DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
                 if(MSLITE_ENABLE_RUNTIME_CONVERT)
-                    install(FILES ${LITE_ACL_DIR}/mindspore_shared_lib/libmindspore_shared_lib.so
+                    install(FILES ${LITE_ACL_DIR}/luojianet_ms_shared_lib/libluojianet_ms_shared_lib.so
                             DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
                     install(FILES ${glog_LIBPATH}/libglog.so.0.4.0 DESTINATION ${RUNTIME_LIB_DIR} RENAME libglog.so.0
                             COMPONENT ${RUNTIME_COMPONENT_NAME})
-                    install(TARGETS mindspore_core DESTINATION ${CONVERTER_ROOT_DIR}/lib
+                    install(TARGETS luojianet_ms_core DESTINATION ${CONVERTER_ROOT_DIR}/lib
                             COMPONENT ${RUNTIME_COMPONENT_NAME})
                 endif()
                 if(MSLITE_MINDDATA_IMPLEMENT STREQUAL "cloud" AND MSLITE_ENABLE_RUNTIME_CONVERT)
@@ -353,32 +353,32 @@ if(PLATFORM_ARM64)
                             DESTINATION ${RUNTIME_LIB_DIR} RENAME libicudata.so.69 COMPONENT ${RUNTIME_COMPONENT_NAME})
                     install(FILES ${icu4c_LIBPATH}/libicui18n.so.69.1
                             DESTINATION ${RUNTIME_LIB_DIR} RENAME libicui18n.so.69 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                    install(FILES ${grpc_LIBPATH}/libmindspore_grpc++.so.1.36.1 DESTINATION ${RUNTIME_LIB_DIR}
-                            RENAME libmindspore_grpc++.so.1 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                    install(FILES ${grpc_LIBPATH}/libmindspore_grpc.so.15.0.0 DESTINATION
-                            ${RUNTIME_LIB_DIR} RENAME libmindspore_grpc.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                    install(FILES ${grpc_LIBPATH}/libmindspore_gpr.so.15.0.0 DESTINATION
-                            ${RUNTIME_LIB_DIR} RENAME libmindspore_gpr.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                    install(FILES ${grpc_LIBPATH}/libmindspore_upb.so.15.0.0 DESTINATION
-                            ${RUNTIME_LIB_DIR} RENAME libmindspore_upb.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                    install(FILES ${grpc_LIBPATH}/libmindspore_address_sorting.so.15.0.0 DESTINATION ${RUNTIME_LIB_DIR}
-                            RENAME libmindspore_address_sorting.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                    install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpc++.so.1.36.1 DESTINATION ${RUNTIME_LIB_DIR}
+                            RENAME libluojianet_ms_grpc++.so.1 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                    install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpc.so.15.0.0 DESTINATION
+                            ${RUNTIME_LIB_DIR} RENAME libluojianet_ms_grpc.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                    install(FILES ${grpc_LIBPATH}/libluojianet_ms_gpr.so.15.0.0 DESTINATION
+                            ${RUNTIME_LIB_DIR} RENAME libluojianet_ms_gpr.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                    install(FILES ${grpc_LIBPATH}/libluojianet_ms_upb.so.15.0.0 DESTINATION
+                            ${RUNTIME_LIB_DIR} RENAME libluojianet_ms_upb.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                    install(FILES ${grpc_LIBPATH}/libluojianet_ms_address_sorting.so.15.0.0 DESTINATION ${RUNTIME_LIB_DIR}
+                            RENAME libluojianet_ms_address_sorting.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
                     ## Public header files for minddata
                     install(
-                            FILES ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/config.h
-                            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/constants.h
-                            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/execute.h
-                            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/text.h
-                            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/transforms.h
-                            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision.h
-                            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision_lite.h
-                            ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision_ascend.h
+                            FILES ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/config.h
+                            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/constants.h
+                            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/execute.h
+                            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/text.h
+                            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/transforms.h
+                            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision.h
+                            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision_lite.h
+                            ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision_ascend.h
                             DESTINATION ${RUNTIME_INC_DIR}/dataset COMPONENT ${RUNTIME_COMPONENT_NAME})
                 endif()
             endif()
 
             if(MSLITE_ENABLE_DPICO_ATC_ADAPTER)
-                install(FILES ${TOP_DIR}/mindspore/lite/build/tools/converter/adapter/dpico/libdpico_atc_adapter.so
+                install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/converter/adapter/dpico/libdpico_atc_adapter.so
                         DESTINATION ${CONVERTER_ROOT_DIR}/providers/SD3403 COMPONENT ${RUNTIME_COMPONENT_NAME})
                 if(MSLITE_ENABLE_TOOLS)
                     install(TARGETS ${BECHCHMARK_NAME} RUNTIME DESTINATION ${BENCHMARK_ROOT_DIR}
@@ -393,7 +393,7 @@ if(PLATFORM_ARM64)
                         COMPONENT ${RUNTIME_COMPONENT_NAME})
             endif()
             if(MSLITE_ENABLE_RUNTIME_CONVERT)
-                install(FILES ${TOP_DIR}/mindspore/lite/build/tools/converter/registry/libmslite_converter_plugin.so
+                install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/converter/registry/libmslite_converter_plugin.so
                         DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
 
                 install(FILES ${opencv_LIBPATH}/libopencv_core.so.4.5.2
@@ -409,11 +409,11 @@ if(PLATFORM_ARM64)
         endif()
     endif()
     if(MSLITE_ENABLE_TESTCASES)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/test/lite-test DESTINATION ${TEST_CASE_DIR}
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/test/lite-test DESTINATION ${TEST_CASE_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/build/src/ DESTINATION ${TEST_CASE_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/build/src/ DESTINATION ${TEST_CASE_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.so")
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/build/minddata/ DESTINATION ${TEST_CASE_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/build/minddata/ DESTINATION ${TEST_CASE_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.so")
         install(FILES ${JPEGTURBO_LIB_LIST} DESTINATION ${TEST_CASE_DIR})
         if(SUPPORT_NPU)
@@ -442,41 +442,41 @@ elseif(PLATFORM_ARM32)
                     DESTINATION ${RUNTIME_DIR}/third_party/hiai_ddk/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
         endif()
     endif()
-    install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/registry/ DESTINATION ${RUNTIME_INC_DIR}/registry
+    install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/registry/ DESTINATION ${RUNTIME_INC_DIR}/registry
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "register_kernel_interface.h"
             PATTERN "register_kernel.h")
     if(SUPPORT_TRAIN)
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "registry*" EXCLUDE)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_TRAIN_LIB_NAME}.so DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_TRAIN_LIB_NAME}.so DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_TRAIN_LIB_NAME}.a DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_TRAIN_LIB_NAME}.a DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     else()
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "train*" EXCLUDE
                 PATTERN "registry*" EXCLUDE)
     endif()
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/model_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/model_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/ops_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/ops_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/ops_types_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/ops_types_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_LIB_NAME}.so DESTINATION ${RUNTIME_LIB_DIR}
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_LIB_NAME}.so DESTINATION ${RUNTIME_LIB_DIR}
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_LIB_NAME}.a DESTINATION ${RUNTIME_LIB_DIR}
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_LIB_NAME}.a DESTINATION ${RUNTIME_LIB_DIR}
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     if(ENABLE_MODEL_OBF)
-        install(FILES ${TOP_DIR}/mindspore/lite/tools/obfuscator/lib/android-aarch32/libmsdeobfuscator-lite.so
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/tools/obfuscator/lib/android-aarch32/libmsdeobfuscator-lite.so
                 DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     endif()
-    install(FILES ${TOP_DIR}/mindspore/core/ir/dtype/type_id.h DESTINATION ${RUNTIME_INC_DIR}/ir/dtype
+    install(FILES ${TOP_DIR}/luojianet_ms/core/ir/dtype/type_id.h DESTINATION ${RUNTIME_INC_DIR}/ir/dtype
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     install(FILES
-            ${TOP_DIR}/mindspore/core/mindapi/base/format.h
-            ${TOP_DIR}/mindspore/core/mindapi/base/type_id.h
-            ${TOP_DIR}/mindspore/core/mindapi/base/types.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/format.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/type_id.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/types.h
             DESTINATION ${RUNTIME_INC_DIR}/mindapi/base
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     install(DIRECTORY ${TOP_DIR}/include/api/ DESTINATION ${RUNTIME_INC_DIR}/api
@@ -492,16 +492,16 @@ elseif(PLATFORM_ARM32)
                     DESTINATION ${BENCHMARK_ROOT_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
             if(TARGET_HIMIX)
                 if(${MSLITE_REGISTRY_DEVICE}  STREQUAL "Hi3516D" OR ${MSLITE_REGISTRY_DEVICE}  STREQUAL "Hi3519A")
-                    install(FILES ${TOP_DIR}/mindspore/lite/build/tools/benchmark/nnie/${MSLITE_NNIE_LIB_NAME}.so
+                    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/benchmark/nnie/${MSLITE_NNIE_LIB_NAME}.so
                             DESTINATION ${PROVIDERS_LIB_DIR}/${MSLITE_REGISTRY_DEVICE}
                             COMPONENT ${RUNTIME_COMPONENT_NAME})
                     install(FILES
-                            ${TOP_DIR}/mindspore/lite/build/tools/benchmark/nnie_proposal/${MSLITE_PROPOSAL_LIB_NAME}.so
+                            ${TOP_DIR}/luojianet_ms/lite/build/tools/benchmark/nnie_proposal/${MSLITE_PROPOSAL_LIB_NAME}.so
                             DESTINATION ${PROVIDERS_LIB_DIR}/${MSLITE_REGISTRY_DEVICE}
                             COMPONENT ${RUNTIME_COMPONENT_NAME})
                     if(${MSLITE_REGISTRY_DEVICE}  STREQUAL "Hi3516D")
                         install(FILES
-                                ${TOP_DIR}/mindspore/lite/providers/nnie/third_patry/${MICRO_NNIE_LIB_NAME}.so
+                                ${TOP_DIR}/luojianet_ms/lite/providers/nnie/third_patry/${MICRO_NNIE_LIB_NAME}.so
                                 DESTINATION ${PROVIDERS_LIB_DIR}/${MSLITE_REGISTRY_DEVICE}
                                 COMPONENT ${RUNTIME_COMPONENT_NAME})
                     endif()
@@ -518,14 +518,14 @@ elseif(WIN32)
     file(GLOB LIB_LIST ${CXX_DIR}/libstdc++-6.dll ${CXX_DIR}/libwinpthread-1.dll
             ${CXX_DIR}/libssp-0.dll ${CXX_DIR}/libgcc_s_*-1.dll)
     if(MSLITE_ENABLE_CONVERTER)
-        install(FILES ${TOP_DIR}/build/mindspore/tools/converter/converter_lite.exe
+        install(FILES ${TOP_DIR}/build/luojianet_ms/tools/converter/converter_lite.exe
                 DESTINATION ${CONVERTER_ROOT_DIR}/converter COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${LIB_LIST} DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/build/mindspore/tools/converter/registry/libmslite_converter_plugin.dll
+        install(FILES ${TOP_DIR}/build/luojianet_ms/tools/converter/registry/libmslite_converter_plugin.dll
                 DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${glog_LIBPATH}/../bin/libglog.dll DESTINATION ${CONVERTER_ROOT_DIR}/lib
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(TARGETS mindspore_core DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
+        install(TARGETS luojianet_ms_core DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
         file(GLOB_RECURSE OPENCV_LIB_LIST
                 ${opencv_LIBPATH}/../bin/libopencv_core*
                 ${opencv_LIBPATH}/../bin/libopencv_imgcodecs*
@@ -539,7 +539,7 @@ elseif(WIN32)
     endif()
     if(MSLITE_ENABLE_TOOLS)
         if(MSVC)
-            install(FILES ${TOP_DIR}/build/mindspore/tools/benchmark/${BENCHMARK_NAME}.exe
+            install(FILES ${TOP_DIR}/build/luojianet_ms/tools/benchmark/${BENCHMARK_NAME}.exe
                     DESTINATION ${BENCHMARK_ROOT_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
         else()
             install(TARGETS ${BENCHMARK_NAME} RUNTIME DESTINATION ${BENCHMARK_ROOT_DIR}
@@ -550,29 +550,29 @@ elseif(WIN32)
                     ${RUNTIME_COMPONENT_NAME})
         endif()
     endif()
-    install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/registry/ DESTINATION ${RUNTIME_INC_DIR}/registry
+    install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/registry/ DESTINATION ${RUNTIME_INC_DIR}/registry
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "register_kernel_interface.h"
             PATTERN "register_kernel.h")
     if(SUPPORT_TRAIN)
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "registry*" EXCLUDE)
     else()
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "train*" EXCLUDE
                 PATTERN "registry*" EXCLUDE)
     endif()
-    install(FILES ${TOP_DIR}/build/mindspore/schema/model_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/build/luojianet_ms/schema/model_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/build/mindspore/schema/ops_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/build/luojianet_ms/schema/ops_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/build/mindspore/schema/ops_types_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/build/luojianet_ms/schema/ops_types_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/core/ir/dtype/type_id.h DESTINATION ${RUNTIME_INC_DIR}/ir/dtype
+    install(FILES ${TOP_DIR}/luojianet_ms/core/ir/dtype/type_id.h DESTINATION ${RUNTIME_INC_DIR}/ir/dtype
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     install(FILES
-            ${TOP_DIR}/mindspore/core/mindapi/base/format.h
-            ${TOP_DIR}/mindspore/core/mindapi/base/type_id.h
-            ${TOP_DIR}/mindspore/core/mindapi/base/types.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/format.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/type_id.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/types.h
             DESTINATION ${RUNTIME_INC_DIR}/mindapi/base
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     install(DIRECTORY ${TOP_DIR}/include/api/ DESTINATION ${RUNTIME_INC_DIR}/api
@@ -580,64 +580,64 @@ elseif(WIN32)
     install(DIRECTORY ${TOP_DIR}/include/c_api/ DESTINATION ${RUNTIME_INC_DIR}/c_api
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
     if(MSVC)
-        install(FILES ${TOP_DIR}/build/mindspore/src/${MINDSPORE_LITE_LIB_NAME}.lib DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/build/luojianet_ms/src/${LUOJIANET_MS_LITE_LIB_NAME}.lib DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/build/mindspore/src/${MINDSPORE_LITE_LIB_NAME}.dll DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/build/luojianet_ms/src/${LUOJIANET_MS_LITE_LIB_NAME}.dll DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/build/mindspore/src/${MINDSPORE_LITE_LIB_NAME}.dll.lib DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/build/luojianet_ms/src/${LUOJIANET_MS_LITE_LIB_NAME}.dll.lib DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
     else()
-        install(FILES ${TOP_DIR}/build/mindspore/src/${MINDSPORE_LITE_LIB_NAME}.a DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/build/luojianet_ms/src/${LUOJIANET_MS_LITE_LIB_NAME}.a DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/build/mindspore/src/${MINDSPORE_LITE_LIB_NAME}.dll.a DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/build/luojianet_ms/src/${LUOJIANET_MS_LITE_LIB_NAME}.dll.a DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/build/mindspore/src/${MINDSPORE_LITE_LIB_NAME}.dll DESTINATION ${RUNTIME_LIB_DIR}
+        install(FILES ${TOP_DIR}/build/luojianet_ms/src/${LUOJIANET_MS_LITE_LIB_NAME}.dll DESTINATION ${RUNTIME_LIB_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${LIB_LIST} DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     endif()
 else()
-    install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/registry/ DESTINATION ${RUNTIME_INC_DIR}/registry
+    install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/registry/ DESTINATION ${RUNTIME_INC_DIR}/registry
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "register_kernel_interface.h"
             PATTERN "register_kernel.h")
     if(SUPPORT_TRAIN)
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "registry*" EXCLUDE)
-        install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_TRAIN_LIB_NAME}.so DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_TRAIN_LIB_NAME}.so DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_TRAIN_LIB_NAME}.a DESTINATION
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_TRAIN_LIB_NAME}.a DESTINATION
                 ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     else()
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${RUNTIME_INC_DIR}
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "train*" EXCLUDE
                 PATTERN "registry*" EXCLUDE)
     endif()
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/model_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/model_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/ops_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/ops_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/schema/ops_types_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/schema/ops_types_generated.h DESTINATION ${RUNTIME_INC_DIR}/schema
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/core/ir/dtype/type_id.h DESTINATION ${RUNTIME_INC_DIR}/ir/dtype
+    install(FILES ${TOP_DIR}/luojianet_ms/core/ir/dtype/type_id.h DESTINATION ${RUNTIME_INC_DIR}/ir/dtype
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     install(FILES
-            ${TOP_DIR}/mindspore/core/mindapi/base/format.h
-            ${TOP_DIR}/mindspore/core/mindapi/base/type_id.h
-            ${TOP_DIR}/mindspore/core/mindapi/base/types.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/format.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/type_id.h
+            ${TOP_DIR}/luojianet_ms/core/mindapi/base/types.h
             DESTINATION ${RUNTIME_INC_DIR}/mindapi/base
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     install(DIRECTORY ${TOP_DIR}/include/api/ DESTINATION ${RUNTIME_INC_DIR}/api
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "ops*" EXCLUDE)
     install(DIRECTORY ${TOP_DIR}/include/c_api/ DESTINATION ${RUNTIME_INC_DIR}/c_api
             COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
-    install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_LIB_NAME}.so DESTINATION ${RUNTIME_LIB_DIR}
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_LIB_NAME}.so DESTINATION ${RUNTIME_LIB_DIR}
             COMPONENT ${RUNTIME_COMPONENT_NAME})
-    install(FILES ${TOP_DIR}/mindspore/lite/build/src/${MINDSPORE_LITE_LIB_NAME}.a DESTINATION ${RUNTIME_LIB_DIR}
+    install(FILES ${TOP_DIR}/luojianet_ms/lite/build/src/${LUOJIANET_MS_LITE_LIB_NAME}.a DESTINATION ${RUNTIME_LIB_DIR}
             COMPONENT ${RUNTIME_COMPONENT_NAME})
     if(ENABLE_MODEL_OBF)
-        install(FILES ${TOP_DIR}/mindspore/lite/tools/obfuscator/bin/linux-x64/msobfuscator
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/tools/obfuscator/bin/linux-x64/msobfuscator
                 DESTINATION ${OBFUSCATOR_ROOT_DIR} PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                 GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/tools/obfuscator/lib/linux-x64/libmsdeobfuscator-lite.so
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/tools/obfuscator/lib/linux-x64/libmsdeobfuscator-lite.so
                 DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
     endif()
     if(MSLITE_ENABLE_RUNTIME_GLOG)
@@ -645,7 +645,7 @@ else()
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
     endif()
     if(MSLITE_ENABLE_CONVERTER)
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/include/ DESTINATION ${CONVERTER_ROOT_DIR}/include
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/include/ DESTINATION ${CONVERTER_ROOT_DIR}/include
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h"
                 PATTERN "train*" EXCLUDE PATTERN "delegate.h" EXCLUDE PATTERN "lite_session.h" EXCLUDE)
         install(FILES ${API_HEADER}  DESTINATION ${CONVERTER_ROOT_DIR}/include/api
@@ -664,11 +664,11 @@ else()
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${IR_HEADER} DESTINATION ${CONVERTER_ROOT_DIR}/include/core/ir
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(DIRECTORY ${TOP_DIR}/mindspore/core/ops/ DESTINATION ${CONVERTER_ROOT_DIR}/include/core/ops
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/core/ops/ DESTINATION ${CONVERTER_ROOT_DIR}/include/core/ops
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
         install(FILES ${UTILS_HEADER} DESTINATION ${CONVERTER_ROOT_DIR}/include/core/utils
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(DIRECTORY ${TOP_DIR}/mindspore/lite/build/schema/ DESTINATION ${CONVERTER_ROOT_DIR}/include/schema
+        install(DIRECTORY ${TOP_DIR}/luojianet_ms/lite/build/schema/ DESTINATION ${CONVERTER_ROOT_DIR}/include/schema
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "schema_generated.h" EXCLUDE)
         install(DIRECTORY ${flatbuffers_INC}/ DESTINATION ${CONVERTER_ROOT_DIR}/include/third_party
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
@@ -679,11 +679,11 @@ else()
                 COMPONENT ${RUNTIME_COMPONENT_NAME} FILES_MATCHING PATTERN "*.h")
         install(TARGETS converter_lite RUNTIME DESTINATION ${CONVERTER_ROOT_DIR}/converter
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/tools/converter/registry/libmslite_converter_plugin.so
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/converter/registry/libmslite_converter_plugin.so
                 DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${glog_LIBPATH}/libglog.so.0.4.0 DESTINATION ${CONVERTER_ROOT_DIR}/lib RENAME libglog.so.0
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(TARGETS mindspore_core DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
+        install(TARGETS luojianet_ms_core DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
         install(FILES ${opencv_LIBPATH}/libopencv_core.so.4.5.2
                 DESTINATION ${CONVERTER_ROOT_DIR}/lib RENAME libopencv_core.so.4.5
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
@@ -695,15 +695,15 @@ else()
                 COMPONENT ${RUNTIME_COMPONENT_NAME})
 
         if(MSLITE_ENABLE_ACL)
-            set(LITE_ACL_DIR ${TOP_DIR}/mindspore/lite/build/tools/converter/adapter/acl)
-            install(FILES ${LITE_ACL_DIR}/mindspore_shared_lib/libmindspore_shared_lib.so
+            set(LITE_ACL_DIR ${TOP_DIR}/luojianet_ms/lite/build/tools/converter/adapter/acl)
+            install(FILES ${LITE_ACL_DIR}/luojianet_ms_shared_lib/libluojianet_ms_shared_lib.so
                     DESTINATION ${CONVERTER_ROOT_DIR}/lib COMPONENT ${RUNTIME_COMPONENT_NAME})
             if(MSLITE_ENABLE_RUNTIME_CONVERT)
-                install(FILES ${LITE_ACL_DIR}/mindspore_shared_lib/libmindspore_shared_lib.so
+                install(FILES ${LITE_ACL_DIR}/luojianet_ms_shared_lib/libluojianet_ms_shared_lib.so
                         DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
                 install(FILES ${glog_LIBPATH}/libglog.so.0.4.0 DESTINATION ${RUNTIME_LIB_DIR} RENAME libglog.so.0
                         COMPONENT ${RUNTIME_COMPONENT_NAME})
-                install(TARGETS mindspore_core DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
+                install(TARGETS luojianet_ms_core DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
             endif()
             if(MSLITE_MINDDATA_IMPLEMENT STREQUAL "cloud" AND MSLITE_ENABLE_RUNTIME_CONVERT)
                 file(GLOB DATA_ENGINE_LIB_LIST ${LITE_ACL_DIR}/_c_dataengine/*.so)
@@ -724,32 +724,32 @@ else()
                         DESTINATION ${RUNTIME_LIB_DIR} RENAME libicudata.so.69 COMPONENT ${RUNTIME_COMPONENT_NAME})
                 install(FILES ${icu4c_LIBPATH}/libicui18n.so.69.1
                         DESTINATION ${RUNTIME_LIB_DIR} RENAME libicui18n.so.69 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                install(FILES ${grpc_LIBPATH}/libmindspore_grpc++.so.1.36.1 DESTINATION ${RUNTIME_LIB_DIR}
-                        RENAME libmindspore_grpc++.so.1 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                install(FILES ${grpc_LIBPATH}/libmindspore_grpc.so.15.0.0 DESTINATION
-                        ${RUNTIME_LIB_DIR} RENAME libmindspore_grpc.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                install(FILES ${grpc_LIBPATH}/libmindspore_gpr.so.15.0.0 DESTINATION
-                        ${RUNTIME_LIB_DIR} RENAME libmindspore_gpr.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                install(FILES ${grpc_LIBPATH}/libmindspore_upb.so.15.0.0 DESTINATION
-                        ${RUNTIME_LIB_DIR} RENAME libmindspore_upb.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
-                install(FILES ${grpc_LIBPATH}/libmindspore_address_sorting.so.15.0.0 DESTINATION ${RUNTIME_LIB_DIR}
-                        RENAME libmindspore_address_sorting.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpc++.so.1.36.1 DESTINATION ${RUNTIME_LIB_DIR}
+                        RENAME libluojianet_ms_grpc++.so.1 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                install(FILES ${grpc_LIBPATH}/libluojianet_ms_grpc.so.15.0.0 DESTINATION
+                        ${RUNTIME_LIB_DIR} RENAME libluojianet_ms_grpc.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                install(FILES ${grpc_LIBPATH}/libluojianet_ms_gpr.so.15.0.0 DESTINATION
+                        ${RUNTIME_LIB_DIR} RENAME libluojianet_ms_gpr.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                install(FILES ${grpc_LIBPATH}/libluojianet_ms_upb.so.15.0.0 DESTINATION
+                        ${RUNTIME_LIB_DIR} RENAME libluojianet_ms_upb.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
+                install(FILES ${grpc_LIBPATH}/libluojianet_ms_address_sorting.so.15.0.0 DESTINATION ${RUNTIME_LIB_DIR}
+                        RENAME libluojianet_ms_address_sorting.so.15 COMPONENT ${RUNTIME_COMPONENT_NAME})
                 ## Public header files for minddata
                 install(
-                        FILES ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/config.h
-                        ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/constants.h
-                        ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/execute.h
-                        ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/text.h
-                        ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/transforms.h
-                        ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision.h
-                        ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision_lite.h
-                        ${TOP_DIR}/mindspore/ccsrc/minddata/dataset/include/dataset/vision_ascend.h
+                        FILES ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/config.h
+                        ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/constants.h
+                        ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/execute.h
+                        ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/text.h
+                        ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/transforms.h
+                        ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision.h
+                        ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision_lite.h
+                        ${TOP_DIR}/luojianet_ms/ccsrc/minddata/dataset/include/dataset/vision_ascend.h
                         DESTINATION ${RUNTIME_INC_DIR}/dataset COMPONENT ${RUNTIME_COMPONENT_NAME})
             endif()
         endif()
 
         if(MSLITE_ENABLE_DPICO_ATC_ADAPTER)
-            install(FILES ${TOP_DIR}/mindspore/lite/build/tools/converter/adapter/dpico/libdpico_atc_adapter.so
+            install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/converter/adapter/dpico/libdpico_atc_adapter.so
                     DESTINATION ${CONVERTER_ROOT_DIR}/providers/SD3403 COMPONENT ${RUNTIME_COMPONENT_NAME})
             if(MSLITE_ENABLE_TOOLS)
                 install(TARGETS ${BECHCHMARK_NAME} RUNTIME DESTINATION ${BENCHMARK_ROOT_DIR}
@@ -764,7 +764,7 @@ else()
                     COMPONENT ${RUNTIME_COMPONENT_NAME})
         endif()
         if(MSLITE_ENABLE_RUNTIME_CONVERT)
-            install(FILES ${TOP_DIR}/mindspore/lite/build/tools/converter/registry/libmslite_converter_plugin.so
+            install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/converter/registry/libmslite_converter_plugin.so
                     DESTINATION ${RUNTIME_LIB_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
 
             install(FILES ${opencv_LIBPATH}/libopencv_core.so.4.5.2
@@ -790,14 +790,14 @@ else()
                     ${RUNTIME_COMPONENT_NAME})
         endif()
         install(TARGETS cropper RUNTIME DESTINATION ${CROPPER_ROOT_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/tools/cropper/cropper_mapping_cpu.cfg
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/cropper/cropper_mapping_cpu.cfg
                 DESTINATION ${CROPPER_ROOT_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/tools/cropper/cropper_mapping_gpu.cfg
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/cropper/cropper_mapping_gpu.cfg
                 DESTINATION ${CROPPER_ROOT_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
-        install(FILES ${TOP_DIR}/mindspore/lite/build/tools/cropper/cropper_mapping_npu.cfg
+        install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/cropper/cropper_mapping_npu.cfg
                 DESTINATION ${CROPPER_ROOT_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
         if(SUPPORT_TRAIN)
-            install(FILES ${TOP_DIR}/mindspore/lite/build/tools/cropper/cropper_mapping_cpu_train.cfg
+            install(FILES ${TOP_DIR}/luojianet_ms/lite/build/tools/cropper/cropper_mapping_cpu_train.cfg
                     DESTINATION ${CROPPER_ROOT_DIR} COMPONENT ${RUNTIME_COMPONENT_NAME})
         endif()
     endif()

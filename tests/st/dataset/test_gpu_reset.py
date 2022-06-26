@@ -14,13 +14,13 @@
 # ============================================================================
 import pytest
 
-from mindspore.ops import operations as P
-import mindspore.nn as nn
-from mindspore.train import Model
-from mindspore.common import set_seed
-import mindspore.dataset as ds
-from mindspore.train.callback import Callback
-from mindspore import log as logger
+from luojianet_ms.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms.train import Model
+from luojianet_ms.common import set_seed
+import luojianet_ms.dataset as ds
+from luojianet_ms.train.callback import Callback
+from luojianet_ms import log as logger
 
 set_seed(1)
 

@@ -8,8 +8,8 @@ HASH_SRC=${BUILD_DIR}/gentid.cc
 
 mkdir -p ${BUILD_DIR}
 echo "#include <iostream>"  > ${HASH_SRC}
-echo "#include \"${MS_DIR}/mindspore/core/utils/hashing.h\""  >> ${HASH_SRC}
-echo "int main(int argc, char *argv[0]) { std::cout << mindspore::ConstStringHash(argv[1]) << std::endl; }"  >> ${HASH_SRC}
+echo "#include \"${MS_DIR}/luojianet_ms/core/utils/hashing.h\""  >> ${HASH_SRC}
+echo "int main(int argc, char *argv[0]) { std::cout << luojianet_ms::ConstStringHash(argv[1]) << std::endl; }"  >> ${HASH_SRC}
 g++ -std=c++17 -o ${HASH_EXE} ${HASH_SRC}
 
 BASE_TID=$(${HASH_EXE} Base)

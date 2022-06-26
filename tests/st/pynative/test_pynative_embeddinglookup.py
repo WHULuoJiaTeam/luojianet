@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +16,9 @@
 """ test_pynative_embeddinglookup """
 import pytest
 import numpy as np
-import mindspore.ops.operations as op
-from mindspore import Tensor, context
-from mindspore.nn import Cell
+import luojianet_ms.ops.operations as op
+from luojianet_ms import Tensor, context
+from luojianet_ms.nn import Cell
 
 def setup_module():
     context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
@@ -60,7 +61,7 @@ class EmbeddingLookupFactory(OpsFactory):
         self.offset = offset
         self.output_grad_np = None
 
-    def forward_mindspore_impl(self):
+    def forward_luojianet_ms_impl(self):
         net = EmbeddingLookup(self.offset)
         out = net(Tensor(self.input_np), Tensor(self.indices_np))
         return out.asnumpy()
@@ -71,6 +72,6 @@ class EmbeddingLookupFactory(OpsFactory):
 @pytest.mark.env_onecard
 def test_embeddinglookup_indices_outrange():
     fact = EmbeddingLookupFactory(params_shape=(2, 4), indices_shape=(2, 3), low=1, high=3, offset=10, dtype=np.int8)
-    out = fact.forward_mindspore_impl()
+    out = fact.forward_luojianet_ms_impl()
     out_expect = np.zeros((2, 3, 4))
     np.allclose(out_expect, out)

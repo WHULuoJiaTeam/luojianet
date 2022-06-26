@@ -22,7 +22,7 @@
 #include "frontend/parallel/ops_info/activation_info.h"
 #include "frontend/parallel/device_manager.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class Activation;
@@ -57,10 +57,10 @@ void TestActivation::SetUp() {
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
   ValuePtr relu = MakeValue(std::string("relu"));
-  mindspore::HashMap<std::string, ValuePtr> relu_attr = {{"activation_type", relu}};
+  luojianet_ms::HashMap<std::string, ValuePtr> relu_attr = {{"activation_type", relu}};
   ValuePtr sm = MakeValue(std::string("softmax"));
   ValuePtr axix = MakeValue(std::int64_t(2));
-  mindspore::HashMap<std::string, ValuePtr> softmax_attr = {{"activation_type", sm}, {"axis", axix}};
+  luojianet_ms::HashMap<std::string, ValuePtr> softmax_attr = {{"activation_type", sm}, {"axis", axix}};
 
   Shapes relu_inputs_shape = {{2, 4, 8, 16}};
   Shapes relu_outputs_shape = {{2, 4, 8, 16}};
@@ -117,4 +117,4 @@ TEST_F(TestActivation, test_softmax_strategies) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

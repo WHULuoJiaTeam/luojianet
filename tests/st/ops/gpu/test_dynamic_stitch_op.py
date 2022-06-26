@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops.operations import _inner_ops as ops
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops.operations import _inner_ops as ops
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
@@ -41,12 +42,12 @@ def test_net_int32():
     Description: test cases for dynamicstitch.
     Expectation: the result match expected array.
     """
-    x1 = Tensor([6], mindspore.int32)
-    x2 = Tensor(np.array([4, 1]), mindspore.int32)
-    x3 = Tensor(np.array([[5, 2], [0, 3]]), mindspore.int32)
-    y1 = Tensor(np.array([[61, 62]]), mindspore.int32)
-    y2 = Tensor(np.array([[41, 42], [11, 12]]), mindspore.int32)
-    y3 = Tensor(np.array([[[51, 52], [21, 22]], [[1, 2], [31, 32]]]), mindspore.int32)
+    x1 = Tensor([6], luojianet_ms.int32)
+    x2 = Tensor(np.array([4, 1]), luojianet_ms.int32)
+    x3 = Tensor(np.array([[5, 2], [0, 3]]), luojianet_ms.int32)
+    y1 = Tensor(np.array([[61, 62]]), luojianet_ms.int32)
+    y2 = Tensor(np.array([[41, 42], [11, 12]]), luojianet_ms.int32)
+    y3 = Tensor(np.array([[[51, 52], [21, 22]], [[1, 2], [31, 32]]]), luojianet_ms.int32)
     expected = np.array([[1, 2], [11, 12], [21, 22],
                          [31, 32], [41, 42], [51, 52], [61, 62]]).astype(np.int32)
 

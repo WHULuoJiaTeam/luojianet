@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,13 +20,13 @@
 
 import os
 
-import mindspore.common.dtype as mstype
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.ops import operations as P
-from mindspore.nn.optim import AdamWeightDecay
-from mindspore.train.loss_scale_manager import DynamicLossScaleManager
-from mindspore.nn import learning_rate_schedule as lr_schedules
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.nn.optim import AdamWeightDecay
+from luojianet_ms.train.loss_scale_manager import DynamicLossScaleManager
+from luojianet_ms.nn import learning_rate_schedule as lr_schedules
 from tests.models.official.nlp.bert.src import BertConfig, BertNetworkWithLoss, BertTrainOneStepCell, BertTrainOneStepWithLossScaleCell
 from ...dataset_mock import MindData
 from ...ops_common import nn, np, batch_tuple_tensor, build_construct_graph

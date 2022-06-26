@@ -22,7 +22,7 @@
 #include "ps/ps_context.h"
 #include "utils/ms_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ps {
 namespace core {
 class TestClusterConfig : public UT::Common {
@@ -47,4 +47,4 @@ TEST_F(TestClusterConfig, HeartbeatInterval) {
 }
 }  // namespace core
 }  // namespace ps
-}  // namespace mindspore
+}  // namespace luojianet_ms

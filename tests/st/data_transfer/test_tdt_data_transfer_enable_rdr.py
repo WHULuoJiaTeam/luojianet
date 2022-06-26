@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,14 +18,14 @@ import tempfile
 import json
 import pytest
 
-import mindspore.context as context
+import luojianet_ms.context as context
 from tests.security_utils import security_off_wrap
 from .test_tdt_data_transfer import test_tdt_consume_beyond_produce
 
 # create config file for RDR
 def create_config_file(path):
     data_dict = {'rdr': {'enable': True, 'path': path}}
-    filename = os.path.join(path, "mindspore_config.json")
+    filename = os.path.join(path, "luojianet_ms_config.json")
     with open(filename, "w") as f:
         json.dump(data_dict, f)
     return filename

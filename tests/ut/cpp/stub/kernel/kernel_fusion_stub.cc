@@ -16,7 +16,7 @@
 #include "plugin/device/ascend/kernel/tbe/tbe_kernel_mod.h"
 #include "plugin/device/ascend/kernel/tbe/tbe_kernel_compile.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 namespace ascend {
 std::string TbeKernelCompileManager::TbeOpSelectFormat(const CNodePtr &node) { return std::string(); }
@@ -39,4 +39,4 @@ JsonNameMap TbeKernelCompileManager::TbeFusionOpCompile(const std::vector<Fusion
 }
 }  // namespace ascend
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -11,10 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as vision
-from mindspore import log as logger
-from mindspore.dataset.vision import Inter
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as vision
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.vision import Inter
 
 DATA_DIR = "../data/dataset/testCelebAData/"
 

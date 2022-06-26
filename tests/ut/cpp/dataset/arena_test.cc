@@ -21,7 +21,7 @@
 #include "common/common.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestArena : public UT::Common {
  public:

@@ -50,7 +50,7 @@ else()
   set(PROTOBUF_PATCH_ROOT ${CMAKE_SOURCE_DIR}/third_party/patch/protobuf)
 endif()
 
-mindspore_add_pkg(protobuf_arm
+luojianet_ms_add_pkg(protobuf_arm
         VER 3.13.0
         LIBS protobuf
         URL ${REQ_URL}
@@ -66,7 +66,7 @@ mindspore_add_pkg(protobuf_arm
         PATCHES ${PROTOBUF_PATCH_ROOT}/CVE-2021-22570.patch)
 
 include_directories(${protobuf_arm_INC})
-add_library(mindspore::protobuf_arm ALIAS protobuf_arm::protobuf)
+add_library(luojianet_ms::protobuf_arm ALIAS protobuf_arm::protobuf)
 set(CMAKE_CXX_FLAGS  ${_ms_tmp_CMAKE_CXX_FLAGS})
 if(MSVC)
     set(CMAKE_STATIC_LIBRARY_PREFIX, ${_ms_tmp_CMAKE_STATIC_LIBRARY_PREFIX})

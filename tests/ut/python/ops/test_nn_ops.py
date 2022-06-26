@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,23 +17,23 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore.common.initializer import initializer
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
-from mindspore.ops import functional as F
-from mindspore.ops.operations import _grad_ops as G
-from mindspore.ops import prim_attr_register, PrimitiveWithInfer
-from mindspore._c_expression import security
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops.operations import _grad_ops as G
+from luojianet_ms.ops import prim_attr_register, PrimitiveWithInfer
+from luojianet_ms._c_expression import security
 from tests.security_utils import security_off_wrap
 from ..ut_filter import non_graph_engine
-from ....mindspore_test_framework.mindspore_test import mindspore_test
-from ....mindspore_test_framework.pipeline.forward.compile_forward \
+from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
+from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config
-from ....mindspore_test_framework.pipeline.forward.verify_exception \
+from ....luojianet_ms_test_framework.pipeline.forward.verify_exception \
     import pipeline_for_verify_exception_for_case_by_case_config
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -529,7 +530,7 @@ test_cases = [
     }),
     ('L2Normalize', {
         'block': L2NormalizeNet(),
-        'desc_inputs': [Tensor(np.array([[1.0, 2, 3], [4.0, 5, 6], [7.0, 8, 9]]), mindspore.float32)],
+        'desc_inputs': [Tensor(np.array([[1.0, 2, 3], [4.0, 5, 6], [7.0, 8, 9]]), luojianet_ms.float32)],
     }),
     ('FusedBatchNormGrad', {
         'block': FusedBatchNormGrad(nn.BatchNorm2d(num_features=512, eps=1e-5, momentum=0.1)),
@@ -754,7 +755,7 @@ test_cases_for_verify_exception = [
 
 @security_off_wrap
 @non_graph_engine
-@mindspore_test(pipeline_for_verify_exception_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_verify_exception_for_case_by_case_config)
 def test_summary_nn_ops():
     if security.enable_security():
         return []
@@ -780,12 +781,12 @@ def test_summary_nn_ops_security_on():
 
 
 @non_graph_engine
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
 def test_compile():
     context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
     return test_cases
 
 
-@mindspore_test(pipeline_for_verify_exception_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_verify_exception_for_case_by_case_config)
 def test_check_exception():
     return test_cases_for_verify_exception

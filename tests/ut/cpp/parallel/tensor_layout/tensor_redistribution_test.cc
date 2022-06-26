@@ -20,7 +20,7 @@
 #include "frontend/parallel/tensor_layout/tensor_redistribution.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestTensorRedistribution : public UT::Common {
@@ -207,4 +207,4 @@ TEST_F(TestTensorRedistribution, TestInferRedistribution3) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/adam_apply_one_with_decay_rule.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptimizeAdamApplyOneWithDecayRule : public BackendCommon {
  public:
@@ -240,4 +240,4 @@ TEST_F(TestHWOptimizeAdamApplyOneWithDecayRule, test_adam_apply_one_with_decay_a
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

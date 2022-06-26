@@ -17,7 +17,7 @@
 #include "common/py_func_graph_fetcher.h"
 #include "plugin/device/ascend/optimizer/ir_fusion/lamb_next_right_rule.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 
 class TestHWLambNextRightRule : public BackendCommon {
@@ -92,4 +92,4 @@ TEST_F(TestHWLambNextRightRule, test_lamb_next_right_rule_unmatched) {
   EXPECT_TRUE(CheckEqualGraph(origin_graph, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

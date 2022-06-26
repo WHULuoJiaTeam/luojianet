@@ -22,7 +22,7 @@
 #include "pipeline/jit/parse/parse.h"
 #include "include/common/debug/draw.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parse {
 class TestParser : public UT::Common {
  public:
@@ -369,4 +369,4 @@ TEST_F(TestParser, TestParserUndefinedVar) {
   EXPECT_THROW({ ParsePythonCode(fn_); }, std::runtime_error);
 }
 }  // namespace parse
-}  // namespace mindspore
+}  // namespace luojianet_ms

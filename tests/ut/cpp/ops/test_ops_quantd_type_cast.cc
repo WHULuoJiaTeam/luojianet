@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 
 class TestQuantDTypeCast : public UT::Common {
@@ -62,4 +62,4 @@ TEST_F(TestQuantDTypeCast, test_ops_quantd_type_cast1) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

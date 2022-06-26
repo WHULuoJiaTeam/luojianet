@@ -13,9 +13,9 @@
 # limitations under the License.
 # ==============================================================================
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.text as text
-import mindspore.dataset.vision.c_transforms as vision
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text as text
+import luojianet_ms.dataset.vision.c_transforms as vision
 
 DATA_DIR = "../data/dataset/testCOCO/train/"
 DATA_DIR_2 = "../data/dataset/testCOCO/train"

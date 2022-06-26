@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,11 +21,11 @@ import pytest
 import numpy as onp
 import scipy as osp
 
-import mindspore.nn as nn
-import mindspore.scipy as msp
-from mindspore import context, Tensor
-import mindspore.numpy as mnp
-from mindspore.scipy.linalg import det, solve_triangular
+import luojianet_ms.nn as nn
+import luojianet_ms.scipy as msp
+from luojianet_ms import context, Tensor
+import luojianet_ms.numpy as mnp
+from luojianet_ms.scipy.linalg import det, solve_triangular
 from tests.st.scipy_st.utils import match_array, create_full_rank_matrix, create_sym_pos_matrix, \
     create_random_rank_matrix
 

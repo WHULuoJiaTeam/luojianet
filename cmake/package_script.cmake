@@ -75,15 +75,15 @@ set(ENV{MS_PACKAGE_NAME} ${CPACK_MS_PACKAGE_NAME})
 set(ENV{COMMIT_ID} ${GIT_COMMIT_ID})
 
 file(GLOB DEBUG_SYM
-    ${MS_PACK_ROOT_DIR}/mindspore/*.so
-    ${MS_PACK_ROOT_DIR}/mindspore/lib/*.so
+    ${MS_PACK_ROOT_DIR}/luojianet_ms/*.so
+    ${MS_PACK_ROOT_DIR}/luojianet_ms/lib/*.so
 )
 
 file(GLOB DEBUG_STRIP_SYM
-    ${MS_PACK_ROOT_DIR}/mindspore/*.so
-    ${MS_PACK_ROOT_DIR}/mindspore/lib/*.so*
+    ${MS_PACK_ROOT_DIR}/luojianet_ms/*.so
+    ${MS_PACK_ROOT_DIR}/luojianet_ms/lib/*.so*
 )
-list(REMOVE_ITEM DEBUG_STRIP_SYM ${MS_PACK_ROOT_DIR}/mindspore/lib/libmindspore_aicpu_kernels.so)
+list(REMOVE_ITEM DEBUG_STRIP_SYM ${MS_PACK_ROOT_DIR}/luojianet_ms/lib/libluojianet_ms_aicpu_kernels.so)
 
 set(CMAKE_OBJCOPY $ENV{CROSS_COMPILE}objcopy)
 set(CMAKE_STRIP $ENV{CROSS_COMPILE}strip)
@@ -112,8 +112,8 @@ if("${CPACK_CMAKE_BUILD_TYPE}" STREQUAL "Release")
 endif()
 
 file(GLOB DEBUG_SYM_FILE
-    ${MS_PACK_ROOT_DIR}/mindspore/*.sym
-    ${MS_PACK_ROOT_DIR}/mindspore/lib/*.sym
+    ${MS_PACK_ROOT_DIR}/luojianet_ms/*.sym
+    ${MS_PACK_ROOT_DIR}/luojianet_ms/lib/*.sym
 )
 
 if(CPACK_ENABLE_SYM_FILE)
@@ -132,7 +132,7 @@ set(PACKAGE_NAME ${CPACK_MS_PACKAGE_NAME})
 if(NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
     string(REPLACE "-" "_" PACKAGE_NAME ${PACKAGE_NAME})
     execute_process(
-        COMMAND chmod -R 700 ${MS_PACK_ROOT_DIR}/mindspore/
+        COMMAND chmod -R 700 ${MS_PACK_ROOT_DIR}/luojianet_ms/
         COMMAND chmod -R 700 ${MS_PACK_ROOT_DIR}/${PACKAGE_NAME}.egg-info/
     )
 endif()

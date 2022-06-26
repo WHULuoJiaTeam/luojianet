@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,10 +16,10 @@
 from dataclasses import dataclass
 import numpy as np
 
-import mindspore as ms
-from mindspore.common.tensor import Tensor
-from mindspore.ops import Primitive
-from mindspore.ops import _constants as Constants
+import luojianet_ms as ms
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops import Primitive
+from luojianet_ms.ops import _constants as Constants
 from tests.ut.python.model.resnet import resnet50
 
 

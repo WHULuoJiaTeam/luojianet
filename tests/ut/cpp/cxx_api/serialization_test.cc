@@ -17,7 +17,7 @@
 #include "common/common_test.h"
 #include "include/api/serialization.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestCxxApiSerialization : public UT::Common {
  public:
   TestCxxApiSerialization() = default;
@@ -98,4 +98,4 @@ TEST_F(TestCxxApiSerialization, test_load_file_not_exist_x2_FAILED) {
   auto err_mst = status.GetErrDescription();
   ASSERT_TRUE(err_mst.find("exist") != std::string::npos);
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

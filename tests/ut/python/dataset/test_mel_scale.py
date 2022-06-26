@@ -18,10 +18,10 @@ Testing MelScale op in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as c_audio
-from mindspore import log as logger
-from mindspore.dataset.audio.utils import MelType, NormType
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as c_audio
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.audio.utils import MelType, NormType
 
 CHANNEL = 1
 FREQ = 20
@@ -57,7 +57,7 @@ def test_mel_scale_pipeline():
     """
     Feature: MelScale
     Description: test MelScale cpp op in pipeline
-    Expectation: equal results from Mindspore and benchmark
+    Expectation: equal results from LuoJiaNET and benchmark
     """
     in_data = np.array([[[[-0.34207549691200256, -2.0971477031707764, -0.9462487101554871],
                           [1.2536851167678833, -1.3225716352462769, -0.06942684203386307],
@@ -128,7 +128,7 @@ def test_mel_scale_eager():
     """
     Feature: MelScale
     Description: test MelScale cpp op with eage mode
-    Expectation: equal results from Mindspore and benchmark
+    Expectation: equal results from LuoJiaNET and benchmark
     """
     spectrogram = np.array([[[-0.7010437250137329, 1.1184569597244263, -1.4936821460723877],
                              [0.4603022038936615, -0.556514322757721, 0.8629537224769592]],

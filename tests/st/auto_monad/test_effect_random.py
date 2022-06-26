@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,13 +15,13 @@
 # ==============================================================================
 import pytest
 import numpy as np
-import mindspore.nn as nn
-import mindspore.ops.operations as P
-import mindspore.nn.probability.distribution as msd
-from mindspore import context, Tensor
-from mindspore.ops import composite as C
-from mindspore.common import dtype as mstype
-from mindspore import dtype
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.operations as P
+import luojianet_ms.nn.probability.distribution as msd
+from luojianet_ms import context, Tensor
+from luojianet_ms.ops import composite as C
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,13 +17,13 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops.operations import _inner_ops as inner
-from mindspore.common import dtype as mstype
-from mindspore.ops import operations as P
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops.operations import _inner_ops as inner
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.ops import operations as P
 
 
 class UnsortedSegmentMinNet(nn.Cell):
@@ -74,7 +75,7 @@ def test_2d_int32():
 def test_3d_float16():
     context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
     input_x = Tensor(np.arange(
-        4 * 5 * 3, dtype=np.float16).reshape(4, 5, 3), dtype=mindspore.float16)
+        4 * 5 * 3, dtype=np.float16).reshape(4, 5, 3), dtype=luojianet_ms.float16)
     segment_ids = Tensor([2, 1, 1, -1], mstype.int32)
     num_segments = 5
     net = UnsortedSegmentMinNet(num_segments)
@@ -113,7 +114,7 @@ def test_3d_float16():
 def test_3d_float32():
     context.set_context(mode=context.GRAPH_MODE, device_target='GPU')
     input_x = Tensor(np.arange(
-        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=mindspore.float32)
+        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=luojianet_ms.float32)
     segment_ids = Tensor([2, 1, 1, -1], mstype.int32)
     num_segments = 3
     net = UnsortedSegmentMinNet(num_segments)
@@ -142,7 +143,7 @@ def test_3d_float32():
 def test_3d_single_init():
     context.set_context(mode=context.GRAPH_MODE, device_target='GPU')
     input_x = Tensor(np.arange(
-        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=mindspore.float32)
+        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=luojianet_ms.float32)
     segment_ids = Tensor([3, 0, 1, -1], mstype.int32)
     net = P.UnsortedSegmentMin()
 
@@ -232,7 +233,7 @@ def test_3d_float32_ab_dyn():
     """
     context.set_context(mode=context.GRAPH_MODE, device_target='GPU')
     input_x = Tensor(np.arange(
-        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=mindspore.float32)
+        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=luojianet_ms.float32)
     segment_ids = Tensor([2, 1, 1, -1], mstype.int32)
     num_segments = 3
     net = UnsortedSegmentMinDynNet(num_segments)
@@ -267,7 +268,7 @@ def test_3d_float32_a_dyn():
     net = UnsortedSegmentMinDynNet(num_segments, True, False)
     # test 1
     input_x = Tensor(np.arange(
-        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=mindspore.float32)
+        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=luojianet_ms.float32)
     segment_ids = Tensor([3, 0, 1, -1], mstype.int32)
     output = net(input_x, segment_ids).asnumpy()
     expect = np.array([[[1.5000000e+01, 1.6000000e+01, 1.7000000e+01],
@@ -293,7 +294,7 @@ def test_3d_float32_a_dyn():
     np.testing.assert_array_almost_equal(output, expect)
     # test 2
     input_x = Tensor(np.arange(
-        4 * 7 * 2, dtype=np.float32).reshape(4, 7, 2), dtype=mindspore.float32)
+        4 * 7 * 2, dtype=np.float32).reshape(4, 7, 2), dtype=luojianet_ms.float32)
     segment_ids = Tensor([3, 0, 1, -1], mstype.int32)
     output = net(input_x, segment_ids).asnumpy()
     expect = np.array([[[1.4000000e+01, 1.5000000e+01],
@@ -339,7 +340,7 @@ def test_3d_float32_b_dyn():
     net = UnsortedSegmentMinDynNet(num_segments, False, True)
     # test 1
     input_x = Tensor(np.arange(
-        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=mindspore.float32)
+        4 * 5 * 3, dtype=np.float32).reshape(4, 5, 3), dtype=luojianet_ms.float32)
     segment_ids = Tensor([3, 0, 1, -1], mstype.int32)
     output = net(input_x, segment_ids).asnumpy()
     expect = np.array([[[1.5000000e+01, 1.6000000e+01, 1.7000000e+01],
@@ -365,7 +366,7 @@ def test_3d_float32_b_dyn():
     np.testing.assert_array_almost_equal(output, expect)
     # test 2
     input_x = Tensor(np.arange(
-        4 * 7 * 2, dtype=np.float32).reshape(4, 7, 2), dtype=mindspore.float32)
+        4 * 7 * 2, dtype=np.float32).reshape(4, 7, 2), dtype=luojianet_ms.float32)
     segment_ids = Tensor([3, 0, 1, -1], mstype.int32)
     output = net(input_x, segment_ids).asnumpy()
     expect = np.array([[[1.4000000e+01, 1.5000000e+01],

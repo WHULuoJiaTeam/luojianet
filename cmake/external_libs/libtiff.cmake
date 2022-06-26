@@ -23,7 +23,7 @@ else()
     set(MD5 "2bbf6db1ddc4a59c89d6986b368fc063")
 endif()
 
-mindspore_add_pkg(tiff
+luojianet_ms_add_pkg(tiff
         VER 4.2.0
         LIBS tiff
         URL ${REQ_URL}

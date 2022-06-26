@@ -18,7 +18,7 @@
 #include "abstract/abstract_function.h"
 #include "runtime/graph_scheduler/control_node_parser.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace runtime {
 using KernelGraph = session::KernelGraph;
 using FuncGraphAbstractClosure = abstract::FuncGraphAbstractClosure;
@@ -219,4 +219,4 @@ TEST_F(ControlNodeParserTest, Parse) {
   ASSERT_EQ(4, parser->control_node_parameters().size());
 }
 }  // namespace runtime
-}  // namespace mindspore
+}  // namespace luojianet_ms

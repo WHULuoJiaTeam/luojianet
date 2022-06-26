@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TanhInfo;
@@ -54,7 +54,7 @@ void TestTanhInfo::SetUp() {
   g_device_manager = std::make_shared<DeviceManager>();
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
-  mindspore::HashMap<std::string, ValuePtr> attr;
+  luojianet_ms::HashMap<std::string, ValuePtr> attr;
 
   Shapes inputs_shape = {{2, 4, 8, 16}};
   Shapes outputs_shape = {{2, 4, 8, 16}};
@@ -166,4 +166,4 @@ TEST_F(TestTanhInfo, CheckStrategy3) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

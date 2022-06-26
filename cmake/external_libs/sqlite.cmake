@@ -8,7 +8,7 @@ endif()
 
 
 if(WIN32)
-    mindspore_add_pkg(sqlite
+    luojianet_ms_add_pkg(sqlite
         VER 3.36.0
         LIBS sqlite3
         URL https://sqlite.org/2021/sqlite-amalgamation-3360000.zip
@@ -28,7 +28,7 @@ else()
           -D_FORTIFY_SOURCE=2 -O2")
         set(sqlite_LDFLAGS "-Wl,-z,relro,-z,now,-z,noexecstack")
     endif()
-    mindspore_add_pkg(sqlite
+    luojianet_ms_add_pkg(sqlite
         VER 3.36.0
         LIBS sqlite3
         URL ${REQ_URL}
@@ -37,4 +37,4 @@ else()
 endif()
 
 include_directories(${sqlite_INC})
-add_library(mindspore::sqlite ALIAS sqlite::sqlite3)
+add_library(luojianet_ms::sqlite ALIAS sqlite::sqlite3)

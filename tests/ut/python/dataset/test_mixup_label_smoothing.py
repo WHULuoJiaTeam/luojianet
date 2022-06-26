@@ -14,12 +14,12 @@
 # ==============================================================================
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as c
-import mindspore.dataset.transforms.py_transforms as f
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as c
+import luojianet_ms.dataset.transforms.py_transforms as f
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 
 DATA_DIR = "../data/dataset/testImageNetData/train"
 DATA_DIR_2 = "../data/dataset/testImageNetData2/train"

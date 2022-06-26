@@ -4,10 +4,10 @@ if(ENABLE_GITEE_EULER)
     set(MD5 "d41d8cd98f00b204e9800998ecf8427e")
 
     __download_pkg_with_git(OpenCL-CLHPP ${GIT_REPOSITORY} ${GIT_TAG} ${MD5})
-    set(OPENCL_CLHPP_SRC "${TOP_DIR}/mindspore/lite/build/_deps/opencl-clhpp-src")
+    set(OPENCL_CLHPP_SRC "${TOP_DIR}/luojianet_ms/lite/build/_deps/opencl-clhpp-src")
     execute_process(COMMAND tar -xf ${OPENCL_CLHPP_SRC}/v2.0.12.tar.gz --strip-components 1 -C ${OPENCL_CLHPP_SRC})
 
-    set(OPENCL_HEADER_SRC "${TOP_DIR}/mindspore/lite/build/_deps/opencl-headers-src")
+    set(OPENCL_HEADER_SRC "${TOP_DIR}/luojianet_ms/lite/build/_deps/opencl-headers-src")
     execute_process(COMMAND mkdir -p ${OPENCL_HEADER_SRC})
     execute_process(COMMAND tar -xf ${OPENCL_CLHPP_SRC}/v2020.12.18.tar.gz --strip-components 1 -C ${OPENCL_HEADER_SRC})
 elseif(ENABLE_GITEE)

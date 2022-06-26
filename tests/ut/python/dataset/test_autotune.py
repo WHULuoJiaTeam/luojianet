@@ -18,8 +18,8 @@ Testing Autotune support in DE
 import sys
 import numpy as np
 import pytest
-import mindspore._c_dataengine as cde
-import mindspore.dataset as ds
+import luojianet_ms._c_dataengine as cde
+import luojianet_ms.dataset as ds
 
 def err_out_log(out, err, log=False):
     if log:

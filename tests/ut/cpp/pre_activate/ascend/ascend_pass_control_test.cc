@@ -21,7 +21,7 @@
 namespace {
 constexpr char kMsAscendFusionSwitch[] = "MS_DEV_ASCEND_FUSION_SWITCH";
 }  // namespace
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class PlantPass : public Pass {
  public:
@@ -298,4 +298,4 @@ TEST_F(TestAscendPassControl, test_env_off_for_pattern_pass_2) {
   ASSERT_TRUE(plant_pass.GetRunStatus());
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,27 +20,27 @@ from multiprocessing import Process, Queue
 import numpy as np
 
 from resnet import resnet50
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.vision.c_transforms as vision
-import mindspore.nn as nn
-import mindspore.ops.functional as F
-from mindspore import Tensor
-from mindspore import context
-from mindspore.communication.management import init
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.ops import operations as P
-from mindspore.train.callback import Callback
-from mindspore.train.model import Model
-from mindspore.context import ParallelMode
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.vision.c_transforms as vision
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.functional as F
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.communication.management import init
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train.callback import Callback
+from luojianet_ms.train.model import Model
+from luojianet_ms.context import ParallelMode
 
 random.seed(1)
 np.random.seed(1)
 ds.config.set_seed(1)
 
-MINDSPORE_HCCL_CONFIG_PATH = "/home/workspace/mindspore_config/hccl/rank_table_8p.json"
-data_home = "/home/workspace/mindspore_dataset"
+LUOJIANET_MS_HCCL_CONFIG_PATH = "/home/workspace/luojianet_ms_config/hccl/rank_table_8p.json"
+data_home = "/home/workspace/luojianet_ms_dataset"
 
 
 def create_dataset(repeat_num=1, training=True, batch_size=32, rank_id=0, rank_size=1,
@@ -147,7 +148,7 @@ def train_process(q, device_id, epoch_size, num_classes, device_num, batch_size,
     os.chdir(str(device_id))
     context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
     context.set_context(device_id=device_id)
-    os.environ['MINDSPORE_HCCL_CONFIG_PATH'] = MINDSPORE_HCCL_CONFIG_PATH
+    os.environ['LUOJIANET_MS_HCCL_CONFIG_PATH'] = LUOJIANET_MS_HCCL_CONFIG_PATH
     os.environ['RANK_ID'] = str(device_id)
     os.environ['RANK_SIZE'] = str(device_num)
     if enable_hccl:

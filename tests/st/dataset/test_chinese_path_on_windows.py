@@ -21,9 +21,9 @@ from io import BytesIO
 import pytest
 from PIL import Image
 
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as vision
-from mindspore.mindrecord import FileWriter, SUCCESS
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as vision
+from luojianet_ms.mindrecord import FileWriter, SUCCESS
 
 def add_and_remove_cv_file(mindrecord):
     """add/remove cv file"""

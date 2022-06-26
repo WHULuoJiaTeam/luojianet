@@ -17,7 +17,7 @@
 #include "minddata/dataset/core/global_context.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -42,7 +42,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -89,7 +89,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetUsageValidBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {{"heute hat es geregnet.", "it rained today."},
@@ -135,7 +135,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetUsageTestBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -181,7 +181,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetUsageAllBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -257,7 +257,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetNumSamples) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -305,7 +305,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetDistribution) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -462,7 +462,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -507,7 +507,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetShuffleFilesA) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -569,7 +569,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2016DatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -632,7 +632,7 @@ TEST_F(MindDataTestPipeline, TesIWSLT2016DatasetShuffleFilesGlobal) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -686,7 +686,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2017DatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -732,7 +732,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2017DatasetUsageValidBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -778,7 +778,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2017DatasetUsageTestBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -823,7 +823,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2017DatasetUsageAllBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -965,7 +965,7 @@ TEST_F(MindDataTestPipeline, TestIWSLT2017DatasetBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());

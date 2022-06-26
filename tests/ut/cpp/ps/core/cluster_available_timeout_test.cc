@@ -19,7 +19,7 @@
 #include "ps/core/scheduler_node.h"
 #include "utils/ms_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ps {
 namespace core {
 class TestClusterAvailableTimeout : public UT::Common {
@@ -47,4 +47,4 @@ TEST_F(TestClusterAvailableTimeout, TestClusterAvailableTimeout) {
 }
 }  // namespace core
 }  // namespace ps
-}  // namespace mindspore
+}  // namespace luojianet_ms

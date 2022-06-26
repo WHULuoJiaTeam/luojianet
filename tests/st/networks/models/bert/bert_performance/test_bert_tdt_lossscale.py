@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,25 +20,25 @@ import os
 import time
 import numpy as np
 import pytest
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-from mindspore import context
-from mindspore import log as logger
-from mindspore.ops import operations as P
-from mindspore.common.tensor import Tensor
-from mindspore.nn.optim import Lamb
-from mindspore.train.callback import Callback
-from mindspore.train.loss_scale_manager import DynamicLossScaleManager
-from mindspore.train.model import Model
-import mindspore.nn.learning_rate_schedule as lr_schedules
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+from luojianet_ms import context
+from luojianet_ms import log as logger
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn.optim import Lamb
+from luojianet_ms.train.callback import Callback
+from luojianet_ms.train.loss_scale_manager import DynamicLossScaleManager
+from luojianet_ms.train.model import Model
+import luojianet_ms.nn.learning_rate_schedule as lr_schedules
 from tests.models.official.nlp.bert.src.bert_for_pre_training import BertNetworkWithLoss
 from tests.models.official.nlp.bert.src.bert_for_pre_training import BertTrainOneStepWithLossScaleCell
 from tests.models.official.nlp.bert.src.bert_model import BertConfig
 
 _current_dir = os.path.dirname(os.path.realpath(__file__))
-DATA_DIR = ["/home/workspace/mindspore_dataset/bert/example/examples.tfrecord"]
-SCHEMA_DIR = "/home/workspace/mindspore_dataset/bert/example/datasetSchema.json"
+DATA_DIR = ["/home/workspace/luojianet_ms_dataset/bert/example/examples.tfrecord"]
+SCHEMA_DIR = "/home/workspace/luojianet_ms_dataset/bert/example/datasetSchema.json"
 
 
 def get_config(version='base'):

@@ -15,11 +15,11 @@
 """st for scipy.ops_grad."""
 import pytest
 import numpy as onp
-import mindspore.nn as nn
-import mindspore.ops as ops
-from mindspore import context, Tensor
-from mindspore.scipy.linalg import cho_factor, cho_solve
-from mindspore.scipy.ops import Eigh, Cholesky, SolveTriangular
+import luojianet_ms.nn as nn
+import luojianet_ms.ops as ops
+from luojianet_ms import context, Tensor
+from luojianet_ms.scipy.linalg import cho_factor, cho_solve
+from luojianet_ms.scipy.ops import Eigh, Cholesky, SolveTriangular
 from tests.st.scipy_st.utils import create_random_rank_matrix, create_sym_pos_matrix, gradient_check
 
 

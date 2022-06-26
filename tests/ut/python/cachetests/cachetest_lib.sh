@@ -29,7 +29,7 @@ echo "Using test path: ${TESTPATH}"
 echo "Using build path: ${BUILD_PATH}"
 
 # Point to the cache_admin from the build path.  The user may also have installed the wheel file but we don't know that.
-CACHE_ADMIN="${BUILD_PATH}/package/mindspore/bin/cache_admin"
+CACHE_ADMIN="${BUILD_PATH}/package/luojianet_ms/bin/cache_admin"
 PYTHON_PYTEST="python -m pytest ${TESTPATH}/"
 
 # These are globals that all testcases use and may get updated during testcase running
@@ -50,7 +50,7 @@ fi
 #################################################################################
 MsgEnter()
 {
-   printf "%-60s : " "${1}"        
+   printf "%-60s : " "${1}"
 }
 
 #################################################################################
@@ -297,14 +297,14 @@ HandleRcExit()
       echo "Test script invalid.  Bad CacheAdminCmd function args."
       exit 1
    fi
-    
+
    err_rc=$1
    exit_on_fail=$2
    clean_on_fail=$3
 
    if [ ${err_rc} -ne 0 ]; then
       failed_tests=$(($failed_tests+1))
-       
+
       if [ ${clean_on_fail} -eq 1 ]; then
           ServerCleanup
       fi

@@ -182,7 +182,7 @@ each user is 226.83, and the variance of the data volume of all users is 88.94.
             x = load_dict['user_data']['x']
             y = load_dict['user_data']['y']
             size = (num_samples, img_size[0], img_size[1], img_size[2])
-            image_numpy = np.array(x, dtype=np.float32).reshape(size)  # mindspore doesn't support float64 and int64
+            image_numpy = np.array(x, dtype=np.float32).reshape(size)  # luojianet_ms doesn't support float64 and int64
             label_numpy = np.array(y, dtype=np.int32)
         return image_numpy, label_numpy
 
@@ -310,11 +310,11 @@ each user is 226.83, and the variance of the data volume of all users is 88.94.
     ```python
     import numpy as np
     import os
-    import mindspore.dataset as ds
-    import mindspore.dataset.transforms.c_transforms as tC
-    import mindspore.dataset.vision.py_transforms as PV
-    import mindspore.dataset.transforms.py_transforms as PT
-    import mindspore
+    import luojianet_ms.dataset as ds
+    import luojianet_ms.dataset.transforms.c_transforms as tC
+    import luojianet_ms.dataset.vision.py_transforms as PV
+    import luojianet_ms.dataset.transforms.py_transforms as PT
+    import luojianet_ms
 
     def mkdir(path):
         if not os.path.exists(path):
@@ -351,7 +351,7 @@ each user is 226.83, and the variance of the data volume of all users is 88.94.
         compose = PT.Compose(transform)
 
         # apply map operations on images
-        mnist_ds = mnist_ds.map(input_columns="label", operations=tC.TypeCast(mindspore.int32))
+        mnist_ds = mnist_ds.map(input_columns="label", operations=tC.TypeCast(luojianet_ms.int32))
         mnist_ds = mnist_ds.map(input_columns="image", operations=compose)
 
         # apply DatasetOps

@@ -29,12 +29,12 @@
 #include "minddata/dataset/engine/datasetops/source/random_data_op.h"
 #include "minddata/dataset/engine/data_schema.h"
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::dataset::CacheClient;
-using mindspore::dataset::TaskGroup;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::dataset::CacheClient;
+using luojianet_ms::dataset::TaskGroup;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
 // Helper function to get the session id from SESSION_ID env variable
 Status GetSessionFromEnv(session_id_type *session_id) {

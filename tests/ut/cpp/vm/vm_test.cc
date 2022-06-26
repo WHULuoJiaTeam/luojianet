@@ -18,7 +18,7 @@
 #include "frontend/operator/ops.h"
 #include "backend/graph_compiler/backend.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace compile {
 
 class TestCompileVM : public UT::Common {
@@ -59,4 +59,4 @@ TEST_F(TestCompileVM, FinalVM) {
 }
 
 }  // namespace compile
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -16,15 +16,15 @@
 import functools
 import numpy as np
 
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore import Tensor, Parameter
-from mindspore.common.parameter import ParameterTuple
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.common.parameter import ParameterTuple
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
 from ..ut_filter import non_graph_engine
-from ....mindspore_test_framework.mindspore_test import mindspore_test
-from ....mindspore_test_framework.pipeline.forward.compile_forward \
+from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
+from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config
 
 context.set_context(mode=context.PYNATIVE_MODE)
@@ -95,7 +95,7 @@ test_exec_case = functools.reduce(lambda x, y: x + y, test_case_lists)
 
 
 @non_graph_engine
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
 def test_exec():
     context.set_context(mode=context.GRAPH_MODE)
     return test_exec_case

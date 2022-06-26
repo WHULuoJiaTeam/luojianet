@@ -32,9 +32,9 @@
 #include "minddata/dataset/kernels/ir/vision/random_crop_decode_resize_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_resized_crop_ir.h"
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::MsLogLevel::INFO;
 
 class MindDataTestOptimizationPass : public UT::DatasetOpTesting {};
 

@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/tensor_layout/tensor_redistribution.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class OneHotInfo;
@@ -55,7 +55,7 @@ void TestOneHotInfo::SetUp() {
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
   ValuePtr axis = MakeValue(std::int64_t(-1));
-  mindspore::HashMap<std::string, ValuePtr> attr = {{"axis", axis}};
+  luojianet_ms::HashMap<std::string, ValuePtr> attr = {{"axis", axis}};
 
   Shapes inputs_shape = {{64}, {}, {}};
   Shapes outputs_shape = {{64, 10}};
@@ -206,4 +206,4 @@ TEST_F(TestOneHotInfo, CheckStrategy1) {
   ASSERT_EQ(ret, FAILED);
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

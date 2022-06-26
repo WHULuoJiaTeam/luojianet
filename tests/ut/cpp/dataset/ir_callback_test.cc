@@ -28,11 +28,11 @@
 #include "minddata/dataset/kernels/data/no_op.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::MsLogLevel::INFO;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace dataset {
 namespace test {
 
@@ -129,7 +129,7 @@ class TestCallback : public DSCallback {
 
 }  // namespace test
 }  // namespace dataset
-}  // namespace mindspore
+}  // namespace luojianet_ms
 
 class MindDataTestCallback : public UT::DatasetOpTesting {
  public:
@@ -309,12 +309,12 @@ TEST_F(MindDataTestCallback, TestSelectedCallback) {
   tst_cb->epoch_begin_ = false;
   tst_cb->epoch_end_ = false;
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt32, {}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt32, {}));
   std::shared_ptr<Dataset> ds = RandomData(4, schema);
   ASSERT_NE(ds, nullptr);
   ds->SetNumWorkers(1);
   // config mapOp
-  ds = ds->Map({std::make_shared<transforms::TypeCast>(mindspore::DataType::kNumberTypeUInt64)}, {"label"}, {}, {},
+  ds = ds->Map({std::make_shared<transforms::TypeCast>(luojianet_ms::DataType::kNumberTypeUInt64)}, {"label"}, {}, {},
                nullptr, {tst_cb});
   ds->SetNumWorkers(1);
   ASSERT_NE(ds, nullptr);
@@ -323,7 +323,7 @@ TEST_F(MindDataTestCallback, TestSelectedCallback) {
   int32_t num_epochs = 2;
   auto itr = ds->CreateIterator({}, num_epochs);
   for (int ep_num = 0; ep_num < num_epochs; ++ep_num) {
-    std::unordered_map<std::string, mindspore::MSTensor> row;
+    std::unordered_map<std::string, luojianet_ms::MSTensor> row;
     ASSERT_OK(itr->GetNextRow(&row));
     while (!row.empty()) {
       ASSERT_OK(itr->GetNextRow(&row));
@@ -350,10 +350,10 @@ TEST_F(MindDataTestCallback, TestCAPICallback) {
   std::shared_ptr<DSCallback> cb1 = tst_cb;
   // Create a RandomDataset.  Use random_data to avoid I/O
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt32, {}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt32, {}));
   std::shared_ptr<Dataset> ds = RandomData(44, schema);
   ASSERT_NE(ds, nullptr);
-  ds = ds->Map({std::make_shared<transforms::TypeCast>(mindspore::DataType::kNumberTypeUInt64)}, {"label"}, {}, {},
+  ds = ds->Map({std::make_shared<transforms::TypeCast>(luojianet_ms::DataType::kNumberTypeUInt64)}, {"label"}, {}, {},
                nullptr, {cb1});
   ASSERT_NE(ds, nullptr);
   ds = ds->Repeat(2);

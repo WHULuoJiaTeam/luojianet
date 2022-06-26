@@ -16,9 +16,9 @@ import copy
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as atf
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as atf
+from luojianet_ms import log as logger
 
 CHANNEL = 1
 FREQ = 5
@@ -57,7 +57,7 @@ def gen(shape):
 def test_mask_along_axis_eager_random_input():
     """
     Feature: MaskAlongAxis
-    Description: mindspore eager mode normal testcase with random input tensor
+    Description: luojianet_ms eager mode normal testcase with random input tensor
     Expectation: the returned result is as expected
     """
     logger.info("test Mask_Along_axis op")
@@ -73,7 +73,7 @@ def test_mask_along_axis_eager_random_input():
 def test_mask_along_axis_eager_precision():
     """
     Feature: MaskAlongAxis
-    Description: mindspore eager mode checking precision
+    Description: luojianet_ms eager mode checking precision
     Expectation: the returned result is as expected
     """
     logger.info("test MaskAlongAxis op, checking precision")
@@ -110,7 +110,7 @@ def test_mask_along_axis_eager_precision():
 def test_mask_along_axis_pipeline():
     """
     Feature: MaskAlongAxis
-    Description: mindspore pipeline mode normal testcase
+    Description: luojianet_ms pipeline mode normal testcase
     Expectation: the returned result is as expected
     """
     logger.info("test MaskAlongAxis op, pipeline")
@@ -134,7 +134,7 @@ def test_mask_along_axis_pipeline():
 def test_mask_along_axis_invalid_input():
     """
     Feature: MaskAlongAxis
-    Description: mindspore eager mode with invalid input tensor
+    Description: luojianet_ms eager mode with invalid input tensor
     Expectation: throw correct error and message
     """
     def test_invalid_param(test_name, mask_start, mask_width, mask_value, axis, error, error_msg):

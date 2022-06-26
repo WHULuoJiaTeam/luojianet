@@ -1,5 +1,6 @@
 /**
- * Copyright 2021 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_DUAL_ABI_HELPER_H_
-#define MINDSPORE_INCLUDE_API_DUAL_ABI_HELPER_H_
+#ifndef LUOJIANET_MS_INCLUDE_API_DUAL_ABI_HELPER_H_
+#define LUOJIANET_MS_INCLUDE_API_DUAL_ABI_HELPER_H_
 
 #include <algorithm>
 #include <iterator>
@@ -26,7 +27,7 @@
 #include <utility>
 #include <vector>
 
-namespace mindspore {
+namespace luojianet_ms {
 inline std::vector<char> StringToChar(const std::string &s) { return std::vector<char>(s.begin(), s.end()); }
 
 inline std::string CharToString(const std::vector<char> &c) { return std::string(c.begin(), c.end()); }
@@ -180,5 +181,5 @@ inline void TensorMapCharToString(const std::map<std::vector<char>, T> *c, std::
     s->insert(std::pair<std::string, T>(key, val));
   }
 }
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_DUAL_ABI_HELPER_H_
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_DUAL_ABI_HELPER_H_

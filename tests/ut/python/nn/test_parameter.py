@@ -1,5 +1,6 @@
 
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +18,10 @@
 import numpy as np
 import pytest
 
-from mindspore import context, Tensor, Parameter, ParameterTuple, nn
-from mindspore._checkparam import Validator
-from mindspore.common import dtype as mstype
-from mindspore.common.initializer import initializer
+from luojianet_ms import context, Tensor, Parameter, ParameterTuple, nn
+from luojianet_ms._checkparam import Validator
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common.initializer import initializer
 
 def test_parameter_init():
     dat = np.array([[1, 2, 3], [2, 3, 4]])

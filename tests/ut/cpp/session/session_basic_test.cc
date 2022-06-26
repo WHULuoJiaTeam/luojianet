@@ -22,7 +22,7 @@
 #include "include/common/utils/utils.h"
 #include "include/common/utils/anfalgo.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace session {
 
 class SessionBasicTest : public UT::Common {
@@ -96,4 +96,4 @@ TEST_F(SessionBasicTest, ConstructKernelGraph) {
 };
 
 }  // namespace session
-}  // namespace mindspore
+}  // namespace luojianet_ms

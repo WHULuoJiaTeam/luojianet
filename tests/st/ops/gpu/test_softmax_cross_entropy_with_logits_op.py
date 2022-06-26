@@ -16,9 +16,9 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
 
 
 class NetSoftmaxCrossEntropyWithLogits(nn.Cell):

@@ -3,14 +3,14 @@ import tempfile
 import json
 import pytest
 
-import mindspore.context as context
+import luojianet_ms.context as context
 from tests.security_utils import security_off_wrap
 from .test_network_main import test_lenet
 
 # create config file for RDR
 def create_config_file(path):
     data_dict = {'rdr': {'enable': True, 'path': path}}
-    filename = os.path.join(path, "mindspore_config.json")
+    filename = os.path.join(path, "luojianet_ms_config.json")
     with open(filename, "w") as f:
         json.dump(data_dict, f)
     return filename

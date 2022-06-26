@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,10 +22,10 @@ import stat
 import numpy as np
 import pytest
 
-from mindspore import Tensor, Parameter
-from mindspore import context
-from mindspore import export, load, save_checkpoint, load_checkpoint
-from mindspore import nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms import context
+from luojianet_ms import export, load, save_checkpoint, load_checkpoint
+from luojianet_ms import nn
 
 
 class TestNet(nn.Cell):

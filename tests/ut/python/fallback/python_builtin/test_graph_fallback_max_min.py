@@ -15,7 +15,7 @@
 """ test graph fallback buildin python function max and min"""
 import operator
 import numpy as np
-from mindspore import ms_function, context, Tensor
+from luojianet_ms import ms_function, context, Tensor
 
 context.set_context(mode=context.GRAPH_MODE)
 

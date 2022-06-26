@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +19,10 @@ Testing Vol op in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as c_audio
-from mindspore import log as logger
-from mindspore.dataset.audio import utils
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as c_audio
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.audio import utils
 
 
 def count_unequal_element(data_expected, data_me, rtol, atol):
@@ -45,7 +46,7 @@ def allclose_nparray(data_expected, data_me, rtol, atol, equal_nan=True):
 
 
 def test_func_vol_eager():
-    """ mindspore eager mode normal testcase:vol op"""
+    """ luojianet_ms eager mode normal testcase:vol op"""
 
     logger.info("check vol op output")
     ndarr_in = np.array([[0.3667, 0.5295, 0.2949, 0.4508, 0.6457, 0.3625, 0.4377, 0.3568],
@@ -60,8 +61,8 @@ def test_func_vol_eager():
                            [0.1999, 0.0155, 0.0700, 0.0086, 0.0318, 0.0612, 0.0233, 0.0743],
                            [0.1525, 0.0482, 0.1778, 0.1005, 0.0183, 0.0504, 0.1125, 0.1975]])
     op = c_audio.Vol(gain=0.2, gain_type=utils.GainType.AMPLITUDE)
-    out_mindspore = op(ndarr_in)
-    allclose_nparray(out_mindspore, out_expect, 0.0001, 0.0001)
+    out_luojianet_ms = op(ndarr_in)
+    allclose_nparray(out_luojianet_ms, out_expect, 0.0001, 0.0001)
 
     ndarr_in = np.array([[[-0.5794799327850342, 0.19526369869709015],
                           [-0.5935744047164917, 0.2948109209537506],
@@ -77,8 +78,8 @@ def test_func_vol_eager():
                             [-0.0585763081908226, -0.16113176941871643],
                             [-1.0, -1.0]]])
     op = c_audio.Vol(gain=-0.05, gain_type=utils.GainType.DB)
-    out_mindspore = op(ndarr_in)
-    allclose_nparray(out_mindspore, out_expect, 0.0001, 0.0001)
+    out_luojianet_ms = op(ndarr_in)
+    allclose_nparray(out_luojianet_ms, out_expect, 0.0001, 0.0001)
 
     ndarr_in = np.array([[[0.09491927176713943, 0.11639882624149323, -0.1725238710641861, -0.18556903302669525],
                           [-0.7140364646911621, 1.6223102807998657, 1.6710518598556519, 0.6019048094749451]],
@@ -90,12 +91,12 @@ def test_func_vol_eager():
                            [[-0.38620999455451965, -0.14104272425174713, -0.09880022704601288, 0.5843760371208191],
                             [-0.935704231262207, 0.30508953332901, 0.0897415429353714, 0.0028587712440639734]]])
     op = c_audio.Vol(gain=0.2, gain_type=utils.GainType.POWER)
-    out_mindspore = op(ndarr_in)
-    allclose_nparray(out_mindspore, out_expect, 0.0001, 0.0001)
+    out_luojianet_ms = op(ndarr_in)
+    allclose_nparray(out_luojianet_ms, out_expect, 0.0001, 0.0001)
 
 
 def test_func_vol_pipeline():
-    """ mindspore pipeline mode normal testcase:vol op"""
+    """ luojianet_ms pipeline mode normal testcase:vol op"""
 
     logger.info("test vol op with gain_type='power'")
     data = np.array([[[0.7012, 0.2500, 0.0108],

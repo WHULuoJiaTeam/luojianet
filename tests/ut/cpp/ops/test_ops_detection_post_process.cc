@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestDetectionPostProcess : public UT::Common {
  public:
@@ -86,4 +86,4 @@ TEST_F(TestDetectionPostProcess, test_detection_post_process) {
   EXPECT_EQ(data_type4->type_id(), kNumberTypeFloat32);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

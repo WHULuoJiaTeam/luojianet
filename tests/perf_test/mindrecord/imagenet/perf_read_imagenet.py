@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""test dataset performance about mindspore.MindDataset, mindspore.TFRecordDataset, tf.data.TFRecordDataset"""
+"""test dataset performance about luojianet_ms.MindDataset, luojianet_ms.TFRecordDataset, tf.data.TFRecordDataset"""
 import time
 import tensorflow as tf
 
-import mindspore.dataset as ds
-from mindspore.mindrecord import FileReader
+import luojianet_ms.dataset as ds
+from luojianet_ms.mindrecord import FileReader
 
 print_step = 5000
 

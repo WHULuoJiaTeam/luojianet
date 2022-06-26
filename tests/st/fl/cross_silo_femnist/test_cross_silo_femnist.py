@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,19 +19,19 @@ import os
 import time
 import numpy as np
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore.common.initializer import TruncatedNormal
-from mindspore import Tensor
-import mindspore.dataset as ds
-import mindspore.dataset.vision.py_transforms as PV
-import mindspore.dataset.transforms.py_transforms as PT
-import mindspore.dataset.transforms.c_transforms as tC
-from mindspore.train.serialization import save_checkpoint
-from mindspore.train.callback import Callback, FederatedLearningManager
-from mindspore.nn.metrics import Accuracy
-from mindspore.train import Model
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms.common.initializer import TruncatedNormal
+from luojianet_ms import Tensor
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.py_transforms as PV
+import luojianet_ms.dataset.transforms.py_transforms as PT
+import luojianet_ms.dataset.transforms.c_transforms as tC
+from luojianet_ms.train.serialization import save_checkpoint
+from luojianet_ms.train.callback import Callback, FederatedLearningManager
+from luojianet_ms.nn.metrics import Accuracy
+from luojianet_ms.train import Model
 
 parser = argparse.ArgumentParser(description="test_cross_silo_femnist")
 parser.add_argument("--device_target", type=str, default="CPU")
@@ -261,7 +262,7 @@ def create_dataset_from_folder(data_path, img_size, batch_size=32, repeat_size=1
     compose = PT.Compose(transform)
 
     # apply map operations on images
-    mnist_ds = mnist_ds.map(input_columns="label", operations=tC.TypeCast(mindspore.int32))
+    mnist_ds = mnist_ds.map(input_columns="label", operations=tC.TypeCast(luojianet_ms.int32))
     mnist_ds = mnist_ds.map(input_columns="image", operations=compose)
 
     # apply DatasetOps

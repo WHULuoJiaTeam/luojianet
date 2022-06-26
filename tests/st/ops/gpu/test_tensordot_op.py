@@ -16,11 +16,11 @@
 import pytest
 import numpy as np
 
-import mindspore
-from mindspore import Tensor
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore.ops import composite as C
+import luojianet_ms
+from luojianet_ms import Tensor
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms.ops import composite as C
 
 
 class NetTensorDot(nn.Cell):
@@ -54,8 +54,8 @@ def test_tensor_dot_fp32():
     axes = ((1, 3), (2, 1))
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -68,8 +68,8 @@ def test_tensor_dot_fp32():
     axes = 1
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -82,8 +82,8 @@ def test_tensor_dot_fp32():
     axes = ([1], [0])
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -96,8 +96,8 @@ def test_tensor_dot_fp32():
     axes = ((1, 2), (2, 0))
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -116,8 +116,8 @@ def test_tensor_dot_fp16():
     axes = 2  # select first N from
     x1 = np.random.random(shape_x1).astype(np.float16)
     x2 = np.random.random(shape_x2).astype(np.float16)
-    x1_tensor = Tensor(x1, dtype=mindspore.float16)
-    x2_tensor = Tensor(x2, dtype=mindspore.float16)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float16)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float16)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -130,8 +130,8 @@ def test_tensor_dot_fp16():
     axes = 1
     x1 = np.random.random(shape_x1).astype(np.float16)
     x2 = np.random.random(shape_x2).astype(np.float16)
-    x1_tensor = Tensor(x1, dtype=mindspore.float16)
-    x2_tensor = Tensor(x2, dtype=mindspore.float16)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float16)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float16)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -144,8 +144,8 @@ def test_tensor_dot_fp16():
     axes = ([1], [0])
     x1 = np.random.random(shape_x1).astype(np.float16)
     x2 = np.random.random(shape_x2).astype(np.float16)
-    x1_tensor = Tensor(x1, dtype=mindspore.float16)
-    x2_tensor = Tensor(x2, dtype=mindspore.float16)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float16)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float16)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -158,8 +158,8 @@ def test_tensor_dot_fp16():
     axes = ((1, 2), (2, 0))
     x1 = np.random.random(shape_x1).astype(np.float16)
     x2 = np.random.random(shape_x2).astype(np.float16)
-    x1_tensor = Tensor(x1, dtype=mindspore.float16)
-    x2_tensor = Tensor(x2, dtype=mindspore.float16)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float16)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float16)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -178,8 +178,8 @@ def test_tensor_dot_outer():
     axes = 0  # outer product does not require multiplicable dims
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetTensorDot(axes)
 
@@ -199,8 +199,8 @@ def test_tensor_dot_reverse_axes():
     axes = ((1, 0), (0, 1))
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetTensorDot(axes)
 
@@ -217,8 +217,8 @@ def test_tensor_dot_reverse_axes():
     axes = ((0, 2), (2, 0))
     x1 = np.random.random(shape_x1).astype(np.float32)
     x2 = np.random.random(shape_x2).astype(np.float32)
-    x1_tensor = Tensor(x1, dtype=mindspore.float32)
-    x2_tensor = Tensor(x2, dtype=mindspore.float32)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float32)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float32)
 
     network = NetTensorDot(axes)
     ms_result_np = network(x1_tensor, x2_tensor).asnumpy()
@@ -280,12 +280,12 @@ def test_tensor_dot_backprop():
     x1 = np.random.random(shape_x1).astype(np.float16)
     np.random.seed(1467)
     x2 = np.random.random(shape_x2).astype(np.float16)
-    x1_tensor = Tensor(x1, dtype=mindspore.float16)
-    x2_tensor = Tensor(x2, dtype=mindspore.float16)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float16)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float16)
 
     np.random.seed(157)
     grad = np.random.random((4, 2, 3, 3))
-    grad_tensor = Tensor(grad, dtype=mindspore.float16)
+    grad_tensor = Tensor(grad, dtype=luojianet_ms.float16)
     grad_network = GradNetwork(network)
     dx1, dx2 = grad_network(x1_tensor, x2_tensor, grad_tensor)
     dx1, dx2 = dx1.asnumpy(), dx2.asnumpy()
@@ -318,12 +318,12 @@ def test_tensor_dot_backprop():
     x1 = np.random.random(shape_x1).astype(np.float16)
     np.random.seed(2467)
     x2 = np.random.random(shape_x2).astype(np.float16)
-    x1_tensor = Tensor(x1, dtype=mindspore.float16)
-    x2_tensor = Tensor(x2, dtype=mindspore.float16)
+    x1_tensor = Tensor(x1, dtype=luojianet_ms.float16)
+    x2_tensor = Tensor(x2, dtype=luojianet_ms.float16)
 
     np.random.seed(257)
     grad = np.random.random((35, 20))
-    grad_tensor = Tensor(grad, dtype=mindspore.float16)
+    grad_tensor = Tensor(grad, dtype=luojianet_ms.float16)
     grad_network = GradNetwork(network)
     dx1, dx2 = grad_network(x1_tensor, x2_tensor, grad_tensor)
     dx1, dx2 = dx1.asnumpy(), dx2.asnumpy()

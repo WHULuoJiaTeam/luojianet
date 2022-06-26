@@ -29,7 +29,7 @@
 #include "backend/common/optimizer/optimizer.h"
 #include "plugin/device/ascend/optimizer/format_type/check_consistency.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWCheckConsistency : public BackendCommon {
  public:
@@ -163,4 +163,4 @@ TEST_F(TestHWCheckConsistency, test_check_consistency_for_dtype) {
   EXPECT_THROW(optimizer->Optimize(kernel_graph), std::runtime_error);
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

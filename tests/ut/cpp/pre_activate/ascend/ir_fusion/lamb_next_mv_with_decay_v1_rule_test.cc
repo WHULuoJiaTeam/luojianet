@@ -18,7 +18,7 @@
 #include "common/py_func_graph_fetcher.h"
 #include "plugin/device/ascend/optimizer/ir_fusion/lamb_next_mv_with_decay_v1_rule.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWLambNextMVWithDecayV1Rule : public BackendCommon {
  public:
@@ -108,4 +108,4 @@ TEST_F(TestHWLambNextMVWithDecayV1Rule, test_no_match3) {
   EXPECT_TRUE(CheckEqualGraph(origin_graph, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

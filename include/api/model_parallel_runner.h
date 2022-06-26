@@ -1,5 +1,6 @@
 /**
- * Copyright 2022 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_MODEL_PARALLEL_RUNNER_H
-#define MINDSPORE_INCLUDE_API_MODEL_PARALLEL_RUNNER_H
+#ifndef LUOJIANET_MS_INCLUDE_API_MODEL_PARALLEL_RUNNER_H
+#define LUOJIANET_MS_INCLUDE_API_MODEL_PARALLEL_RUNNER_H
 #include <vector>
 #include <memory>
 #include <utility>
 #include <string>
 #include "include/api/status.h"
 #include "include/api/context.h"
-namespace mindspore {
+namespace luojianet_ms {
 struct RunnerConfig {
   std::shared_ptr<Context> context = nullptr;
   int workers_num = 0;
 };
 class ModelPool;
 
-/// \brief The ModelParallelRunner class is used to define a MindSpore ModelParallelRunner, facilitating Model
+/// \brief The ModelParallelRunner class is used to define a LuoJiaNET ModelParallelRunner, facilitating Model
 /// management.
 class MS_API ModelParallelRunner {
  public:
@@ -67,5 +68,5 @@ class MS_API ModelParallelRunner {
  private:
   std::shared_ptr<ModelPool> model_pool_ = nullptr;
 };
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_MODEL_PARALLEL_RUNNER_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_MODEL_PARALLEL_RUNNER_H

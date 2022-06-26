@@ -18,7 +18,7 @@
 
 #include "pipeline/jit/static_analysis/prim.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 /* for test which rely on prim module */
 AnalysisEnginePtr SetupAnalysisEngine() {
@@ -28,5 +28,5 @@ AnalysisEnginePtr SetupAnalysisEngine() {
   return engine;
 }
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms
 

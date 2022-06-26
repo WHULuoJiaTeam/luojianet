@@ -29,8 +29,8 @@
 #include "minddata/dataset/engine/datasetops/source/tf_reader_op.h"
 #include "minddata/dataset/engine/ir/datasetops/dataset_node.h"
 
-using mindspore::Status;
-using mindspore::StatusCode;
+using luojianet_ms::Status;
+using luojianet_ms::StatusCode;
 
 #define ASSERT_OK(_s)                          \
   do {                                         \
@@ -101,26 +101,26 @@ class Common : public testing::Test {
 class DatasetOpTesting : public Common {
  public:
   // Helper functions for creating datasets
-  std::shared_ptr<mindspore::dataset::BatchOp> Batch(int32_t batch_size = 1, bool drop = false,
-                                                     mindspore::dataset::PadInfo = {});
+  std::shared_ptr<luojianet_ms::dataset::BatchOp> Batch(int32_t batch_size = 1, bool drop = false,
+                                                     luojianet_ms::dataset::PadInfo = {});
 
-  std::shared_ptr<mindspore::dataset::RepeatOp> Repeat(int repeat_cnt = 1);
+  std::shared_ptr<luojianet_ms::dataset::RepeatOp> Repeat(int repeat_cnt = 1);
 
-  std::shared_ptr<mindspore::dataset::TFReaderOp> TFReader(std::string file, int num_works = 8);
+  std::shared_ptr<luojianet_ms::dataset::TFReaderOp> TFReader(std::string file, int num_works = 8);
 
-  std::shared_ptr<mindspore::dataset::ExecutionTree> Build(
-    std::vector<std::shared_ptr<mindspore::dataset::DatasetOp>> ops);
+  std::shared_ptr<luojianet_ms::dataset::ExecutionTree> Build(
+    std::vector<std::shared_ptr<luojianet_ms::dataset::DatasetOp>> ops);
 
-  std::vector<mindspore::dataset::TensorShape> ToTensorShapeVec(const std::vector<std::vector<int64_t>> &v);
-  std::vector<mindspore::dataset::DataType> ToDETypes(const std::vector<mindspore::DataType> &t);
-  mindspore::MSTensor ReadFileToTensor(const std::string &file);
+  std::vector<luojianet_ms::dataset::TensorShape> ToTensorShapeVec(const std::vector<std::vector<int64_t>> &v);
+  std::vector<luojianet_ms::dataset::DataType> ToDETypes(const std::vector<luojianet_ms::DataType> &t);
+  luojianet_ms::MSTensor ReadFileToTensor(const std::string &file);
   std::string datasets_root_path_;
   std::string mindrecord_root_path_;
   void SetUp() override;
 };
 }  // namespace UT
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace dataset {
 // defined in datasets.cc code, and function prototypes added here for UT purposes
 // convert MSTensorVec to DE TensorRow, return empty if fails
@@ -134,5 +134,5 @@ MSTensorVec Predicate1(MSTensorVec in);
 
 MSTensorVec Predicate2(MSTensorVec in);
 }  // namespace dataset
-}  // namespace mindspore
+}  // namespace luojianet_ms
 #endif  // TESTS_UT_CPP_DATASET_COMMON_COMMON_H_

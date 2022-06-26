@@ -15,10 +15,10 @@
 """FasterRcnn proposal generator."""
 
 import numpy as np
-import mindspore.nn as nn
-import mindspore.common.dtype as mstype
-from mindspore.ops import operations as P
-from mindspore import Tensor
+import luojianet_ms.nn as nn
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.ops import operations as P
+from luojianet_ms import Tensor
 
 
 class Proposal(nn.Cell):

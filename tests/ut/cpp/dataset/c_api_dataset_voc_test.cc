@@ -17,10 +17,10 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "minddata/dataset/core/tensor.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::DataType;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::TensorShape;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::DataType;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -45,7 +45,7 @@ TEST_F(MindDataTestPipeline, TestVOCClassIndex) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if VOC() read correct labels
@@ -62,7 +62,7 @@ TEST_F(MindDataTestPipeline, TestVOCClassIndex) {
     MS_LOG(INFO) << "Tensor label shape: " << label.Shape();
 
     ASSERT_OK(de_expect_label->SetItemAt({0, 0}, expect[i]));
-    mindspore::MSTensor expect_label = mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_label));
+    luojianet_ms::MSTensor expect_label = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_label));
     EXPECT_MSTENSOR_EQ(label, expect_label);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -132,7 +132,7 @@ TEST_F(MindDataTestPipeline, TestVOCDetection) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if VOC() read correct images/labels
@@ -149,11 +149,11 @@ TEST_F(MindDataTestPipeline, TestVOCDetection) {
     MS_LOG(INFO) << "Tensor image shape: " << image.Shape();
     MS_LOG(INFO) << "Tensor label shape: " << label.Shape();
 
-    mindspore::MSTensor expect_image = ReadFileToTensor(folder_path + "/JPEGImages/" + expect_file[i] + ".jpg");
+    luojianet_ms::MSTensor expect_image = ReadFileToTensor(folder_path + "/JPEGImages/" + expect_file[i] + ".jpg");
     EXPECT_MSTENSOR_EQ(image, expect_image);
 
     ASSERT_OK(de_expect_label->SetItemAt({0, 0}, expect_num[i]));
-    mindspore::MSTensor expect_label = mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expect_label));
+    luojianet_ms::MSTensor expect_label = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expect_label));
     EXPECT_MSTENSOR_EQ(label, expect_label);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -177,7 +177,7 @@ TEST_F(MindDataTestPipeline, TestVOCDetection1) {
   EXPECT_NE(ds, nullptr);
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   int row_count = 0;
   while (row.size() != 0) {
@@ -233,7 +233,7 @@ TEST_F(MindDataTestPipeline, TestVOCSegmentation) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check if VOC() read correct images/targets
@@ -245,10 +245,10 @@ TEST_F(MindDataTestPipeline, TestVOCSegmentation) {
     MS_LOG(INFO) << "Tensor image shape: " << image.Shape();
     MS_LOG(INFO) << "Tensor target shape: " << target.Shape();
 
-    mindspore::MSTensor expect_image = ReadFileToTensor(folder_path + "/JPEGImages/" + expect_file[i] + ".jpg");
+    luojianet_ms::MSTensor expect_image = ReadFileToTensor(folder_path + "/JPEGImages/" + expect_file[i] + ".jpg");
     EXPECT_MSTENSOR_EQ(image, expect_image);
 
-    mindspore::MSTensor expect_target = ReadFileToTensor(folder_path + "/SegmentationClass/" + expect_file[i] + ".png");
+    luojianet_ms::MSTensor expect_target = ReadFileToTensor(folder_path + "/SegmentationClass/" + expect_file[i] + ".png");
     EXPECT_MSTENSOR_EQ(target, expect_target);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -272,7 +272,7 @@ TEST_F(MindDataTestPipeline, TestVOCSegmentation1) {
   EXPECT_NE(ds, nullptr);
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   int row_count = 0;
   while (!row.empty()) {

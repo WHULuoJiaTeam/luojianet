@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,24 +19,24 @@ train and infer lenet quantization network
 
 import os
 import pytest
-from mindspore import context
-from mindspore import Tensor
-from mindspore.common import dtype as mstype
-import mindspore.nn as nn
-from mindspore.nn.metrics import Accuracy
-from mindspore.train.callback import ModelCheckpoint, CheckpointConfig, LossMonitor
-from mindspore import load_checkpoint, load_param_into_net, export
-from mindspore.train import Model
-from mindspore.compression.quant import QuantizationAwareTraining
-from mindspore.compression.quant.quantizer import OptimizeOption
-from mindspore.compression.quant.quant_utils import load_nonquant_param_into_quant_net
+from luojianet_ms import context
+from luojianet_ms import Tensor
+from luojianet_ms.common import dtype as mstype
+import luojianet_ms.nn as nn
+from luojianet_ms.nn.metrics import Accuracy
+from luojianet_ms.train.callback import ModelCheckpoint, CheckpointConfig, LossMonitor
+from luojianet_ms import load_checkpoint, load_param_into_net, export
+from luojianet_ms.train import Model
+from luojianet_ms.compression.quant import QuantizationAwareTraining
+from luojianet_ms.compression.quant.quantizer import OptimizeOption
+from luojianet_ms.compression.quant.quant_utils import load_nonquant_param_into_quant_net
 from dataset import create_dataset
 from config import quant_cfg
 from lenet_fusion import LeNet5 as LeNet5Fusion
 import numpy as np
 
-data_path = "/home/workspace/mindspore_dataset/mnist"
-lenet_ckpt_path = "/home/workspace/mindspore_dataset/checkpoint/lenet/ckpt_lenet_noquant-10_1875.ckpt"
+data_path = "/home/workspace/luojianet_ms_dataset/mnist"
+lenet_ckpt_path = "/home/workspace/luojianet_ms_dataset/checkpoint/lenet/ckpt_lenet_noquant-10_1875.ckpt"
 
 def train_lenet_quant(optim_option="QAT"):
     cfg = quant_cfg

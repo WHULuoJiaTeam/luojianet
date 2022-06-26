@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +18,10 @@ Testing AutoAugment in DE
 """
 import numpy as np
 
-import mindspore.dataset as ds
-from mindspore.dataset.vision.c_transforms import Decode, AutoAugment, Resize
-from mindspore.dataset.vision.utils import AutoAugmentPolicy, Inter
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms.dataset.vision.c_transforms import Decode, AutoAugment, Resize
+from luojianet_ms.dataset.vision.utils import AutoAugmentPolicy, Inter
+from luojianet_ms import log as logger
 from util import visualize_image, visualize_list, diff_mse
 
 image_file = "../data/dataset/testImageNetData/train/class1/1_1.jpg"

@@ -23,7 +23,7 @@
 #include "frontend/parallel/tensor_layout/tensor_layout.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 std::vector<Shape> combine(const Shape &in, int64_t target);
@@ -63,5 +63,5 @@ void ValidLayoutChangeCheck(const DeviceArrangement &in_device_arrangement, cons
                             const TensorMap &out_tensor_map, const TensorShape &out_tensor_shape);
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms
 #endif  // TESTS_UT_PARALLEL_TENSOR_LAYOUT_UT_UTIL_LAYOUT_GEN_H_

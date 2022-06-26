@@ -15,10 +15,10 @@
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-import mindspore.context as context
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
 
-from mindspore.ops.operations import _inner_ops
+from luojianet_ms.ops.operations import _inner_ops
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 

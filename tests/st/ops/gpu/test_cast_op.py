@@ -16,12 +16,12 @@
 import numpy as np
 import pytest
 
-import mindspore.common.dtype as mstype
-import mindspore.context as context
-from mindspore.common.tensor import Tensor
-from mindspore.nn import Cell
-from mindspore.ops import operations as P
-from mindspore.ops.operations import _inner_ops as inner
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.context as context
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations import _inner_ops as inner
 
 
 class Net(Cell):

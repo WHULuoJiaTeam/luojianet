@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestSquare : public UT::Common {
  public:
@@ -57,4 +57,4 @@ TEST_F(TestSquare, test_ops_square1) {
   EXPECT_EQ(data_type->type_id(), kNumberTypeFloat32);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

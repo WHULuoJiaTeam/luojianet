@@ -1,4 +1,5 @@
-@rem Copyright 2020 Huawei Technologies Co., Ltd
+@rem Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+@rem Copyright 2021, 2022 Huawei Technologies Co., Ltd
 @rem
 @rem Licensed under the Apache License, Version 2.0 (the "License");
 @rem you may not use this file except in compliance with the License.
@@ -13,13 +14,13 @@
 @rem limitations under the License.
 @rem ============================================================================
 @echo off
-@title mindspore_build
+@title luojianet_ms_build
 
 SET BASE_PATH=%CD%
 SET BUILD_PATH=%BASE_PATH%/build
 
 SET threads=8
-SET ENABLE_GITEE=OFF
+SET ENABLE_GITEE=ON
 
 set VERSION_STR=''
 for /f "tokens=1" %%a in (version.txt) do (set VERSION_STR=%%a)
@@ -38,21 +39,21 @@ IF NOT EXIST "%BUILD_PATH%" (
     md "build"
 )
 cd %BUILD_PATH%
-IF NOT EXIST "%BUILD_PATH%/mindspore" (
-    md "mindspore"
+IF NOT EXIST "%BUILD_PATH%/luojianet_ms" (
+    md "luojianet_ms"
 )
 
-cd %BUILD_PATH%/mindspore
+cd %BUILD_PATH%/luojianet_ms
 IF "%1%" == "lite" (
-    echo "======Start building MindSpore Lite %VERSION_STR%======"
+    echo "======Start building LuoJiaNET Lite %VERSION_STR%======"
     rd /s /q "%BASE_PATH%\output"
     (git log -1 | findstr "^commit") > %BUILD_PATH%\.commit_id
     IF defined VisualStudioVersion (
         cmake -DMSLITE_MINDDATA_IMPLEMENT=off -DMSLITE_ENABLE_TRAIN=off -DVERSION_STR=%VERSION_STR% ^
-            -DCMAKE_BUILD_TYPE=Release -G "Ninja" "%BASE_PATH%/mindspore/lite"
+            -DCMAKE_BUILD_TYPE=Release -G "Ninja" "%BASE_PATH%/luojianet_ms/lite"
     ) ELSE (
         cmake -DMSLITE_MINDDATA_IMPLEMENT=off -DMSLITE_ENABLE_TRAIN=off -DVERSION_STR=%VERSION_STR% ^
-            -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - MinGW Makefiles" "%BASE_PATH%/mindspore/lite"
+            -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - MinGW Makefiles" "%BASE_PATH%/luojianet_ms/lite"
     )
 ) ELSE (
     cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CPU=ON -DENABLE_MINDDATA=ON -DUSE_GLOG=ON -DENABLE_GITEE=%ENABLE_GITEE% ^

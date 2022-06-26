@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,10 +16,10 @@
 import random
 import pytest
 import numpy as np
-import mindspore.dataset as ds
-from mindspore import log as logger
-from mindspore.dataset.engine import SamplingStrategy
-from mindspore.dataset.engine import OutputFormat
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.engine import SamplingStrategy
+from luojianet_ms.dataset.engine import OutputFormat
 
 DATASET_FILE = "../data/mindrecord/testGraphData/testdata"
 SOCIAL_DATA_FILE = "../data/mindrecord/testGraphData/sns"

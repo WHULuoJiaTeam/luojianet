@@ -17,11 +17,11 @@ Testing Pad op in DE
 """
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import diff_mse, save_and_check_md5
 
 DATA_DIR = ["../data/dataset/test_tf_file_3_images/train-0000-of-0001.data"]
@@ -52,7 +52,7 @@ def test_pad_op():
         py_vision.Pad(100),
         py_vision.ToTensor(),
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
     data2 = data2.map(operations=transform, input_columns=["image"])
 
@@ -107,7 +107,7 @@ def test_pad_grayscale():
         (lambda image: (image.transpose(1, 2, 0) * 255).astype(np.uint8))
     ]
 
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data1 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
     data1 = data1.map(operations=transform, input_columns=["image"])
 
@@ -162,7 +162,7 @@ def test_pad_md5():
         py_vision.Pad(150),
         py_vision.ToTensor(),
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(pytrans)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(pytrans)
     data2 = data2.map(operations=transform, input_columns=["image"])
     # Compare with expected md5 from images
     filename1 = "pad_01_c_result.npz"

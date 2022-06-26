@@ -37,18 +37,18 @@
 #include "utils/log_adapter.h"
 #include "securec.h"
 
-using namespace mindspore::dataset;
-using mindspore::MsLogLevel::ERROR;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::LogStream;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::MsLogLevel::ERROR;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::LogStream;
 
 class MindDataTestDataHelper : public UT::DatasetOpTesting  {
- protected: 
+ protected:
 };
 
 TEST_F(MindDataTestDataHelper, MindDataTestHelper) {
   std::string file_path = datasets_root_path_ + "/testAlbum/images/1.json";
-  DataHelper dh; 
+  DataHelper dh;
   std::vector<std::string> new_label = {"3", "4"};
   Status rc = dh.UpdateArray(file_path, "label", new_label);
   if (rc.IsError()) {
@@ -166,7 +166,7 @@ TEST_F(MindDataTestDataHelper, MindDataTestTensorWriteFloat) {
   if (array[1] != 3.0) { EXPECT_TRUE(false); }
   if (array[2] != 3.5) { EXPECT_TRUE(false); }
   if (array[3] != 4.0) { EXPECT_TRUE(false); }
-  std::free(data); 
+  std::free(data);
 }
 
 TEST_F(MindDataTestDataHelper, MindDataTestTensorWriteUInt) {

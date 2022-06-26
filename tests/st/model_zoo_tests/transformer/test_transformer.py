@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,15 +19,15 @@ import time
 import os
 import pytest
 import numpy as np
-import mindspore.common.dtype as mstype
-from mindspore.common.tensor import Tensor
-from mindspore.nn.optim import Adam
-from mindspore.train.model import Model
-from mindspore.train.loss_scale_manager import DynamicLossScaleManager
-from mindspore.train.callback import Callback
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as deC
-from mindspore import context
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn.optim import Adam
+from luojianet_ms.train.model import Model
+from luojianet_ms.train.loss_scale_manager import DynamicLossScaleManager
+from luojianet_ms.train.callback import Callback
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as deC
+from luojianet_ms import context
 from easydict import EasyDict as edict
 from tests.models.official.nlp.transformer.src.transformer_model import TransformerConfig
 from tests.models.official.nlp.transformer.src.transformer_for_train import TransformerNetworkWithLoss, TransformerTrainOneStepWithLossScaleCell
@@ -34,7 +35,7 @@ from tests.models.official.nlp.transformer.src.lr_schedule import create_dynamic
 from tests.st.model_zoo_tests import utils
 
 
-DATA_DIR = ["/home/workspace/mindspore_dataset/transformer/test-mindrecord"]
+DATA_DIR = ["/home/workspace/luojianet_ms_dataset/transformer/test-mindrecord"]
 
 cfg = edict({
     'transformer_network': 'large',

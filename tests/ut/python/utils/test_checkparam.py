@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.nn as nn
-from mindspore import Model, context
-from mindspore.common.tensor import Tensor
+import luojianet_ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Model, context
+from luojianet_ms.common.tensor import Tensor
 
 
 class LeNet5(nn.Cell):
@@ -61,7 +62,7 @@ def predict_checke_param(in_str):
     b4 = int(b4)
 
     nd_data = np.random.randint(a1, a2, [b1, b2, b3, b4])
-    input_data = Tensor(nd_data, mindspore.float32)
+    input_data = Tensor(nd_data, luojianet_ms.float32)
     model.predict(input_data)
 
 

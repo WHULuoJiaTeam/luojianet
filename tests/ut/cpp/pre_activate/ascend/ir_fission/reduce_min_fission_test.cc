@@ -23,7 +23,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptReduceMinFission : public BackendCommon {
  public:
@@ -53,4 +53,4 @@ TEST_F(TestHWOptReduceMinFission, test_fission) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -15,8 +15,8 @@
 """
 This is the test module for mindrecord
 """
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 FILES_NUM = 1
 CV_FILE_NAME = "../data/mindrecord/testTwoImageData/twobytes.mindrecord"

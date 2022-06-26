@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,22 +18,22 @@ import glob
 
 import numpy as np
 import pytest
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.context import set_auto_parallel_context, ParallelMode
-from mindspore import context
-from mindspore.ops import composite as C
-from mindspore.ops import functional as F
-import mindspore.ops as P
-from mindspore.parallel.nn import TransformerEncoder, TransformerDecoder, Transformer, TransformerOpParallelConfig, \
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.context import set_auto_parallel_context, ParallelMode
+from luojianet_ms import context
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import functional as F
+import luojianet_ms.ops as P
+from luojianet_ms.parallel.nn import TransformerEncoder, TransformerDecoder, Transformer, TransformerOpParallelConfig, \
     VocabEmbedding, CrossEntropyLoss, OpParallelConfig, EmbeddingOpParallelConfig, FixedSparseAttention
-from mindspore.nn.wrap.loss_scale import DynamicLossScaleUpdateCell
-from mindspore.nn.optim import AdamWeightDecay
-from mindspore.nn.wrap.cell_wrapper import PipelineCell, _VirtualDatasetCell, TrainOneStepCell
-from mindspore.nn.wrap.loss_scale import _TrainPipelineWithLossScaleCell
-from mindspore.train import Model
-from mindspore.parallel import set_algo_parameters
+from luojianet_ms.nn.wrap.loss_scale import DynamicLossScaleUpdateCell
+from luojianet_ms.nn.optim import AdamWeightDecay
+from luojianet_ms.nn.wrap.cell_wrapper import PipelineCell, _VirtualDatasetCell, TrainOneStepCell
+from luojianet_ms.nn.wrap.loss_scale import _TrainPipelineWithLossScaleCell
+from luojianet_ms.train import Model
+from luojianet_ms.parallel import set_algo_parameters
 from tests.dataset_mock import MindData
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 

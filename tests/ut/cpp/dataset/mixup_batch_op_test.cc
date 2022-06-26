@@ -18,10 +18,10 @@
 #include "minddata/dataset/kernels/image/mixup_batch_op.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
-using mindspore::MsLogLevel::INFO;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::LogStream;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::MsLogLevel::INFO;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::LogStream;
 
 class MindDataTestMixUpBatchOp : public UT::CVOP::CVOpCommon {
  protected:

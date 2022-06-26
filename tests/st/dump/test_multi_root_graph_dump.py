@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,10 +21,10 @@ import shutil
 import csv
 import numpy as np
 import pytest
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.ops import operations as P
-from mindspore.nn import Cell
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.nn import Cell
 from dump_test_utils import generate_dump_json
 from tests.security_utils import security_off_wrap
 
@@ -70,7 +71,7 @@ def run_multi_root_graph_dump(device, dump_mode, test_name):
         dump_path = os.path.join(tmp_dir, dump_mode)
         dump_config_path = os.path.join(tmp_dir, dump_mode + ".json")
         generate_dump_json(dump_path, dump_config_path, test_name)
-        os.environ['MINDSPORE_DUMP_CONFIG'] = dump_config_path
+        os.environ['LUOJIANET_MS_DUMP_CONFIG'] = dump_config_path
         dump_file_path = os.path.join(dump_path, 'rank_0', 'Net')
         if os.path.isdir(dump_path):
             shutil.rmtree(dump_path)

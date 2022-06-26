@@ -30,7 +30,7 @@ extern "C" int CustomSquare(int nparam, void **params, int *ndims, int64_t **sha
   constexpr int TOTAL_PARAM_NUM = 2;
 
   // Users can add any check on their need. If check fails, user can return any value larger than 0 to safely exit.
-  // Any return value not equal to 0 will cause MindSpore to stop computing and safely exit.
+  // Any return value not equal to 0 will cause LuoJiaNET to stop computing and safely exit.
 
   // This is to check if the num of parameters the same as what the user wants.
   // There are one input and one output, so the nparam should be 2.
@@ -60,6 +60,6 @@ extern "C" int CustomSquare(int nparam, void **params, int *ndims, int64_t **sha
   // Do the computation
   CustomSquareKernel<<<n + 1, THREADS, 0, custream>>>(static_cast<float *>(input1), static_cast<float *>(output), size);
 
-  // When return 0, MindSpore will continue to run if this kernel could launch successfully.
+  // When return 0, LuoJiaNET will continue to run if this kernel could launch successfully.
   return 0;
 }

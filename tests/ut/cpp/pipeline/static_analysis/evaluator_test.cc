@@ -24,7 +24,7 @@
 
 #include "include/common/debug/draw.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 class TestEvaluatorCacheMap : public UT::Common {
  public:
@@ -240,4 +240,4 @@ TEST_F(TestPartialEvaluator, test_infer_construct_sub_unresolved) {
 */
 
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms

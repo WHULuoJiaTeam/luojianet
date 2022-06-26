@@ -22,7 +22,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/tensor_layout/construct_operator.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class MatMulInfo;
@@ -55,7 +55,7 @@ void TestConstructOperator::SetUp() {
 
   ValuePtr transpose_a_1 = MakeValue(false);
   ValuePtr transpose_b_1 = MakeValue(false);
-  mindspore::HashMap<std::string, ValuePtr> attr_1 = {{"transpose_a", transpose_a_1}, {"transpose_b", transpose_b_1}};
+  luojianet_ms::HashMap<std::string, ValuePtr> attr_1 = {{"transpose_a", transpose_a_1}, {"transpose_b", transpose_b_1}};
 
   Shapes inputs_shape_1 = {{2, 4, 8, 16}, {2, 4, 16, 32}};
   Shapes outputs_shape_1 = {{2, 4, 8, 32}};
@@ -137,4 +137,4 @@ TEST_F(TestConstructOperator, TestAlltoAllOP) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -16,9 +16,9 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::Status;
-using mindspore::dataset::ShuffleMode;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::Status;
+using luojianet_ms::dataset::ShuffleMode;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -45,7 +45,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kSuccessEn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -77,7 +77,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kSuccessEn) {
               "This is the second English sentence in valid."};
 
   ds = Multi30k(en_file, usage, {"en", "de"}, 0, ShuffleMode::kFalse);
-  
+
   EXPECT_NE(ds, nullptr);
   iter = ds->CreateIterator();
   ASSERT_OK(iter->GetNextRow(&row));
@@ -108,7 +108,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kSuccessEn) {
               "This is the third English sentence in test."};
 
   ds = Multi30k(en_file, usage, {"en", "de"}, 0, ShuffleMode::kFalse);
-  
+
   EXPECT_NE(ds, nullptr);
   iter = ds->CreateIterator();
   ASSERT_OK(iter->GetNextRow(&row));
@@ -154,7 +154,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kSuccessDe) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("translation"), row.end());
@@ -186,7 +186,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kSuccessDe) {
               "This is the second Germany sentence in valid."};
 
   ds = Multi30k(en_file, usage, {"en", "de"}, 0, ShuffleMode::kFalse);
-  
+
   EXPECT_NE(ds, nullptr);
   iter = ds->CreateIterator();
   ASSERT_OK(iter->GetNextRow(&row));
@@ -217,7 +217,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kSuccessDe) {
               "This is the third Germany sentence in test."};
 
   ds = Multi30k(en_file, usage, {"en", "de"}, 0, ShuffleMode::kFalse);
-  
+
   EXPECT_NE(ds, nullptr);
   iter = ds->CreateIterator();
   ASSERT_OK(iter->GetNextRow(&row));
@@ -281,7 +281,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kDatasetBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -334,7 +334,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kDatasetDistribution) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -364,7 +364,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kDatasetFailInvalidFilePath) {
   std::string train_en_file = datasets_root_path_ + "/invalid/file.path";
   std::string usage = "train";
   std::shared_ptr<Dataset> ds = Multi30k(train_en_file, usage, {"en", "de"});
-  EXPECT_NE(ds, nullptr); 
+  EXPECT_NE(ds, nullptr);
 }
 
 /// Feature: Error Test.
@@ -378,7 +378,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kDatasetFailInvalidUsage) {
   std::string train_en_file = datasets_root_path_ + "/testMulti30kDataset";
   std::string usage = "invalid_usage";
   std::shared_ptr<Dataset> ds = Multi30k(train_en_file, usage, {"en", "de"});
-  EXPECT_NE(ds, nullptr); 
+  EXPECT_NE(ds, nullptr);
 }
 
 /// Feature: Error Test.
@@ -470,7 +470,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kDatasetLanguagePair) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("translation"), row.end());
@@ -520,7 +520,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kDatasetShuffleFilesFalse) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -577,7 +577,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kDatasetShuffleFilesFiles) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -627,7 +627,7 @@ TEST_F(MindDataTestPipeline, TestMulti30kDatasetShuffleFilesGlobal) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());

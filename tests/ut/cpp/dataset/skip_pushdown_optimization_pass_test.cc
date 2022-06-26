@@ -22,7 +22,7 @@
 #include "minddata/dataset/include/dataset/samplers.h"
 #include "minddata/dataset/include/dataset/vision.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataSkipPushdownTestOptimizationPass : public UT::DatasetOpTesting {
  protected:

@@ -15,10 +15,10 @@
 import numpy as np
 import pytest
 
-from mindspore import Tensor, context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import Cell
-from mindspore.ops import operations as P
+from luojianet_ms import Tensor, context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import operations as P
 
 from parallel.utils.utils import ParallelValidator
 

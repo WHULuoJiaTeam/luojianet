@@ -16,11 +16,11 @@
 
 #include "ut_common.h"
 
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::ERROR;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::ERROR;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace mindrecord {
 namespace UT {
 #ifdef __cplusplus
@@ -402,4 +402,4 @@ void ShardWriterImageNetOpenForAppend(string filename) {
 
 
 }  // namespace mindrecord
-}  // namespace mindspore
+}  // namespace luojianet_ms

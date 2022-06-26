@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestCrop : public UT::Common {
  public:
@@ -75,4 +75,4 @@ TEST_F(TestCrop, test_ops_crop1) {
   EXPECT_EQ(shape_vec[0], 1);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

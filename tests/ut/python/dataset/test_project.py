@@ -16,9 +16,9 @@ import numpy as np
 
 from util import save_and_check_tuple
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-from mindspore.common import dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+from luojianet_ms.common import dtype as mstype
 
 DATA_DIR_TF = ["../data/dataset/testTFTestAllTypes/test.data"]
 SCHEMA_DIR_TF = "../data/dataset/testTFTestAllTypes/datasetSchema.json"

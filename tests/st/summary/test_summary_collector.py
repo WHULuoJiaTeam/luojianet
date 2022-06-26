@@ -22,14 +22,14 @@ from collections import Counter
 import numpy as np
 
 import pytest
-from mindspore.common import set_seed
-from mindspore import nn, Tensor, context
-from mindspore.common.initializer import Normal
-from mindspore.nn.metrics import Loss
-from mindspore.nn.optim import Momentum
-from mindspore.ops import operations as P
-from mindspore.train import Model
-from mindspore.train.callback import SummaryCollector, SummaryLandscape
+from luojianet_ms.common import set_seed
+from luojianet_ms import nn, Tensor, context
+from luojianet_ms.common.initializer import Normal
+from luojianet_ms.nn.metrics import Loss
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train import Model
+from luojianet_ms.train.callback import SummaryCollector, SummaryLandscape
 from tests.st.summary.dataset import create_mnist_dataset
 from tests.summary_utils import SummaryReader
 from tests.security_utils import security_off_wrap

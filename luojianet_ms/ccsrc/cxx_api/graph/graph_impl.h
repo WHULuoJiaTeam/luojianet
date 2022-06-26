@@ -1,0 +1,53 @@
+/**
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#ifndef LUOJIANET_MS_CCSRC_CXX_API_GRAPH_GRAPH_IMPL_H
+#define LUOJIANET_MS_CCSRC_CXX_API_GRAPH_GRAPH_IMPL_H
+#include <functional>
+#include <map>
+#include <string>
+#include <vector>
+#include <memory>
+#include <utility>
+#include "include/api/cell.h"
+#include "include/api/graph.h"
+#include "cxx_api/graph/graph_data.h"
+#include "include/common/utils/utils.h"
+
+namespace luojianet_ms {
+class GraphCell::GraphImpl {
+ public:
+  GraphImpl() : graph_(nullptr), graph_context_(nullptr) {}
+  virtual ~GraphImpl() = default;
+
+  std::shared_ptr<Graph::GraphData> &MutableGraphData() const { return graph_->graph_data_; }
+  void SetGraph(const std::shared_ptr<Graph> &graph) { graph_ = graph; }
+  void SetContext(const std::shared_ptr<Context> &context) { graph_context_ = context; }
+
+  virtual Status Run(const std::vector<MSTensor> &inputs, std::vector<MSTensor> *outputs) = 0;
+  virtual Status Load(uint32_t device_id) = 0;
+
+  virtual std::vector<MSTensor> GetInputs() = 0;
+  virtual std::vector<MSTensor> GetOutputs() = 0;
+
+  virtual bool CheckDeviceSupport(luojianet_ms::DeviceType device_type) = 0;
+
+ protected:
+  std::shared_ptr<Graph> graph_;
+  std::shared_ptr<Context> graph_context_;
+};
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_CCSRC_CXX_API_GRAPH_GRAPH_IMPL_H

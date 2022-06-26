@@ -4,17 +4,17 @@ if(BUILD_LITE)
         set(flatbuffers_CFLAGS "${CMAKE_C_FLAGS}")
         set(flatbuffers_LDFLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
     else()
-        set(glog_CXXFLAGS "-D_FORTIFY_SOURCE=2 -O2 ${SECURE_CXX_FLAGS} -Dgoogle=mindspore_private")
+        set(glog_CXXFLAGS "-D_FORTIFY_SOURCE=2 -O2 ${SECURE_CXX_FLAGS} -Dgoogle=luojianet_ms_private")
         set(glog_CFLAGS "-D_FORTIFY_SOURCE=2 -O2 ${SECURE_C_FLAGS}")
         set(glog_LDFLAGS "${SECURE_SHARED_LINKER_FLAGS}")
     endif()
     set(glog_patch "")
     set(glog_lib glog)
 else()
-    set(glog_CXXFLAGS "-D_FORTIFY_SOURCE=2 -O2 ${SECURE_CXX_FLAGS} -Dgoogle=mindspore_private")
+    set(glog_CXXFLAGS "-D_FORTIFY_SOURCE=2 -O2 ${SECURE_CXX_FLAGS} -Dgoogle=luojianet_ms_private")
     set(glog_CFLAGS "-D_FORTIFY_SOURCE=2 -O2")
     set(glog_patch ${CMAKE_SOURCE_DIR}/third_party/patch/glog/glog.patch001)
-    set(glog_lib mindspore_glog)
+    set(glog_lib luojianet_ms_glog)
 endif()
 
 if(NOT ENABLE_GLIBCXX)
@@ -41,7 +41,7 @@ if(WIN32 AND NOT MSVC)
     endif()
 endif()
 
-mindspore_add_pkg(glog
+luojianet_ms_add_pkg(glog
         VER 0.4.0
         LIBS ${glog_lib}
         URL ${REQ_URL}
@@ -49,4 +49,4 @@ mindspore_add_pkg(glog
         PATCHES ${glog_patch}
         CMAKE_OPTION ${glog_option})
 include_directories(${glog_INC})
-add_library(mindspore::glog ALIAS glog::${glog_lib})
+add_library(luojianet_ms::glog ALIAS glog::${glog_lib})

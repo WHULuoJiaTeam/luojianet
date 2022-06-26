@@ -17,10 +17,10 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::DataType;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::TensorShape;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::DataType;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
 protected:
@@ -43,7 +43,7 @@ TEST_F(MindDataTestPipeline, TestLFWDataset) {
  EXPECT_NE(iter, nullptr);
 
  // Iterate the dataset and get each row.
- std::unordered_map<std::string, mindspore::MSTensor> row;
+ std::unordered_map<std::string, luojianet_ms::MSTensor> row;
  ASSERT_OK(iter->GetNextRow(&row));
 
  EXPECT_NE(row.find("image"), row.end());
@@ -160,7 +160,7 @@ TEST_F(MindDataTestPipeline, TestLFWDatasetWithPipeline) {
  EXPECT_NE(iter, nullptr);
 
  // Iterate the dataset and get each row.
- std::unordered_map<std::string, mindspore::MSTensor> row;
+ std::unordered_map<std::string, luojianet_ms::MSTensor> row;
  ASSERT_OK(iter->GetNextRow(&row));
 
  EXPECT_NE(row.find("image"), row.end());
@@ -285,7 +285,7 @@ TEST_F(MindDataTestPipeline, TestLFWDatasetUsage) {
  EXPECT_NE(iter, nullptr);
 
  // Iterate the dataset and get each row.
- std::unordered_map<std::string, mindspore::MSTensor> row;
+ std::unordered_map<std::string, luojianet_ms::MSTensor> row;
  ASSERT_OK(iter->GetNextRow(&row));
 
  EXPECT_NE(row.find("image1"), row.end());
@@ -326,7 +326,7 @@ TEST_F(MindDataTestPipeline, TestLFWDatasetImagSet) {
  EXPECT_NE(iter, nullptr);
 
  // Iterate the dataset and get each row.
- std::unordered_map<std::string, mindspore::MSTensor> row;
+ std::unordered_map<std::string, luojianet_ms::MSTensor> row;
  ASSERT_OK(iter->GetNextRow(&row));
 
  EXPECT_NE(row.find("image1"), row.end());

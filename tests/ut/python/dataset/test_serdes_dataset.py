@@ -24,14 +24,14 @@ import pytest
 import numpy as np
 from util import config_get_set_num_parallel_workers, config_get_set_seed
 
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as c
-import mindspore.dataset.transforms.py_transforms as py
-import mindspore.dataset.vision.c_transforms as vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
-from mindspore.dataset.vision import Inter
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as c
+import luojianet_ms.dataset.transforms.py_transforms as py
+import luojianet_ms.dataset.vision.c_transforms as vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.vision import Inter
 
 
 def test_serdes_imagefolder_dataset(remove_json_files=True):

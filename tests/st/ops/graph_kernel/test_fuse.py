@@ -15,11 +15,11 @@
 
 import numpy as np
 import pytest
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.nn import Cell
-import mindspore.ops.operations as P
-from mindspore.ops.operations import _grad_ops as G
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Cell
+import luojianet_ms.ops.operations as P
+from luojianet_ms.ops.operations import _grad_ops as G
 
 
 class Net(Cell):

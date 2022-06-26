@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import mindspore.context as context
-from mindspore.parallel._auto_parallel_context import auto_parallel_context
-from mindspore.parallel._cost_model_context import reset_cost_model_context
-from mindspore.parallel._utils import _reset_op_id
-from mindspore.parallel.algo_parameter_config import reset_algo_parameters
-from mindspore.communication._comm_helper import GlobalComm
+import luojianet_ms.context as context
+from luojianet_ms.parallel._auto_parallel_context import auto_parallel_context
+from luojianet_ms.parallel._cost_model_context import reset_cost_model_context
+from luojianet_ms.parallel._utils import _reset_op_id
+from luojianet_ms.parallel.algo_parameter_config import reset_algo_parameters
+from luojianet_ms.communication._comm_helper import GlobalComm
 
 def setup_module():
     auto_parallel_context().set_enable_all_reduce_fusion(enable_all_reduce_fusion=True)

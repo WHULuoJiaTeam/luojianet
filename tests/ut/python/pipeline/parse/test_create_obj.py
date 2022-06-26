@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,11 +26,11 @@ import logging
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import context, ops, dtype
-from mindspore.common.api import ms_function
-from mindspore.common import Tensor, Parameter
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms import context, ops, dtype
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.common import Tensor, Parameter
+from luojianet_ms.ops import operations as P
 from ...ut_filter import non_graph_engine
 
 log = logging.getLogger("test")

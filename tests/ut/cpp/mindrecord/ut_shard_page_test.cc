@@ -30,11 +30,11 @@ using std::pair;
 using std::string;
 using std::vector;
 
-using mindspore::MsLogLevel::INFO;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::LogStream;
+using luojianet_ms::MsLogLevel::INFO;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::LogStream;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace mindrecord {
 class TestShardPage : public UT::Common {
  public:
@@ -158,4 +158,4 @@ TEST_F(TestShardPage, TestJson) {
   }
 }
 }  // namespace mindrecord
-}  // namespace mindspore
+}  // namespace luojianet_ms

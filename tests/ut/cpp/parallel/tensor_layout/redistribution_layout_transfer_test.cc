@@ -22,7 +22,7 @@
 #include "util_layout_gen_test.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestRedistributionLayoutTransfer : public UT::Common {
@@ -288,4 +288,4 @@ TEST_F(TestRedistributionLayoutTransfer, RedistributionLayoutTransferCheckAll) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -16,9 +16,9 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-namespace common = mindspore::common;
+namespace common = luojianet_ms::common;
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -41,7 +41,7 @@ TEST_F(MindDataTestPipeline, TestPullBasedBatch) {
   auto iter = ds->CreatePullBasedIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_EQ(row.size(), 1);
   auto temp = row[0].Shape();
@@ -59,7 +59,7 @@ TEST_F(MindDataTestPipeline, TestPullBasedProject) {
   std::shared_ptr<Dataset> ds = Album(folder_path, schema_file, column_names);
   EXPECT_NE(ds, nullptr);
 
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   auto iter = ds->CreatePullBasedIterator();
   EXPECT_NE(iter, nullptr);
   ASSERT_OK(iter->GetNextRow(&row));
@@ -74,7 +74,7 @@ TEST_F(MindDataTestPipeline, TestPullBasedProject) {
   auto iter2 = ds2->CreatePullBasedIterator();
   EXPECT_NE(iter2, nullptr);
 
-  std::vector<mindspore::MSTensor> new_row;
+  std::vector<luojianet_ms::MSTensor> new_row;
   ASSERT_OK(iter2->GetNextRow(&new_row));
   EXPECT_EQ(new_row.size(), 1);
 }

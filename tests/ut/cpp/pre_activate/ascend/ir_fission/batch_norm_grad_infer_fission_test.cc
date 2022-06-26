@@ -19,7 +19,7 @@
 #include "common/backend_common_test.h"
 #include "common/py_func_graph_fetcher.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWBatchNormGradInferFission : public BackendCommon {
  public:
@@ -92,4 +92,4 @@ TEST_F(TestHWBatchNormGradInferFission, test_batch_norm_grad_infer_no_fission2) 
   EXPECT_TRUE(CheckEqualGraph(kg, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

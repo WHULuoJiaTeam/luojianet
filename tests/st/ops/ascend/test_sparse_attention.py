@@ -1,7 +1,7 @@
 import numpy as np
-from mindspore import Tensor
-from mindspore.parallel.nn.layers import FixedSparseAttention
-import mindspore.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.parallel.nn.layers import FixedSparseAttention
+import luojianet_ms.context as context
 
 context.set_context(device_target="Ascend")
 

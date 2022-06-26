@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestConcat : public UT::Common {
  public:
@@ -98,4 +98,4 @@ TEST_F(TestConcat, test_ops_concat2) {
   EXPECT_EQ(shape_vec[2], 10);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

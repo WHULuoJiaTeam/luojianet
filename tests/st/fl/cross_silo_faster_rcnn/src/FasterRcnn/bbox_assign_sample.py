@@ -15,10 +15,10 @@
 """FasterRcnn positive and negative sample screening for RPN."""
 
 import numpy as np
-import mindspore.nn as nn
-from mindspore.ops import operations as P
-from mindspore.common.tensor import Tensor
-import mindspore.common.dtype as mstype
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.tensor import Tensor
+import luojianet_ms.common.dtype as mstype
 
 
 class BboxAssignSample(nn.Cell):

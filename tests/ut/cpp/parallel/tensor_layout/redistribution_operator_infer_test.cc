@@ -20,7 +20,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "util_layout_gen_test.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestRedistributionOperatorInfer : public UT::Common {
@@ -108,4 +108,4 @@ TEST_F(TestRedistributionOperatorInfer, TestInferOperatorAll) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

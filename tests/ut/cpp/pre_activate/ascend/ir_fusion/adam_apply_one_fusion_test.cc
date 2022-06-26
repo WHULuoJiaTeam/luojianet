@@ -18,7 +18,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/adam_apply_one_fusion.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWAdamApplyOneFusion : public BackendCommon {
  public:
@@ -318,4 +318,4 @@ TEST_F(TestHWAdamApplyOneFusion, test_adam_apply_one_assign_cond4_fusion) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

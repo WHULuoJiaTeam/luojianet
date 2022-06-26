@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +18,12 @@ import os
 from dataclasses import dataclass
 import numpy as np
 
-from mindspore import Tensor, Model, context
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore.ops import functional as F
-from mindspore.nn import Cell
-from mindspore.nn import ReLU
+from luojianet_ms import Tensor, Model, context
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import functional as F
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import ReLU
 from ...ut_filter import non_graph_engine
 
 

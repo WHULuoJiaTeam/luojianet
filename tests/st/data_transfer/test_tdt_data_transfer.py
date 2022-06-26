@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,17 +16,17 @@
 import time
 import numpy as np
 import pytest
-from mindspore import context, nn, Tensor
-from mindspore import log as logger
-from mindspore.common.api import _cell_graph_executor
-from mindspore.common import dtype as mstype
-from mindspore.ops import operations as P
-import mindspore.dataset as de
-from mindspore.dataset.vision import c_transforms as c_vision
-from mindspore.dataset.transforms import c_transforms as c_trans
+from luojianet_ms import context, nn, Tensor
+from luojianet_ms import log as logger
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.ops import operations as P
+import luojianet_ms.dataset as de
+from luojianet_ms.dataset.vision import c_transforms as c_vision
+from luojianet_ms.dataset.transforms import c_transforms as c_trans
 
 
-DATA_DIR = "/home/workspace/mindspore_dataset/cifar-10-verify-bin"
+DATA_DIR = "/home/workspace/luojianet_ms_dataset/cifar-10-verify-bin"
 
 
 def dataset_cifar(dataset_path=None, batch_size=32, repeat_num=1, num_rows=9600, distribution_num=None, shard_id=None,

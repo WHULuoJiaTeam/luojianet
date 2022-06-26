@@ -13,11 +13,11 @@
 # limitations under the License.
 # ==============================================================================
 import pytest
-import mindspore as ms
-from mindspore.nn import Cell
-from mindspore.common.parameter import Parameter
-from mindspore.common import ParameterTuple
-from mindspore import Tensor, context
+import luojianet_ms as ms
+from luojianet_ms.nn import Cell
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common import ParameterTuple
+from luojianet_ms import Tensor, context
 
 context.set_context(mode=context.GRAPH_MODE)
 

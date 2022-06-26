@@ -16,18 +16,18 @@ import math
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.nn as nn
-import mindspore.common.initializer as Init
-from mindspore import Tensor, context, Parameter
-from mindspore.ops import operations as P
-from mindspore.common.initializer import initializer
-from mindspore.ops import functional as F
-from mindspore.common.initializer import TruncatedNormal, HeNormal
-from mindspore.nn.wrap.cell_wrapper import _VirtualDatasetCell
-from mindspore.nn.loss.loss import LossBase
+import luojianet_ms
+import luojianet_ms.nn as nn
+import luojianet_ms.common.initializer as Init
+from luojianet_ms import Tensor, context, Parameter
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.ops import functional as F
+from luojianet_ms.common.initializer import TruncatedNormal, HeNormal
+from luojianet_ms.nn.wrap.cell_wrapper import _VirtualDatasetCell
+from luojianet_ms.nn.loss.loss import LossBase
 
-mindspore.set_seed(0)
+luojianet_ms.set_seed(0)
 np.random.seed(0)
 
 def flatten(input_tensor, start_dim):
@@ -44,7 +44,7 @@ def one_hot_int(label, num_classes):
 
     for index in range(num_elements):
         one_hot_label[index][label[index]] = 1
-    return Tensor(one_hot_label, mindspore.float32)
+    return Tensor(one_hot_label, luojianet_ms.float32)
 
 class CrossEntropySmooth(LossBase):
     """CrossEntropy"""
@@ -58,7 +58,7 @@ class CrossEntropySmooth(LossBase):
         loss = None
         idx = 0
         for o in logit:
-            o = F.cast(o, mindspore.float32)
+            o = F.cast(o, luojianet_ms.float32)
             loss = self.ce(o, label) / len(logit) if idx == 0 else loss + self.ce(o, label) / len(logit)
             idx = idx + 1
         return loss
@@ -102,7 +102,7 @@ class DropPath(nn.Cell):
             return x
         keep_prob = 1 - drop_prob
         shape = (x.shape[0],) + (1,) * (x.ndim - 1)  # work with diff dim tensors, not just 2D ConvNets
-        random_tensor = self.add(keep_prob, F.cast(self.uniformreal(shape), mindspore.float32))
+        random_tensor = self.add(keep_prob, F.cast(self.uniformreal(shape), luojianet_ms.float32))
         random_tensor = self.floor(random_tensor)
         output = self.mul(self.div(x, keep_prob), random_tensor)
         return output # fp32
@@ -190,7 +190,7 @@ class Mlp(nn.Cell):
         super(Mlp, self).__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
-        self.fc1 = nn.Dense(in_features, hidden_features, weight_init=TruncatedNormal(0.02)).to_float(mindspore.float16)
+        self.fc1 = nn.Dense(in_features, hidden_features, weight_init=TruncatedNormal(0.02)).to_float(luojianet_ms.float16)
         self.fc1.matmul.shard(((dp, 1), (mp, 1)))
         self.fc1.bias_add.shard(((dp, mp), (mp,)))
 
@@ -198,7 +198,7 @@ class Mlp(nn.Cell):
         self.act.gelu.shard(((dp, mp),))
 
         self.fc2 = nn.Dense(hidden_features, out_features,
-                            weight_init=TruncatedNormal(0.02)).to_float(mindspore.float16)
+                            weight_init=TruncatedNormal(0.02)).to_float(luojianet_ms.float16)
         self.fc2.matmul.shard(((dp, mp), (1, mp)))
         self.fc2.bias_add.shard(((dp, 1), (1,)))
 
@@ -213,11 +213,11 @@ class Mlp(nn.Cell):
         """
         origin_shape = x.shape
         x = x.view(-1, origin_shape[-1])
-        x = self.fc1(F.cast(x, mindspore.float16))
-        x = self.act(F.cast(x, mindspore.float32))
+        x = self.fc1(F.cast(x, luojianet_ms.float16))
+        x = self.act(F.cast(x, luojianet_ms.float32))
         x = self.drop2(x)
-        x = self.fc2(F.cast(x, mindspore.float16))
-        x = self.drop(F.cast(x, mindspore.float32))
+        x = self.fc2(F.cast(x, luojianet_ms.float16))
+        x = self.drop(F.cast(x, luojianet_ms.float32))
         x = x.view(origin_shape[:-1]+(-1,))
         return x
 
@@ -238,19 +238,19 @@ class Attention(nn.Cell):
 
         self.mul = P.Mul().shard(((dp, mp, 1, 1), ()))
         self.q = nn.Dense(dim, hidden_dim, has_bias=qkv_bias,
-                          weight_init=TruncatedNormal(0.02)).to_float(mindspore.float16)
+                          weight_init=TruncatedNormal(0.02)).to_float(luojianet_ms.float16)
         self.q.matmul.shard(((dp, 1), (mp, 1)))
         if qkv_bias:
             self.q.bias_add.shard(((dp, mp), (mp,)))
 
         self.k = nn.Dense(dim, hidden_dim, has_bias=qkv_bias,
-                          weight_init=TruncatedNormal(0.02)).to_float(mindspore.float16)
+                          weight_init=TruncatedNormal(0.02)).to_float(luojianet_ms.float16)
         self.k.matmul.shard(((dp, 1), (mp, 1)))
         if qkv_bias:
             self.k.bias_add.shard(((dp, mp), (mp,)))
 
         self.v = nn.Dense(dim, hidden_dim, has_bias=qkv_bias,
-                          weight_init=TruncatedNormal(0.02)).to_float(mindspore.float16)
+                          weight_init=TruncatedNormal(0.02)).to_float(luojianet_ms.float16)
         self.v.matmul.shard(((dp, 1), (mp, 1)))
         if qkv_bias:
             self.v.bias_add.shard(((dp, mp), (mp,)))
@@ -262,7 +262,7 @@ class Attention(nn.Cell):
         self.attn_drop = nn.Dropout(1. - attn_drop)
         self.attn_drop.dropout.shard(((dp, mp, 1, 1),))
 
-        self.proj = nn.Dense(hidden_dim, dim, weight_init=TruncatedNormal(0.02)).to_float(mindspore.float16)
+        self.proj = nn.Dense(hidden_dim, dim, weight_init=TruncatedNormal(0.02)).to_float(luojianet_ms.float16)
         self.proj.matmul.shard(((dp, mp), (1, mp)))
         self.proj.bias_add.shard(((dp, 1), (1,)))
 
@@ -276,7 +276,7 @@ class Attention(nn.Cell):
     def construct(self, x):
         """Multi-head Attention"""
         b_size, n_channel, _ = x.shape # fp32
-        x = F.cast(x, mindspore.float16)
+        x = F.cast(x, luojianet_ms.float16)
         x = x.view(b_size*n_channel, -1)
         q = self.q(x)
         k = self.k(x)
@@ -295,9 +295,9 @@ class Attention(nn.Cell):
                 v,
                 (-1, n_channel, self.num_heads, self.head_dim)),
             (0, 2, 1, 3))
-        attn = self.softmax(F.cast(self.batmatmul_trans_b(self.mul(q, self.scale), k), mindspore.float32))
+        attn = self.softmax(F.cast(self.batmatmul_trans_b(self.mul(q, self.scale), k), luojianet_ms.float32))
         attn = self.attn_drop(attn)
-        x = self.reshape(self.transpose2(self.batmatmul_trans_b(F.cast(attn, mindspore.float16), v),
+        x = self.reshape(self.transpose2(self.batmatmul_trans_b(F.cast(attn, luojianet_ms.float16), v),
                                          (0, 2, 1, 3)), (b_size*n_channel, -1))
         x = self.proj(x)
         x = self.proj_drop(x) # fp16
@@ -346,7 +346,7 @@ class ConvBlock(nn.Cell):
                                            kernel_size=1, stride=stride,
                                            padding=0, has_bias=False, pad_mode="pad",
                                            weight_init=HeNormal(mode='fan_out',
-                                                                nonlinearity='relu')).to_float(mindspore.float16)
+                                                                nonlinearity='relu')).to_float(luojianet_ms.float16)
             self.residual_conv.conv2d.shard(((dp, 1, 1, 1), (1, 1, 1, 1)))
             self.residual_conv.bias_add.shard(((dp, 1, 1, 1), (1,)))
             self.residual_bn = norm_layer(outplanes, eps=1e-6)
@@ -361,7 +361,7 @@ class ConvBlock(nn.Cell):
             self.div = P.Div().shard(((), (1,)))
             self.exp = P.Exp().shard(((1,),))
             self.neg = P.Neg().shard(((1,),))
-            self.c = Parameter(Tensor(np.zeros((1,)), mindspore.float16), requires_grad=True)
+            self.c = Parameter(Tensor(np.zeros((1,)), luojianet_ms.float16), requires_grad=True)
 
     def init_network(self, inplanes, outplanes, norm_layer,
                      act_layer, stride, groups, dp):
@@ -370,7 +370,7 @@ class ConvBlock(nn.Cell):
         self.conv1 = nn.Conv2d(inplanes, med_planes,
                                kernel_size=1, stride=1,
                                padding=0, has_bias=False, pad_mode="pad",
-                               weight_init=HeNormal(mode='fan_out', nonlinearity='relu')).to_float(mindspore.float16)
+                               weight_init=HeNormal(mode='fan_out', nonlinearity='relu')).to_float(luojianet_ms.float16)
         self.conv1.conv2d.shard(((dp, 1, 1, 1), (1, 1, 1, 1)))
         self.conv1.bias_add.shard(((dp, 1, 1, 1), (1,)))
         self.bn1 = norm_layer(med_planes, eps=1e-6)
@@ -380,7 +380,7 @@ class ConvBlock(nn.Cell):
         self.conv2 = nn.Conv2d(med_planes, med_planes,
                                kernel_size=3, stride=stride, group=groups,
                                padding=1, has_bias=False, pad_mode="pad",
-                               weight_init=HeNormal(mode='fan_out', nonlinearity='relu')).to_float(mindspore.float16)
+                               weight_init=HeNormal(mode='fan_out', nonlinearity='relu')).to_float(luojianet_ms.float16)
         self.conv2.conv2d.shard(((dp, 1, 1, 1), (1, 1, 1, 1)))
         self.conv2.bias_add.shard(((dp, 1, 1, 1), (1,)))
         self.bn2 = norm_layer(med_planes, eps=1e-6)
@@ -390,7 +390,7 @@ class ConvBlock(nn.Cell):
         self.conv3 = nn.Conv2d(med_planes, outplanes,
                                kernel_size=1, stride=1,
                                padding=0, has_bias=False, pad_mode="pad",
-                               weight_init=HeNormal(mode='fan_out', nonlinearity='relu')).to_float(mindspore.float16)
+                               weight_init=HeNormal(mode='fan_out', nonlinearity='relu')).to_float(luojianet_ms.float16)
         self.conv3.conv2d.shard(((dp, 1, 1, 1), (1, 1, 1, 1)))
         self.conv3.bias_add.shard(((dp, 1, 1, 1), (1,)))
         self.bn3 = norm_layer(outplanes, eps=1e-6)
@@ -403,8 +403,8 @@ class ConvBlock(nn.Cell):
         residual = x
 
         x = self.conv1(x) # fp16
-        x = self.bn1(F.cast(x, mindspore.float32))
-        x = F.cast(x, mindspore.float16)
+        x = self.bn1(F.cast(x, luojianet_ms.float32))
+        x = F.cast(x, luojianet_ms.float16)
         if self.drop_block is not None:
             x = self.drop_block(x)
         x = self.act1(x) # fp16
@@ -414,19 +414,19 @@ class ConvBlock(nn.Cell):
         else:
             if self.weighted_fusion:
                 c = self.div(1.0, self.add1(1.0, self.exp(self.neg(self.c))))
-                x = self.conv2(self.add(self.mul(c, x), self.mul(1.0-c, F.cast(x_t, mindspore.float16))))
+                x = self.conv2(self.add(self.mul(c, x), self.mul(1.0-c, F.cast(x_t, luojianet_ms.float16))))
             else:
-                x = self.conv2(self.add(x, F.cast(x_t, mindspore.float16)))
+                x = self.conv2(self.add(x, F.cast(x_t, luojianet_ms.float16)))
 
-        x = self.bn2(F.cast(x, mindspore.float32))
-        x = F.cast(x, mindspore.float16)
+        x = self.bn2(F.cast(x, luojianet_ms.float32))
+        x = F.cast(x, luojianet_ms.float16)
         if self.drop_block is not None:
             x = self.drop_block(x)
         x2 = self.act2(x)
 
         x = self.conv3(x2)
-        x = self.bn3(F.cast(x, mindspore.float32))
-        x = F.cast(x, mindspore.float16)
+        x = self.bn3(F.cast(x, luojianet_ms.float32))
+        x = F.cast(x, luojianet_ms.float16)
         if self.drop_block is not None:
             x = self.drop_block(x)
 
@@ -435,8 +435,8 @@ class ConvBlock(nn.Cell):
 
         if self.res_conv:
             residual = self.residual_conv(residual)
-            residual = self.residual_bn(F.cast(residual, mindspore.float32))
-            residual = F.cast(residual, mindspore.float16)
+            residual = self.residual_bn(F.cast(residual, luojianet_ms.float32))
+            residual = F.cast(residual, luojianet_ms.float16)
 
         x = self.add(x, residual)
         x = self.act3(x)
@@ -460,7 +460,7 @@ class FCUDown(nn.Cell):
                                       kernel_size=1, stride=1,
                                       padding=0, has_bias=True, pad_mode="pad",
                                       weight_init=HeNormal(mode='fan_out',
-                                                           nonlinearity='relu')).to_float(mindspore.float16)
+                                                           nonlinearity='relu')).to_float(luojianet_ms.float16)
         self.conv_project.conv2d.shard(((dp, 1, 1, 1), (1, 1, 1, 1)))
         self.conv_project.bias_add.shard(((dp, 1, 1, 1), (1,)))
 
@@ -483,7 +483,7 @@ class FCUDown(nn.Cell):
         tmp = self.sample_pooling(x)
         tmp1 = flatten(tmp, 2)
         x = self.transpose(tmp1, (0, 2, 1))
-        x = self.ln(F.cast(x, mindspore.float32))
+        x = self.ln(F.cast(x, luojianet_ms.float32))
         x = self.act(x)
         if self.cls_token:
             b_size, _, height = F.shape(x_t)
@@ -504,7 +504,7 @@ class FCUUp(nn.Cell):
                                       kernel_size=1, stride=1,
                                       padding=0, has_bias=True, pad_mode="pad",
                                       weight_init=HeNormal(mode='fan_out',
-                                                           nonlinearity='relu')).to_float(mindspore.float16)
+                                                           nonlinearity='relu')).to_float(luojianet_ms.float16)
         self.conv_project.conv2d.shard(((dp, 1, 1, 1), (1, 1, 1, 1)))
         self.conv_project.bias_add.shard(((dp, 1, 1, 1), (1,)))
 
@@ -536,8 +536,8 @@ class FCUUp(nn.Cell):
             x_r = self.reshape(self.transpose(x, (0, 2, 1)), (b_size, channel, height, weight))
         # x_r fp32
 
-        x_r_fp32 = F.cast(self.conv_project(F.cast(x_r, mindspore.float16)), mindspore.float32)
-        x_r_fp16 = F.cast(self.bn(x_r_fp32), mindspore.float16)
+        x_r_fp32 = F.cast(self.conv_project(F.cast(x_r, luojianet_ms.float16)), luojianet_ms.float32)
+        x_r_fp16 = F.cast(self.bn(x_r_fp32), luojianet_ms.float16)
         x_r = self.act(x_r_fp16)
 
         return self.resize_neighbor(x_r)
@@ -585,7 +585,7 @@ class ConvTransBlock(nn.Cell):
         self.weighted_fusion = weighted_fusion
         if weighted_fusion:
             self.exp = P.Exp().shard(((1,),))
-            self.c = Parameter(Tensor(np.zeros((1,)), mindspore.float16), requires_grad=True)
+            self.c = Parameter(Tensor(np.zeros((1,)), luojianet_ms.float16), requires_grad=True)
 
         self.add = P.Add().shard(((dp, 1, 1), (dp, 1, 1)))
         self.add1 = P.Add().shard(((), (1,)))
@@ -629,20 +629,20 @@ class ConformerOverflow(nn.Cell):
 
         self.cls_token_flag = cls_token
         if self.cls_token_flag:
-            self.cls_token = mindspore.Parameter(initializer('zeros', (1, 1, embed_dim), mindspore.float32))
-        self.trans_dpr = [Tensor(x, mindspore.float32) for x in np.linspace(0, drop_path_rate, depth, dtype=np.float32)]
+            self.cls_token = luojianet_ms.Parameter(initializer('zeros', (1, 1, embed_dim), luojianet_ms.float32))
+        self.trans_dpr = [Tensor(x, luojianet_ms.float32) for x in np.linspace(0, drop_path_rate, depth, dtype=np.float32)]
 
         # Classifier head
         self.trans_norm = nn.LayerNorm([embed_dim], epsilon=1e-05)
         self.trans_norm.layer_norm.shard(((dp, 1, 1), (1,), (1,)))
         self.trans_cls_head = nn.Dense(embed_dim, num_classes,
-                                       weight_init=TruncatedNormal(0.02)).to_float(mindspore.float16)
+                                       weight_init=TruncatedNormal(0.02)).to_float(luojianet_ms.float16)
         self.trans_cls_head.matmul.shard(((dp, 1), (1, 1)))
         self.trans_cls_head.bias_add.shard(((dp, 1), (1,)))
         self.pooling = nn.AvgPool2d(kernel_size=7, stride=7)
         self.pooling.avg_pool.shard(((dp, 1, 1, 1),))
         self.conv_cls_head = nn.Dense(int(256 * channel_ratio), num_classes,
-                                      weight_init=TruncatedNormal(0.02)).to_float(mindspore.float16)
+                                      weight_init=TruncatedNormal(0.02)).to_float(luojianet_ms.float16)
         self.conv_cls_head.matmul.shard(((dp, 1), (1, 1)))
         self.conv_cls_head.bias_add.shard(((dp, 1), (1,)))
 
@@ -650,7 +650,7 @@ class ConformerOverflow(nn.Cell):
         self.conv1 = nn.Conv2d(in_chans, 64, kernel_size=7, stride=2,
                                padding=3, has_bias=False, pad_mode="pad",
                                weight_init=HeNormal(mode='fan_out',
-                                                    nonlinearity='relu')).to_float(mindspore.float16)
+                                                    nonlinearity='relu')).to_float(luojianet_ms.float16)
         self.conv1.conv2d.shard(((dp, 1, 1, 1), (1, 1, 1, 1)))
         self.conv1.bias_add.shard(((dp, 1, 1, 1), (1,)))
         self.bn1 = nn.BatchNorm2d(64)
@@ -689,7 +689,7 @@ class ConformerOverflow(nn.Cell):
                                           kernel_size=trans_dw_stride, stride=trans_dw_stride,
                                           padding=0, has_bias=True, pad_mode="pad",
                                           weight_init=HeNormal(mode='fan_out',
-                                                               nonlinearity='relu')).to_float(mindspore.float16)
+                                                               nonlinearity='relu')).to_float(luojianet_ms.float16)
         self.trans_patch_conv.conv2d.shard(((dp, 1, 1, 1), (1, 1, 1, 1)))
         self.trans_patch_conv.bias_add.shard(((dp, 1, 1, 1), (1,)))
         self.trans_1 = Block(dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias,
@@ -766,8 +766,8 @@ class ConformerOverflow(nn.Cell):
             cls_tokens = self.broadcastto(self.cls_token) # fp32
 
         # stem stage [N, 3, 224, 224] -> [N, 64, 56, 56]
-        x_fp32 = F.cast(self.conv1(F.cast(x, mindspore.float16)), mindspore.float32)
-        x_fp16 = F.cast(self.bn1(x_fp32), mindspore.float16)
+        x_fp32 = F.cast(self.conv1(F.cast(x, luojianet_ms.float16)), luojianet_ms.float32)
+        x_fp16 = F.cast(self.bn1(x_fp32), luojianet_ms.float16)
         x_base = self.maxpool(self.act1(x_fp16)) # fp16
 
         # 1 stage
@@ -776,7 +776,7 @@ class ConformerOverflow(nn.Cell):
         tmp = self.trans_patch_conv(x_base)
         tmp1 = flatten(tmp, 2)
 
-        x_t = F.cast(tmp1.transpose((0, 2, 1)), mindspore.float32) # fp32
+        x_t = F.cast(tmp1.transpose((0, 2, 1)), luojianet_ms.float32) # fp32
         if self.cls_token_flag:
             x_t = self.concat([cls_tokens, x_t])
         x_t = self.trans_1(x_t) # fp32
@@ -792,7 +792,7 @@ class ConformerOverflow(nn.Cell):
 
         # trans classification
         x_t = self.trans_norm(x_t)
-        x_t = F.cast(x_t, mindspore.float16)
+        x_t = F.cast(x_t, luojianet_ms.float16)
         b_size, _, height = F.shape(x_t)
         tmp3 = self.squeeze(self.slice(x_t, (0, 0, 0), (b_size, 1, height), (1, 1, 1)))
         if self.cls_token_flag:
@@ -822,7 +822,7 @@ def test_conformer_arm_ascend():
     net_with_loss = _VirtualDatasetCell(net_with_loss_net)
     optimizer = nn.AdamWeightDecay(net.trainable_params())
     train_net = nn.TrainOneStepCell(net_with_loss, optimizer)
-    data = Tensor(np.ones([32, 3, 224, 224]), dtype=mindspore.float32)
+    data = Tensor(np.ones([32, 3, 224, 224]), dtype=luojianet_ms.float32)
     label = Tensor(np.ones([32]).astype(np.int32))
     label = one_hot_int(label, 1000)
     train_net(data, label)

@@ -22,7 +22,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 class SparseApplyFtrlCpuKernelTest : public UT::Common {
  public:
@@ -163,4 +163,4 @@ TEST_F(SparseApplyFtrlCpuKernelTest, sparse_test2) {
   }
 }
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

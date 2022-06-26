@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,15 +16,15 @@
 import os
 import pytest
 import numpy as np
-import mindspore as ms
-import mindspore.ops.operations as P
-from mindspore.nn import Cell
-from mindspore import context, Tensor
-from mindspore.common.parameter import Parameter
-from mindspore.common.initializer import initializer
-from mindspore.train.model import Model
-from mindspore.ops.composite import GradOperation
-from mindspore.common import ParameterTuple
+import luojianet_ms as ms
+import luojianet_ms.ops.operations as P
+from luojianet_ms.nn import Cell
+from luojianet_ms import context, Tensor
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.train.model import Model
+from luojianet_ms.ops.composite import GradOperation
+from luojianet_ms.common import ParameterTuple
 from tests.security_utils import security_off_wrap
 
 context.set_context(mode=context.GRAPH_MODE)
@@ -308,7 +309,7 @@ class SideEffectMemoryCellAddnNet(Cell):
         out = self.addn((self.para, x))
         return out
 
-    def grad_mindspore_impl(self, params, grad_ys):
+    def grad_luojianet_ms_impl(self, params, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params, grad_ys)
@@ -323,7 +324,7 @@ def test_grad_memory_addn():
     net = SideEffectMemoryCellAddnNet()
     grad_ys = Tensor([18.0], ms.float32)
     inputs = Tensor([9.0], ms.float32)
-    net.grad_mindspore_impl(inputs, grad_ys)
+    net.grad_luojianet_ms_impl(inputs, grad_ys)
 
 
 class SideEffectIOCellAddnNet(Cell):
@@ -340,7 +341,7 @@ class SideEffectIOCellAddnNet(Cell):
         x = self.addn(x)
         return x
 
-    def grad_mindspore_impl(self, params, grad_ys):
+    def grad_luojianet_ms_impl(self, params, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params, grad_ys)
@@ -356,7 +357,7 @@ def test_grad_io_addn():
     net = SideEffectIOCellAddnNet()
     grad_ys = Tensor([18.0], ms.float32)
     inputs = Tensor([9.0], ms.float32)
-    net.grad_mindspore_impl(inputs, grad_ys)
+    net.grad_luojianet_ms_impl(inputs, grad_ys)
 
 
 class SideEffectReturnParameterNet(Cell):
@@ -373,7 +374,7 @@ class SideEffectReturnParameterNet(Cell):
         out = self.relu(out)
         return p1
 
-    def grad_mindspore_impl(self, params, grad_ys):
+    def grad_luojianet_ms_impl(self, params, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params, grad_ys)
@@ -388,7 +389,7 @@ def test_grad_read_dependency_return_parameter():
     net = SideEffectReturnParameterNet()
     grad_ys = Tensor([18.0], ms.float32)
     inputs = Tensor([9.0], ms.float32)
-    net.grad_mindspore_impl(inputs, grad_ys)
+    net.grad_luojianet_ms_impl(inputs, grad_ys)
 
 
 class SideEffectAssignAddnReluReturnParNet(Cell):
@@ -406,7 +407,7 @@ class SideEffectAssignAddnReluReturnParNet(Cell):
         out = self.relu(out)
         return p1
 
-    def grad_mindspore_impl(self, params, grad_ys):
+    def grad_luojianet_ms_impl(self, params, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params, grad_ys)
@@ -421,11 +422,11 @@ def test_side_effect_grad_read_dependency_assign_addn_relu_return_parameter():
     net = SideEffectAssignAddnReluReturnParNet()
     grad_ys = Tensor([18.0], ms.float32)
     inputs = Tensor([9.0], ms.float32)
-    out1 = net.grad_mindspore_impl(inputs, grad_ys)
+    out1 = net.grad_luojianet_ms_impl(inputs, grad_ys)
     net = SideEffectAssignAddnReluReturnParNet()
     try:
         context.set_context(mode=context.PYNATIVE_MODE)
-        out2 = net.grad_mindspore_impl(inputs, grad_ys)
+        out2 = net.grad_luojianet_ms_impl(inputs, grad_ys)
         allclose_nparray(out1[0][0].asnumpy(), out2[0]
                          [0].asnumpy(), 0.001, 0.001)
         allclose_nparray(out1[1][0].asnumpy(), out2[1]
@@ -456,7 +457,7 @@ class SideEffectPrintInHighOrdeAddnNet(Cell):
         self.print("parameter2: ", self.parameter2)
         return True
 
-    def grad_mindspore_impl(self, params, grad_ys):
+    def grad_luojianet_ms_impl(self, params, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params, grad_ys)
@@ -502,7 +503,7 @@ class SideEffectControlFlowAssignDependTwoIfNet(Cell):
                 self.depend(p3, p2)
         return x
 
-    def grad_mindspore_impl(self, params1, params2, grad_ys):
+    def grad_luojianet_ms_impl(self, params1, params2, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params1, params2, grad_ys)
@@ -518,7 +519,7 @@ def test_side_effect_grad_control_flow_assign_depend_of_two_if():
     grad_ys = Tensor([18.0], ms.float32)
     inputs1 = Tensor([9.0], ms.float32)
     inputs2 = Tensor([6.0], ms.float32)
-    net.grad_mindspore_impl(inputs1, inputs2, grad_ys)
+    net.grad_luojianet_ms_impl(inputs1, inputs2, grad_ys)
 
 
 class SideEffectTwoAddnSwitchNet(Cell):
@@ -534,7 +535,7 @@ class SideEffectTwoAddnSwitchNet(Cell):
             return x
         return y
 
-    def grad_mindspore_impl(self, params, grad_ys):
+    def grad_luojianet_ms_impl(self, params, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params, grad_ys)
@@ -549,7 +550,7 @@ def test_side_effect_grad_two_addn_switch():
     net = SideEffectTwoAddnSwitchNet()
     grad_ys = Tensor([18.0], ms.float32)
     inputs = Tensor([9.0], ms.float32)
-    out1 = net.grad_mindspore_impl(inputs, grad_ys)
+    out1 = net.grad_luojianet_ms_impl(inputs, grad_ys)
     net = SideEffectTwoAddnSwitchNet()
     try:
         expect = 54.0
@@ -575,7 +576,7 @@ class SideEffectGradIfNet(Cell):
             out = x + 2
         return out
 
-    def grad_mindspore_impl(self, params, grad_ys):
+    def grad_luojianet_ms_impl(self, params, grad_ys):
         grad_net = GradOfFirstInput(self)
         grad_net.set_train()
         grad_out = grad_net(params, grad_ys)
@@ -591,7 +592,7 @@ def test_side_effect_grad_if():
     net = SideEffectGradIfNet()
     grad_ys = Tensor([18.0], ms.float32)
     inputs = Tensor([9.0], ms.float32)
-    out1 = net.grad_mindspore_impl(inputs, grad_ys)
+    out1 = net.grad_luojianet_ms_impl(inputs, grad_ys)
     net = SideEffectGradIfNet()
     try:
         expect = 18.0
@@ -668,7 +669,7 @@ class SideEffectControlFlowAssignDependWhileNet(Cell):
             self.depend(p2, p1)
         return x
 
-    def grad_mindspore_impl(self, params1, params2, params3, grad_ys):
+    def grad_luojianet_ms_impl(self, params1, params2, params3, grad_ys):
         grad_net = GradOfAllInputsAndParams(self)
         grad_net.set_train()
         grad_out = grad_net(params1, params2, params3, grad_ys)
@@ -686,7 +687,7 @@ def test_side_effect_grad_control_flow_assign_depend_while_net():
     inputs1 = Tensor([9.0], ms.float32)
     inputs2 = Tensor([6.0], ms.float32)
     inputs3 = Tensor([3.0], ms.float32)
-    out1 = net.grad_mindspore_impl(inputs1, inputs2, inputs3, grad_ys)
+    out1 = net.grad_luojianet_ms_impl(inputs1, inputs2, inputs3, grad_ys)
 
     try:
         expect1 = 18.0

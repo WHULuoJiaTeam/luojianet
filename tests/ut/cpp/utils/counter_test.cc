@@ -16,7 +16,7 @@
 #include "utils/counter.h"
 #include "common/common_test.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestCounter : public UT::Common {
  public:
   TestCounter() {
@@ -135,4 +135,4 @@ TEST_F(TestCounter, test_struct) {
   ASSERT_EQ(3, (counter2[MyStruct{100, 3}]));
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

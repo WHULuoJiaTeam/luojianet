@@ -23,7 +23,7 @@
 
 #include "utils/profile.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestProfile : public UT::Common {
  public:
   TestProfile() {}
@@ -89,4 +89,4 @@ TEST_F(TestProfile, Test02) {
   EXPECT_GT(t6 - t1, 0);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,9 +21,9 @@ import numpy as np
 import scipy as scp
 from scipy.linalg import solve_triangular, eig, eigvals
 
-from mindspore import Tensor, context
-from mindspore.scipy.ops import Eigh, Eig, Cholesky, SolveTriangular
-from mindspore.scipy.utils import _nd_transpose
+from luojianet_ms import Tensor, context
+from luojianet_ms.scipy.ops import Eigh, Eig, Cholesky, SolveTriangular
+from luojianet_ms.scipy.utils import _nd_transpose
 from tests.st.scipy_st.utils import create_sym_pos_matrix, create_random_rank_matrix, compare_eigen_decomposition
 
 np.random.seed(0)
@@ -344,7 +345,7 @@ def test_solve_triangular_batched(n: int, batch, dtype, lower: bool, unit_diagon
     a = create_random_rank_matrix(batch + (n, n), dtype)
     b = create_random_rank_matrix(batch + (n,), dtype)
 
-    # mindspore
+    # luojianet_ms
     output = SolveTriangular(lower, unit_diagonal, trans)(Tensor(a), Tensor(b)).asnumpy()
 
     # scipy

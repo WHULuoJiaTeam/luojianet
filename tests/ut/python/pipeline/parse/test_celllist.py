@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +16,13 @@
 """ test_celllist """
 import numpy as np
 
-from mindspore import Tensor, Model
-from mindspore import context
-from mindspore.nn import AvgPool2d
-from mindspore.nn import Cell
-from mindspore.nn import Flatten
-from mindspore.nn import ReLU
-from mindspore.nn import SequentialCell
+from luojianet_ms import Tensor, Model
+from luojianet_ms import context
+from luojianet_ms.nn import AvgPool2d
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Flatten
+from luojianet_ms.nn import ReLU
+from luojianet_ms.nn import SequentialCell
 from ...ut_filter import non_graph_engine
 
 

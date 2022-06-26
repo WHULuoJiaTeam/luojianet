@@ -18,7 +18,7 @@
 #include "common/backend_common_test.h"
 #include "common/py_func_graph_fetcher.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWMatmulBiasaddFusion : public BackendCommon {
  public:
@@ -53,4 +53,4 @@ TEST_F(TestHWMatmulBiasaddFusion, test_matmul_biasadd_fusion) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-import mindspore.context as context
-import mindspore.nn as nn
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
 from .weight_decay_utils import dynamic_weight_decay_cmp, WeightDecaySchdule, Net
 
 

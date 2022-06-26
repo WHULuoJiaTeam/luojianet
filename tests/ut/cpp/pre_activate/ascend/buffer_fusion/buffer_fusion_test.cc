@@ -35,7 +35,7 @@
 #include "plugin/device/ascend/optimizer/buffer_fusion/reduce_eltwise_fusion_pass.h"
 #include "plugin/device/ascend/optimizer/buffer_fusion/segment_eltwise_fusion_pass.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 using KernelBuildInfoBuilder = kernel::KernelBuildInfo::KernelBuildInfoBuilder;
 class TestHWBufferFusion : public BackendCommon {
@@ -356,4 +356,4 @@ TEST_F(TestHWBufferFusion, test_tbe_matmul_eltwise_fusion) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

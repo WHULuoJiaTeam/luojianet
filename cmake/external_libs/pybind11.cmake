@@ -33,21 +33,21 @@ set(pybind11_CXXFLAGS "-D_FORTIFY_SOURCE=2 -O2")
 set(pybind11_CFLAGS "-D_FORTIFY_SOURCE=2 -O2")
 
 if(PYTHON_VERSION MATCHES "3.9")
-    mindspore_add_pkg(pybind11
+    luojianet_ms_add_pkg(pybind11
         VER 2.6.1
         URL ${REQ_URL}
         MD5 ${MD5}
         CMAKE_OPTION -DPYBIND11_TEST=OFF -DPYBIND11_LTO_CXX_FLAGS=FALSE
         )
 elseif(PYTHON_VERSION MATCHES "3.8")
-    mindspore_add_pkg(pybind11
+    luojianet_ms_add_pkg(pybind11
         VER 2.6.1
         URL ${REQ_URL}
         MD5 ${MD5}
         CMAKE_OPTION -DPYBIND11_TEST=OFF -DPYBIND11_LTO_CXX_FLAGS=FALSE
         )
 else()
-    mindspore_add_pkg(pybind11
+    luojianet_ms_add_pkg(pybind11
         VER 2.4.3
         URL ${REQ_URL}
         MD5 ${MD5}
@@ -58,4 +58,4 @@ endif()
 include_directories(${pybind11_INC})
 find_package(pybind11 REQUIRED)
 set_property(TARGET pybind11::module PROPERTY IMPORTED_GLOBAL TRUE)
-add_library(mindspore::pybind11_module ALIAS pybind11::module)
+add_library(luojianet_ms::pybind11_module ALIAS pybind11::module)

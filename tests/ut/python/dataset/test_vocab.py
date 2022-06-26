@@ -16,10 +16,10 @@
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.text as text
-import mindspore.common.dtype as mstype
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text as text
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms import log as logger
 
 # this file contains "home is behind the world head" each word is 1 line
 DATA_FILE = "../data/dataset/testVocab/words.txt"
@@ -297,7 +297,7 @@ def test_lookup_cast_type():
     assert test_config("unk", mstype.float32) != np.dtype("int32")
     assert test_config("unk") == np.dtype("int32")
     # test exception, data_type isn't the correct type
-    assert "tldr is not of type [<class 'mindspore._c_expression.typing.Type'>]" in test_config("unk", "tldr")
+    assert "tldr is not of type [<class 'luojianet_ms._c_expression.typing.Type'>]" in test_config("unk", "tldr")
     assert "Lookup : The parameter data_type must be numeric including bool." in \
            test_config("w1", mstype.string)
 

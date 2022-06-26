@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +20,11 @@ import numpy as np
 from numpy.testing import assert_allclose
 import PIL
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as F
-import mindspore.dataset.vision.c_transforms as C
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as F
+import luojianet_ms.dataset.vision.c_transforms as C
+from luojianet_ms import log as logger
 
 DATA_DIR = "../data/dataset/testImageNetData/train/"
 MNIST_DATA_DIR = "../data/dataset/testMnistData"
@@ -115,7 +116,7 @@ def test_adjust_gamma_invalid_gamma_param_py():
     logger.info("Test AdjustGamma python Op with invalid ignore parameter")
     try:
         data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
-        trans = mindspore.dataset.transforms.py_transforms.Compose([
+        trans = luojianet_ms.dataset.transforms.py_transforms.Compose([
             F.Decode(),
             F.Resize((224, 224)),
             F.AdjustGamma(gamma=-10.0),
@@ -127,7 +128,7 @@ def test_adjust_gamma_invalid_gamma_param_py():
         assert "Input is not within the required interval of " in str(error)
     try:
         data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
-        trans = mindspore.dataset.transforms.py_transforms.Compose([
+        trans = luojianet_ms.dataset.transforms.py_transforms.Compose([
             F.Decode(),
             F.Resize((224, 224)),
             F.AdjustGamma(gamma=[1, 2]),
@@ -163,7 +164,7 @@ def test_adjust_gamma_invalid_gain_param_py():
     logger.info("Test AdjustGamma python Op with invalid gain parameter")
     try:
         data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
-        trans = mindspore.dataset.transforms.py_transforms.Compose([
+        trans = luojianet_ms.dataset.transforms.py_transforms.Compose([
             F.Decode(),
             F.Resize((224, 224)),
             F.AdjustGamma(gamma=10.0, gain=[1, 10]),
@@ -181,7 +182,7 @@ def test_adjust_gamma_pipeline_c():
     """
     # First dataset
     transforms1 = [C.Decode(), C.Resize([64, 64])]
-    transforms1 = mindspore.dataset.transforms.py_transforms.Compose(
+    transforms1 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms1)
     ds1 = ds.TFRecordDataset(DATA_DIR_2,
                              SCHEMA_DIR,
@@ -195,7 +196,7 @@ def test_adjust_gamma_pipeline_c():
         C.Resize([64, 64]),
         C.AdjustGamma(1.0, 1.0)
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms2)
     ds2 = ds.TFRecordDataset(DATA_DIR_2,
                              SCHEMA_DIR,
@@ -222,7 +223,7 @@ def test_adjust_gamma_pipeline_py():
     """
     # First dataset
     transforms1 = [F.Decode(), F.Resize([64, 64]), F.ToTensor()]
-    transforms1 = mindspore.dataset.transforms.py_transforms.Compose(
+    transforms1 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms1)
     ds1 = ds.TFRecordDataset(DATA_DIR_2,
                              SCHEMA_DIR,
@@ -237,7 +238,7 @@ def test_adjust_gamma_pipeline_py():
         F.AdjustGamma(1.0, 1.0),
         F.ToTensor()
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms2)
     ds2 = ds.TFRecordDataset(DATA_DIR_2,
                              SCHEMA_DIR,
@@ -264,7 +265,7 @@ def test_adjust_gamma_pipeline_py_gray():
     """
     # First dataset
     transforms1 = [F.Decode(), F.Resize([64, 64]), F.Grayscale(), F.ToTensor()]
-    transforms1 = mindspore.dataset.transforms.py_transforms.Compose(
+    transforms1 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms1)
     ds1 = ds.TFRecordDataset(DATA_DIR_2,
                              SCHEMA_DIR,
@@ -280,7 +281,7 @@ def test_adjust_gamma_pipeline_py_gray():
         F.AdjustGamma(1.0, 1.0),
         F.ToTensor()
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms2)
     ds2 = ds.TFRecordDataset(DATA_DIR_2,
                              SCHEMA_DIR,

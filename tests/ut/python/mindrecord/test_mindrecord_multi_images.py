@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd.
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +17,8 @@ import os
 import numpy as np
 from utils import get_two_bytes_data, get_multi_bytes_data
 
-from mindspore import log as logger
-from mindspore.mindrecord import FileReader, FileWriter
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import FileReader, FileWriter
 
 MAP_FILE_NAME = "../data/mindrecord/testTwoImageData/cityscapes_train_19.txt"
 MAP_FILE_FAKE_NAME = "../data/mindrecord/testTwoImageData/cityscapes_train_19_fake.txt"

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,12 @@
 import numpy as np
 import pytest
 
-from mindspore import context
-from mindspore import log as logger
-from mindspore.common.tensor import Tensor
-from mindspore.nn import Cell
-from mindspore.ops import operations as P
-from mindspore.train.model import Model
+from luojianet_ms import context
+from luojianet_ms import log as logger
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train.model import Model
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 

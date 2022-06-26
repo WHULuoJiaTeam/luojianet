@@ -16,9 +16,9 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 def sqrt(nptype):
     np.random.seed(0)

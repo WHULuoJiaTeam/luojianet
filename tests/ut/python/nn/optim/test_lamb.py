@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,14 +16,14 @@
 """ test lamb """
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.optim import Lamb
-from mindspore.ops import operations as P
-import mindspore.common.dtype as mstype
-from mindspore.nn.learning_rate_schedule import LearningRateSchedule, PolynomialDecayLR, WarmUpLR
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.optim import Lamb
+from luojianet_ms.ops import operations as P
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.nn.learning_rate_schedule import LearningRateSchedule, PolynomialDecayLR, WarmUpLR
 
 
 class LambLearningRate(LearningRateSchedule):

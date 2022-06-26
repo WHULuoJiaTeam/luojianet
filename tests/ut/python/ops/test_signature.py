@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,13 +18,13 @@ test assign sub
 """
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-import mindspore.ops.operations as P
-from mindspore import Tensor
-from mindspore.common.initializer import initializer
-from mindspore.common.parameter import Parameter
-import mindspore as ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.operations as P
+from luojianet_ms import Tensor
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common.parameter import Parameter
+import luojianet_ms as ms
 
 class AssignW(nn.Cell):
     def __init__(self):

@@ -24,7 +24,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 using KernelBuildInfoBuilder = kernel::KernelBuildInfo::KernelBuildInfoBuilder;
 
@@ -177,4 +177,4 @@ TEST_F(TestHWRemoveInternalOutput, test_remove_internal_output_trans_op_for_mult
   EXPECT_TRUE(CheckEqualGraph(g_after1, new_g1));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

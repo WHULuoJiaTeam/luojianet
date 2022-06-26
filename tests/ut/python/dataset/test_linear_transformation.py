@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 Testing LinearTransformation op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import diff_mse, visualize_list, save_and_check_md5
 
 GENERATE_GOLDEN = False
@@ -47,7 +48,7 @@ def test_linear_transformation_op(plot=False):
         py_vision.CenterCrop([height, weight]),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
 
     # First dataset
     data1 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
@@ -98,7 +99,7 @@ def test_linear_transformation_md5():
         py_vision.ToTensor(),
         py_vision.LinearTransformation(transformation_matrix, mean_vector)
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data1 = data1.map(operations=transform, input_columns=["image"])
 
     # Compare with expected md5 from images
@@ -128,7 +129,7 @@ def test_linear_transformation_exception_01():
             py_vision.ToTensor(),
             py_vision.LinearTransformation(None, mean_vector)
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data1 = data1.map(operations=transform, input_columns=["image"])
     except TypeError as e:
         logger.info("Got an exception in DE: {}".format(str(e)))
@@ -157,7 +158,7 @@ def test_linear_transformation_exception_02():
             py_vision.ToTensor(),
             py_vision.LinearTransformation(transformation_matrix, None)
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data1 = data1.map(operations=transform, input_columns=["image"])
     except TypeError as e:
         logger.info("Got an exception in DE: {}".format(str(e)))
@@ -187,7 +188,7 @@ def test_linear_transformation_exception_03():
             py_vision.ToTensor(),
             py_vision.LinearTransformation(transformation_matrix, mean_vector)
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data1 = data1.map(operations=transform, input_columns=["image"])
     except ValueError as e:
         logger.info("Got an exception in DE: {}".format(str(e)))
@@ -217,7 +218,7 @@ def test_linear_transformation_exception_04():
             py_vision.ToTensor(),
             py_vision.LinearTransformation(transformation_matrix, mean_vector)
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         data1 = data1.map(operations=transform, input_columns=["image"])
     except ValueError as e:
         logger.info("Got an exception in DE: {}".format(str(e)))

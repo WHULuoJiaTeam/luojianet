@@ -17,7 +17,7 @@
 BASE_PATH=$(cd "$(dirname $0)"; pwd)
 
 export RANK_SIZE=4
-export RANK_TABLE_FILE="/home/workspace/mindspore_config/hccl/rank_tabel_4p/rank_table_4p_2.json"
+export RANK_TABLE_FILE="/home/workspace/luojianet_ms_config/hccl/rank_tabel_4p/rank_table_4p_2.json"
 
 cpus=`cat /proc/cpuinfo| grep "processor"| wc -l`
 avg=`expr $cpus \/ 8`

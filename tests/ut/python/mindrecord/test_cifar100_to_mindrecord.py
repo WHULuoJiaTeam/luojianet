@@ -16,10 +16,10 @@
 import os
 import pytest
 
-from mindspore import log as logger
-from mindspore.mindrecord import Cifar100ToMR
-from mindspore.mindrecord import FileReader
-from mindspore.mindrecord import SUCCESS
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import Cifar100ToMR
+from luojianet_ms.mindrecord import FileReader
+from luojianet_ms.mindrecord import SUCCESS
 
 CIFAR100_DIR = "../data/mindrecord/testCifar100Data"
 

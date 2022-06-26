@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +28,7 @@ def test_log_stdout():
     # Clean up environment variables
     _rm_env_config()
     # print the logs without raising an exception.
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     log_str = 'print informations'
     logger.debug("test log message debug:%s", log_str)
     logger.info("test log message info :%s", log_str)
@@ -40,7 +41,7 @@ def test_log_stdout():
 
 def test_log_default():
     _rm_env_config()
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     configdict = logger.get_log_config()
     targetdict = {'GLOG_v': '2', 'GLOG_logtostderr': '1'}
     assert configdict == targetdict
@@ -51,7 +52,7 @@ def test_log_default():
 def test_log_setlevel():
     _rm_env_config()
     os.environ['GLOG_v'] = '0'
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     # logger_instance = logger._get_logger()
     # del logger_instance
     _clear_logger(logger)
@@ -68,7 +69,7 @@ def test_log_file():
     test the log content written in log file
     """
     _rm_env_config()
-    file_path = '/tmp/log/mindspore_test'
+    file_path = '/tmp/log/luojianet_ms_test'
     os.environ['GLOG_v'] = '2'
     os.environ['GLOG_logtostderr'] = '0'
     os.environ['GLOG_log_dir'] = file_path
@@ -76,14 +77,14 @@ def test_log_file():
         shutil.rmtree(file_path)
     filename = ''
     os.makedirs(file_path, exist_ok=True)
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     _clear_logger(logger)
     logger.warning("test log message warning")
     file_path += '/rank_0/logs'
     f_list = os.listdir(file_path)
     # print f_list
     for file_name in f_list:
-        if file_name.startswith('mindspore.log'):
+        if file_name.startswith('luojianet_ms.log'):
             filename = f'{file_path}/{file_name}'
     cmd = f'cat {filename}'
     result = os.popen(cmd).read()
@@ -107,7 +108,7 @@ def test_log_backup_count():
     # logger.reset_log_config(level=logging.INFO, console=False,
     #                        filepath=file_path, maxBytes=1000, backupCount=10)
     _rm_env_config()
-    file_path = '/tmp/log/mindspore_test'
+    file_path = '/tmp/log/luojianet_ms_test'
     os.environ['GLOG_v'] = '1'
     os.environ['GLOG_logtostderr'] = '0'
     os.environ['GLOG_log_dir'] = file_path
@@ -117,7 +118,7 @@ def test_log_backup_count():
     if os.path.exists(file_path):
         shutil.rmtree(file_path)
     os.makedirs(file_path, exist_ok=True)
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     _clear_logger(logger)
 
     log_count = 100
@@ -125,7 +126,7 @@ def test_log_backup_count():
         logger.warning("test log message warning %r", i)
 
     file_path += '/rank_0/logs'
-    cmd = f'cd {file_path};ls -l | grep \'mindspore.log.*\'|wc -l'
+    cmd = f'cd {file_path};ls -l | grep \'luojianet_ms.log.*\'|wc -l'
     backup_count = '11'
     file_count = os.popen(cmd).read().strip()
 
@@ -141,7 +142,7 @@ def test_log_verify_envconfig():
     test reset config
     """
     dictlist = []
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     file_path = '/tmp'
 
     # level is not a number
@@ -229,7 +230,7 @@ def test_log_repeated_print():
     # Print one log is right, otherwise error
     """
     _rm_env_config()
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     py_logging = logging.getLogger()
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
@@ -246,7 +247,7 @@ def test_log_getconfig():
     os.environ['GLOG_log_dir'] = '/tmp/log/'
     os.environ['logger_maxBytes'] = '1000'
     os.environ['logger_backupCount'] = '10'
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     _clear_logger(logger)
     logger.info("test log message info test")
     configdict = logger.get_log_config()
@@ -264,7 +265,7 @@ def test_log_perf():
     """
     _rm_env_config()
     os.environ['GLOG_v'] = '3'
-    from mindspore import log as logger
+    from luojianet_ms import log as logger
     loglevel = logging.ERROR
     logging.basicConfig()
     py_logging = logging.getLogger()
@@ -306,7 +307,7 @@ def test_log_perf():
 
 def test_log_ms_import():
     _rm_env_config()
-    import mindspore as ms
+    import luojianet_ms as ms
     configdict = ms.get_log_config()
     targetdict = {'GLOG_v': '2', 'GLOG_logtostderr': '1'}
     level = ms.get_level()

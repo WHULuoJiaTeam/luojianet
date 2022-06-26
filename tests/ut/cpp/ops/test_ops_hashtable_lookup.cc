@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 
 class TestHashtableLookup : public UT::Common {
@@ -72,4 +72,4 @@ TEST_F(TestHashtableLookup, test_ops_hashtable_lookup1) {
 }
 
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

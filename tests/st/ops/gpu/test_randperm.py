@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 class RandpermNet(nn.Cell):
     def __init__(self, max_length, pad, dtype):
@@ -55,54 +56,54 @@ def randperm(max_length, pad, dtype, n):
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_int8():
-    randperm(8, -1, mindspore.int8, 5)
+    randperm(8, -1, luojianet_ms.int8, 5)
 
 @pytest.mark.level1
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_int16():
-    randperm(3, 0, mindspore.int16, 3)
+    randperm(3, 0, luojianet_ms.int16, 3)
 
 @pytest.mark.level1
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_int32():
-    randperm(4, -6, mindspore.int32, 2)
+    randperm(4, -6, luojianet_ms.int32, 2)
 
 @pytest.mark.level1
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_int64():
-    randperm(12, 128, mindspore.int64, 4)
+    randperm(12, 128, luojianet_ms.int64, 4)
 
 @pytest.mark.level1
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_uint8():
-    randperm(8, 1, mindspore.uint8, 5)
+    randperm(8, 1, luojianet_ms.uint8, 5)
 
 @pytest.mark.level1
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_uint16():
-    randperm(8, 0, mindspore.uint16, 8)
+    randperm(8, 0, luojianet_ms.uint16, 8)
 
 @pytest.mark.level0
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_uint32():
-    randperm(4, 8, mindspore.uint32, 3)
+    randperm(4, 8, luojianet_ms.uint32, 3)
 
 @pytest.mark.level0
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_uint64():
-    randperm(5, 4, mindspore.uint64, 5)
+    randperm(5, 4, luojianet_ms.uint64, 5)
 
 @pytest.mark.level0
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_randperm_n_too_large():
     with pytest.raises(RuntimeError) as info:
-        randperm(1, 0, mindspore.int32, 2)
+        randperm(1, 0, luojianet_ms.int32, 2)
     assert "n (2) cannot exceed max_length_ (1)" in str(info.value)

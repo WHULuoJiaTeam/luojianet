@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
-from mindspore import ops, Tensor, context
-from mindspore.common.parameter import Parameter
-from mindspore.nn import Cell
+from luojianet_ms import ops, Tensor, context
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.nn import Cell
 
 
 class AssignNet(Cell):

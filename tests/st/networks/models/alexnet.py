@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-import mindspore.nn as nn
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import operations as P
 
 
 class AlexNet(nn.Cell):

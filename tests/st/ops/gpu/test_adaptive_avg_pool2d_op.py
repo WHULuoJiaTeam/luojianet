@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,13 +17,13 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor, ops
-from mindspore.ops import operations as P
-from mindspore.ops.operations import _grad_ops as G
-from mindspore.common.api import ms_function
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, ops
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations import _grad_ops as G
+from luojianet_ms.common.api import ms_function
 
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
@@ -53,7 +54,7 @@ class GradNet(nn.Cell):
 def test_net_normal():
     x = np.random.randn(1, 32, 9, 9)
     net = Net((3, 5))
-    output = net(Tensor(x, mindspore.float32))
+    output = net(Tensor(x, luojianet_ms.float32))
     expect_shape = (1, 32, 3, 5)
     assert output.asnumpy().shape == expect_shape
 
@@ -64,7 +65,7 @@ def test_net_normal():
 def test_net_single():
     x = np.random.randn(1, 32, 7, 9)
     net = Net(5)
-    output = net(Tensor(x, mindspore.float32))
+    output = net(Tensor(x, luojianet_ms.float32))
     expect_shape = (1, 32, 5, 5)
     assert output.asnumpy().shape == expect_shape
 
@@ -75,7 +76,7 @@ def test_net_single():
 def test_net_none():
     x = np.random.randn(1, 32, 7, 9)
     net = Net((None, 5))
-    output = net(Tensor(x, mindspore.float32))
+    output = net(Tensor(x, luojianet_ms.float32))
     expect_shape = (1, 32, 7, 5)
     assert output.asnumpy().shape == expect_shape
 
@@ -120,7 +121,7 @@ def test_net_graph_mode():
                   [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]],
                   [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]])
     adaptive_avg_pool_2d = ops.AdaptiveAvgPool2D((2, 2))
-    output = adaptive_avg_pool_2d(Tensor(x, mindspore.float16))
+    output = adaptive_avg_pool_2d(Tensor(x, luojianet_ms.float16))
     expect_shape = (3, 2, 2)
     expect_output = np.array([[[3.0, 4.0], [6.0, 7.0]],
                               [[3.0, 4.0], [6.0, 7.0]],
@@ -138,7 +139,7 @@ def test_net_graph_mode():
                            [2.25, 5.0, 2.75],
                            [1.5, 3.25, 1.75]]])
     grad_net = GradNet()
-    dx = grad_net(Tensor(x, mindspore.float16), output)
+    dx = grad_net(Tensor(x, luojianet_ms.float16), output)
     assert dx.asnumpy().shape == x.shape
     assert (dx.asnumpy() == expect_dx).all
 
@@ -152,7 +153,7 @@ def test_net_graph_mode_fp64():
                   [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]],
                   [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]])
     adaptive_avg_pool_2d = ops.AdaptiveAvgPool2D((2, 2))
-    output = adaptive_avg_pool_2d(Tensor(x, mindspore.float64))
+    output = adaptive_avg_pool_2d(Tensor(x, luojianet_ms.float64))
     expect_shape = (3, 2, 2)
     expect_output = np.array([[[3.0, 4.0], [6.0, 7.0]],
                               [[3.0, 4.0], [6.0, 7.0]],
@@ -170,6 +171,6 @@ def test_net_graph_mode_fp64():
                            [2.25, 5.0, 2.75],
                            [1.5, 3.25, 1.75]]])
     grad_net = GradNet()
-    dx = grad_net(Tensor(x, mindspore.float64), output)
+    dx = grad_net(Tensor(x, luojianet_ms.float64), output)
     assert dx.asnumpy().shape == x.shape
     assert (dx.asnumpy() == expect_dx).all

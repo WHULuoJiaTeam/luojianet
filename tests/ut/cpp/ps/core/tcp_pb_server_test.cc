@@ -21,7 +21,7 @@
 #include <memory>
 #include <thread>
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ps {
 namespace core {
 class TestTcpServer : public UT::Common {
@@ -89,4 +89,4 @@ TEST_F(TestTcpServer, ServerSendMessage) {
 }
 }  // namespace core
 }  // namespace ps
-}  // namespace mindspore
+}  // namespace luojianet_ms

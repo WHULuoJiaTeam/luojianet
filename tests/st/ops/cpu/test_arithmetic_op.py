@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-import mindspore
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+import luojianet_ms
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
@@ -76,7 +77,7 @@ def test_sub():
     x = np.random.rand(2, 3, 4, 4).astype(np.float32)
     y = np.random.rand(4, 1).astype(np.float32)
     net = SubNet()
-    output = net(Tensor(x), Tensor(y, mindspore.float32))
+    output = net(Tensor(x), Tensor(y, luojianet_ms.float32))
     expect_output = x - y
     assert np.all(output.asnumpy() == expect_output)
 
@@ -84,7 +85,7 @@ def test_sub():
     x = np.random.rand(2, 3, 4, 4).astype(np.float64)
     y = np.random.rand(4, 1).astype(np.float64)
     net = SubNet()
-    output = net(Tensor(x), Tensor(y, mindspore.float64))
+    output = net(Tensor(x), Tensor(y, luojianet_ms.float64))
     expect_output = x - y
     assert np.all(output.asnumpy() == expect_output)
 

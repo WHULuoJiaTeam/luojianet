@@ -16,7 +16,7 @@
 import time
 import numpy as np
 
-import mindspore.dataset as ds
+import luojianet_ms.dataset as ds
 
 CIFAR10_DIR = "../data/dataset/testCifar10Data"
 

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 """ test implicit conversion """
 import numpy as np
 import pytest
-import mindspore as ms
+import luojianet_ms as ms
 
-from mindspore import Tensor, nn, Parameter
-from mindspore.ops import composite as C
-from mindspore.ops import functional as F
+from luojianet_ms import Tensor, nn, Parameter
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import functional as F
 
 
 grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)

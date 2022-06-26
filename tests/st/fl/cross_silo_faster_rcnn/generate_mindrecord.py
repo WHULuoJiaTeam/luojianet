@@ -1,7 +1,7 @@
 import os
 import time
 
-from mindspore.common import set_seed
+from luojianet_ms.common import set_seed
 from src.dataset import data_to_mindrecord_byte_image
 from src.model_utils.config import config
 

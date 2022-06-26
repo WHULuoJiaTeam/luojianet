@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -61,7 +62,7 @@ parser.add_argument("--request_name", type=str, default="")
 
 parser.add_argument("--server_num", type=int, default=0)
 parser.add_argument("--instance_param", type=str, default="")
-parser.add_argument("--metrics_file_path", type=str, default="/opt/huawei/mindspore/hybrid_albert/metrics.json")
+parser.add_argument("--metrics_file_path", type=str, default="/opt/huawei/luojianet_ms/hybrid_albert/metrics.json")
 
 args, _ = parser.parse_known_args()
 http_type = args.http_type

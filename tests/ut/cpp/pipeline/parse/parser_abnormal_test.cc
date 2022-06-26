@@ -22,7 +22,7 @@
 #include "pipeline/jit/parse/parse.h"
 #include "include/common/debug/draw.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parse {
 
 class TestParserAbnormal : public UT::Common {
@@ -109,4 +109,4 @@ TEST_F(TestParserAbnormal, TestParseExprStatement) {
 }
 
 }  // namespace parse
-}  // namespace mindspore
+}  // namespace luojianet_ms

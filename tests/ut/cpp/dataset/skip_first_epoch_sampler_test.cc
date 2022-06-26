@@ -18,7 +18,7 @@
 #include "minddata/dataset/engine/datasetops/source/sampler/skip_first_epoch_sampler.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestSkipFirstEpochSampler : public UT::Common {
  public:

@@ -18,15 +18,15 @@
 #include "include/dataset/datasets.h"
 #include "include/dataset/transforms.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
 };
 
 /// Feature: CMUArcticDataset
-/// Description: test CMUArctic 
+/// Description: test CMUArctic
 /// Expectation: get correct CMUArctic dataset
 TEST_F(MindDataTestPipeline, TestCMUArcticBasic) {
   MS_LOG(INFO) << "Doing CMUArcticDataTestPipeline-TestCMUArcticBasic.";
@@ -42,7 +42,7 @@ TEST_F(MindDataTestPipeline, TestCMUArcticBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::string_view transcript_idx, utterance_id_idx;
   uint32_t rate = 0;
@@ -82,7 +82,7 @@ TEST_F(MindDataTestPipeline, TestCMUArcticBasic) {
 }
 
 /// Feature: CMUArcticDataset
-/// Description: test CMUArctic with Pipeline 
+/// Description: test CMUArctic with Pipeline
 /// Expectation: get correct CMUArctic dataset
 TEST_F(MindDataTestPipeline, TestCMUArcticBasicWithPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestCMUArcticBasicWithPipeline.";
@@ -106,7 +106,7 @@ TEST_F(MindDataTestPipeline, TestCMUArcticBasicWithPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   iter->GetNextRow(&row);
   std::vector<std::string> expected_utterance = {"Dog.", "Cat."};
   std::vector<std::string> expected_utterance_id = {"a0001", "a0002"};
@@ -119,14 +119,14 @@ TEST_F(MindDataTestPipeline, TestCMUArcticBasicWithPipeline) {
 
     std::shared_ptr<Tensor> de_expected_transcript;
     ASSERT_OK(Tensor::CreateFromVector(expected_utterance, &de_expected_transcript));
-    mindspore::MSTensor fix_expected_transcript =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_transcript));
+    luojianet_ms::MSTensor fix_expected_transcript =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_transcript));
     EXPECT_MSTENSOR_EQ(transcript, fix_expected_transcript);
 
     std::shared_ptr<Tensor> de_expected_utterance_id;
     ASSERT_OK(Tensor::CreateFromVector(expected_utterance_id, &de_expected_utterance_id));
-    mindspore::MSTensor fix_expected_utterance_id =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_utterance_id));
+    luojianet_ms::MSTensor fix_expected_utterance_id =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_utterance_id));
     EXPECT_MSTENSOR_EQ(utterance_id, fix_expected_utterance_id);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -138,7 +138,7 @@ TEST_F(MindDataTestPipeline, TestCMUArcticBasicWithPipeline) {
 }
 
 /// Feature: CMUArcticDataset
-/// Description: test CMUArctic with invalid directory 
+/// Description: test CMUArctic with invalid directory
 /// Expectation: get correct CMUArctic dataset
 TEST_F(MindDataTestPipeline, TestCMUArcticError) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestCMUArcticError.";
@@ -163,7 +163,7 @@ TEST_F(MindDataTestPipeline, TestCMUArcticError) {
 }
 
 /// Feature: CMUArcticDataset
-/// Description: test CMUArctic with Getters 
+/// Description: test CMUArctic with Getters
 /// Expectation: dataset is null
 TEST_F(MindDataTestPipeline, TestCMUArcticGetters) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestCMUArcticGetters.";
@@ -243,7 +243,7 @@ TEST_F(MindDataTestPipeline, TestCMUArcticNumSamplers) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::string_view transcript_idx, utterance_id_idx;
   std::vector<std::string> expected_utterance = {"Dog.", "Cat."};

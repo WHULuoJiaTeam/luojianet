@@ -14,8 +14,8 @@
 # ==============================================================================
 import numpy as np
 
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 
 def test_batch_corner_cases():

@@ -27,7 +27,7 @@
 #include "utils/log_adapter.h"
 #include "securec.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 Status CreateINT64Tensor(std::shared_ptr<Tensor> *sample_ids, int64_t num_elements, unsigned char *data = nullptr) {
   TensorShape shape(std::vector<int64_t>(1, num_elements));

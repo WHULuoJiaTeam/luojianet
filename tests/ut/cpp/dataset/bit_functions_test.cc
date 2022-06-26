@@ -16,7 +16,7 @@
 #include "minddata/dataset/include/dataset/constants.h"
 #include "common/common.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestBits : public UT::Common {
  public:

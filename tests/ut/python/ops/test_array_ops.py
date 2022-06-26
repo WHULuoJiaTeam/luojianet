@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,24 +17,24 @@
 import functools
 import numpy as np
 import pytest
-import mindspore as ms
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.common import dtype as mstype
-from mindspore.nn import Cell
-from mindspore import ops
-from mindspore.ops import operations as P
-from mindspore.ops import prim_attr_register
-from mindspore.ops.operations import _inner_ops as inner
-from mindspore.ops.primitive import PrimitiveWithInfer
-from mindspore.ops.signature import sig_rw, sig_dtype, make_sig
+import luojianet_ms as ms
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.nn import Cell
+from luojianet_ms import ops
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import prim_attr_register
+from luojianet_ms.ops.operations import _inner_ops as inner
+from luojianet_ms.ops.primitive import PrimitiveWithInfer
+from luojianet_ms.ops.signature import sig_rw, sig_dtype, make_sig
 
 
 from ..ut_filter import non_graph_engine
-from ....mindspore_test_framework.mindspore_test import mindspore_test
-from ....mindspore_test_framework.pipeline.forward.compile_forward \
+from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
+from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config
-from ....mindspore_test_framework.pipeline.forward.verify_exception \
+from ....luojianet_ms_test_framework.pipeline.forward.verify_exception \
     import pipeline_for_verify_exception_for_case_by_case_config
 
 context.set_context(mode=context.PYNATIVE_MODE)
@@ -142,7 +143,7 @@ def test_argmin_invalid_output_type():
 
 
 class CustomOP(PrimitiveWithInfer):
-    __mindspore_signature__ = (sig_dtype.T, sig_dtype.T, sig_dtype.T1,
+    __luojianet_ms_signature__ = (sig_dtype.T, sig_dtype.T, sig_dtype.T1,
                                sig_dtype.T1, sig_dtype.T2, sig_dtype.T2,
                                sig_dtype.T2, sig_dtype.T3, sig_dtype.T4)
 
@@ -155,7 +156,7 @@ class CustomOP(PrimitiveWithInfer):
 
 
 class CustomOP2(PrimitiveWithInfer):
-    __mindspore_signature__ = (
+    __luojianet_ms_signature__ = (
         make_sig('p1', sig_rw.RW_WRITE, dtype=sig_dtype.T),
         make_sig('p2', dtype=sig_dtype.T),
         make_sig('p3', dtype=sig_dtype.T),
@@ -420,7 +421,7 @@ test_exec_case = functools.reduce(lambda x, y: x + y, test_case_lists)
 
 
 @non_graph_engine
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
 def test_exec():
     context.set_context(mode=context.GRAPH_MODE)
     return test_exec_case
@@ -441,6 +442,6 @@ raise_set = [
 ]
 
 
-@mindspore_test(pipeline_for_verify_exception_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_verify_exception_for_case_by_case_config)
 def test_check_exception():
     return raise_set

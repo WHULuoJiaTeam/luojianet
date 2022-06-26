@@ -30,7 +30,7 @@
 #include "frontend/operator/ops.h"
 #include "frontend/optimizer/optimizer.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ad {
 class TestAD : public UT::Common {
  public:
@@ -197,4 +197,4 @@ TEST_F(TestAD, test_grad_cache) {
 TEST_F(TestAD, test_constant_output) { AssertExpect("test_constant_output"); }
 
 }  // namespace ad
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -6,7 +6,7 @@ else()
     set(MD5 "0095d2d2d1f3442ce1318336637b695f")
 endif()
 
-mindspore_add_pkg(zlib
+luojianet_ms_add_pkg(zlib
         VER 1.2.11
         LIBS z
         URL ${REQ_URL}
@@ -14,4 +14,4 @@ mindspore_add_pkg(zlib
         CMAKE_OPTION -DCMAKE_BUILD_TYPE:STRING=Release)
 
 include_directories(${zlib_INC})
-add_library(mindspore::z ALIAS zlib::z)
+add_library(luojianet_ms::z ALIAS zlib::z)

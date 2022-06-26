@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestFlattenGrad : public UT::Common {
  public:
@@ -60,4 +60,4 @@ TEST_F(TestFlattenGrad, test_ops_flatten_grad1) {
   EXPECT_EQ(shape_vec[3], 5);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

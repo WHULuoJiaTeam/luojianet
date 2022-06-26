@@ -19,7 +19,7 @@
 #include "common/py_func_graph_fetcher.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWUnsortedSegmentSumFission : public BackendCommon {
  public:
@@ -69,4 +69,4 @@ TEST_F(TestHWUnsortedSegmentSumFission, test_no_fission) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

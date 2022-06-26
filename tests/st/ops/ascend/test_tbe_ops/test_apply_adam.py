@@ -14,11 +14,11 @@
 # ============================================================================
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.nn import Dense, SoftmaxCrossEntropyWithLogits
-from mindspore.nn import TrainOneStepCell, WithLossCell
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Dense, SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend", impl_type="tbe")
 
@@ -33,7 +33,7 @@ class Adam:
         self.weight_decay = weight_decay
         self.epsilon = epsilon
 
-    def train_mindspore_impl(self):
+    def train_luojianet_ms_impl(self):
         input_ = Tensor(np.random.randn(self.batch_num, self.input_channels).astype(np.float32))
         weight_np = Tensor(np.random.randn(self.output_channels, self.input_channels).astype(np.float32))
         bias = Tensor(np.random.randn(self.output_channels).astype(np.float32))
@@ -69,4 +69,4 @@ class Adam:
 
 def test_adam():
     fact = Adam(batch_num=8, input_channels=20, output_channels=5, epoch=5, lr=0.1, weight_decay=0.0, epsilon=1e-8)
-    fact.train_mindspore_impl()
+    fact.train_luojianet_ms_impl()

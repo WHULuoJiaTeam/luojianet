@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +19,8 @@ Testing PadEnd op in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as ops
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as ops
 
 
 # Extensive testing of PadEnd is already done in batch with Pad test cases

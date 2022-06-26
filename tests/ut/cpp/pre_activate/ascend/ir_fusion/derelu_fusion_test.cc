@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/derelu_fusion.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptimizeDereluFusion : public BackendCommon {
  public:
@@ -51,4 +51,4 @@ TEST_F(TestHWOptimizeDereluFusion, test_fusion) {
 }
 
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

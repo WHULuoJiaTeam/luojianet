@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,10 +16,10 @@
 """test jvp in pynative mode"""
 import numpy as np
 import pytest
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.nn.grad import Vjp
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.nn.grad import Vjp
 
 context.set_context(mode=context.PYNATIVE_MODE)
 

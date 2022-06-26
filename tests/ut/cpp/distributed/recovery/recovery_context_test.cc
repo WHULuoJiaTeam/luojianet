@@ -20,7 +20,7 @@
 #include "distributed/persistent/storage/file_io_utils.h"
 #include "utils/file_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace distributed {
 namespace recovery {
 constexpr char kEnvEnableRecovery[] = "MS_ENABLE_RECOVERY";
@@ -85,4 +85,4 @@ TEST_F(TestRecoveryContext, all_interface) {
 }
 }  // namespace recovery
 }  // namespace distributed
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -14,12 +14,12 @@
 
 import numpy as np
 
-import mindspore as ms
-from mindspore import context, Tensor, Parameter
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import Cell, TrainOneStepCell
-from mindspore.nn.optim.adafactor import AdaFactor
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+from luojianet_ms import context, Tensor, Parameter
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import Cell, TrainOneStepCell
+from luojianet_ms.nn.optim.adafactor import AdaFactor
+from luojianet_ms.ops import operations as P
 
 
 class Net(Cell):

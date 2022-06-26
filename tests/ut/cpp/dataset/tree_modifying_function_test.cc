@@ -23,7 +23,7 @@
 #include "minddata/dataset/engine/ir/datasetops/repeat_node.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestTreeModifying : public UT::DatasetOpTesting {
  public:

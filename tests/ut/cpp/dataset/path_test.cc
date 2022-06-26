@@ -19,7 +19,7 @@
 #include "utils/log_adapter.h"
 #include <cstdio>
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPath : public UT::Common {
  public:

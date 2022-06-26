@@ -20,7 +20,7 @@
 #include "minddata/dataset/include/dataset/vision.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestSlicePatches : public UT::DatasetOpTesting {
  protected:
@@ -81,7 +81,7 @@ TEST_F(MindDataTestSlicePatches, TestSlicePatchesPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -103,8 +103,8 @@ TEST_F(MindDataTestSlicePatches, TestSlicePatchesEager) {
   // Read images
   auto image = ReadFileToTensor("data/dataset/apple.jpg");
 
-  std::vector<mindspore::MSTensor> input{image};
-  std::vector<mindspore::MSTensor> output;
+  std::vector<luojianet_ms::MSTensor> input{image};
+  std::vector<luojianet_ms::MSTensor> output;
 
   // Transform params
   auto decode = vision::Decode();

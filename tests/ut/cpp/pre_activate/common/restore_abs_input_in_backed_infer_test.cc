@@ -27,7 +27,7 @@
 #include "backend/common/optimizer/helper.h"
 #include "common/common_test.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestAttr : public ops::BaseOperator {
  public:
@@ -95,4 +95,4 @@ TEST_F(TestAttrAndDynamicBackendInfer, test_attr_and_dynamic_input_infer) {
     CppInferShape(prim_dynamic_input_test, {abs_dynamic_a, abs_dynamic_b, abs_dynamic_c, abs_dynamic_d});
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -21,7 +21,7 @@ import collections
 import json
 import numpy as np
 
-from mindspore import log as logger
+from luojianet_ms import log as logger
 
 
 def get_data(dir_name):

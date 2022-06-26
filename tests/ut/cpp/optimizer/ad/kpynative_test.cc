@@ -29,7 +29,7 @@
 #include "pipeline/jit/debug/anf_ir_utils.h"
 #include "frontend/operator/ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ad {
 class TestKPynative : public UT::Common {
  public:
@@ -49,7 +49,7 @@ class TestKPynative : public UT::Common {
     auto y = g->add_parameter();
     x->set_abstract(BuildArg());
     y->set_abstract(BuildArg());
-    auto c_node = g->NewCNode({NewValueNode(prim::GetPythonOps("tensor_mul", "mindspore.ops.functional")), x, y});
+    auto c_node = g->NewCNode({NewValueNode(prim::GetPythonOps("tensor_mul", "luojianet_ms.ops.functional")), x, y});
     c_node->set_abstract(BuildArg());
     g->set_output(c_node);
     return g;
@@ -67,14 +67,14 @@ class TestKPynative : public UT::Common {
     y->debug_info()->set_name("y");
     x->set_abstract(BuildArg());
     y->set_abstract(BuildArg());
-    auto a_node = g->NewCNode({NewValueNode(prim::GetPythonOps("tensor_mul", "mindspore.ops.functional")), x, y});
+    auto a_node = g->NewCNode({NewValueNode(prim::GetPythonOps("tensor_mul", "luojianet_ms.ops.functional")), x, y});
     a_node->set_abstract(BuildArg());
     auto b_node = g->NewCNode({NewValueNode(prim::kPrimStopGradient), a_node});
     b_node->set_abstract(BuildArg());
-    auto c_node = g->NewCNode({NewValueNode(prim::GetPythonOps("tensor_mul", "mindspore.ops.functional")), b_node, y});
+    auto c_node = g->NewCNode({NewValueNode(prim::GetPythonOps("tensor_mul", "luojianet_ms.ops.functional")), b_node, y});
     c_node->set_abstract(BuildArg());
     auto d_node =
-      g->NewCNode({NewValueNode(prim::GetPythonOps("tensor_mul", "mindspore.ops.functional")), a_node, c_node});
+      g->NewCNode({NewValueNode(prim::GetPythonOps("tensor_mul", "luojianet_ms.ops.functional")), a_node, c_node});
     d_node->set_abstract(BuildArg());
     g->set_output(d_node);
     return g;
@@ -120,4 +120,4 @@ TEST_F(TestKPynative, test_stop_gradient) {
   resource->manager()->KeepRoots({bprop_fg});
 }
 }  // namespace ad
-}  // namespace mindspore
+}  // namespace luojianet_ms

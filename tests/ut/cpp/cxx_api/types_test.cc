@@ -19,7 +19,7 @@
 #include "include/api/types.h"
 #undef private
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestCxxApiTypes : public UT::Common {
  public:
   TestCxxApiTypes() = default;
@@ -212,4 +212,4 @@ TEST_F(TestCxxApiTypes, test_buffer_set_data_SUCCESS) {
   ASSERT_EQ(buffer1.SetData(nullptr, 0), true);
   ASSERT_EQ(buffer1.SetData(data.data(), data.size() * sizeof(uint32_t)), true);
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

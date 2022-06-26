@@ -20,15 +20,15 @@
 #include "include/api/serialization.h"
 #include "include/api/context.h"
 
-using namespace mindspore;
+using namespace luojianet_ms;
 
-static constexpr char kIfbyIfFile[] = "/home/workspace/mindspore_dataset/mindir/control/ifbyif.mindir";
-static constexpr char kSimpleWhileFile[] = "/home/workspace/mindspore_dataset/mindir/control/simple_while.mindir";
-static constexpr char kMixIfWhileFile[] = "/home/workspace/mindspore_dataset/mindir/control/mix_while_if.mindir";
-static constexpr char kRecursiveFile[] = "/home/workspace/mindspore_dataset/mindir/control/fibonacci.mindir";
-static constexpr char kSingleForFile[] = "/home/workspace/mindspore_dataset/mindir/control/single_for.mindir";
-static constexpr char kSingleOrFile[] = "/home/workspace/mindspore_dataset/mindir/control/single_or.mindir";
-static constexpr char kSingleSwitchFile[] = "/home/workspace/mindspore_dataset/mindir/control/switch_layer_net.mindir";
+static constexpr char kIfbyIfFile[] = "/home/workspace/luojianet_ms_dataset/mindir/control/ifbyif.mindir";
+static constexpr char kSimpleWhileFile[] = "/home/workspace/luojianet_ms_dataset/mindir/control/simple_while.mindir";
+static constexpr char kMixIfWhileFile[] = "/home/workspace/luojianet_ms_dataset/mindir/control/mix_while_if.mindir";
+static constexpr char kRecursiveFile[] = "/home/workspace/luojianet_ms_dataset/mindir/control/fibonacci.mindir";
+static constexpr char kSingleForFile[] = "/home/workspace/luojianet_ms_dataset/mindir/control/single_for.mindir";
+static constexpr char kSingleOrFile[] = "/home/workspace/luojianet_ms_dataset/mindir/control/single_or.mindir";
+static constexpr char kSingleSwitchFile[] = "/home/workspace/luojianet_ms_dataset/mindir/control/switch_layer_net.mindir";
 static constexpr float kConstValue = 0.1234;
 static const std::vector<float> input_data(2 * 3 * 4 * 5, kConstValue);
 

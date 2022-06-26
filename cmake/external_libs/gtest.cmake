@@ -37,15 +37,15 @@ else()
     set(MD5 "2e6fbeb6a91310a16efe181886c59596")
 endif()
 
-mindspore_add_pkg(gtest
+luojianet_ms_add_pkg(gtest
         VER 1.8.1
         LIBS gtest gmock
         URL ${REQ_URL}
         MD5 ${MD5}
         CMAKE_OPTION ${CMAKE_OPTION})
 include_directories(${gtest_INC})
-add_library(mindspore::gtest ALIAS gtest::gtest)
-add_library(mindspore::gmock ALIAS gtest::gmock)
+add_library(luojianet_ms::gtest ALIAS gtest::gtest)
+add_library(luojianet_ms::gmock ALIAS gtest::gmock)
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     file(COPY ${gtest_DIRPATH}/bin/libgtest${CMAKE_SHARED_LIBRARY_SUFFIX} DESTINATION
             ${CMAKE_BINARY_DIR}/googletest/googlemock/gtest)

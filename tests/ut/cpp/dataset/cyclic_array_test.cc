@@ -22,7 +22,7 @@
 #include "minddata/dataset/engine/perf/cyclic_array.h"
 #include <chrono>
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestCyclicArray : public UT::Common {
  public:

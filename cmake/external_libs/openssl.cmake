@@ -20,7 +20,7 @@ if(BUILD_LITE)
             ${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin:
             ${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:
             $ENV{PATH})
-        mindspore_add_pkg(openssl
+        luojianet_ms_add_pkg(openssl
                 VER 1.1.1k
                 LIBS ssl crypto
                 URL ${REQ_URL}
@@ -35,7 +35,7 @@ if(BUILD_LITE)
             ${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin:
             ${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:
             $ENV{PATH})
-        mindspore_add_pkg(openssl
+        luojianet_ms_add_pkg(openssl
                 VER 1.1.1k
                 LIBS ssl crypto
                 URL ${REQ_URL}
@@ -45,7 +45,7 @@ if(BUILD_LITE)
                 PATCHES ${OPENSSL_PATCH_ROOT}/CVE-2021-3712.patch
                 )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR APPLE)
-        mindspore_add_pkg(openssl
+        luojianet_ms_add_pkg(openssl
                 VER 1.1.1k
                 LIBS ssl crypto
                 URL ${REQ_URL}
@@ -58,12 +58,12 @@ if(BUILD_LITE)
         MESSAGE(FATAL_ERROR "openssl does not support compilation for the current environment.")
     endif()
     include_directories(${openssl_INC})
-    add_library(mindspore::ssl ALIAS openssl::ssl)
-    add_library(mindspore::crypto ALIAS openssl::crypto)
+    add_library(luojianet_ms::ssl ALIAS openssl::ssl)
+    add_library(luojianet_ms::crypto ALIAS openssl::crypto)
 else()
     if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR APPLE)
         set(openssl_CFLAGS -fvisibility=hidden)
-        mindspore_add_pkg(openssl
+        luojianet_ms_add_pkg(openssl
                 VER 1.1.1k
                 LIBS ssl crypto
                 URL ${REQ_URL}
@@ -73,7 +73,7 @@ else()
                 PATCHES ${OPENSSL_PATCH_ROOT}/CVE-2021-3712.patch
                 )
         include_directories(${openssl_INC})
-        add_library(mindspore::ssl ALIAS openssl::ssl)
-        add_library(mindspore::crypto ALIAS openssl::crypto)
+        add_library(luojianet_ms::ssl ALIAS openssl::ssl)
+        add_library(luojianet_ms::crypto ALIAS openssl::crypto)
     endif()
 endif()

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +17,14 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+import luojianet_ms
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 
 def runMSRun(op, bbox):
-    inputs = Tensor(bbox, mindspore.float32)
+    inputs = Tensor(bbox, luojianet_ms.float32)
     box, _, mask = op(inputs)
     box = box.asnumpy()
     mask = mask.asnumpy()
@@ -46,7 +47,7 @@ def test_nms_with_mask_check_order():
         box[:, 3] = box[:, 1] + box[:, 3]
         unsorted_scores = np.random.rand(count, 1)
         bbox = np.hstack((box, unsorted_scores))
-        bbox = Tensor(bbox, dtype=mindspore.float32)
+        bbox = Tensor(bbox, dtype=luojianet_ms.float32)
         prop, _, _ = nms_op(bbox)
         ms_sorted_scores = (prop.asnumpy()[:, -1])  # select just scores
         np_sorted_scores = (np.sort(unsorted_scores, axis=0)[::-1][:, 0])  # sort manually

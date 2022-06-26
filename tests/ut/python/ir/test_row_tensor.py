@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,29 +17,29 @@
 @File  : test_row_tensor.py
 @Author:
 @Date  : 2020-06-08
-@Desc  : test mindspore row_tensor's operation
+@Desc  : test luojianet_ms row_tensor's operation
 """
 import numpy as np
 import pytest
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore.ops import composite as C
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
-from mindspore.ops.composite.multitype_ops.zeros_like_impl import zeros_like
-from mindspore.ops.primitive import constexpr, PrimitiveWithInfer, prim_attr_register
-from mindspore.ops._grad.grad_base import bprop_getters
-from mindspore.ops._utils.utils import generate_shape_index
-from mindspore import Tensor, RowTensor, context
-from mindspore.common.parameter import Parameter, ParameterTuple
-from mindspore.common import dtype as mstype
-from mindspore._checkparam import Validator as validator
-from mindspore._checkparam import Rel
-from mindspore.nn import Optimizer
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.optim import Momentum
-from mindspore.train import Model
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.composite.multitype_ops.zeros_like_impl import zeros_like
+from luojianet_ms.ops.primitive import constexpr, PrimitiveWithInfer, prim_attr_register
+from luojianet_ms.ops._grad.grad_base import bprop_getters
+from luojianet_ms.ops._utils.utils import generate_shape_index
+from luojianet_ms import Tensor, RowTensor, context
+from luojianet_ms.common.parameter import Parameter, ParameterTuple
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms._checkparam import Validator as validator
+from luojianet_ms._checkparam import Rel
+from luojianet_ms.nn import Optimizer
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.train import Model
 from ....dataset_mock import MindData
 
 

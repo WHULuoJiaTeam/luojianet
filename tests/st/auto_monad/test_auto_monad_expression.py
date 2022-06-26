@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +14,12 @@
 # limitations under the License.
 # ==============================================================================
 import pytest
-from mindspore.nn import Cell
-from mindspore import context, Tensor, Parameter
-import mindspore.ops.operations as P
-from mindspore.ops import functional as F
-from mindspore.ops import composite as C
-import mindspore as ms
+from luojianet_ms.nn import Cell
+from luojianet_ms import context, Tensor, Parameter
+import luojianet_ms.ops.operations as P
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import composite as C
+import luojianet_ms as ms
 import numpy as np
 
 context.set_context(mode=context.GRAPH_MODE)

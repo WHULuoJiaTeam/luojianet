@@ -15,15 +15,15 @@
 import numpy as np
 import pytest
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor, context
-from mindspore.common import dtype as mstype
-from mindspore.common import Parameter
-from mindspore.common.api import _cell_graph_executor
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
-from mindspore.ops import functional as F
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, context
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common import Parameter
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import functional as F
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 grad_all = C.GradOperation(get_all=True)

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +16,9 @@
 """
 Testing soft dvpp SoftDvppDecodeResizeJpeg and SoftDvppDecodeRandomCropResizeJpeg in DE
 """
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as vision
+from luojianet_ms import log as logger
 from util import diff_mse, visualize_image
 
 DATA_DIR = ["../data/dataset/test_tf_file_3_images/train-0000-of-0001.data"]

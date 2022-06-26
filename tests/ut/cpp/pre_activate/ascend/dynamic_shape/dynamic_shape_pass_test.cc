@@ -26,7 +26,7 @@
 #include "include/common/utils/utils.h"
 #include "utils/ms_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 namespace {
 constexpr auto kTupleFirstItemIndex = 0;
@@ -760,4 +760,4 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_sync) {
   context->set_param<std::string>(MS_CTX_DEVICE_TARGET, kCPUDevice);
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

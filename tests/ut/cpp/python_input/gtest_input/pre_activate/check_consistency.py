@@ -13,7 +13,7 @@
 # limitations under the License.
 # ============================================================================
 
-from mindspore.ops import Primitive
+from luojianet_ms.ops import Primitive
 
 make_tuple = Primitive('MakeTuple')
 cast = Primitive('Cast')

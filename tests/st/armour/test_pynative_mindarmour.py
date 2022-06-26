@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +19,12 @@ This test is used to monitor some features of MindArmour.
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import context, Tensor
-from mindspore.nn import Cell, WithLossCell, TrainOneStepCell
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.common.initializer import TruncatedNormal
-from mindspore.ops.composite import GradOperation
+import luojianet_ms.nn as nn
+from luojianet_ms import context, Tensor
+from luojianet_ms.nn import Cell, WithLossCell, TrainOneStepCell
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.common.initializer import TruncatedNormal
+from luojianet_ms.ops.composite import GradOperation
 
 
 def weight_variable():

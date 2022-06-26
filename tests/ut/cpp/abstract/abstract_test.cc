@@ -27,7 +27,7 @@
 #include "pipeline/jit/parse/data_converter.h"
 #include "frontend/operator/ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 
 class TestAbstract : public UT::Common {
@@ -101,4 +101,4 @@ TEST_F(TestAbstract, TestParseDataClass) {
 }
 
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -14,9 +14,9 @@
 # ==============================================================================
 import numpy as np
 import pytest
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as c_transforms
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as c_transforms
+from luojianet_ms import log as logger
 from util import save_and_check_md5
 
 GENERATE_GOLDEN = False

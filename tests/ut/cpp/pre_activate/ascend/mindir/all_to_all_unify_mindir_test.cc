@@ -24,7 +24,7 @@
 #include "include/common/utils/utils.h"
 #include "utils/ms_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestAllToAllUnifyMindIr : public BackendCommon {
  public:
@@ -82,4 +82,4 @@ TEST_F(TestAllToAllUnifyMindIr, test_all_to_all) {
   ASSERT_TRUE(has_split_v_node);
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

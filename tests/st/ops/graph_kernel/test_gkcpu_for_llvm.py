@@ -18,10 +18,10 @@ import shutil
 import platform
 import numpy as np
 import pytest
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.nn import Cell
-import mindspore.ops.operations as P
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Cell
+import luojianet_ms.ops.operations as P
 
 
 class Net(Cell):

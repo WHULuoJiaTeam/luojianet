@@ -15,22 +15,22 @@
 import re
 import numpy as np
 
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-import mindspore.ops.functional as F
-from mindspore import Tensor
-from mindspore import context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.common.initializer import TruncatedNormal
-from mindspore.communication.management import init
-from mindspore.nn.loss.loss import _Loss
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.ops import operations as P
-from mindspore.parallel import set_algo_parameters
-from mindspore.parallel._utils import _reset_op_id as resset_op_id
-from mindspore.train.model import Model
-from mindspore.context import ParallelMode
-from mindspore.communication._comm_helper import GlobalComm
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.functional as F
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.common.initializer import TruncatedNormal
+from luojianet_ms.communication.management import init
+from luojianet_ms.nn.loss.loss import _Loss
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.parallel import set_algo_parameters
+from luojianet_ms.parallel._utils import _reset_op_id as resset_op_id
+from luojianet_ms.train.model import Model
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.communication._comm_helper import GlobalComm
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 context.set_context.__wrapped__(device_id=0)

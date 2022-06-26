@@ -16,7 +16,7 @@
 Test Dataset AutoTune Configuration Support
 """
 import pytest
-import mindspore.dataset as ds
+import luojianet_ms.dataset as ds
 
 
 @pytest.mark.forked

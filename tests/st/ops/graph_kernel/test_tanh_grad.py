@@ -15,10 +15,10 @@
 
 import numpy as np
 import pytest
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.nn import Cell
-import mindspore.ops.operations._grad_ops as G
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Cell
+import luojianet_ms.ops.operations._grad_ops as G
 
 
 class TanhGradNet(Cell):

@@ -18,7 +18,7 @@
 #include "common/py_func_graph_fetcher.h"
 #include "plugin/device/ascend/optimizer/ir_fission/lars_v2_fission.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWLarsV2Fission : public BackendCommon {
  public:
@@ -53,4 +53,4 @@ TEST_F(TestHWLarsV2Fission, test_fission) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

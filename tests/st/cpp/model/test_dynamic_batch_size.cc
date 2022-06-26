@@ -21,9 +21,9 @@
 #include "include/api/serialization.h"
 #include "include/api/context.h"
 
-using namespace mindspore;
+using namespace luojianet_ms;
 
-static const char tensor_add_file[] = "/home/workspace/mindspore_dataset/mindir/add/add.mindir";
+static const char tensor_add_file[] = "/home/workspace/luojianet_ms_dataset/mindir/add/add.mindir";
 static const float input_data_1[2][2] = {{1, 2}, {3, 4}};
 static const float input_data_2[2][2] = {{2, 3}, {4, 5}};
 static const float input_data_3[1] = {2};

@@ -19,7 +19,7 @@
 #include "common/common_test.h"
 #include "frontend/parallel/strategy.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestStrategy : public UT::Common {
@@ -83,4 +83,4 @@ TEST_F(TestStrategy, IsEqual) {
   ASSERT_EQ(stra1->IsEqual(stra4), false);
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

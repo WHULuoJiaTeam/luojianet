@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +18,11 @@ import pytest
 import numpy as onp
 import scipy as osp
 import scipy.sparse.linalg
-import mindspore.ops as ops
-import mindspore.nn as nn
-import mindspore.scipy as msp
-from mindspore import context
-from mindspore.common import Tensor
+import luojianet_ms.ops as ops
+import luojianet_ms.nn as nn
+import luojianet_ms.scipy as msp
+from luojianet_ms import context
+from luojianet_ms.common import Tensor
 from tests.st.scipy_st.utils import create_sym_pos_matrix, create_full_rank_matrix, to_tensor, to_ndarray, get_platform
 
 
@@ -399,7 +400,7 @@ def test_gmres_against_graph_scipy(n, tensor_type, dtype, error, preconditioner,
     if not _is_valid_platform(tensor_type):
         return
 
-    # Input CSRTensor of gmres in mindspore graph mode is not supported, just ignored it.
+    # Input CSRTensor of gmres in luojianet_ms graph mode is not supported, just ignored it.
     if tensor_type == "CSRTensor":
         return
 
@@ -482,7 +483,7 @@ def test_gmres_grad(tensor_type, dtype, error, preconditioner, solve_method, a, 
     if not _is_valid_platform(tensor_type):
         return
 
-    # Input CSRTensor of gmres grad in mindspore graph or pynative mode is not supported, just ignored it.
+    # Input CSRTensor of gmres grad in luojianet_ms graph or pynative mode is not supported, just ignored it.
     # Root cause: CSRTensor has no distribute function of T.
     if tensor_type == "CSRTensor":
         return

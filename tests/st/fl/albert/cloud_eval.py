@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +18,8 @@ import argparse
 import os
 import sys
 from time import time
-from mindspore import context
-from mindspore.train.serialization import load_checkpoint
+from luojianet_ms import context
+from luojianet_ms.train.serialization import load_checkpoint
 from src.config import eval_cfg, server_net_cfg
 from src.dataset import load_datasets
 from src.utils import restore_params
@@ -51,7 +52,7 @@ def server_eval(args):
     model_path = args.model_path
     vocab_map_ids_path = args.vocab_map_ids_path
 
-    # mindspore context
+    # luojianet_ms context
     context.set_context(mode=context.GRAPH_MODE, device_target='GPU')
     print('Context setting is done! Time cost: {}'.format(time() - start))
     sys.stdout.flush()

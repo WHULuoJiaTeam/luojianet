@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,13 +15,13 @@
 # ============================================================================
 import numpy as np
 
-import mindspore.ops.composite as C
-from mindspore import Tensor, Parameter
-from mindspore import context
-from mindspore.common import dtype as mstype
-from mindspore.common.parameter import ParameterTuple
-from mindspore.nn import Cell
-from mindspore.ops import operations as P
+import luojianet_ms.ops.composite as C
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms import context
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common.parameter import ParameterTuple
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -335,7 +336,7 @@ def test_grad_for_concat():
             self.out_numpy = np.concatenate(self.inputs_np, axis=self.axis)
             self.out_grad_np = self.out_numpy
 
-        def grad_mindspore_impl(self):
+        def grad_luojianet_ms_impl(self):
             inputs = []
             for i in self.inputs_np:
                 inputs.append(Tensor(i))
@@ -345,7 +346,7 @@ def test_grad_for_concat():
             _ = grad_net(*inputs, Tensor(self.out_grad_np))
 
         def grad_cmp(self):
-            self.grad_mindspore_impl()
+            self.grad_luojianet_ms_impl()
 
     fact = ConcatFactory(input_shape=(
         (2, 184320, 1), (2, 46080, 1), (2, 11520, 1), (2, 2880, 1), (2, 720, 1)), axis=1)

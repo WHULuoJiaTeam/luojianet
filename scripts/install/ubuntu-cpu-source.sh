@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2022 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 # limitations under the License.
 # ============================================================================
 
-# Prepare environment for mindspore cpu compilation on Ubuntu 18.04.
+# Prepare environment for luojianet_ms cpu compilation on Ubuntu 18.04.
 #
 # This file will:
 #   - change deb source to huaweicloud mirror
@@ -77,4 +78,4 @@ python -m pip install wheel
 # python 3.9 needs setuptools>44.0
 python -m pip install -U setuptools
 
-echo "The environment is ready to clone and compile mindspore."
+echo "The environment is ready to clone and compile luojianet_ms."

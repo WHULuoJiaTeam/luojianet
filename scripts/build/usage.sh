@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,11 +48,11 @@ usage()
   echo "    -P Enable dump anf graph to file in ProtoBuffer format, default on"
   echo "    -D Enable dumping of function graph ir, default on"
   echo "    -z Compile dataset & mindrecord, default on"
-  echo "    -n Compile minddata with mindspore lite, available: off, lite, full, lite_cv, full mode in lite train and lite_cv, wrapper mode in lite predict"
+  echo "    -n Compile minddata with luojianet_ms lite, available: off, lite, full, lite_cv, full mode in lite train and lite_cv, wrapper mode in lite predict"
   echo "    -M Enable MPI and NCCL for GPU training, gpu default on"
   echo "    -V Specify the device version, if -e gpu, default CUDA 10.1, if -e ascend, default Ascend 910"
-  echo "    -I Enable compiling mindspore lite for arm64, arm32 or x86_64, default disable mindspore lite compilation"
-  echo "    -A Enable compiling mindspore lite aar package, option: on/off, default: off"
+  echo "    -I Enable compiling luojianet_ms lite for arm64, arm32 or x86_64, default disable luojianet_ms lite compilation"
+  echo "    -A Enable compiling luojianet_ms lite aar package, option: on/off, default: off"
   echo "    -K Compile with AKG, default on if -e gpu or -e ascend, else default off"
   echo "    -B Enable debugger, default on"
   echo "    -E Enable IBVERBS for parameter server, default off"
@@ -62,5 +63,5 @@ usage()
   echo "    -H Enable hidden"
   echo "    -L Link and specify Tensor-RT library path, default disable Tensor-RT lib linking"
   echo "    -y Compile the symbol table switch and save the symbol table to the directory output"
-  echo "    -F Use fast hash table in mindspore compiler, default on"
+  echo "    -F Use fast hash table in luojianet_ms compiler, default on"
 }

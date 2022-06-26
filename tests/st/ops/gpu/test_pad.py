@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +17,12 @@
 import pytest
 import numpy as np
 
-import mindspore
-import mindspore.nn as nn
-import mindspore.context as context
+import luojianet_ms
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
 
-from mindspore import Tensor
-from mindspore.ops.composite import GradOperation
+from luojianet_ms import Tensor
+from luojianet_ms.ops.composite import GradOperation
 
 
 @pytest.mark.level0
@@ -37,7 +38,7 @@ def test_pad_basic():
     test_arr = np.array([[1, 2], [3, 4]]).astype(np.float32)
     test_arr_expected = np.array(
         [[0, 0, 0, 0], [0, 1, 2, 0], [0, 3, 4, 0], [0, 0, 0, 0]]).astype(np.float32)
-    x_test = Tensor(test_arr, dtype=mindspore.float32)
+    x_test = Tensor(test_arr, dtype=luojianet_ms.float32)
     pad_op = nn.Pad(mode='CONSTANT', paddings=((1, 1), (1, 1)))
     y_test = pad_op(x_test).asnumpy()
     np.testing.assert_array_equal(y_test, test_arr_expected)
@@ -46,7 +47,7 @@ def test_pad_basic():
     test_arr = np.array([[1, 2], [3, 4]]).astype(np.float16)
     test_arr_expected = np.array(
         [[0, 0, 0, 0], [0, 1, 2, 0], [0, 3, 4, 0], [0, 0, 0, 0]]).astype(np.float16)
-    x_test = Tensor(test_arr, dtype=mindspore.float16)
+    x_test = Tensor(test_arr, dtype=luojianet_ms.float16)
     pad_op = nn.Pad(mode='CONSTANT', paddings=((1, 1), (1, 1)))
     y_test = pad_op(x_test).asnumpy()
     np.testing.assert_array_equal(y_test, test_arr_expected)
@@ -69,8 +70,8 @@ def test_pad_row():
     pad_op_row_1 = nn.Pad(mode='CONSTANT', paddings=test_paddings_1)
     pad_op_row_2 = nn.Pad(mode='CONSTANT', paddings=test_paddings_2)
 
-    x_test_1 = Tensor(np.array(test_arr_1), dtype=mindspore.float32)
-    x_test_2 = Tensor(np.array(test_arr_2), dtype=mindspore.float32)
+    x_test_1 = Tensor(np.array(test_arr_1), dtype=luojianet_ms.float32)
+    x_test_2 = Tensor(np.array(test_arr_2), dtype=luojianet_ms.float32)
     y_test_1 = pad_op_row_1(x_test_1).asnumpy()
     y_test_2 = pad_op_row_2(x_test_2).asnumpy()
 
@@ -100,8 +101,8 @@ def test_pad_column():
     pad_op_col_1 = nn.Pad(mode='CONSTANT', paddings=test_paddings_1)
     pad_op_col_2 = nn.Pad(mode='CONSTANT', paddings=test_paddings_2)
 
-    x_test_1 = Tensor(np.array(test_arr_1), dtype=mindspore.float32)
-    x_test_2 = Tensor(np.array(test_arr_2), dtype=mindspore.float32)
+    x_test_1 = Tensor(np.array(test_arr_1), dtype=luojianet_ms.float32)
+    x_test_2 = Tensor(np.array(test_arr_2), dtype=luojianet_ms.float32)
     y_test_1 = pad_op_col_1(x_test_1).asnumpy()
     y_test_2 = pad_op_col_2(x_test_2).asnumpy()
 
@@ -127,7 +128,7 @@ def test_pad_3d_pad():
     test_arr = np.random.randn(5, 3, 30, 30).astype(np.float32)
     test_paddings = ((0, 0), (2, 1), (0, 1), (0, 2))  # padding 3 dims now
     pad_op_3d = nn.Pad(mode='CONSTANT', paddings=test_paddings)
-    x_test = Tensor(np.array(test_arr), dtype=mindspore.float32)
+    x_test = Tensor(np.array(test_arr), dtype=luojianet_ms.float32)
     y_test = pad_op_3d(x_test).asnumpy()
     assert y_test.shape == (5, 6, 31, 32)
     np.testing.assert_equal(test_arr, y_test[:, 2:-1, :-1, :-2])
@@ -136,7 +137,7 @@ def test_pad_3d_pad():
     test_arr = np.random.randn(5, 3, 30, 30).astype(np.float16)
     test_paddings = ((0, 0), (2, 1), (0, 1), (0, 2))
     pad_op_3d = nn.Pad(mode='CONSTANT', paddings=test_paddings)
-    x_test = Tensor(np.array(test_arr), dtype=mindspore.float16)
+    x_test = Tensor(np.array(test_arr), dtype=luojianet_ms.float16)
     y_test = pad_op_3d(x_test).asnumpy()
     assert y_test.shape == (5, 6, 31, 32)
     np.testing.assert_equal(test_arr, y_test[:, 2:-1, :-1, :-2])
@@ -145,7 +146,7 @@ def test_pad_3d_pad():
     test_arr = np.random.randint(1, 3000, (5, 3, 30, 30)).astype(np.int32)
     test_paddings = ((0, 0), (2, 1), (0, 1), (0, 2))
     pad_op_3d = nn.Pad(mode='CONSTANT', paddings=test_paddings)
-    x_test = Tensor(np.array(test_arr), dtype=mindspore.int32)
+    x_test = Tensor(np.array(test_arr), dtype=luojianet_ms.int32)
     y_test = pad_op_3d(x_test).asnumpy()
     assert y_test.shape == (5, 6, 31, 32)
     np.testing.assert_equal(test_arr, y_test[:, 2:-1, :-1, :-2])
@@ -185,7 +186,7 @@ def test_pad_3d_backprop():
 
     # float32
     test_arr = np.random.randn(5, 3, 30, 30).astype(np.float32)
-    x_test = Tensor(test_arr, dtype=mindspore.float32)
+    x_test = Tensor(test_arr, dtype=luojianet_ms.float32)
     dy = np.random.randn(*padded_shape).astype(np.float32)
     expected_dx = dy[:, 4:-3, 1:-1, :-2]
     dx = net(x_test, Tensor(dy))
@@ -194,7 +195,7 @@ def test_pad_3d_backprop():
 
     # float16
     test_arr = np.random.randn(5, 3, 30, 30).astype(np.float16)
-    x_test = Tensor(test_arr, dtype=mindspore.float16)
+    x_test = Tensor(test_arr, dtype=luojianet_ms.float16)
     dy = np.random.randn(*padded_shape).astype(np.float16)
     expected_dx = dy[:, 4:-3, 1:-1, :-2]
     dx = net(x_test, Tensor(dy))
@@ -203,7 +204,7 @@ def test_pad_3d_backprop():
 
     # int32
     test_arr = np.random.randint(1, 3000, (5, 3, 30, 30)).astype(np.int32)
-    x_test = Tensor(test_arr, dtype=mindspore.int32)
+    x_test = Tensor(test_arr, dtype=luojianet_ms.int32)
     dy = np.random.randn(*padded_shape).astype(np.int32)
     expected_dx = dy[:, 4:-3, 1:-1, :-2]
     dx = net(x_test, Tensor(dy))
@@ -223,7 +224,7 @@ def test_pad_error_cases():
     # TEST 1 - Neg padding values
     test_op = nn.Pad(paddings=((0, 0), (-1, -1)), mode="CONSTANT")
     test_arr = np.random.randn(3, 3)
-    test_arr_ms = Tensor(test_arr, dtype=mindspore.float32)
+    test_arr_ms = Tensor(test_arr, dtype=luojianet_ms.float32)
 
     with pytest.raises(ValueError):
         test_op(test_arr_ms)
@@ -231,7 +232,7 @@ def test_pad_error_cases():
     # TEST 2 - Mismatched input size and paddings - 1D tensor
     test_op = nn.Pad(paddings=((0, 0), (1, 0)), mode="CONSTANT")
     test_arr = np.random.randn(3)  # 1D Tensor
-    test_arr_ms = Tensor(test_arr, dtype=mindspore.float32)
+    test_arr_ms = Tensor(test_arr, dtype=luojianet_ms.float32)
 
     with pytest.raises(ValueError):
         test_op(test_arr_ms)
@@ -239,7 +240,7 @@ def test_pad_error_cases():
     # TEST 3 - Mismatched input size and paddings - 2D tensor, 3D padding
     test_op = nn.Pad(paddings=((0, 0), (1, 0)), mode="CONSTANT")  # 2D Padding
     test_arr = np.random.randn(1, 3, 3)  # 3D Tensor
-    test_arr_ms = Tensor(test_arr, dtype=mindspore.float32)
+    test_arr_ms = Tensor(test_arr, dtype=luojianet_ms.float32)
 
     with pytest.raises(ValueError):
         test_op(test_arr_ms)

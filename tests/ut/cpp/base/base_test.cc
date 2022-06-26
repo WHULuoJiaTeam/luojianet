@@ -21,7 +21,7 @@
 #include "ir/anf.h"
 #include "utils/log_adapter.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 
 class TestNode : public UT::Common {
  public:
@@ -96,4 +96,4 @@ TEST_F(TestNode, test_isa) {
   ASSERT_TRUE(n->isa<ChildAA>() == false);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

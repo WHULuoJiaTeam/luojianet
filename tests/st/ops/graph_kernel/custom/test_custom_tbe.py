@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 
 import pytest
 import numpy as np
-from mindspore import context, Tensor
-from mindspore.nn import Cell
-import mindspore.ops as ops
-from mindspore.ops import TBERegOp, DataType, CustomRegOp, custom_info_register
-from mindspore.ops.composite.multitype_ops.zeros_like_impl import zeros_like
+from luojianet_ms import context, Tensor
+from luojianet_ms.nn import Cell
+import luojianet_ms.ops as ops
+from luojianet_ms.ops import TBERegOp, DataType, CustomRegOp, custom_info_register
+from luojianet_ms.ops.composite.multitype_ops.zeros_like_impl import zeros_like
 
 
 @custom_info_register(CustomRegOp() \

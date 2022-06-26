@@ -14,10 +14,10 @@
 # ==============================================================================
 import numpy as np
 import pytest
-import mindspore.dataset as ds
-from mindspore.dataset.text import JiebaTokenizer
-from mindspore.dataset.text import JiebaMode, to_str
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms.dataset.text import JiebaTokenizer
+from luojianet_ms.dataset.text import JiebaMode, to_str
+from luojianet_ms import log as logger
 
 DATA_FILE = "../data/dataset/testJiebaDataset/3.txt"
 DATA_ALL_FILE = "../data/dataset/testJiebaDataset/*"

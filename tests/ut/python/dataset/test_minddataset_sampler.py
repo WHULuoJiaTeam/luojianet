@@ -19,10 +19,10 @@ import os
 import pytest
 import numpy as np
 
-import mindspore.dataset as ds
-from mindspore import log as logger
-from mindspore.dataset.text import to_str
-from mindspore.mindrecord import FileWriter
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.text import to_str
+from luojianet_ms.mindrecord import FileWriter
 
 FILES_NUM = 4
 CV_DIR_NAME = "../data/mindrecord/testImageNetData"

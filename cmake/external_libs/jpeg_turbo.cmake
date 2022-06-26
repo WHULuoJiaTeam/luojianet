@@ -43,7 +43,7 @@ if(BUILD_LITE)
 
 endif()
 
-mindspore_add_pkg(jpeg_turbo
+luojianet_ms_add_pkg(jpeg_turbo
         VER 2.0.4
         LIBS jpeg turbojpeg
         URL ${REQ_URL}
@@ -52,5 +52,5 @@ mindspore_add_pkg(jpeg_turbo
         PATCHES ${JPEG_TURBO_PATCHE}
         )
 include_directories(${jpeg_turbo_INC})
-add_library(mindspore::jpeg_turbo ALIAS jpeg_turbo::jpeg)
-add_library(mindspore::turbojpeg ALIAS jpeg_turbo::turbojpeg)
+add_library(luojianet_ms::jpeg_turbo ALIAS jpeg_turbo::jpeg)
+add_library(luojianet_ms::turbojpeg ALIAS jpeg_turbo::turbojpeg)

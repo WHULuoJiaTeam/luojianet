@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +15,9 @@
 
 import pytest
 
-from mindspore import context
-from mindspore.parallel import set_algo_parameters
-from mindspore.parallel._auto_parallel_context import auto_parallel_context
+from luojianet_ms import context
+from luojianet_ms.parallel import set_algo_parameters
+from luojianet_ms.parallel._auto_parallel_context import auto_parallel_context
 
 
 def test_set_auto_parallel_context():

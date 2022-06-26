@@ -15,7 +15,7 @@
 """ test graph fallback buildin python function round"""
 import math
 import pytest
-from mindspore import ms_function, context
+from luojianet_ms import ms_function, context
 
 context.set_context(mode=context.GRAPH_MODE)
 

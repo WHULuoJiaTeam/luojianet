@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +16,9 @@
 import numpy as np
 import pytest
 
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.text as text
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text as text
 
 np_integral_types = [np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16,
                      np.uint32, np.uint64]

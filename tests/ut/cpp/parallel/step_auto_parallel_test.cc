@@ -21,7 +21,7 @@
 #include "frontend/operator/ops.h"
 #include "pipeline/jit/static_analysis/static_analysis.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestStepAutoParallel : public UT::Common {
@@ -194,4 +194,4 @@ TEST_F(TestStepAutoParallel, test_create_edge) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

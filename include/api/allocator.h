@@ -1,5 +1,6 @@
 /**
- * Copyright 2021 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +15,17 @@
  * limitations under the License.
  */
 
-#ifndef MINDSPORE_INCLUDE_API_ALLOCATOR_H
-#define MINDSPORE_INCLUDE_API_ALLOCATOR_H
+#ifndef LUOJIANET_MS_INCLUDE_API_ALLOCATOR_H
+#define LUOJIANET_MS_INCLUDE_API_ALLOCATOR_H
 
 #include <memory>
 #include "include/api/types.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 /// \brief Allocator defined a memory pool for malloc memory and free memory dynamically.
 class MS_API Allocator {
  public:
-  /// \brief Destructor of MindSpore Allocator.
+  /// \brief Destructor of LuoJiaNET Allocator.
   virtual ~Allocator() = default;
 
   /// \brief Method to request memory.
@@ -93,5 +94,5 @@ class MS_API Allocator {
   // memory aligned bytes
   size_t aligned_size_ = 32;
 };
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_ALLOCATOR_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_ALLOCATOR_H

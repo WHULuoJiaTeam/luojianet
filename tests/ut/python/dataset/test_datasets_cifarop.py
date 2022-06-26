@@ -19,8 +19,8 @@ import os
 import pytest
 import numpy as np
 import matplotlib.pyplot as plt
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 DATA_DIR_10 = "../data/dataset/testCifar10Data"
 DATA_DIR_100 = "../data/dataset/testCifar100Data"

@@ -36,7 +36,7 @@
 #include "minddata/dataset/kernels/ir/vision/random_vertical_flip_ir.h"
 #include "minddata/dataset/kernels/ir/vision/random_vertical_flip_with_bbox_ir.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestIRVision : public UT::DatasetOpTesting {
  public:

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +19,11 @@ import shutil
 import tempfile
 import pytest
 
-from mindspore.common import set_seed
-from mindspore import nn
-from mindspore.nn.metrics import Loss
-from mindspore.train import Model
-from mindspore.train.callback import SummaryLandscape
+from luojianet_ms.common import set_seed
+from luojianet_ms import nn
+from luojianet_ms.nn.metrics import Loss
+from luojianet_ms.train import Model
+from luojianet_ms.train.callback import SummaryLandscape
 from tests.security_utils import security_off_wrap
 from tests.ut.python.train.dataset import create_mnist_dataset, LeNet5
 

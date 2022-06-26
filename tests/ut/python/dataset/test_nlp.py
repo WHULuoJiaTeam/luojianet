@@ -15,8 +15,8 @@
 
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.text as text
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text as text
 
 # this file contains "home is behind the world head" each word is 1 line
 DATA_FILE = "../data/dataset/testVocab/words.txt"

@@ -18,7 +18,7 @@
 #include <map>
 #include "common/common_test.h"
 #include "runtime/device/memory_scheduler.h"
-namespace mindspore::device {
+namespace luojianet_ms::device {
 constexpr size_t kDeviceMemSize = 5;
 constexpr size_t kMaxVirtualCount = 1024;
 class MemHandlerImpl : public MemHandler {
@@ -232,4 +232,4 @@ TEST_F(TestMemScheduler, test_manual_mem_scheduler) {
   // run
   Run(scheduler);
 }
-}  // namespace mindspore::device
+}  // namespace luojianet_ms::device

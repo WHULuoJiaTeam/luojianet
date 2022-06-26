@@ -14,7 +14,7 @@
 # ==============================================================================
 import pytest
 
-import mindspore.dataset as ds
+import luojianet_ms.dataset as ds
 
 DATASET_DIR_V1 = '../data/dataset/testSQuAD/SQuAD1'
 DATASET_DIR_V2 = '../data/dataset/testSQuAD/SQuAD2'

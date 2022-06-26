@@ -17,9 +17,9 @@
 #include "minddata/dataset/core/global_context.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
-using mindspore::dataset::ShuffleMode;
+using luojianet_ms::dataset::ShuffleMode;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -52,7 +52,7 @@ TEST_F(MindDataTestPipeline, TestUDPOSDatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("word"), row.end());
 
@@ -125,7 +125,7 @@ TEST_F(MindDataTestPipeline, TestUDPOSDatasetBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "universal", "stanford"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -348,7 +348,7 @@ TEST_F(MindDataTestPipeline, TestUDPOSDatasetShuffleFalse) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "universal", "stanford"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -413,7 +413,7 @@ TEST_F(MindDataTestPipeline, TestUDPOSDatasetShuffleFilesA) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "universal", "stanford"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -478,7 +478,7 @@ TEST_F(MindDataTestPipeline, TestUDPOSDatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "universal", "stanford"};
   ASSERT_OK(iter->GetNextRow(&row));
 
@@ -540,7 +540,7 @@ TEST_F(MindDataTestPipeline, TestUDPOSDatasetShuffleGlobal) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   std::vector<std::string> column_names = {"word", "universal", "stanford"};
   ASSERT_OK(iter->GetNextRow(&row));
 

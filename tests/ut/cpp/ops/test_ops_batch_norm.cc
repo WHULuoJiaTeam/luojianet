@@ -21,7 +21,7 @@
 #include "ir/value.h"
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestBatchNorm : public UT::Common {
  public:
@@ -92,4 +92,4 @@ TEST_F(TestBatchNorm, test_batch_norm) {
   EXPECT_EQ(data_type5->type_id(), kNumberTypeFloat16);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

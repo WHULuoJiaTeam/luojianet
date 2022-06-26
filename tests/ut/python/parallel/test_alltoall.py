@@ -16,20 +16,20 @@ import re
 import pytest
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.common.parameter import Parameter
-from mindspore.nn.loss import SoftmaxCrossEntropyWithLogits
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.ops import operations as P
-from mindspore.ops.operations.comm_ops import AlltoAll
-from mindspore.parallel._utils import _reset_op_id
-from mindspore.train import Model
-from mindspore.context import ParallelMode
-from mindspore.communication.management import GlobalComm, init
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.nn.loss import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations.comm_ops import AlltoAll
+from luojianet_ms.parallel._utils import _reset_op_id
+from luojianet_ms.train import Model
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.communication.management import GlobalComm, init
 from tests.dataset_mock import MindData
 
 context.set_context(device_target="Ascend")

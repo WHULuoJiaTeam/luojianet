@@ -20,10 +20,10 @@
 #include "minddata/dataset/util/task_manager.h"
 #include "minddata/dataset/util/queue.h"
 
-using namespace mindspore::dataset;
-using mindspore::MsLogLevel::INFO;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::LogStream;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::MsLogLevel::INFO;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::LogStream;
 
 class MindDataTestIntrpService : public UT::Common {
  public:

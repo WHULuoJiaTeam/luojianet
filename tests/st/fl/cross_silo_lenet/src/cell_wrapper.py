@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,9 +14,9 @@
 # limitations under the License.
 # ============================================================================
 
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
-from mindspore.nn import TrainOneStepCell
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
+from luojianet_ms.nn import TrainOneStepCell
 
 class TrainOneStepCellForFLWorker(TrainOneStepCell):
     """

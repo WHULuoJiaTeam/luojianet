@@ -35,7 +35,7 @@
 #undef private
 #include "common/opskernel/ops_kernel_info_store.h"
 
-using namespace mindspore::ge::model_runner;
+using namespace luojianet_ms::ge::model_runner;
 using namespace testing;
 
 class MockOpsKernelInfoStore : public ge::OpsKernelInfoStore {
@@ -52,7 +52,7 @@ class MockOpsKernelInfoStore : public ge::OpsKernelInfoStore {
   ge::Status LoadTask(ge::GETaskInfo &task) override { return ge::SUCCESS; }
 };
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestAscendGeRuntime : public UT::Common {
  public:
   TestAscendGeRuntime() {}
@@ -475,4 +475,4 @@ TEST_F(TestAscendGeRuntime, test_model_runner_success) {
   ASSERT_NO_THROW(ModelRunner::Instance().GetModelHandle(model_id));
   ASSERT_NO_THROW(ModelRunner::Instance().UnloadModel(model_id));
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

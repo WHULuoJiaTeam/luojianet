@@ -30,7 +30,7 @@
 #include "plugin/device/ascend/optimizer/enhancer/insert_tensor_move_for_hccl_op.h"
 #undef private
 #undef protected
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWInsertTensorMoveForHccl : public BackendCommon {
  public:
@@ -179,4 +179,4 @@ TEST_F(TestHWInsertTensorMoveForHccl, test_cond5) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +20,9 @@ Testing FrequencyMasking op in DE.
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms import log as logger
 
 CHANNEL = 2
 FREQ = 30
@@ -54,7 +55,7 @@ def allclose_nparray(data_expected, data_me, rtol, atol, equal_nan=True):
 
 
 def test_func_frequency_masking_eager_random_input():
-    """ mindspore eager mode normal testcase:frequency_masking op"""
+    """ luojianet_ms eager mode normal testcase:frequency_masking op"""
     logger.info("test frequency_masking op")
     spectrogram = next(gen((CHANNEL, FREQ, TIME)))[0]
     out_put = audio.FrequencyMasking(False, 3, 1, 10)(spectrogram)
@@ -62,7 +63,7 @@ def test_func_frequency_masking_eager_random_input():
 
 
 def test_func_frequency_masking_eager_precision():
-    """ mindspore eager mode normal testcase:frequency_masking op"""
+    """ luojianet_ms eager mode normal testcase:frequency_masking op"""
     logger.info("test frequency_masking op")
     spectrogram = np.array([[[0.17274511, 0.85174704, 0.07162686, -0.45436913],
                              [-1.045921, -1.8204843, 0.62333095, -0.09532598],
@@ -81,7 +82,7 @@ def test_func_frequency_masking_eager_precision():
 
 
 def test_func_frequency_masking_pipeline():
-    """ mindspore pipeline mode normal testcase:frequency_masking op"""
+    """ luojianet_ms pipeline mode normal testcase:frequency_masking op"""
     logger.info("test frequency_masking op, pipeline")
 
     generator = gen([CHANNEL, FREQ, TIME])

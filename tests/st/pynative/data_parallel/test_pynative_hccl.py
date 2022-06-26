@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,15 +20,15 @@ import os
 from multiprocessing import Process, Queue
 import pytest
 import numpy as np
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import dtype as mstype
-from mindspore.ops import operations as P
-import mindspore.communication.management as D
-from mindspore import context
-from mindspore.context import ParallelMode
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import dtype as mstype
+from luojianet_ms.ops import operations as P
+import luojianet_ms.communication.management as D
+from luojianet_ms import context
+from luojianet_ms.context import ParallelMode
 
-MINDSPORE_HCCL_CONFIG_PATH = "/home/workspace/mindspore_config/hccl/rank_table_8p.json"
+LUOJIANET_MS_HCCL_CONFIG_PATH = "/home/workspace/luojianet_ms_config/hccl/rank_table_8p.json"
 
 np.random.seed(1)
 os.environ['GLOG_v'] = str(2)
@@ -44,7 +45,7 @@ def train_allreduce_8p(q, device_id, device_num):
     os.system("mkdir " + str(device_id))
     os.chdir(str(device_id))
     context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend", device_id=device_id)
-    os.environ['MINDSPORE_HCCL_CONFIG_PATH'] = MINDSPORE_HCCL_CONFIG_PATH
+    os.environ['LUOJIANET_MS_HCCL_CONFIG_PATH'] = LUOJIANET_MS_HCCL_CONFIG_PATH
     os.environ['RANK_ID'] = str(device_id)
     os.environ['RANK_SIZE'] = str(device_num)
     D.init()

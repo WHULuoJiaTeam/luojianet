@@ -34,13 +34,13 @@
 // #include "minddata/dataset/engine/db_connector.h"
 // #include "minddata/dataset/kernels/data/data_utils.h"
 
-namespace common = mindspore::common;
-namespace de = mindspore::dataset;
+namespace common = luojianet_ms::common;
+namespace de = luojianet_ms::dataset;
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::ERROR;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::ERROR;
 
 class MindDataTestBatchOp : public UT::DatasetOpTesting {
  protected:

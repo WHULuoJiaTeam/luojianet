@@ -35,7 +35,7 @@ using std::pair;
 using std::string;
 using std::vector;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace mindrecord {
 namespace UT {
 class Common : public testing::Test {
@@ -73,5 +73,5 @@ void ShardWriterImageNetOneSample();
 
 void ShardWriterImageNetOpenForAppend(string filename);
 }  // namespace mindrecord
-}  // namespace mindspore
+}  // namespace luojianet_ms
 #endif  // TESTS_MINDRECORD_UT_UT_COMMON_H_

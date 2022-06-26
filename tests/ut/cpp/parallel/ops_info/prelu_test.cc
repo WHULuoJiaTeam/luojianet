@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class PReLUInfo;
@@ -54,12 +54,12 @@ void TestPReLUInfo::SetUp() {
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
   Shapes inputs_shape = {{64, 4, 8, 16}, {4}};
   Shapes outputs_shape = {{64, 4, 8, 16}};
-  mindspore::HashMap<std::string, ValuePtr> attr;
+  luojianet_ms::HashMap<std::string, ValuePtr> attr;
   prelu = std::make_shared<PReLUInfo>("prelu_info", inputs_shape, outputs_shape, attr);
 
   Shapes inputs_shape_2d = {{1024, 4}, {4}};
   Shapes outputs_shape_2d = {{1024, 4}};
-  mindspore::HashMap<std::string, ValuePtr> attr_2d;
+  luojianet_ms::HashMap<std::string, ValuePtr> attr_2d;
   prelu_2d = std::make_shared<PReLUInfo>("prelu_info", inputs_shape_2d, outputs_shape_2d, attr_2d);
 }
 
@@ -273,4 +273,4 @@ TEST_F(TestPReLUInfo, AutoStrategy_2d1) {
   }
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

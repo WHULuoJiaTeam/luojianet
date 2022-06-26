@@ -16,13 +16,13 @@
 import numpy as np
 import pytest
 
-from mindspore import dtype as ms
-from mindspore import Tensor
-from mindspore import context
-from mindspore import nn
-from mindspore.common.parameter import Parameter, ParameterTuple
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
+from luojianet_ms import dtype as ms
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms import nn
+from luojianet_ms.common.parameter import Parameter, ParameterTuple
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
 
 
 grad_by_list = C.GradOperation(get_by_list=True)

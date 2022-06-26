@@ -29,7 +29,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWTopKSplit : public BackendCommon {
  public:
@@ -112,7 +112,7 @@ TEST_F(TestHWTopKSplit, test_topk_no_split) {
   EXPECT_EQ(topk_cnode->inputs().size(), 3);
   auto input_names_vec = common::AnfAlgo::GetNodeAttr<std::vector<std::string>>(topk_cnode, kAttrInputNames);
   EXPECT_EQ(input_names_vec.size(), 2);
-  mindspore::HashSet<size_t> attr_index{1};
+  luojianet_ms::HashSet<size_t> attr_index{1};
   ConstInputToAttr(topk_cnode, attr_index);
   EXPECT_EQ(topk_cnode->inputs().size(), 2);
   input_names_vec = common::AnfAlgo::GetNodeAttr<std::vector<std::string>>(topk_cnode, kAttrInputNames);
@@ -129,4 +129,4 @@ TEST_F(TestHWTopKSplit, test_topk_no_split) {
   EXPECT_EQ(topk_cnode, GetTopkCNodeFromKernelGraph(new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -16,9 +16,9 @@ import copy
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms import log as logger
 
 BATCH = 2
 CHANNEL = 2
@@ -58,7 +58,7 @@ def gen(shape):
 def test_mask_along_axis_iid_eager():
     """
     Feature: MaskAlongAxisIID
-    Description: mindspore eager mode with normal testcase
+    Description: luojianet_ms eager mode with normal testcase
     Expectation: the returned result is as expected
     """
     logger.info("test MaskAlongAxisIID op, eager")
@@ -75,7 +75,7 @@ def test_mask_along_axis_iid_eager():
 def test_mask_along_axis_iid_pipeline():
     """
     Feature: MaskAlongAxisIID
-    Description: mindspore pipeline mode with normal testcase
+    Description: luojianet_ms pipeline mode with normal testcase
     Expectation: the returned result is as expected
     """
     logger.info("test MaskAlongAxisIID op, pipeline")
@@ -94,7 +94,7 @@ def test_mask_along_axis_iid_pipeline():
 def test_mask_along_axis_iid_invalid_input():
     """
     Feature: MaskAlongAxisIID
-    Description: mindspore eager mode with invalid input
+    Description: luojianet_ms eager mode with invalid input
     Expectation: the returned result is as expected
     """
     def test_invalid_param(test_name, mask_param, mask_value, axis, error, error_msg):

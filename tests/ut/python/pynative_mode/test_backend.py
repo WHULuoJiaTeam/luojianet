@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +18,12 @@ import os
 import shutil
 import pytest
 
-import mindspore.nn as nn
-from mindspore import context, ms_function
-from mindspore._checkparam import args_type_check
-from mindspore.common.initializer import initializer
-from mindspore.common.parameter import Parameter
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms import context, ms_function
+from luojianet_ms._checkparam import args_type_check
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.ops import operations as P
 from tests.security_utils import security_off_wrap
 
 
@@ -54,11 +55,11 @@ def test_vm_backend():
 @security_off_wrap
 def test_vm_set_context():
     """ test_vm_set_context """
-    context.set_context(save_graphs=True, save_graphs_path="mindspore_ir_path", mode=context.GRAPH_MODE)
+    context.set_context(save_graphs=True, save_graphs_path="luojianet_ms_ir_path", mode=context.GRAPH_MODE)
     assert context.get_context("save_graphs")
     assert context.get_context("mode") == context.GRAPH_MODE
-    assert os.path.exists("mindspore_ir_path")
-    assert context.get_context("save_graphs_path").find("mindspore_ir_path") > 0
+    assert os.path.exists("luojianet_ms_ir_path")
+    assert context.get_context("save_graphs_path").find("luojianet_ms_ir_path") > 0
     context.set_context(mode=context.PYNATIVE_MODE)
 
 
@@ -82,7 +83,7 @@ def test_args_type_check():
 
 
 def teardown_module():
-    dirs = ['mindspore_ir_path']
+    dirs = ['luojianet_ms_ir_path']
     for item in dirs:
         item_name = './' + item
         if not os.path.exists(item_name):

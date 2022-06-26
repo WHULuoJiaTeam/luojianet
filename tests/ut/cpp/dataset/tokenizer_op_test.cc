@@ -29,7 +29,7 @@
 #include "gtest/gtest.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestTokenizerOp : public UT::Common {
  public:

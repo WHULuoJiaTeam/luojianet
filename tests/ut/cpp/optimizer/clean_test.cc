@@ -23,15 +23,15 @@
 #include "include/common/debug/draw.h"
 #include "frontend/optimizer/clean.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
-using mindspore::abstract::AbstractAttribute;
-using mindspore::abstract::AbstractClass;
-using mindspore::abstract::AbstractError;
-using mindspore::abstract::AbstractList;
-using mindspore::abstract::AbstractScalar;
-using mindspore::abstract::AbstractTensor;
-using mindspore::abstract::AbstractTuple;
+using luojianet_ms::abstract::AbstractAttribute;
+using luojianet_ms::abstract::AbstractClass;
+using luojianet_ms::abstract::AbstractError;
+using luojianet_ms::abstract::AbstractList;
+using luojianet_ms::abstract::AbstractScalar;
+using luojianet_ms::abstract::AbstractTensor;
+using luojianet_ms::abstract::AbstractTuple;
 
 class TestClean : public UT::Common {
  public:
@@ -106,7 +106,7 @@ TEST_F(TestClean, TestEraseClassGetAttr) {
     if (IsValueNode<parse::ClassObject>(input0)) {
       std::vector<AbstractAttribute> attr = {{"x", std::make_shared<AbstractScalar>(kFloat64)},
                                              {"y", std::make_shared<AbstractScalar>(kFloat64)}};
-      mindspore::HashMap<std::string, ValuePtr> methods;
+      luojianet_ms::HashMap<std::string, ValuePtr> methods;
       AbstractBasePtr abs_ptr = std::make_shared<AbstractClass>(Named("Point"), attr, methods);
       node->set_abstract(abs_ptr);
     }
@@ -141,7 +141,7 @@ TEST_F(TestClean, TestEraseClassMakeRecord) {
   para2->set_abstract(std::make_shared<AbstractScalar>(kAnyValue, kInt64));
   std::vector<AbstractAttribute> attr = {{"x", std::make_shared<AbstractScalar>(kAnyValue, kInt64)},
                                          {"y", std::make_shared<AbstractScalar>(kAnyValue, kInt64)}};
-  mindspore::HashMap<std::string, ValuePtr> methods;
+  luojianet_ms::HashMap<std::string, ValuePtr> methods;
   AbstractBasePtr abs_ptr = std::make_shared<AbstractClass>(Named("Point"), attr, methods);
   auto cons_class = NewValueNode(abs_ptr->BuildValue());
   cons_class->set_abstract(abs_ptr);
@@ -176,7 +176,7 @@ TEST_F(TestClean, TestEraseClassPartial) {
 
   std::vector<AbstractAttribute> attr = {{"x", std::make_shared<AbstractScalar>(kAnyValue, kInt64)},
                                          {"y", std::make_shared<AbstractScalar>(kAnyValue, kInt64)}};
-  mindspore::HashMap<std::string, ValuePtr> methods;
+  luojianet_ms::HashMap<std::string, ValuePtr> methods;
   AbstractBasePtr abs_ptr = std::make_shared<AbstractClass>(Named("Point"), attr, methods);
   auto cons_class = NewValueNode(abs_ptr->BuildValue());
   cons_class->set_abstract(abs_ptr);
@@ -200,4 +200,4 @@ TEST_F(TestClean, TestEraseClassPartial) {
   SimplifyDataStructures(func_graph, manager);
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import numpy as np
-from mindspore import Tensor
-from mindspore import context
-from mindspore.communication.management import init
-from mindspore.parallel import set_algo_parameters
-from mindspore.train.model import Model
-from mindspore.context import ParallelMode
-from mindspore.communication._comm_helper import GlobalComm
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.communication.management import init
+from luojianet_ms.parallel import set_algo_parameters
+from luojianet_ms.train.model import Model
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.communication._comm_helper import GlobalComm
 from .test_auto_parallel_resnet import resnet50
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")

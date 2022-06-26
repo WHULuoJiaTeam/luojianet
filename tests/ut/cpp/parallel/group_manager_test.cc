@@ -19,7 +19,7 @@
 #include "frontend/parallel/device.h"
 #include "frontend/parallel/group_manager.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 extern DeviceManagerPtr g_device_manager;
@@ -152,4 +152,4 @@ TEST_F(TestGroupManager, test_FindGroup) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

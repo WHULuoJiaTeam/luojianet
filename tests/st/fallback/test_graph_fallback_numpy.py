@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 """ test graph fallback """
 import pytest
 import numpy as np
-from mindspore import ms_function, context, Tensor
+from luojianet_ms import ms_function, context, Tensor
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -500,7 +501,7 @@ def test_np_char_1():
     """
     @ms_function
     def np_char():
-        char_add = np.char.add(['MindSpore'], [' fallback'])
+        char_add = np.char.add(['LuoJiaNET'], [' fallback'])
         char_multiply = np.char.multiply('fallback ', 3)
         char_center = np.char.center('fallback', 10, fillchar='*')
         char_capitalize = np.char.capitalize('fallback')
@@ -511,7 +512,7 @@ def test_np_char_1():
                Tensor(char_title), Tensor(char_lower), Tensor(char_upper)
 
     char_add, char_multiply, char_center, char_capitalize, char_title, char_lower, char_upper = np_char()
-    assert char_add.asnumpy() == 'MindSpore fallback'
+    assert char_add.asnumpy() == 'LuoJiaNET fallback'
     assert char_multiply.asnumpy() == 'fallback fallback fallback '
     assert char_center.asnumpy() == '*fallback*'
     assert char_capitalize.asnumpy() == 'Fallback'
@@ -533,10 +534,10 @@ def test_np_char_2():
     """
     @ms_function
     def np_char():
-        char_split = np.char.split('MindSpore fallback')
+        char_split = np.char.split('LuoJiaNET fallback')
         out_split = np.char.join(' ', char_split)
 
-        char_splitlines = np.char.splitlines('MindSpore\nfallback')
+        char_splitlines = np.char.splitlines('LuoJiaNET\nfallback')
         out_splitlines = np.char.join(',', char_splitlines)
 
         out_strip = np.char.strip('abc acd', 'a')
@@ -546,8 +547,8 @@ def test_np_char_2():
         return Tensor(out_split), Tensor(out_splitlines), Tensor(out_strip), Tensor(out_replace), Tensor(out_decode)
 
     char_split, char_splitlines, char_strip, char_replace, char_decode = np_char()
-    assert char_split.asnumpy() == 'MindSpore fallback'
-    assert char_splitlines.asnumpy() == 'MindSpore,fallback'
+    assert char_split.asnumpy() == 'LuoJiaNET fallback'
+    assert char_splitlines.asnumpy() == 'LuoJiaNET,fallback'
     assert char_strip.asnumpy() == 'bc acd'
     assert char_replace.asnumpy() == 'fallback'
     assert char_decode.asnumpy() == 'runoob'

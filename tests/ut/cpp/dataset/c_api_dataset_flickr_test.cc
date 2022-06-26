@@ -16,8 +16,8 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -42,7 +42,7 @@ TEST_F(MindDataTestPipeline, TestFlickrBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -99,7 +99,7 @@ TEST_F(MindDataTestPipeline, TestFlickrBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -140,7 +140,7 @@ TEST_F(MindDataTestPipeline, TestFlickrIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -213,7 +213,7 @@ TEST_F(MindDataTestPipeline, TestFlickrAnnotations) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::shared_ptr<Tensor> a_expect_item;
@@ -225,7 +225,7 @@ TEST_F(MindDataTestPipeline, TestFlickrAnnotations) {
   annotation_arr.emplace_back("The banana is very big.");
 
   ASSERT_OK(Tensor::CreateFromVector(annotation_arr, &a_expect_item));
-  mindspore::MSTensor expect_item = mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(a_expect_item));
+  luojianet_ms::MSTensor expect_item = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(a_expect_item));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -264,7 +264,7 @@ TEST_F(MindDataTestPipeline, TestFlickrDecode) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -302,7 +302,7 @@ TEST_F(MindDataTestPipeline, TestFlickrNumSamplers) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

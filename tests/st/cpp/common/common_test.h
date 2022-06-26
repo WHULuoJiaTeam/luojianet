@@ -58,7 +58,7 @@ class Common : public testing::Test {
 
   void ReadFile(const char *file, size_t *size, char **buf);
 
-  std::shared_ptr<mindspore::Context> ContextAutoSet();
+  std::shared_ptr<luojianet_ms::Context> ContextAutoSet();
 };
 }  // namespace ST
 #endif  // TESTS_CXX_ST_COMMON_COMMON_TEST_H_

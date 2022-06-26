@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +19,10 @@
 import numpy as np
 import pytest
 
-from mindspore import context, Tensor
-from mindspore.common import dtype as mstype
-from mindspore import ms_function
-from mindspore import ops
+from luojianet_ms import context, Tensor
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms import ms_function
+from luojianet_ms import ops
 
 context.set_context(mode=context.PYNATIVE_MODE)
 input_x = Tensor(np.ones([1, 1, 120, 640]), dtype=mstype.float32)

@@ -18,8 +18,8 @@ Watchpoints test script for dump analyze_fail.dat when infer failed.
 # pylint: disable=too-many-function-args
 import os
 import pytest
-import mindspore
-from mindspore import ops, Tensor, nn
+import luojianet_ms
+from luojianet_ms import ops, Tensor, nn
 from tests.security_utils import security_off_wrap
 
 
@@ -48,8 +48,8 @@ def test_infer_fail_generate_analyze_fail_dat():
             c = self.mul(b, self.func(a, a, b))
             return c
 
-    input1 = Tensor(3, mindspore.float32)
-    input2 = Tensor(2, mindspore.float32)
+    input1 = Tensor(3, luojianet_ms.float32)
+    input2 = Tensor(2, luojianet_ms.float32)
     net = Net()
 
     with pytest.raises(TypeError) as excinfo:

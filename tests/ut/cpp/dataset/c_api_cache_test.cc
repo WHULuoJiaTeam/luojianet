@@ -17,7 +17,7 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "minddata/dataset/include/dataset/vision.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 // Helper function to get the session id from SESSION_ID env variable
 Status GetSessionFromEnv(session_id_type *session_id);
@@ -99,7 +99,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheImageFolderCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -142,7 +142,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheCocoCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -183,7 +183,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheMnistCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -225,7 +225,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheCelebaCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -266,7 +266,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheManifestCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -307,7 +307,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheCifar10CApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -348,7 +348,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheCifar100CApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -390,7 +390,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheVocCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -434,7 +434,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheAlbumCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -473,7 +473,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheMindRecordCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -499,8 +499,8 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheRandomDataCApi) {
   // Create a RandomDataset
   std::shared_ptr<SchemaObj> schema = Schema();
 
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {2}));
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt8, {1}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {2}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt8, {1}));
   std::shared_ptr<Dataset> ds = RandomData(8, schema, {}, some_cache);
   EXPECT_NE(ds, nullptr);
 
@@ -515,7 +515,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheRandomDataCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -556,7 +556,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheTFRecordCApi1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -607,7 +607,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheTFRecordCApi2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -654,7 +654,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheTFRecordCApi3) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -699,7 +699,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheTextfileCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -743,7 +743,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheCsvCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -788,7 +788,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheClueCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -822,7 +822,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCApiCacheShare1) {
   std::shared_ptr<Iterator> iter1 = ds1->CreateIterator();
   EXPECT_NE(iter1, nullptr);
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter1->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -877,7 +877,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCApiCacheShare2) {
   std::shared_ptr<Iterator> iter1 = ds1->CreateIterator();
   EXPECT_NE(iter1, nullptr);
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter1->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -927,7 +927,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCApiCacheShareFailure1) {
   std::shared_ptr<Iterator> iter1 = ds1->CreateIterator();
   EXPECT_NE(iter1, nullptr);
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter1->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -959,8 +959,8 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheRandomDataCApi1) {
   // Create a RandomDataset
   std::shared_ptr<SchemaObj> schema = Schema();
 
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {640, 480, 3}));
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt8, {}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {640, 480, 3}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt8, {}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema, {}, some_cache);
   EXPECT_NE(ds, nullptr);
 
@@ -975,7 +975,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheRandomDataCApi1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1005,8 +1005,8 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheRandomDataSpillCApi) {
   // Create a RandomDataset
   std::shared_ptr<SchemaObj> schema = Schema();
 
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {640, 480, 3}));
-  ASSERT_OK(schema->add_column("label", mindspore::DataType::kNumberTypeUInt8, {}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {640, 480, 3}));
+  ASSERT_OK(schema->add_column("label", luojianet_ms::DataType::kNumberTypeUInt8, {}));
   std::shared_ptr<Dataset> ds = RandomData(10, schema, {}, some_cache);
   EXPECT_NE(ds, nullptr);
 
@@ -1021,7 +1021,7 @@ TEST_F(MindDataTestCacheOp, DISABLED_TestCacheRandomDataSpillCApi) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

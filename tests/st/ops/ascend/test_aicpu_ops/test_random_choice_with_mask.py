@@ -15,17 +15,17 @@
 
 import numpy as np
 import pytest
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 
 class RandomChoiceWithMaskNet(nn.Cell):
     def __init__(self):
         super(RandomChoiceWithMaskNet, self).__init__()
         self.random_choice_with_mask = P.RandomChoiceWithMask(count=4, seed=1)
-        self.random_choice_with_mask.add_prim_attr("cust_aicpu", "mindspore_aicpu_kernels")
+        self.random_choice_with_mask.add_prim_attr("cust_aicpu", "luojianet_ms_aicpu_kernels")
 
     def construct(self, x):
         return self.random_choice_with_mask(x)

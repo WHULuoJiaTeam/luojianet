@@ -22,8 +22,8 @@
 #include "include/api/status.h"
 #include "minddata/dataset/include/dataset/text.h"
 
-using mindspore::dataset::Tensor;
-using mindspore::dataset::Vocab;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::Vocab;
 
 class MindDataTestVocab : public UT::DatasetOpTesting {
  protected:

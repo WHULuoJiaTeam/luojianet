@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,9 +21,9 @@ import os
 import numpy as np
 from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 from PIL import Image
-import mindspore.dataset as de
-from mindspore.mindrecord import FileWriter
-import mindspore.dataset.vision.c_transforms as C
+import luojianet_ms.dataset as de
+from luojianet_ms.mindrecord import FileWriter
+import luojianet_ms.dataset.vision.c_transforms as C
 from src.config import ConfigYOLOV3ResNet18
 
 iter_cnt = 0

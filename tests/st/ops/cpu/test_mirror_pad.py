@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +17,12 @@
 import pytest
 import numpy as np
 
-import mindspore
-import mindspore.nn as nn
-import mindspore.context as context
+import luojianet_ms
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
 
-from mindspore import Tensor
-from mindspore.ops.composite import GradOperation
+from luojianet_ms import Tensor
+from luojianet_ms.ops.composite import GradOperation
 
 @pytest.mark.level0
 @pytest.mark.platform_x86_cpu
@@ -42,8 +43,8 @@ def test_mirror_pad():
     reflectOp = nn.Pad(mode='REFLECT', paddings=test_1_paddings)
     symmOp = nn.Pad(mode='SYMMETRIC', paddings=test_2_paddings)
 
-    x_test_1 = Tensor(np.array(test1_arr_in), dtype=mindspore.float32)
-    x_test_2 = Tensor(np.array(test2_arr_in), dtype=mindspore.float32)
+    x_test_1 = Tensor(np.array(test1_arr_in), dtype=luojianet_ms.float32)
+    x_test_2 = Tensor(np.array(test2_arr_in), dtype=luojianet_ms.float32)
 
     y_test_1 = reflectOp(x_test_1).asnumpy()
     y_test_2 = symmOp(x_test_2).asnumpy()
@@ -77,7 +78,7 @@ class Net(nn.Cell):
 def test_mirror_pad_backprop():
     context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
     test_arr_in = [[[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]] # size -> 3*3
-    test_arr_in = Tensor(test_arr_in, dtype=mindspore.float32)
+    test_arr_in = Tensor(test_arr_in, dtype=luojianet_ms.float32)
     dy = (np.ones((1, 1, 4, 5)) * 0.1).astype(np.float32)
     expected_dx = np.array([[[[0.2, 0.2, 0.1],
                               [0.4, 0.4, 0.2],
@@ -97,7 +98,7 @@ def test_mirror_pad_fwd_back_4d_int32_reflect():
     pads = ((1, 0), (2, 0), (1, 2), (3, 4))
     total_val = np.prod(shape)
     test_arr_np = np.arange(total_val).reshape(shape) + 1
-    test_arr_ms = Tensor(test_arr_np, dtype=mindspore.int32)
+    test_arr_ms = Tensor(test_arr_np, dtype=luojianet_ms.int32)
     # fwd_pass_check
     op = nn.Pad(mode="REFLECT", paddings=pads)
     expected_np_result = np.pad(test_arr_np, pads, 'reflect')
@@ -105,7 +106,7 @@ def test_mirror_pad_fwd_back_4d_int32_reflect():
     np.testing.assert_array_equal(expected_np_result, obtained_ms_res)
     # backwards pass check
     GradNet = Grad(Net(pads, "REFLECT"))
-    dy_value = Tensor(np.ones(obtained_ms_res.shape), dtype=mindspore.int32)
+    dy_value = Tensor(np.ones(obtained_ms_res.shape), dtype=luojianet_ms.int32)
     dx_value_obtained = GradNet(test_arr_ms, dy_value)[0].asnumpy()
     dx_value_expected = np.array([[[[4, 6, 6, 6, 2],
                                     [6, 9, 9, 9, 3],
@@ -138,7 +139,7 @@ def test_mirror_pad_fwd_back_4d_int32_symm():
     pads = ((1, 0), (2, 0), (1, 2), (3, 4))
     total_val = np.prod(shape)
     test_arr_np = np.arange(total_val).reshape(shape) + 1
-    test_arr_ms = Tensor(test_arr_np, dtype=mindspore.int32)
+    test_arr_ms = Tensor(test_arr_np, dtype=luojianet_ms.int32)
     # fwd_pass_check
     op = nn.Pad(mode="SYMMETRIC", paddings=pads)
     expected_np_result = np.pad(test_arr_np, pads, 'symmetric')
@@ -146,7 +147,7 @@ def test_mirror_pad_fwd_back_4d_int32_symm():
     np.testing.assert_array_equal(expected_np_result, obtained_ms_res)
     # backwards pass check
     GradNet = Grad(Net(pads, "SYMMETRIC"))
-    dy_value = Tensor(np.ones(obtained_ms_res.shape), dtype=mindspore.int32)
+    dy_value = Tensor(np.ones(obtained_ms_res.shape), dtype=luojianet_ms.int32)
     dx_value_obtained = GradNet(test_arr_ms, dy_value)[0].asnumpy()
     dx_value_expected = np.array([[[[16, 24, 24, 16, 16],
                                     [16, 24, 24, 16, 16],

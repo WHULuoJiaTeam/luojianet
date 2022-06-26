@@ -20,7 +20,7 @@ import os
 import json
 import shutil
 import numpy as np
-import mindspore.offline_debug.dbg_services as d
+import luojianet_ms.offline_debug.dbg_services as d
 from dump_test_utils import build_dump_structure, write_watchpoint_to_json
 from tests.security_utils import security_off_wrap
 

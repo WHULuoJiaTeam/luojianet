@@ -16,9 +16,9 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 def reshape(nptype):
     context.set_context(mode=context.GRAPH_MODE, device_target="GPU")

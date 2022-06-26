@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,10 +15,10 @@
 # ==============================================================================
 import numpy as np
 import pytest
-from mindspore import nn, context
-from mindspore import ops as P
-from mindspore.train import DatasetHelper, connect_network_with_dataset
-import mindspore.dataset as ds
+from luojianet_ms import nn, context
+from luojianet_ms import ops as P
+from luojianet_ms.train import DatasetHelper, connect_network_with_dataset
+import luojianet_ms.dataset as ds
 
 
 def _exec_preprocess(network, is_train, dataset, dataset_sink_mode, sink_size=1, epoch_num=1, dataset_helper=None):
@@ -136,4 +137,3 @@ def test_getnext_sink_size_dynamic_pipeline_gpu():
     """
     context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
     test_getnext_sink_size_dynamic_pipeline()
-    

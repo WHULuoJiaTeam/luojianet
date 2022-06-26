@@ -14,7 +14,7 @@ if(ENABLE_GITEE_EULER)
     set(GIT_REPOSITORY "https://gitee.com/src-openeuler/flatbuffers.git")
     set(GIT_TAG "openEuler-22.03-LTS")
     set(MD5 "f1c724296be49a29ded69278a9a770c7")
-    set(FLATBUFFER_SRC "${TOP_DIR}/mindspore/lite/build/_deps/flatbuffers-src")
+    set(FLATBUFFER_SRC "${TOP_DIR}/luojianet_ms/lite/build/_deps/flatbuffers-src")
     set(FLATBUFFER_DIR "${FLATBUFFER_SRC}/flatbuffers-2.0.0")
     __download_pkg_with_git(flatbuffers ${GIT_REPOSITORY} ${GIT_TAG} ${MD5})
     execute_process(COMMAND tar -xf ${FLATBUFFER_SRC}/v2.0.0.tar.gz WORKING_DIRECTORY ${FLATBUFFER_SRC})
@@ -39,7 +39,7 @@ if(APPLE)
     set(flatbuffers_CXXFLAGS "${flatbuffers_CXXFLAGS} -Wno-deprecated")
 endif()
 if(APPLE)
-    mindspore_add_pkg(flatbuffers
+    luojianet_ms_add_pkg(flatbuffers
             VER 2.0.0
             LIBS flatbuffers
             EXE flatc
@@ -47,7 +47,7 @@ if(APPLE)
             MD5 ${MD5}
             CMAKE_OPTION -DFLATBUFFERS_BUILD_TESTS=OFF -DCMAKE_INSTALL_LIBDIR=lib)
 else()
-    mindspore_add_pkg(flatbuffers
+    luojianet_ms_add_pkg(flatbuffers
             VER 2.0.0
             LIBS flatbuffers
             EXE flatc
@@ -59,8 +59,8 @@ else()
 endif()
 
 include_directories(${flatbuffers_INC})
-add_library(mindspore::flatbuffers ALIAS flatbuffers::flatbuffers)
-add_executable(mindspore::flatc ALIAS flatbuffers::flatc)
+add_library(luojianet_ms::flatbuffers ALIAS flatbuffers::flatbuffers)
+add_executable(luojianet_ms::flatc ALIAS flatbuffers::flatc)
 function(ms_build_flatbuffers source_schema_files
                               source_schema_dirs
                               custom_target_name
@@ -68,7 +68,7 @@ function(ms_build_flatbuffers source_schema_files
 
     set(total_schema_dirs "")
     set(total_generated_files "")
-    set(FLATC mindspore::flatc)
+    set(FLATC luojianet_ms::flatc)
     foreach(schema_dir ${source_schema_dirs})
         set(total_schema_dirs -I ${schema_dir} ${total_schema_dirs})
     endforeach()
@@ -106,7 +106,7 @@ function(ms_build_flatbuffers_lite
 
     set(total_schema_dirs "")
     set(total_generated_files "")
-    set(FLATC mindspore::flatc)
+    set(FLATC luojianet_ms::flatc)
     foreach(schema_dir ${source_schema_dirs})
         set(total_schema_dirs -I ${schema_dir} ${total_schema_dirs})
     endforeach()

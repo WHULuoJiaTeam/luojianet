@@ -15,10 +15,10 @@
 
 import pytest
 import numpy as np
-from mindspore import context, Tensor
-from mindspore.nn import Cell
-import mindspore.ops as ops
-from mindspore.ops import DataType, CustomRegOp, custom_info_register
+from luojianet_ms import context, Tensor
+from luojianet_ms.nn import Cell
+import luojianet_ms.ops as ops
+from luojianet_ms.ops import DataType, CustomRegOp, custom_info_register
 
 
 def outer_product(a, b):

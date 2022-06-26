@@ -1,19 +1,19 @@
 import os
 import numpy as np
 
-import mindspore.nn as nn
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as CV
-import mindspore.dataset.transforms.c_transforms as CT
-from mindspore.dataset.vision import Inter
-from mindspore import context
-from mindspore.common import dtype as mstype
-from mindspore.common.tensor import Tensor
-from mindspore.common.initializer import TruncatedNormal
-from mindspore.common.parameter import ParameterTuple
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore.train.serialization import export
+import luojianet_ms.nn as nn
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as CV
+import luojianet_ms.dataset.transforms.c_transforms as CT
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms import context
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.common.initializer import TruncatedNormal
+from luojianet_ms.common.parameter import ParameterTuple
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms.train.serialization import export
 
 
 def weight_variable():

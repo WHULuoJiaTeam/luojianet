@@ -1,5 +1,6 @@
 /**
- * Copyright 2020 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_MODEL_H
-#define MINDSPORE_INCLUDE_API_MODEL_H
+#ifndef LUOJIANET_MS_INCLUDE_API_MODEL_H
+#define LUOJIANET_MS_INCLUDE_API_MODEL_H
 
 #include <string>
 #include <vector>
@@ -30,14 +31,14 @@
 #include "include/api/cfg.h"
 #include "include/api/dual_abi_helper.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class ModelImpl;
 class Metrics;
 
 namespace dataset {
 class Dataset;
 }  // namespace dataset
-/// \brief The Model class is used to define a MindSpore model, facilitating computational graph management.
+/// \brief The Model class is used to define a LuoJiaNET model, facilitating computational graph management.
 class MS_API Model {
  public:
   Model();
@@ -354,5 +355,5 @@ inline Status Model::Build(const std::string &model_path, ModelType model_type,
                            const std::shared_ptr<Context> &model_context) {
   return Build(StringToChar(model_path), model_type, model_context);
 }
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_MODEL_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_MODEL_H

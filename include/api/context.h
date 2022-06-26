@@ -1,5 +1,6 @@
 /**
- * Copyright 2020 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_CONTEXT_H
-#define MINDSPORE_INCLUDE_API_CONTEXT_H
+#ifndef LUOJIANET_MS_INCLUDE_API_CONTEXT_H
+#define LUOJIANET_MS_INCLUDE_API_CONTEXT_H
 
 #include <string>
 #include <memory>
@@ -23,7 +24,7 @@
 #include "include/api/types.h"
 #include "include/api/dual_abi_helper.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 enum DeviceType {
   kCPU = 0,
   kGPU,
@@ -109,7 +110,7 @@ class MS_API Context {
   /// \return Bool value that indicates whether run as float model
   bool GetMultiModalHW() const;
 
-  /// \brief Get a mutable reference of DeviceInfoContext vector in this context. Only MindSpore Lite supports
+  /// \brief Get a mutable reference of DeviceInfoContext vector in this context. Only LuoJiaNET Lite supports
   /// heterogeneous scenarios with multiple members in the vector.
   ///
   /// \return Mutable reference of DeviceInfoContext vector in this context.
@@ -190,7 +191,7 @@ std::string DeviceInfoContext::GetProviderDevice() const { return CharToString(G
 void DeviceInfoContext::SetProviderDevice(const std::string &device) { SetProviderDevice(StringToChar(device)); }
 
 /// \brief Derived from DeviceInfoContext, The configuration of the model running on the CPU. This option is only valid
-/// for MindSpore Lite.
+/// for LuoJiaNET Lite.
 class MS_API CPUDeviceInfo : public DeviceInfoContext {
  public:
   /// \brief Get the type of this DeviceInfoContext.
@@ -210,7 +211,7 @@ class MS_API CPUDeviceInfo : public DeviceInfoContext {
 };
 
 /// \brief Derived from DeviceInfoContext, The configuration of the model running on the NPU. This option is only valid
-/// for MindSpore Lite.
+/// for LuoJiaNET Lite.
 class MS_API KirinNPUDeviceInfo : public DeviceInfoContext {
  public:
   /// \brief Get the type of this DeviceInfoContext.
@@ -319,7 +320,7 @@ void GPUDeviceInfo::SetPrecisionMode(const std::string &precision_mode) {
 std::string GPUDeviceInfo::GetPrecisionMode() const { return CharToString(GetPrecisionModeChar()); }
 
 /// \brief Derived from DeviceInfoContext, The configuration of the model running on the Ascend. This option is
-/// invalid for MindSpore Lite.
+/// invalid for LuoJiaNET Lite.
 class MS_API AscendDeviceInfo : public DeviceInfoContext {
  public:
   /// \brief Get the type of this DeviceInfoContext.
@@ -502,5 +503,5 @@ void AscendDeviceInfo::SetBufferOptimizeMode(const std::string &buffer_optimize_
   SetBufferOptimizeMode(StringToChar(buffer_optimize_mode));
 }
 std::string AscendDeviceInfo::GetBufferOptimizeMode() const { return CharToString(GetBufferOptimizeModeChar()); }
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_CONTEXT_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_CONTEXT_H

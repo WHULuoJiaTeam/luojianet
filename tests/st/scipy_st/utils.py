@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""utility functions for mindspore.scipy st tests"""
+"""utility functions for luojianet_ms.scipy st tests"""
 import platform
 from typing import List
 from functools import cmp_to_key
@@ -20,10 +20,10 @@ from functools import cmp_to_key
 import numpy as onp
 import scipy.sparse.linalg
 from scipy.linalg import eigvals
-from mindspore import Tensor, CSRTensor
-import mindspore.ops as ops
-import mindspore.numpy as mnp
-from mindspore.common import dtype as mstype
+from luojianet_ms import Tensor, CSRTensor
+import luojianet_ms.ops as ops
+import luojianet_ms.numpy as mnp
+from luojianet_ms.common import dtype as mstype
 
 
 def to_tensor(obj, dtype=None, indice_dtype=onp.int32):

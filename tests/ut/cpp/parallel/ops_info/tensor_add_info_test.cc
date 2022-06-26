@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class AddInfo;
@@ -54,7 +54,7 @@ void TestTensorAddInfo::SetUp() {
   g_device_manager = std::make_shared<DeviceManager>();
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
-  mindspore::HashMap<std::string, ValuePtr> attr;
+  luojianet_ms::HashMap<std::string, ValuePtr> attr;
 
   Shapes inputs_shape = {{32, 64, 96}, {32, 64, 96}};
   Shapes outputs_shape = {{32, 64, 96}};
@@ -242,4 +242,4 @@ TEST_F(TestTensorAddInfo, mirror_ops) {
   ASSERT_EQ(arg0_name, "group");
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

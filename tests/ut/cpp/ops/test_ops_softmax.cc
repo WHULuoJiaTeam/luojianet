@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestSoftMax : public UT::Common {
  public:
@@ -121,4 +121,4 @@ TEST_F(TestSoftMax, test_ops_softmax3) {
   EXPECT_EQ(shape_vec[0], 1);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

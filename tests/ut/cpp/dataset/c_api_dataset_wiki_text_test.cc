@@ -17,9 +17,9 @@
 #include "minddata/dataset/core/global_context.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
-using mindspore::dataset::ShuffleMode;
+using luojianet_ms::dataset::ShuffleMode;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -46,7 +46,7 @@ TEST_F(MindDataTestPipeline, TestWikiTextDatasetBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -122,7 +122,7 @@ TEST_F(MindDataTestPipeline, TestWikiTextDatasetBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -176,7 +176,7 @@ TEST_F(MindDataTestPipeline, TestWikiTextIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<int64_t> expect_image = {1};
 
@@ -407,7 +407,7 @@ TEST_F(MindDataTestPipeline, TestWikiTextDatasetShuffleFalse) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -415,12 +415,12 @@ TEST_F(MindDataTestPipeline, TestWikiTextDatasetShuffleFalse) {
     {" no it was black friday "},
     {" go to china "},
     {" I am happy "},
-    {" I lova MindSpore "},
+    {" I lova LuoJiaNET "},
     {" finish math homework "},
     {" black white grapes "},
     {" just ahead of them there was a huge fissure "},
     {" zhejiang, china "},
-    {" MindSpore Ascend "},
+    {" LuoJiaNET Ascend "},
   };
 
   uint64_t i = 0;
@@ -474,20 +474,20 @@ TEST_F(MindDataTestPipeline, TestWikiTextDatasetShuffleFilesA) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::string> expected_result = {
     {" go to china "},
-    {" I lova MindSpore "},
+    {" I lova LuoJiaNET "},
     {" black white grapes "},
     {" no it was black friday "},
     {" I am happy "},
     {" finish math homework "},
     {" just ahead of them there was a huge fissure "},
     {" zhejiang, china "},
-    {" MindSpore Ascend "},
+    {" LuoJiaNET Ascend "},
   };
 
   uint64_t i = 0;
@@ -541,7 +541,7 @@ TEST_F(MindDataTestPipeline, TestWikiTextDatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -550,11 +550,11 @@ TEST_F(MindDataTestPipeline, TestWikiTextDatasetShuffleFilesB) {
     {" go to china "},
     {" just ahead of them there was a huge fissure "},
     {" I am happy "},
-    {" I lova MindSpore "},
+    {" I lova LuoJiaNET "},
     {" zhejiang, china "},
     {" finish math homework "},
     {" black white grapes "},
-    {" MindSpore Ascend "},
+    {" LuoJiaNET Ascend "},
   };
 
   uint64_t i = 0;
@@ -612,19 +612,19 @@ TEST_F(MindDataTestPipeline, TestWikiTextDatasetShuffleGlobal) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::string> expected_result = {
-    {" MindSpore Ascend "},
+    {" LuoJiaNET Ascend "},
     {" go to china "},
     {" I am happy "},
     {" no it was black friday "},
     {" just ahead of them there was a huge fissure "},
     {" zhejiang, china "},
     {" finish math homework "},
-    {" I lova MindSpore "},
+    {" I lova LuoJiaNET "},
     {" black white grapes "},
   };
 

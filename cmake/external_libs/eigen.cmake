@@ -6,7 +6,7 @@ set(REQ_URL "https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.tar.g
 set(MD5 "609286804b0f79be622ccf7f9ff2b660")
 
 
-mindspore_add_pkg(Eigen3
+luojianet_ms_add_pkg(Eigen3
         VER 3.3.9
         URL ${REQ_URL}
         MD5 ${MD5}
@@ -15,4 +15,4 @@ find_package(Eigen3 3.3.9 REQUIRED ${MS_FIND_NO_DEFAULT_PATH})
 include_directories(${Eigen3_INC})
 include_directories(${EIGEN3_INCLUDE_DIR})
 set_property(TARGET Eigen3::Eigen PROPERTY IMPORTED_GLOBAL TRUE)
-add_library(mindspore::eigen ALIAS Eigen3::Eigen)
+add_library(luojianet_ms::eigen ALIAS Eigen3::Eigen)

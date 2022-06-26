@@ -26,7 +26,7 @@
 
 using std::pow;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 std::vector<Shape> combine(const Shape &in, int64_t target) {
   std::vector<Shape> output;
@@ -322,4 +322,4 @@ void ValidLayoutChangeCheck(const DeviceArrangement &in_device_arrangement, cons
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

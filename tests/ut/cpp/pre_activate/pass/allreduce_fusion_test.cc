@@ -29,7 +29,7 @@
 #include "include/common/utils/anfalgo.h"
 #include "utils/ms_context.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWAllReduceFusion : public BackendCommon {
  public:
@@ -220,4 +220,4 @@ TEST_F(TestHWAllReduceFusion, test_fusion_sorted) {
   EXPECT_TRUE(CheckEqualGraph(new_graph, g_after));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,9 +24,9 @@ else
     echo "BUILD_PATH = $BUILD_PATH"
 fi
 
-MINDSPORE_PYTHON=${PROJECT_PATH}/mindspore/python
+LUOJIANET_MS_PYTHON=${PROJECT_PATH}/luojianet_ms/python
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${BUILD_PATH}/third_party/gtest/lib
-export PYTHONPATH=$PYTHONPATH:${MINDSPORE_PYTHON}:${PROJECT_PATH}/tests/ut/cpp/python_input:${PROJECT_PATH}/tests/ut/python
+export PYTHONPATH=$PYTHONPATH:${LUOJIANET_MS_PYTHON}:${PROJECT_PATH}/tests/ut/cpp/python_input:${PROJECT_PATH}/tests/ut/python
 echo "export PYTHONPATH=$PYTHONPATH"
 export GC_COLLECT_IN_CELL=1

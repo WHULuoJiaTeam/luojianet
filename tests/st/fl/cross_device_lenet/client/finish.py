@@ -3,7 +3,7 @@ import subprocess
 
 parser = argparse.ArgumentParser(description="Finish client process")
 # The parameter `--kill_tag` is used to search for the keyword to kill the client process.
-parser.add_argument("--kill_tag", type=str, default="mindspore-lite-java-flclient")
+parser.add_argument("--kill_tag", type=str, default="luojianet_ms-lite-java-flclient")
 
 args, _ = parser.parse_known_args()
 kill_tag = args.kill_tag

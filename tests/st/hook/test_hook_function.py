@@ -14,11 +14,11 @@
 # ============================================================================
 import pytest
 import numpy as np
-import mindspore.nn as nn
-import mindspore.ops.operations as P
-from mindspore.ops import composite as C
-from mindspore import context, Tensor
-from mindspore.common.api import ms_function
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms import context, Tensor
+from luojianet_ms.common.api import ms_function
 
 grad_all = C.GradOperation(get_all=True)
 

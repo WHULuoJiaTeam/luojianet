@@ -17,7 +17,7 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "minddata/dataset/engine/ir/datasetops/source/yahoo_answers_node.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -41,7 +41,7 @@ TEST_F(MindDataTestPipeline, TestYahooAnswersDatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterator the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
 
@@ -86,7 +86,7 @@ TEST_F(MindDataTestPipeline, TestYahooAnswersDatasetUsageAll) {
   EXPECT_NE(iter, nullptr);
 
   // Iterator the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
 
@@ -165,7 +165,7 @@ TEST_F(MindDataTestPipeline, TestYahooAnswersDatasetNumSamples) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -212,7 +212,7 @@ TEST_F(MindDataTestPipeline, TestYahooAnswersDatasetDistribution) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -331,7 +331,7 @@ TEST_F(MindDataTestPipeline, TestYahooAnswersDatasetWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("class"), row.end());
@@ -374,7 +374,7 @@ TEST_F(MindDataTestPipeline, TestYahooAnswersDatasetShuffleFilesA) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -435,7 +435,7 @@ TEST_F(MindDataTestPipeline, TestYahooAnswersDatasetShuffleFilesB) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {
@@ -492,7 +492,7 @@ TEST_F(MindDataTestPipeline, TestYahooAnswersDatasetShuffleGlobal) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   EXPECT_NE(row.find("class"), row.end());
   std::vector<std::vector<std::string>> expected_result = {

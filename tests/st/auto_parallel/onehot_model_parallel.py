@@ -16,12 +16,12 @@
 import os
 import numpy as np
 
-import mindspore as ms
-import mindspore.communication.management as distributedTool
-import mindspore.context as context
-from mindspore.common.tensor import Tensor
-from mindspore.nn import Cell
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+import luojianet_ms.communication.management as distributedTool
+import luojianet_ms.context as context
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import operations as P
 
 device_num = 2
 device_id = int(os.getenv('DEVICE_ID'))
@@ -109,7 +109,7 @@ class OneHotFactory:
         self.axis = axis
         self.strategy = strategy
 
-    def forward_mindspore_single_impl(self):
+    def forward_luojianet_ms_single_impl(self):
         net = Onehot(axis=self.axis,
                      depth=self.depth,
                      on_value=self.on_value,
@@ -117,7 +117,7 @@ class OneHotFactory:
         out = net(self.input_full, self.label_full)
         return out
 
-    def forward_mindspore_parallel_impl(self):
+    def forward_luojianet_ms_parallel_impl(self):
         context.set_auto_parallel_context(parallel_mode="semi_auto_parallel")
         net = Onehot(axis=self.axis,
                      depth=self.depth,
@@ -127,11 +127,11 @@ class OneHotFactory:
         return out
 
     def forward_cmp(self):
-        out_mindspore_single = self.forward_mindspore_single_impl().asnumpy()
+        out_luojianet_ms_single = self.forward_luojianet_ms_single_impl().asnumpy()
         context.reset_auto_parallel_context()
-        out_mindspore_parallel = self.forward_mindspore_parallel_impl().asnumpy()
+        out_luojianet_ms_parallel = self.forward_luojianet_ms_parallel_impl().asnumpy()
         context.reset_auto_parallel_context()
-        assert np.allclose(out_mindspore_single, out_mindspore_parallel, 0.0001, 0.0001)
+        assert np.allclose(out_luojianet_ms_single, out_luojianet_ms_parallel, 0.0001, 0.0001)
 
 
 def test_reid_onehot_forward_int32_128_depth1024_model_parallel():

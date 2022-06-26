@@ -15,13 +15,13 @@
 """FasterRcnn Rcnn network."""
 
 import numpy as np
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-from mindspore.ops import operations as P
-from mindspore.common.tensor import Tensor
-from mindspore.common.initializer import initializer
-from mindspore.common.parameter import Parameter
-from mindspore import context
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms import context
 
 
 class DenseNoTranpose(nn.Cell):

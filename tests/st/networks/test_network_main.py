@@ -22,11 +22,11 @@ import argparse
 
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.optim import Momentum
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.optim import Momentum
 
 from .models.alexnet import AlexNet
 from .models.lenet import LeNet
@@ -68,7 +68,7 @@ def test_alexnet():
     train(net, data, label)
 
 
-parser = argparse.ArgumentParser(description='MindSpore Testing Network')
+parser = argparse.ArgumentParser(description='LuoJiaNET Testing Network')
 parser.add_argument('--net', default='resnet50', type=str, help='net name')
 parser.add_argument('--device', default='Ascend', type=str, help='device target')
 if __name__ == "__main__":

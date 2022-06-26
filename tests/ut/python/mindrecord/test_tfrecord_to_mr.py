@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd.
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +20,9 @@ from string import punctuation
 
 import numpy as np
 import pytest
-from mindspore import log as logger
-from mindspore.mindrecord import FileReader
-from mindspore.mindrecord import TFRecordToMR
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import FileReader
+from luojianet_ms.mindrecord import TFRecordToMR
 
 SupportedTensorFlowVersion = '1.13.0-rc1'
 

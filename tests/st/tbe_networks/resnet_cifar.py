@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,21 +19,21 @@ import argparse
 import numpy as np
 from resnet import resnet50
 
-import mindspore.common.dtype as mstype
-import mindspore.ops.functional as F
-from mindspore.train.callback import ModelCheckpoint, CheckpointConfig, LossMonitor, TimeMonitor
-from mindspore.train.serialization import load_checkpoint, load_param_into_net
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.vision.c_transforms as vision
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.communication.management import init
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.ops import operations as P
-from mindspore.train.model import Model
-from mindspore.context import ParallelMode
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.ops.functional as F
+from luojianet_ms.train.callback import ModelCheckpoint, CheckpointConfig, LossMonitor, TimeMonitor
+from luojianet_ms.train.serialization import load_checkpoint, load_param_into_net
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.vision.c_transforms as vision
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.communication.management import init
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train.model import Model
+from luojianet_ms.context import ParallelMode
 
 random.seed(1)
 np.random.seed(1)

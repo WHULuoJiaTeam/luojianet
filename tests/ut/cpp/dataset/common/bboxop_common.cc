@@ -31,7 +31,7 @@
 #include "minddata/dataset/include/dataset/constants.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 using namespace UT::CVOP::BBOXOP;
 using tinyxml2::XMLDocument;
 using tinyxml2::XMLElement;
@@ -181,7 +181,7 @@ bool BBoxOpCommon::LoadAnnotationFile(const std::string &path, std::shared_ptr<T
     return false;
   }
   XMLDocument doc;
-  XMLError e = doc.LoadFile(mindspore::common::SafeCStr(path));
+  XMLError e = doc.LoadFile(luojianet_ms::common::SafeCStr(path));
   if (e != XMLError::XML_SUCCESS) {
     MS_LOG(ERROR) << "Xml load failed";
     return false;

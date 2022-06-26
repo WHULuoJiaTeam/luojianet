@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,9 +17,9 @@
 import os
 import pytest
 
-from mindspore import context
-from mindspore.train.model import Model
-from mindspore.common import set_seed
+from luojianet_ms import context
+from luojianet_ms.train.model import Model
+from luojianet_ms.common import set_seed
 
 from src.deepfm import ModelBuilder, AUCMetric
 from src.config import DataConfig, ModelConfig, TrainConfig
@@ -39,7 +40,7 @@ def test_deepfm():
     rank_size = None
     rank_id = None
 
-    dataset_path = "/home/workspace/mindspore_dataset/criteo_data/mindrecord/"
+    dataset_path = "/home/workspace/luojianet_ms_dataset/criteo_data/mindrecord/"
     print("dataset_path:", dataset_path)
     ds_train = create_dataset(dataset_path,
                               train_mode=True,

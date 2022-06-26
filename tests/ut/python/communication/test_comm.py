@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,20 +16,20 @@
 """ test Communicate """
 import numpy as np
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.common.api import _cell_graph_executor
-from mindspore.communication._comm_helper import Backend
-from mindspore.communication.management import HCCL_WORLD_COMM_GROUP, NCCL_WORLD_COMM_GROUP, GlobalComm, init
-from mindspore.nn import Dense
-from mindspore.nn import Momentum
-from mindspore.nn import ReLU
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.ops.operations.comm_ops import AllReduce, AllGather, AlltoAll, ReduceOp, ReduceScatter
-from mindspore.ops.operations.comm_ops import Broadcast, _AllSwap
-from mindspore.ops.operations.array_ops import Gather
-import mindspore
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.communication._comm_helper import Backend
+from luojianet_ms.communication.management import HCCL_WORLD_COMM_GROUP, NCCL_WORLD_COMM_GROUP, GlobalComm, init
+from luojianet_ms.nn import Dense
+from luojianet_ms.nn import Momentum
+from luojianet_ms.nn import ReLU
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.ops.operations.comm_ops import AllReduce, AllGather, AlltoAll, ReduceOp, ReduceScatter
+from luojianet_ms.ops.operations.comm_ops import Broadcast, _AllSwap
+from luojianet_ms.ops.operations.array_ops import Gather
+import luojianet_ms
 
 
 # pylint: disable=W0212
@@ -131,10 +132,10 @@ class AllSwapNet(nn.Cell):
         self.allswap = _AllSwap()
         self.relu = ReLU()
         part_slice = batch_size / 2
-        self.send_size = Tensor([0, part_slice*out_channel, part_slice*out_channel], mindspore.int64)
-        self.recv_size = Tensor([part_slice*out_channel, part_slice*out_channel, 0], mindspore.int64)
+        self.send_size = Tensor([0, part_slice*out_channel, part_slice*out_channel], luojianet_ms.int64)
+        self.recv_size = Tensor([part_slice*out_channel, part_slice*out_channel, 0], luojianet_ms.int64)
         self.gatherv2 = Gather()
-        self.input = Tensor(np.ones([1]), mindspore.int32)
+        self.input = Tensor(np.ones([1]), luojianet_ms.int32)
     def construct(self, x):
         x = self.allswap(x, self.send_size, self.recv_size)
         x = self.relu(x)
@@ -183,8 +184,8 @@ def test_allgather():
 def test_allswap():
     """run_allswap"""
     context.set_context(mode=context.GRAPH_MODE)
-    input_tensor = Tensor(np.ones((100, 20)), dtype=mindspore.float32)
-    label_tensor = Tensor(np.ones((1, 20)), dtype=mindspore.float32)
+    input_tensor = Tensor(np.ones((100, 20)), dtype=luojianet_ms.float32)
+    label_tensor = Tensor(np.ones((1, 20)), dtype=luojianet_ms.float32)
     network = AllSwapNet(100, 20, 20)
     loss_fn = nn.SoftmaxCrossEntropyWithLogits()
     optimizer = Momentum(filter(lambda x: x.requires_grad, network.get_parameters()),

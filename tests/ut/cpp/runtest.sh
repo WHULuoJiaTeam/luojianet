@@ -23,25 +23,25 @@ else
     BUILD_PATH=${PROJECT_PATH}/build
     echo "BUILD_PATH = $BUILD_PATH"
 fi
-cd ${BUILD_PATH}/mindspore/tests/ut/cpp
+cd ${BUILD_PATH}/luojianet_ms/tests/ut/cpp
 
 
-export LD_LIBRARY_PATH=${BUILD_PATH}/mindspore/googletest/googlemock/gtest:${PROJECT_PATH}/mindspore/python/mindspore:\
-${PROJECT_PATH}/mindspore/python/mindspore/lib:${PROJECT_PATH}/graphengine/third_party/prebuild/x86_64:\
+export LD_LIBRARY_PATH=${BUILD_PATH}/luojianet_ms/googletest/googlemock/gtest:${PROJECT_PATH}/luojianet_ms/python/luojianet_ms:\
+${PROJECT_PATH}/luojianet_ms/python/luojianet_ms/lib:${PROJECT_PATH}/graphengine/third_party/prebuild/x86_64:\
 ${PROJECT_PATH}/graphengine/third_party/prebuild/aarch64:${LD_LIBRARY_PATH}
-export PYTHONPATH=${PROJECT_PATH}/tests/ut/cpp/python_input:$PYTHONPATH:${PROJECT_PATH}/mindspore/python:\
+export PYTHONPATH=${PROJECT_PATH}/tests/ut/cpp/python_input:$PYTHONPATH:${PROJECT_PATH}/luojianet_ms/python:\
 ${PROJECT_PATH}/tests/ut/python:${PROJECT_PATH}
 export GLOG_v=2
 export GC_COLLECT_IN_CELL=1
 ## set op info config path
-export MINDSPORE_OP_INFO_PATH=${PROJECT_PATH}/config/op_info.config
+export LUOJIANET_MS_OP_INFO_PATH=${PROJECT_PATH}/config/op_info.config
 
 ## prepare data for dataset & mindrecord
-cp -fr $PROJECT_PATH/tests/ut/data ${PROJECT_PATH}/build/mindspore/tests/ut/cpp/
+cp -fr $PROJECT_PATH/tests/ut/data ${PROJECT_PATH}/build/luojianet_ms/tests/ut/cpp/
 ## prepare album dataset, uses absolute path so has to be generated
-python ${PROJECT_PATH}/build/mindspore/tests/ut/cpp/data/dataset/testAlbum/gen_json.py
+python ${PROJECT_PATH}/build/luojianet_ms/tests/ut/cpp/data/dataset/testAlbum/gen_json.py
 
-if [ $# -gt 0 ]; then 
+if [ $# -gt 0 ]; then
   ./ut_tests --gtest_filter=$1
 else
   ./ut_tests

@@ -15,11 +15,11 @@
 """test taylor differentiation in graph mode"""
 import pytest
 import numpy as np
-import mindspore.nn as nn
-import mindspore.context as context
-from mindspore.ops import operations as P
-from mindspore import Tensor
-from mindspore.ops.functional import jet, derivative
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
+from luojianet_ms.ops import operations as P
+from luojianet_ms import Tensor
+from luojianet_ms.ops.functional import jet, derivative
 
 context.set_context(mode=context.GRAPH_MODE)
 

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +14,10 @@
 # limitations under the License.
 # ============================================================================
 """ test_partial """
-import mindspore.ops.composite as C
-import mindspore.ops.functional as F
-from mindspore import context
-from mindspore.common.api import ms_function
+import luojianet_ms.ops.composite as C
+import luojianet_ms.ops.functional as F
+from luojianet_ms import context
+from luojianet_ms.common.api import ms_function
 
 
 def setup_module(module):

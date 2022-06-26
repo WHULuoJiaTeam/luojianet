@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,13 +21,13 @@ import tempfile
 import numpy as np
 import pytest
 
-from mindspore import nn, Tensor, context
-from mindspore.common.initializer import Normal
-from mindspore.nn.metrics import Loss
-from mindspore.nn.optim import Momentum
-from mindspore.ops import operations as P
-from mindspore.train import Model
-from mindspore.train.summary.summary_record import _get_summary_tensor_data
+from luojianet_ms import nn, Tensor, context
+from luojianet_ms.common.initializer import Normal
+from luojianet_ms.nn.metrics import Loss
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train import Model
+from luojianet_ms.train.summary.summary_record import _get_summary_tensor_data
 from tests.st.summary.dataset import create_mnist_dataset
 from tests.security_utils import security_off_wrap
 

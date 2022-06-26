@@ -20,12 +20,12 @@ import filecmp
 import glob
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.engine.iterators as it
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.engine.iterators as it
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import dataset_equal
 
 DATA_DIR = ["../data/dataset/test_tf_file_3_images/train-0000-of-0001.data"]
@@ -292,7 +292,7 @@ def test_deterministic_python_seed():
         py_vision.RandomCrop([512, 512], [200, 200, 200, 200]),
         py_vision.ToTensor(),
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data1 = data1.map(operations=transform, input_columns=["image"])
     data1_output = []
     # config.set_seed() calls random.seed()
@@ -344,7 +344,7 @@ def test_deterministic_python_seed_multi_thread():
         py_vision.RandomCrop([512, 512], [200, 200, 200, 200]),
         py_vision.ToTensor(),
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data1 = data1.map(operations=transform, input_columns=["image"], python_multiprocessing=True)
     data1_output = []
     # config.set_seed() calls random.seed()

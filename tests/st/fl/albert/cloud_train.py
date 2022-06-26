@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +20,9 @@ import sys
 import ast
 from time import time
 import numpy as np
-from mindspore import context, Tensor
-from mindspore.train.serialization import save_checkpoint
-from mindspore.nn import Adam as AdamWeightDecay
+from luojianet_ms import context, Tensor
+from luojianet_ms.train.serialization import save_checkpoint
+from luojianet_ms.nn import Adam as AdamWeightDecay
 from src.config import train_cfg, server_net_cfg
 from src.model import AlbertModelCLS
 from src.cell_wrapper import NetworkWithCLSLoss, NetworkTrainCell
@@ -192,7 +193,7 @@ def server_train(args):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # mindspore context
+    # luojianet_ms context
     context.set_context(mode=context.GRAPH_MODE, device_target=device_target)
     context.set_fl_context(**fl_ctx)
     print('Context setting is done! Time cost: {}'.format(time() - start))

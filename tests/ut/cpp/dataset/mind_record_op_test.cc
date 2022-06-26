@@ -28,12 +28,12 @@
 #include "minddata/mindrecord/include/shard_shuffle.h"
 #include "utils/log_adapter.h"
 
-namespace common = mindspore::common;
+namespace common = luojianet_ms::common;
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
 class MindDataTestMindRecordOp : public UT::DatasetOpTesting {};
 
@@ -86,8 +86,8 @@ TEST_F(MindDataTestMindRecordOp, TestMindRecordShuffle) {
   label_col_name = "label";
   column_list.push_back(label_col_name);
 
-  std::vector<std::shared_ptr<mindspore::mindrecord::ShardOperator>> operators;
-  operators.push_back(std::make_shared<mindspore::mindrecord::ShardShuffle>(1));
+  std::vector<std::shared_ptr<luojianet_ms::mindrecord::ShardOperator>> operators;
+  operators.push_back(std::make_shared<luojianet_ms::mindrecord::ShardShuffle>(1));
 
   std::shared_ptr<MindRecordOp> my_mindrecord_op =
     CreateMindRecord(4, true, {mindrecord_root_path_ + "/testMindDataSet/testImageNetData/imagenet.mindrecord0"},
@@ -151,11 +151,11 @@ TEST_F(MindDataTestMindRecordOp, TestMindRecordCategory) {
   label_col_name = "label";
   column_list.push_back(label_col_name);
 
-  std::vector<std::shared_ptr<mindspore::mindrecord::ShardOperator>> operators;
+  std::vector<std::shared_ptr<luojianet_ms::mindrecord::ShardOperator>> operators;
   std::vector<std::pair<std::string, std::string>> categories;
   categories.push_back(std::make_pair("label", "490"));
   categories.push_back(std::make_pair("label", "171"));
-  operators.push_back(std::make_shared<mindspore::mindrecord::ShardCategory>(categories));
+  operators.push_back(std::make_shared<luojianet_ms::mindrecord::ShardCategory>(categories));
 
   std::shared_ptr<MindRecordOp> my_mindrecord_op =
     CreateMindRecord(4, true, {mindrecord_root_path_ + "/testMindDataSet/testImageNetData/imagenet.mindrecord0"},

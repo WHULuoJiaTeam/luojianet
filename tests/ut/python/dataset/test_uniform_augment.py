@@ -18,11 +18,11 @@ Testing UniformAugment in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as C
-import mindspore.dataset.vision.py_transforms as F
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as C
+import luojianet_ms.dataset.vision.py_transforms as F
+from luojianet_ms import log as logger
 from util import visualize_list, diff_mse
 
 DATA_DIR = "../data/dataset/testImageNetData/train/"
@@ -56,7 +56,7 @@ def test_uniform_augment(plot=False, num_ops=2):
     # Original Images
     data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_original = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_original = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                               F.Resize((224, 224)),
                                                                               F.ToTensor()])
 
@@ -83,7 +83,7 @@ def test_uniform_augment(plot=False, num_ops=2):
                       F.Equalize()]
 
     transforms_ua = \
-        mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+        luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                             F.Resize((224, 224)),
                                                             F.UniformAugment(transforms=transform_list,
                                                                              num_ops=num_ops),

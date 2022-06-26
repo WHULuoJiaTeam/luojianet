@@ -21,7 +21,7 @@
 #include "plugin/device/ascend/kernel/host/host_kernel_metadata.h"
 #include "plugin/device/ascend/kernel/host/host_kernel_build.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace device {
 namespace ascend {
 void HcclDynamicKernel::UpdateArgs() {}
@@ -40,11 +40,11 @@ void AiCoreDynamicKernel::Initialize() {}
 void AiCoreDynamicKernel::PostExecute() {}
 }  // namespace ascend
 }  // namespace device
-}  // namespace mindspore
+}  // namespace luojianet_ms
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 void HostMetadataInfo(const CNodePtr &kernel_node, std::vector<std::shared_ptr<KernelBuildInfo>> *kernel_info_list) {}
 KernelModPtr HostOpBuild(const std::shared_ptr<AnfNode> &anf_node) { return nullptr; }
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

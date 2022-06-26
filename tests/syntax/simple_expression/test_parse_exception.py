@@ -1,11 +1,11 @@
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import context
-from mindspore.common.parameter import Parameter
-from mindspore.common.tensor import Tensor
-import mindspore.ops as ops
-import mindspore
+import luojianet_ms.nn as nn
+from luojianet_ms import context
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.tensor import Tensor
+import luojianet_ms.ops as ops
+import luojianet_ms
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -226,8 +226,8 @@ class TestParameterNameNone(nn.Cell):
     def __init__(self):
         super(TestParameterNameNone, self).__init__()
         self.matmul = ops.MatMul()
-        # self.weight = Parameter(Tensor(np.ones((1, 2)), mindspore.float32), name="w", requires_grad=True)
-        self.weight = Parameter(Tensor(np.ones((1, 2)), mindspore.float32), name=None, requires_grad=True)
+        # self.weight = Parameter(Tensor(np.ones((1, 2)), luojianet_ms.float32), name="w", requires_grad=True)
+        self.weight = Parameter(Tensor(np.ones((1, 2)), luojianet_ms.float32), name=None, requires_grad=True)
 
     def construct(self, x):
         out = self.matmul(self.weight, x)
@@ -236,7 +236,7 @@ class TestParameterNameNone(nn.Cell):
 
 def test_parameter_name_none():
     net = TestParameterNameNone()
-    x = Tensor(np.ones((2, 1)), mindspore.float32)
+    x = Tensor(np.ones((2, 1)), luojianet_ms.float32)
     print(net(x))
 
 
@@ -315,8 +315,8 @@ class TestCellPipelineStage(nn.Cell):
 
 
 def test_cell_pipeline_state():
-    strategy1 = Tensor((4, 1), mindspore.int64)
-    strategy2 = Tensor((2, 1), mindspore.int64)
+    strategy1 = Tensor((4, 1), luojianet_ms.int64)
+    strategy2 = Tensor((2, 1), luojianet_ms.int64)
     net = TestCellPipelineStage(strategy1, strategy2)
     print(net(1))
 

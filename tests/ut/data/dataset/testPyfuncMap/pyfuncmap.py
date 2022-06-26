@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import mindspore.dataset as ds
+import luojianet_ms.dataset as ds
 
 DATA_DIR = ["./data.data"]
 SCHEMA_DIR = "./schema.json"

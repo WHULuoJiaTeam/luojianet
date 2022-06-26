@@ -30,7 +30,7 @@
 #include "utils/log_adapter.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 namespace {
 
@@ -126,7 +126,7 @@ void TestInfer::SetUp() { engine_ = SetupAnalysisEngineStub(); }
 static FuncGraphPtr MakeFuncGraph(PrimitivePtr prim) {
   // build the func_graph manually.
   /* python source code:
-   * @mindspore
+   * @luojianet_ms
    * def f(x, y):
    *     return x + y
    * print64_t(f(1,2))
@@ -500,4 +500,4 @@ TEST_F(TestGraphInfer, test_graph_infer_vararg_kwonlyargs_kwarg_defaults) {
 */
 
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms

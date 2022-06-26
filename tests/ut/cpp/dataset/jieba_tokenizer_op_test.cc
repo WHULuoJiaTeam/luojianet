@@ -22,7 +22,7 @@
 #include "gtest/gtest.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestJiebaTokenizerOp : public UT::DatasetOpTesting {
  public:

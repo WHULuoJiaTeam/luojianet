@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 """ Test Dynamic Learning Rate """
 import pytest
 
-from mindspore.nn import dynamic_lr as dr
+from luojianet_ms.nn import dynamic_lr as dr
 
 milestone = [10, 20, 30]
 learning_rates = [0.1, 0.05, 0.01]

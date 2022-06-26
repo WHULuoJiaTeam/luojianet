@@ -19,7 +19,7 @@
 #include "include/common/debug/anf_ir_dump.h"
 #include "plugin/device/ascend/optimizer/ir_fusion/lamb_update_with_lr_v2.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 
 class TestHWLambUpdateWithLrV2 : public BackendCommon {
@@ -62,4 +62,4 @@ TEST_F(TestHWLambUpdateWithLrV2, test_lamb_update_with_lr_v2) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -13,8 +13,8 @@
 # limitations under the License.
 # ============================================================================
 
-from mindspore.ops import Primitive
-from mindspore.ops import _constants as Constants
+from luojianet_ms.ops import Primitive
+from luojianet_ms.ops import _constants as Constants
 
 make_tuple = Primitive('MakeTuple')
 tuple_getitem = Primitive(Constants.kTupleGetItem)

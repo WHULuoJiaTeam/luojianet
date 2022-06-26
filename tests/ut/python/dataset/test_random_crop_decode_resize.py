@@ -15,9 +15,9 @@
 """
 Testing RandomCropDecodeResize op in DE
 """
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as vision
+from luojianet_ms import log as logger
 from util import diff_mse, visualize_image, save_and_check_md5, \
     config_get_set_seed, config_get_set_num_parallel_workers
 

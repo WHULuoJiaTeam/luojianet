@@ -21,7 +21,7 @@
 #include "abstract/dshape.h"
 #include "utils/log_adapter.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 class TestDShape : public UT::Common {
  public:
@@ -79,4 +79,4 @@ TEST_F(TestDShape, Clone) {
 }
 
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms

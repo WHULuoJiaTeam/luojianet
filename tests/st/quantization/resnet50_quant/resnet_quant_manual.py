@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,12 +15,12 @@
 # ============================================================================
 """ResNet."""
 import numpy as np
-import mindspore.nn as nn
-import mindspore.common.initializer as weight_init
-from mindspore.ops import operations as P
-from mindspore import Tensor
-from mindspore.nn import FakeQuantWithMinMaxObserver, Conv2dBnFoldQuant
-from mindspore.compression.quant import create_quant_config
+import luojianet_ms.nn as nn
+import luojianet_ms.common.initializer as weight_init
+from luojianet_ms.ops import operations as P
+from luojianet_ms import Tensor
+from luojianet_ms.nn import FakeQuantWithMinMaxObserver, Conv2dBnFoldQuant
+from luojianet_ms.compression.quant import create_quant_config
 
 _ema_decay = 0.999
 _symmetric = True

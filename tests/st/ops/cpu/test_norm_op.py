@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.common.api import ms_function
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.common.api import ms_function
 
 context.set_context(mode=context.PYNATIVE_MODE, device_target='CPU')
 
@@ -45,7 +46,7 @@ class NetNorm(nn.Cell):
 @pytest.mark.env_onecard
 def test_norm():
     norm = NetNorm()
-    indices = Tensor(np.array([[4, 4, 9, 1], [2, 1, 3, 6]]), mindspore.float32)
+    indices = Tensor(np.array([[4, 4, 9, 1], [2, 1, 3, 6]]), luojianet_ms.float32)
     output = norm(indices)
     expect_0 = np.array([4.472136, 4.1231055, 9.486833, 6.0827627]).astype(np.float32)
     expect_1 = np.array([10.677078, 7.071068]).astype(np.float32)

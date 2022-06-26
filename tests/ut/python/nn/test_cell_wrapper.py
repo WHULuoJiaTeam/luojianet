@@ -15,13 +15,13 @@
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore.common import dtype as mstype
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import TrainOneStepCell, WithLossCell, ParameterUpdate
-from mindspore.nn.optim import Momentum
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell, ParameterUpdate
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.ops import operations as P
 
 
 class Net(nn.Cell):

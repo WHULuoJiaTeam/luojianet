@@ -22,7 +22,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 class AdamDeltaCpuKernelTest : public UT::Common {
  public:
@@ -90,4 +90,4 @@ TEST_F(AdamDeltaCpuKernelTest, compute_test) {
   }
 }
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

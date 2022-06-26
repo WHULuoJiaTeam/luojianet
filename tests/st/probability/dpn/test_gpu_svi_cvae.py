@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +15,18 @@
 # ============================================================================
 import os
 
-from mindspore import dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as CV
-import mindspore.nn as nn
-from mindspore import context, Tensor
-import mindspore.ops as ops
-from mindspore.nn.probability.dpn import ConditionalVAE
-from mindspore.nn.probability.infer import ELBO, SVI
+from luojianet_ms import dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as CV
+import luojianet_ms.nn as nn
+from luojianet_ms import context, Tensor
+import luojianet_ms.ops as ops
+from luojianet_ms.nn.probability.dpn import ConditionalVAE
+from luojianet_ms.nn.probability.infer import ELBO, SVI
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 IMAGE_SHAPE = (-1, 1, 32, 32)
-image_path = os.path.join('/home/workspace/mindspore_dataset/mnist', "train")
+image_path = os.path.join('/home/workspace/luojianet_ms_dataset/mnist', "train")
 
 
 class Encoder(nn.Cell):

@@ -24,7 +24,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 using ReduceSumInfoPtr = std::shared_ptr<ReduceSumInfo>;
@@ -61,7 +61,7 @@ void TestReduceSumInfo::SetUp() {
   ValuePtr value0;
   std::vector<ValuePtr> val = {value0, value};
   ValuePtr keep_dims = MakeValue(false);
-  mindspore::HashMap<std::string, ValuePtr> attr = {{KEEP_DIMS, keep_dims}};
+  luojianet_ms::HashMap<std::string, ValuePtr> attr = {{KEEP_DIMS, keep_dims}};
 
   reduce_sum = std::make_shared<ReduceSumInfo>("sum_info", inputs_shape, outputs_shape, attr);
   reduce_sum->set_input_value(val);
@@ -218,4 +218,4 @@ TEST_F(TestReduceSumInfo, CheckStrategy4) {
   ASSERT_EQ(ret, SUCCESS);
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

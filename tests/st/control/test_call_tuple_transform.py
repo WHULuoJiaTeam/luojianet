@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-import mindspore as ms
-from mindspore import context
-from mindspore.ops import operations as P
-from mindspore.common.api import ms_function
-from mindspore.common.tensor import Tensor
-import mindspore.nn as nn
+import luojianet_ms as ms
+from luojianet_ms import context
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.common.tensor import Tensor
+import luojianet_ms.nn as nn
 
 import numpy as np
 import pytest

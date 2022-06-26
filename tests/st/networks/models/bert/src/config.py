@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +17,7 @@
 network config setting, will be used in dataset.py, run_pretrain.py
 """
 from easydict import EasyDict as edict
-import mindspore.common.dtype as mstype
+import luojianet_ms.common.dtype as mstype
 from .bert_model import BertConfig
 cfg = edict({
     'bert_network': 'base',

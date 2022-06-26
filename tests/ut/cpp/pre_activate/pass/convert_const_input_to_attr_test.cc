@@ -25,7 +25,7 @@
 #include "include/common/utils/anfalgo.h"
 #include "utils/ms_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWConstInputToAttr : public BackendCommon {
  public:
@@ -111,4 +111,4 @@ TEST_F(TestHWConstInputToAttr, test_onehot) {
   EXPECT_TRUE(CheckEqualGraph(func_graph, g_after));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

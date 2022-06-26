@@ -22,7 +22,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWConcatFission : public BackendCommon {
  public:
@@ -157,4 +157,4 @@ TEST_F(TestHWConcatFission, test_concat_fission_divided_by_9) {
   EXPECT_TRUE(CheckEqualGraph(kg_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

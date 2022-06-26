@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 Testing RandomPerspective op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore.dataset.vision.utils import Inter
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms.dataset.vision.utils import Inter
+from luojianet_ms import log as logger
 from util import visualize_list, save_and_check_md5, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -41,13 +42,13 @@ def test_random_perspective_op(plot=False):
         py_vision.RandomPerspective(),
         py_vision.ToTensor()
     ]
-    transform1 = mindspore.dataset.transforms.py_transforms.Compose(transforms1)
+    transform1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms1)
 
     transforms2 = [
         py_vision.Decode(),
         py_vision.ToTensor()
     ]
-    transform2 = mindspore.dataset.transforms.py_transforms.Compose(transforms2)
+    transform2 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms2)
 
     #  First dataset
     data1 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
@@ -84,7 +85,7 @@ def skip_test_random_perspective_md5():
         py_vision.Resize(1450),  # resize to a smaller size to prevent round-off error
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
 
     #  Generate dataset
     data = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)

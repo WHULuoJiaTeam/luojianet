@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,14 +15,14 @@
 # ============================================================================
 import pytest
 import numpy as np
-import mindspore as ms
-import mindspore.context as context
-from mindspore import Tensor, Parameter
-import mindspore.nn as nn
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import TrainOneStepCell, Momentum
-from mindspore.ops import operations as P
-from mindspore.ops.operations.comm_ops import NeighborExchange
+import luojianet_ms as ms
+import luojianet_ms.context as context
+from luojianet_ms import Tensor, Parameter
+import luojianet_ms.nn as nn
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import TrainOneStepCell, Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations.comm_ops import NeighborExchange
 
 _w1 = Tensor(np.ones([32, 32]), dtype=ms.float32)
 _x1 = Tensor(np.ones([32, 16]), dtype=ms.float32)
@@ -465,7 +466,7 @@ def test_NeighborExchange_attr_check_send_shape_list_failed():
 def test_NeighborExchange_attr_check_recv_type_numpy_failed():
     """
     Feature: NeighborExchange
-    Description: recv_type should be mindspore type, but a numpy type is given
+    Description: recv_type should be luojianet_ms type, but a numpy type is given
     Expectation: throw TypeError
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)

@@ -17,17 +17,17 @@
 
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::DataType;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::TensorShape;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::DataType;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
 };
 
 /// Feature: FakeImageDataset
-/// Description: test FakeImage 
+/// Description: test FakeImage
 /// Expectation: get correct FakeImage dataset
 TEST_F(MindDataTestPipeline, TestFakeImageDataset) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFakeImageDataset.";
@@ -42,7 +42,7 @@ TEST_F(MindDataTestPipeline, TestFakeImageDataset) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("image"), row.end());
@@ -99,7 +99,7 @@ TEST_F(MindDataTestPipeline, TestFakeImageDatasetWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("image"), row.end());
@@ -139,7 +139,7 @@ TEST_F(MindDataTestPipeline, TestFakeImageIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<int64_t> expect_image = {2, 28, 28, 3};
 
@@ -167,7 +167,7 @@ TEST_F(MindDataTestPipeline, TestFakeImageIteratorWrongColumn) {
   // Create a FakeImage Dataset
   std::shared_ptr<Dataset> ds = FakeImage(50, {28, 28, 3}, 3, 0, std::make_shared<RandomSampler>(false, 10));
   EXPECT_NE(ds, nullptr);
-  
+
   // Pass wrong column name
   std::vector<std::string> columns = {"digital"};
   std::shared_ptr<Iterator> iter = ds->CreateIterator(columns);
@@ -175,7 +175,7 @@ TEST_F(MindDataTestPipeline, TestFakeImageIteratorWrongColumn) {
 }
 
 /// Feature: GetFakeImageDatasetSize
-/// Description: test GetDataSize of FakeImage 
+/// Description: test GetDataSize of FakeImage
 /// Expectation: get the correct size of FakeImage
 TEST_F(MindDataTestPipeline, TestGetFakeImageDatasetSize) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestGetFakeImageDatasetSize.";
@@ -188,7 +188,7 @@ TEST_F(MindDataTestPipeline, TestGetFakeImageDatasetSize) {
 }
 
 /// Feature: FakeImageDatasetGetters
-/// Description: test DatasetGetters of FakeImage 
+/// Description: test DatasetGetters of FakeImage
 /// Expectation: getters of FakeImage get the correct value
 TEST_F(MindDataTestPipeline, TestFakeImageDatasetGetters) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFakeImageDatasetGetters.";
@@ -228,7 +228,7 @@ TEST_F(MindDataTestPipeline, TestFakeImageDatasetGetters) {
 }
 
 /// Feature: FakeImageDatasetWithInvalidNumImages
-/// Description: test invalid num_images of FakeImage 
+/// Description: test invalid num_images of FakeImage
 /// Expectation: throw exception correctly
 TEST_F(MindDataTestPipeline, TestFakeImageDatasetWithInvalidNumImages) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFakeImageDatasetWithInvalidNumImages.";
@@ -244,7 +244,7 @@ TEST_F(MindDataTestPipeline, TestFakeImageDatasetWithInvalidNumImages) {
 }
 
 /// Feature: FakeImageDatasetWithInvalidImageSize
-/// Description: test invalid image_size of FakeImage 
+/// Description: test invalid image_size of FakeImage
 /// Expectation: throw exception correctly
 TEST_F(MindDataTestPipeline, TestFakeImageDatasetWithInvalidImageSize) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFakeImageDatasetWithInvalidImageSize.";
@@ -260,7 +260,7 @@ TEST_F(MindDataTestPipeline, TestFakeImageDatasetWithInvalidImageSize) {
 }
 
 /// Feature: FakeImageDatasetWithInvalidNumClasses
-/// Description: test invalid num_classes of FakeImage 
+/// Description: test invalid num_classes of FakeImage
 /// Expectation: throw exception correctly
 TEST_F(MindDataTestPipeline, TestFakeImageDatasetWithInvalidNumClasses) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFakeImageDatasetWithInvalidNumClasses.";

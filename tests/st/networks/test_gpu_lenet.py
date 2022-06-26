@@ -18,22 +18,22 @@ import os
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.vision.c_transforms as CV
-import mindspore.nn as nn
-from mindspore import Tensor, ParameterTuple
-from mindspore.common import dtype as mstype
-from mindspore.dataset.vision import Inter
-from mindspore.nn import Dense, TrainOneStepCell, WithLossCell, ForwardValueAndGrad
-from mindspore.nn.metrics import Accuracy
-from mindspore.nn.optim import Momentum
-from mindspore.ops import operations as P
-from mindspore.ops import functional as F
-from mindspore.train import Model
-from mindspore.train.callback import LossMonitor
-from mindspore.common.initializer import TruncatedNormal
+import luojianet_ms.context as context
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.vision.c_transforms as CV
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, ParameterTuple
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.nn import Dense, TrainOneStepCell, WithLossCell, ForwardValueAndGrad
+from luojianet_ms.nn.metrics import Accuracy
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import functional as F
+from luojianet_ms.train import Model
+from luojianet_ms.train.callback import LossMonitor
+from luojianet_ms.common.initializer import TruncatedNormal
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
@@ -198,11 +198,11 @@ def test_train_and_eval_lenet():
     model = Model(network, net_loss, net_opt, metrics={"Accuracy": Accuracy()})
 
     print("============== Starting Training ==============")
-    ds_train = create_dataset(os.path.join('/home/workspace/mindspore_dataset/mnist', "train"), 32, 1)
+    ds_train = create_dataset(os.path.join('/home/workspace/luojianet_ms_dataset/mnist', "train"), 32, 1)
     model.train(1, ds_train, callbacks=[LossMonitor()], dataset_sink_mode=True)
 
     print("============== Starting Testing ==============")
-    ds_eval = create_dataset(os.path.join('/home/workspace/mindspore_dataset/mnist', "test"), 32, 1)
+    ds_eval = create_dataset(os.path.join('/home/workspace/luojianet_ms_dataset/mnist', "test"), 32, 1)
     acc = model.eval(ds_eval, dataset_sink_mode=True)
     print("============== {} ==============".format(acc))
 

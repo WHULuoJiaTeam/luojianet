@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/batchnormgrad_to_bninfergrad.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptimizeBatchNormGrad2BNInferGrad : public BackendCommon {
  public:
@@ -70,4 +70,4 @@ TEST_F(TestHWOptimizeBatchNormGrad2BNInferGrad, test_no_fusion) {
   EXPECT_TRUE(CheckEqualGraph(origin_graph, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -6,7 +6,7 @@ else()
     set(MD5 "d2391da274653f7643270623e822dff7")
 endif()
 
-mindspore_add_pkg(c-ares
+luojianet_ms_add_pkg(c-ares
         VER 1.15.0
         LIBS cares
         URL ${REQ_URL}
@@ -19,4 +19,4 @@ mindspore_add_pkg(c-ares
         PATCHES ${TOP_DIR}/third_party/patch/c-ares/CVE-2021-3672.patch)
 
 include_directories(${c-ares_INC})
-add_library(mindspore::cares ALIAS c-ares::cares)
+add_library(luojianet_ms::cares ALIAS c-ares::cares)

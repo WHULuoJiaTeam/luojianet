@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,9 +24,9 @@ import pytest
 from PIL import Image
 from scipy.io import loadmat
 
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as c_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+from luojianet_ms import log as logger
 
 DATASET_DIR = "../data/dataset/testCaltech101Data"
 WRONG_DIR = "../data/dataset/notExist"

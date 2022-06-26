@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 import numpy as np
 import pytest
 
-from mindspore import log
-import mindspore.dataset as ds
-import mindspore.dataset.text as text
-import mindspore.dataset.text.transforms as T
+from luojianet_ms import log
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text as text
+import luojianet_ms.dataset.text.transforms as T
 
 DATASET_ROOT_PATH = "../data/dataset/testGloVe/"
 

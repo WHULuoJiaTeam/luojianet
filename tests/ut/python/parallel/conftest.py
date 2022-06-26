@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +14,11 @@
 # limitations under the License.
 import pytest
 
-import mindspore.context as context
-from mindspore.parallel._auto_parallel_context import auto_parallel_context
-from mindspore.parallel._cost_model_context import reset_cost_model_context
-from mindspore.parallel._utils import _reset_op_id
-from mindspore.parallel.algo_parameter_config import reset_algo_parameters
+import luojianet_ms.context as context
+from luojianet_ms.parallel._auto_parallel_context import auto_parallel_context
+from luojianet_ms.parallel._cost_model_context import reset_cost_model_context
+from luojianet_ms.parallel._utils import _reset_op_id
+from luojianet_ms.parallel.algo_parameter_config import reset_algo_parameters
 
 
 @pytest.fixture(scope="function", autouse="True")

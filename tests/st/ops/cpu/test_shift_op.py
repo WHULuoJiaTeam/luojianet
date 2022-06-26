@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,12 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import PrimitiveWithInfer, prim_attr_register
-from mindspore._checkparam import Validator as validator
-from mindspore.common import dtype as mstype
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import PrimitiveWithInfer, prim_attr_register
+from luojianet_ms._checkparam import Validator as validator
+from luojianet_ms.common import dtype as mstype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
@@ -93,13 +94,13 @@ def numpy_shift(array: np.ndarray, periods: int, axis: int, fill_value=np.nan) -
 def compare(arr: np.ndarray, periods: int, axis: int, fill_value=np.nan):
     numpy_result = numpy_shift(arr, periods=periods, axis=axis, fill_value=fill_value)
     shift = ShiftNet(periods=periods, axis=axis)
-    mindspore_result = shift(Tensor(arr), fill_value=fill_value).asnumpy()
+    luojianet_ms_result = shift(Tensor(arr), fill_value=fill_value).asnumpy()
 
     print('numpy:\n')
     print(numpy_result)
-    print('mindspore:\n')
-    print(mindspore_result)
-    assert np.allclose(numpy_result, mindspore_result, equal_nan=True)
+    print('luojianet_ms:\n')
+    print(luojianet_ms_result)
+    assert np.allclose(numpy_result, luojianet_ms_result, equal_nan=True)
 
 
 @pytest.mark.level0

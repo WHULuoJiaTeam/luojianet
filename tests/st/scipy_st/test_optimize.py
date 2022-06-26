@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +20,11 @@ import numpy as onp
 import scipy as osp
 from scipy.optimize.linesearch import line_search_wolfe2 as osp_line_search
 
-import mindspore.numpy as mnp
-import mindspore.scipy as msp
-from mindspore import context
-from mindspore.common import Tensor
-from mindspore.scipy.optimize.line_search import line_search as msp_line_search
+import luojianet_ms.numpy as mnp
+import luojianet_ms.scipy as msp
+from luojianet_ms import context
+from luojianet_ms.common import Tensor
+from luojianet_ms.scipy.optimize.line_search import line_search as msp_line_search
 from tests.st.scipy_st.utils import match_array
 
 

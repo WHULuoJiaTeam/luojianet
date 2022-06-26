@@ -18,12 +18,12 @@
 import pytest
 import numpy as np
 
-from mindspore import context
-from mindspore import Tensor
-from mindspore import nn
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore import export, load
+from luojianet_ms import context
+from luojianet_ms import Tensor
+from luojianet_ms import nn
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms import export, load
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU", save_graphs=True)
 

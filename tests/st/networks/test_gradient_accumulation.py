@@ -2,21 +2,21 @@ import os
 
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as CT
-import mindspore.dataset.vision.c_transforms as CV
-import mindspore.nn as nn
-from mindspore import ParameterTuple
-from mindspore import context
-from mindspore.common import dtype as mstype
-from mindspore.common.initializer import Normal
-from mindspore.dataset.vision import Inter
-from mindspore.nn import Cell
-from mindspore.ops import composite as C
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
-from mindspore.train.dataset_helper import DatasetHelper
-from mindspore.train.serialization import save_checkpoint
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as CT
+import luojianet_ms.dataset.vision.c_transforms as CV
+import luojianet_ms.nn as nn
+from luojianet_ms import ParameterTuple
+from luojianet_ms import context
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common.initializer import Normal
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train.dataset_helper import DatasetHelper
+from luojianet_ms.train.serialization import save_checkpoint
 
 _sum_op = C.MultitypeFuncGraph("grad_sum_op")
 _clear_op = C.MultitypeFuncGraph("clear_op")
@@ -209,7 +209,7 @@ def create_dataset(data_path, batch_size=32, repeat_size=1,
 @pytest.mark.env_onecard
 def test_gradient_accumulation():
     context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
-    ds_train = create_dataset(os.path.join("/home/workspace/mindspore_dataset/mnist", "train"), 32)
+    ds_train = create_dataset(os.path.join("/home/workspace/luojianet_ms_dataset/mnist", "train"), 32)
 
     network = LeNet5(10)
     net_loss = nn.SoftmaxCrossEntropyWithLogits(sparse=True, reduction="mean")

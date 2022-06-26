@@ -27,7 +27,7 @@
 #include "securec.h"
 
 #define  MAX_INT_PRECISION 16777216  // float int precision is 16777216
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 namespace py = pybind11;
 

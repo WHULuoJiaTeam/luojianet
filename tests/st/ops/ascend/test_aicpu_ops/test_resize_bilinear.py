@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +14,12 @@
 # limitations under the License.
 # ============================================================================
 import numpy as np
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
-from mindspore.ops.composite import GradOperation
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.composite import GradOperation
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
@@ -53,7 +54,7 @@ class Grad(nn.Cell):
 
 
 def net_float16():
-    tensor = Tensor([[[[1, 2, 3, 4, 5], [2, 4, 6, 4, 9]]]], mindspore.float16)
+    tensor = Tensor([[[[1, 2, 3, 4, 5], [2, 4, 6, 4, 9]]]], luojianet_ms.float16)
     net = Net()
     output = net(tensor)
     return output
@@ -61,10 +62,10 @@ def net_float16():
 
 def test_net_grad():
     net = Grad(Net())
-    x = Tensor([[[[1, 2, 3, 4, 5], [2, 4, 6, 4, 9]]]], mindspore.float16)
+    x = Tensor([[[[1, 2, 3, 4, 5], [2, 4, 6, 4, 9]]]], luojianet_ms.float16)
     y = net_float16()
-    dy = Tensor([[[[1, 2, 3, 4], [2, 4, 6, 4]]]], mindspore.float16)
-    dy = P.Cast()(dy, mindspore.float32)
+    dy = Tensor([[[[1, 2, 3, 4], [2, 4, 6, 4]]]], luojianet_ms.float16)
+    dy = P.Cast()(dy, luojianet_ms.float32)
     dx = net(x, dy)
     print("forward input: ", x)
     print("forward output: ", y)
@@ -80,7 +81,7 @@ def test_net_grad():
 
 
 def net_center_float16():
-    tensor = Tensor([[[[1, 2, 3, 4, 5], [2, 4, 6, 4, 9]]]], mindspore.float16)
+    tensor = Tensor([[[[1, 2, 3, 4, 5], [2, 4, 6, 4, 9]]]], luojianet_ms.float16)
     net = NetCenter()
     output = net(tensor)
     return output
@@ -93,10 +94,10 @@ def test_net_center_grad():
     Expectation: align_corners and half_pixel_centers are all True.
     """
     net = Grad(NetCenter())
-    x = Tensor([[[[1, 2, 3, 4, 5], [2, 4, 6, 4, 9]]]], mindspore.float16)
+    x = Tensor([[[[1, 2, 3, 4, 5], [2, 4, 6, 4, 9]]]], luojianet_ms.float16)
     y = net_center_float16()
-    grad = Tensor([[[[1, 2, 3, 4], [2, 4, 6, 4]]]], mindspore.float16)
-    grad = P.Cast()(grad, mindspore.float32)
+    grad = Tensor([[[[1, 2, 3, 4], [2, 4, 6, 4]]]], luojianet_ms.float16)
+    grad = P.Cast()(grad, luojianet_ms.float32)
     dx = net(x, grad)
     print("forward input: ", x)
     print("forward output: ", y)

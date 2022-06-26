@@ -17,11 +17,11 @@ Testing Invert op in DE
 """
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as F
-import mindspore.dataset.vision.c_transforms as C
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as F
+import luojianet_ms.dataset.vision.c_transforms as C
+from luojianet_ms import log as logger
 from util import visualize_list, save_and_check_md5, diff_mse
 
 DATA_DIR = "../data/dataset/testImageNetData/train/"
@@ -53,7 +53,7 @@ def test_invert_py(plot=False):
     # Original Images
     data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_original = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_original = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                               F.Resize((224, 224)),
                                                                               F.ToTensor()])
 
@@ -72,7 +72,7 @@ def test_invert_py(plot=False):
     # Color Inverted Images
     data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_invert = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_invert = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                             F.Resize((224, 224)),
                                                                             F.Invert(),
                                                                             F.ToTensor()])
@@ -175,7 +175,7 @@ def test_invert_py_c(plot=False):
     data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
     data_set = data_set.map(operations=[C.Decode(), C.Resize((224, 224))], input_columns=["image"])
 
-    transforms_p_invert = mindspore.dataset.transforms.py_transforms.Compose([lambda img: img.astype(np.uint8),
+    transforms_p_invert = luojianet_ms.dataset.transforms.py_transforms.Compose([lambda img: img.astype(np.uint8),
                                                                               F.ToPIL(),
                                                                               F.Invert(),
                                                                               np.array])
@@ -231,7 +231,7 @@ def test_invert_md5_py():
     # Generate dataset
     data_set = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_invert = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_invert = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                             F.Invert(),
                                                                             F.ToTensor()])
 

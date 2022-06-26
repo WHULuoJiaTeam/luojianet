@@ -16,11 +16,11 @@
 
 import pytest
 import numpy as onp
-import mindspore.numpy as mnp
-import mindspore.ops.functional as F
-from mindspore import context
-from mindspore import set_seed
-from mindspore.common import dtype as mstype
+import luojianet_ms.numpy as mnp
+import luojianet_ms.ops.functional as F
+from luojianet_ms import context
+from luojianet_ms import set_seed
+from luojianet_ms.common import dtype as mstype
 
 from .utils import rand_int, rand_bool, match_array, match_res, match_meta, \
     match_all_arrays, run_multi_test, to_tensor
@@ -125,8 +125,8 @@ def test_asarray():
         # Check for dtype matching
         actual = onp.asarray(array)
         expected = mnp.asarray(array).asnumpy()
-        # Since we set float32/int32 as the default dtype in mindspore, we need
-        # to make a conversion between numpy.asarray and mindspore.numpy.asarray
+        # Since we set float32/int32 as the default dtype in luojianet_ms, we need
+        # to make a conversion between numpy.asarray and luojianet_ms.numpy.asarray
         if actual.dtype is onp.dtype('float64'):
             assert expected.dtype == onp.dtype('float32')
         elif actual.dtype is onp.dtype('int64'):
@@ -190,8 +190,8 @@ def test_asfarray():
         # Check for dtype matching
         actual = onp.asfarray(array)
         expected = mnp.asfarray(array).asnumpy()
-        # Since we set float32/int32 as the default dtype in mindspore, we need
-        # to make a conversion between numpy.asarray and mindspore.numpy.asarray
+        # Since we set float32/int32 as the default dtype in luojianet_ms, we need
+        # to make a conversion between numpy.asarray and luojianet_ms.numpy.asarray
         if actual.dtype is onp.dtype('float64'):
             assert expected.dtype == onp.dtype('float32')
         else:

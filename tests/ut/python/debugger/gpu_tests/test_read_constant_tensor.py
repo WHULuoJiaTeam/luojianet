@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +22,7 @@ import json
 import shutil
 import numpy as np
 
-import mindspore.offline_debug.dbg_services as d
+import luojianet_ms.offline_debug.dbg_services as d
 from dump_test_utils import build_dump_structure_with_constant, write_tensor_to_json
 from tests.security_utils import security_off_wrap
 

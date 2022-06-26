@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-import mindspore as ms
-import mindspore.common.dtype as mstype
-from mindspore.common.tensor import Tensor
-from mindspore.ops import Primitive
-from mindspore.ops import operations as P
-from mindspore.ops.operations import _grad_ops as G
+import luojianet_ms as ms
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops import Primitive
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations import _grad_ops as G
 
 make_tuple = Primitive('MakeTuple')
 reshape = P.Reshape()

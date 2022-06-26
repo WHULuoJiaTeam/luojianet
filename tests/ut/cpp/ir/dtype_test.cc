@@ -21,7 +21,7 @@
 #include "ir/dtype/container.h"
 #include "ir/dtype/empty.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestDType : public UT::Common {
  public:
   TestDType() : b(), i16(16), i32(32), i64(64), i64_2(64), u16(16), u32(32), u64(64), f32(32), f64(64), f64_2(64) {}
@@ -234,6 +234,6 @@ TEST_F(TestDType, TestTypeIdLabel) {
   TEST_DTYPE_LABEL(kNumberTypeFloat64);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms
 
 // test_type_cloner()

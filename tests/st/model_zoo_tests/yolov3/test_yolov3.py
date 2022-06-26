@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,11 +27,11 @@ import os
 import time
 import pytest
 import numpy as np
-import mindspore.nn as nn
-from mindspore import context, Tensor
-from mindspore.train import Model
-from mindspore.common.initializer import initializer
-from mindspore.train.callback import Callback
+import luojianet_ms.nn as nn
+from luojianet_ms import context, Tensor
+from luojianet_ms.train import Model
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.train.callback import Callback
 
 from src.yolov3 import yolov3_resnet18, YoloWithLossCell, TrainingWrapper
 from src.dataset import create_yolo_dataset
@@ -82,7 +83,7 @@ class TimeMonitor(Callback):
         self.epoch_mseconds_list.append(epoch_mseconds)
         self.per_step_mseconds_list.append(epoch_mseconds / self.data_size)
 
-DATA_DIR = "/home/workspace/mindspore_dataset/coco/coco2017/mindrecord_train/yolov3"
+DATA_DIR = "/home/workspace/luojianet_ms_dataset/coco/coco2017/mindrecord_train/yolov3"
 
 @pytest.mark.level1
 @pytest.mark.platform_arm_ascend_training

@@ -23,7 +23,7 @@
 #include "debug/data_dump/dump_json_parser.h"
 #undef private
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestMemoryDumper : public UT::Common {
  public:
   TestMemoryDumper() {}
@@ -109,4 +109,4 @@ TEST_F(TestMemoryDumper, test_DumpToFileNotExistDir) {
 
   ASSERT_EQ(ret, true);
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -20,7 +20,7 @@
 
 #include "runtime/device/kernel_runtime.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestAscendKernelRuntime : public UT::Common {
  public:
   TestAscendKernelRuntime() {}
@@ -28,4 +28,4 @@ class TestAscendKernelRuntime : public UT::Common {
 
 TEST_F(TestAscendKernelRuntime, test_kernel_runtime) { printf("TestAscendKernelRuntime Test\n"); }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

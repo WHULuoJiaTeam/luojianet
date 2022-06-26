@@ -5,7 +5,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows" AND ${CMAKE_VERSION} VERSION_GREATER_EQUA
     set(CMAKE_FIND_LIBRARY_SUFFIXES .dll ${CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
 
-function(mindspore_add_submodule_obj des_submodule_objs sub_dir submodule_name_obj)
+function(luojianet_ms_add_submodule_obj des_submodule_objs sub_dir submodule_name_obj)
 
     add_subdirectory(${sub_dir})
 
@@ -207,7 +207,7 @@ set(MS_FIND_NO_DEFAULT_PATH NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_EN
                             NO_CMAKE_BUILDS_PATH NO_CMAKE_PACKAGE_REGISTRY NO_CMAKE_SYSTEM_PATH
                             NO_CMAKE_SYSTEM_PACKAGE_REGISTRY)
 set(MS_FIND_NO_DEFAULT_PATH ${MS_FIND_NO_DEFAULT_PATH} PARENT_SCOPE)
-function(mindspore_add_pkg pkg_name)
+function(luojianet_ms_add_pkg pkg_name)
 
     set(options)
     set(oneValueArgs URL MD5 GIT_REPOSITORY GIT_TAG VER EXE DIR HEAD_ONLY CMAKE_PATH RELEASE LIB_PATH CUSTOM_CMAKE)

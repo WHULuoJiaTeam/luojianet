@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +16,9 @@
 """Test case."""
 import numpy as np
 
-import mindspore
-import mindspore.nn as nn
-from mindspore import Tensor, context
+import luojianet_ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, context
 
 
 class Net(nn.Cell):
@@ -35,6 +36,6 @@ class Net(nn.Cell):
 def test_case():
     context.set_context(mode=context.GRAPH_MODE)
     net = Net()
-    data = Tensor(np.ones((1, 1, 224, 224)), mindspore.float32)
-    idx = Tensor(1, mindspore.int32)
+    data = Tensor(np.ones((1, 1, 224, 224)), luojianet_ms.float32)
+    idx = Tensor(1, luojianet_ms.int32)
     net(data, idx)

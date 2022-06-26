@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,19 +17,19 @@
 import math
 import re
 import numpy as np
-import mindspore.nn as nn
-import mindspore.common.dtype as mstype
-from mindspore.common.initializer import initializer
-from mindspore import Tensor, Parameter
-from mindspore.ops import operations as P
-from mindspore.ops import functional as F
-from mindspore.nn import Cell
-from mindspore import context
-from mindspore.nn.wrap.cell_wrapper import _VirtualDatasetCell
-from mindspore.parallel import set_algo_parameters
-from mindspore.nn.layer.activation import get_activation
-from mindspore.train.model import Model
-from mindspore.common.api import _cell_graph_executor
+import luojianet_ms.nn as nn
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import functional as F
+from luojianet_ms.nn import Cell
+from luojianet_ms import context
+from luojianet_ms.nn.wrap.cell_wrapper import _VirtualDatasetCell
+from luojianet_ms.parallel import set_algo_parameters
+from luojianet_ms.nn.layer.activation import get_activation
+from luojianet_ms.train.model import Model
+from luojianet_ms.common.api import _cell_graph_executor
 from tests.dataset_mock import MindData
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")

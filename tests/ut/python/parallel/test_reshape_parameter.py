@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,13 +15,13 @@
 
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 

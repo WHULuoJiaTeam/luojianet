@@ -14,9 +14,9 @@
 # ============================================================================
 """ test high order control flow """
 import pytest
-from mindspore.nn import Cell
-from mindspore.common import Tensor, dtype
-import mindspore.ops.functional as F
+from luojianet_ms.nn import Cell
+from luojianet_ms.common import Tensor, dtype
+import luojianet_ms.ops.functional as F
 
 
 @pytest.mark.level0

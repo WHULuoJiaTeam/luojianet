@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 import numpy as np
 import pytest
 
-import mindspore as ms
-from mindspore import context, Tensor, Parameter
-from mindspore.nn import Cell, Momentum
-from mindspore.ops import operations as P
-from mindspore.train import Model
+import luojianet_ms as ms
+from luojianet_ms import context, Tensor, Parameter
+from luojianet_ms.nn import Cell, Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train import Model
 from tests.dataset_mock import MindData
 
 

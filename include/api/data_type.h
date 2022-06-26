@@ -1,5 +1,6 @@
 /**
- * Copyright 2021 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_DATA_TYPE_H_
-#define MINDSPORE_INCLUDE_API_DATA_TYPE_H_
+#ifndef LUOJIANET_MS_INCLUDE_API_DATA_TYPE_H_
+#define LUOJIANET_MS_INCLUDE_API_DATA_TYPE_H_
 
 #include <stdint.h>
 
-namespace mindspore {
+namespace luojianet_ms {
 enum class DataType : int {
   kTypeUnknown = 0,
   kObjectTypeString = 12,
@@ -42,5 +43,5 @@ enum class DataType : int {
   // add new enum here
   kInvalidType = INT32_MAX,
 };
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_DATA_TYPE_H_
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_DATA_TYPE_H_

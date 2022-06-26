@@ -29,8 +29,8 @@ usage()
   echo "    -e Device target, default is ascend310"
   echo "    -d Device ID, default is 0"
   echo "    -n Run single tesecase, default off"
-  echo "    -t Type of MindSpore package to be tested, default is cpp"
-  echo "    -r Path of mindspore package to be tested, default is {PROJECT_PATH}/output"
+  echo "    -t Type of LuoJiaNET package to be tested, default is cpp"
+  echo "    -r Path of luojianet_ms package to be tested, default is {PROJECT_PATH}/output"
   echo "to be continued ..."
 }
 
@@ -86,21 +86,21 @@ cd ${TEST_PATH}
 
 # using installed or compiled whl packages, set env path by pip
 if [[ "${PACKAGE_TYPE}" == "python" ]]; then
-    MINDSPORE_PKG_PATH=`python -m pip show mindspore-ascend | grep Location | awk '{print $2"/mindspore"}' | xargs realpath`
-  if [[ "X${MINDSPORE_PKG_PATH}" == "X" ]]; then
-    MINDSPORE_PKG_PATH=${PROJECT_PATH}/build/package/mindspore:
+    LUOJIANET_MS_PKG_PATH=`python -m pip show luojianet_ms-ascend | grep Location | awk '{print $2"/luojianet_ms"}' | xargs realpath`
+  if [[ "X${LUOJIANET_MS_PKG_PATH}" == "X" ]]; then
+    LUOJIANET_MS_PKG_PATH=${PROJECT_PATH}/build/package/luojianet_ms:
   fi
 elif [[ "${PACKAGE_TYPE}" == "cpp" ]]; then
 # using acl tar package, extract tar package here
-  rm -rf mindspore_ascend*
-  PACKAGE_NAME_FULL=$(find "${PACKAGE_PATH}" -name "mindspore_ascend*.tar.gz")
+  rm -rf luojianet_ms_ascend*
+  PACKAGE_NAME_FULL=$(find "${PACKAGE_PATH}" -name "luojianet_ms_ascend*.tar.gz")
   PACKAGE_NAME=${PACKAGE_NAME_FULL##*/}
 
   tar -xzf ${PACKAGE_PATH}/${PACKAGE_NAME}
-  MINDSPORE_PKG_PATH=$(find "${TEST_PATH}" -maxdepth 1 -name "mindspore_ascend*")
+  LUOJIANET_MS_PKG_PATH=$(find "${TEST_PATH}" -maxdepth 1 -name "luojianet_ms_ascend*")
 fi
 
-export LD_LIBRARY_PATH=${MINDSPORE_PKG_PATH}:${MINDSPORE_PKG_PATH}/lib:${PROJECT_PATH}/tests/st/cpp:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=${LUOJIANET_MS_PKG_PATH}:${LUOJIANET_MS_PKG_PATH}/lib:${PROJECT_PATH}/tests/st/cpp:$LD_LIBRARY_PATH
 export GLOG_v=2
 export GC_COLLECT_IN_CELL=1
 export DEVICE_ID=$DEVICE_ID_OPT

@@ -15,9 +15,9 @@
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.engine.iterators as it
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.engine.iterators as it
+from luojianet_ms import log as logger
 
 DATA_DIR = ["../data/dataset/testPyfuncMap/data.data"]
 SCHEMA_DIR = "../data/dataset/testPyfuncMap/schema.json"
@@ -403,12 +403,12 @@ def test_func_mixed_with_ops():
             yield (np.ones(shape=[2, i]),)
 
     def func(x):
-        import mindspore.ops as ops
-        import mindspore
-        from mindspore import Tensor
+        import luojianet_ms.ops as ops
+        import luojianet_ms
+        from luojianet_ms import Tensor
 
         flatten = ops.Flatten()
-        output = flatten(Tensor(x, dtype=mindspore.float32))
+        output = flatten(Tensor(x, dtype=luojianet_ms.float32))
         return output.asnumpy()
 
     dataset = ds.GeneratorDataset(generator_func, ["data"])

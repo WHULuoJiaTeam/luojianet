@@ -1,5 +1,6 @@
 /**
- * Copyright 2020 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_STATUS_H
-#define MINDSPORE_INCLUDE_API_STATUS_H
+#ifndef LUOJIANET_MS_INCLUDE_API_STATUS_H
+#define LUOJIANET_MS_INCLUDE_API_STATUS_H
 
 #include <memory>
 #include <string>
@@ -24,7 +25,7 @@
 #include "include/api/dual_abi_helper.h"
 #include "include/api/types.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 enum CompCode : uint32_t {
   kCore = 0x00000000u,
   kMD = 0x10000000u,
@@ -162,5 +163,5 @@ std::string Status::SetErrDescription(const std::string &err_description) {
   return CharToString(SetErrDescription(StringToChar(err_description)));
 }
 std::string Status::CodeAsString(enum StatusCode c) { return CharToString(CodeAsCString(c)); }
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_STATUS_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_STATUS_H

@@ -22,7 +22,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace kernel {
 static constexpr size_t kSizeFloat32 = sizeof(float);
 class FusedAdaFactorCpuKernelTest : public UT::Common {
@@ -235,4 +235,4 @@ TEST_F(FusedAdaFactorCpuKernelTest, compute_fp16_no_factor_global_norm) {
   ComputeFp16(true);
 }
 }  // namespace kernel
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -21,7 +21,7 @@
 #include <memory>
 #include "ir/value.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 #define ARRAY_A 3000  // also 'I' :height of the first input tensor
 #define ARRAY_B 1000  // also 'K' :used by both input tensor
@@ -259,4 +259,4 @@ TEST_F(TestPartition, test_ApplyStrToTensor) {
   ASSERT_EQ(w_str, w_node);
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

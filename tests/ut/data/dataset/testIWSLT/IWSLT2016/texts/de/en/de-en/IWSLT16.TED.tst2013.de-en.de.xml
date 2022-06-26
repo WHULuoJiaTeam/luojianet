@@ -2,7 +2,7 @@
 <mteval>
 <srcset setid="iwslt2016-tst2013" srclang="german">
 <doc docid="test" genre="test">
-<url>https://gitee.com/mindspore/mindspore</url>
+<url>https://gitee.com/luojianet_ms/luojianet_ms</url>
 <description>test description.</description>
 <keywords>test keywords</keywords>
 <talkid>test talkid</talkid>

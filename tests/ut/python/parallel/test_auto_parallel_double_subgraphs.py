@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,17 +16,17 @@
 import re
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter, ParameterTuple
-from mindspore import context, Model
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn.optim import Adam, FTRL
-from mindspore.ops import composite as C
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
-from mindspore.parallel._cost_model_context import _set_multi_subgraphs
-from mindspore.parallel._utils import _reset_op_id as reset_op_id
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter, ParameterTuple
+from luojianet_ms import context, Model
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn.optim import Adam, FTRL
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
+from luojianet_ms.parallel._cost_model_context import _set_multi_subgraphs
+from luojianet_ms.parallel._utils import _reset_op_id as reset_op_id
 
 
 class Net(nn.Cell):

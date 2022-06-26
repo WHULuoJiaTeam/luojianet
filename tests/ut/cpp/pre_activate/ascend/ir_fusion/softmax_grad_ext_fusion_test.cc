@@ -19,7 +19,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/softmax_grad_ext_fusion.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWOptSoftmaxGradExtFusion : public BackendCommon {
  public:
@@ -92,4 +92,4 @@ TEST_F(TestHWOptSoftmaxGradExtFusion, test_fusion_v3) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

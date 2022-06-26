@@ -68,8 +68,8 @@ diff -Npur grpc/CMakeLists.txt grpc-patch/CMakeLists.txt
 @@ -936,6 +936,8 @@ set_target_properties(address_sorting PR
    SOVERSION ${gRPC_CORE_SOVERSION}
  )
- 
-+set_target_properties(address_sorting PROPERTIES OUTPUT_NAME mindspore_address_sorting)
+
++set_target_properties(address_sorting PROPERTIES OUTPUT_NAME luojianet_ms_address_sorting)
 +
  if(WIN32 AND MSVC)
    set_target_properties(address_sorting PROPERTIES COMPILE_PDB_NAME "address_sorting"
@@ -77,8 +77,8 @@ diff -Npur grpc/CMakeLists.txt grpc-patch/CMakeLists.txt
 @@ -1404,6 +1406,8 @@ set_target_properties(gpr PROPERTIES
    SOVERSION ${gRPC_CORE_SOVERSION}
  )
- 
-+set_target_properties(gpr PROPERTIES OUTPUT_NAME mindspore_gpr)
+
++set_target_properties(gpr PROPERTIES OUTPUT_NAME luojianet_ms_gpr)
 +
  if(WIN32 AND MSVC)
    set_target_properties(gpr PROPERTIES COMPILE_PDB_NAME "gpr"
@@ -86,8 +86,8 @@ diff -Npur grpc/CMakeLists.txt grpc-patch/CMakeLists.txt
 @@ -1869,6 +1873,8 @@ set_target_properties(grpc PROPERTIES
    SOVERSION ${gRPC_CORE_SOVERSION}
  )
- 
-+set_target_properties(grpc PROPERTIES OUTPUT_NAME mindspore_grpc)
+
++set_target_properties(grpc PROPERTIES OUTPUT_NAME luojianet_ms_grpc)
 +
  if(WIN32 AND MSVC)
    set_target_properties(grpc PROPERTIES COMPILE_PDB_NAME "grpc"
@@ -95,8 +95,8 @@ diff -Npur grpc/CMakeLists.txt grpc-patch/CMakeLists.txt
 @@ -3696,6 +3702,8 @@ set_target_properties(grpc++ PROPERTIES
    SOVERSION ${gRPC_CPP_SOVERSION}
  )
- 
-+set_target_properties(grpc++ PROPERTIES OUTPUT_NAME mindspore_grpc++)
+
++set_target_properties(grpc++ PROPERTIES OUTPUT_NAME luojianet_ms_grpc++)
 +
  if(WIN32 AND MSVC)
    set_target_properties(grpc++ PROPERTIES COMPILE_PDB_NAME "grpc++"
@@ -104,8 +104,8 @@ diff -Npur grpc/CMakeLists.txt grpc-patch/CMakeLists.txt
 @@ -4279,6 +4287,8 @@ set_target_properties(grpc++_reflection
    SOVERSION ${gRPC_CPP_SOVERSION}
  )
- 
-+set_target_properties(grpc++_reflection PROPERTIES OUTPUT_NAME mindspore_grpc++_reflection)
+
++set_target_properties(grpc++_reflection PROPERTIES OUTPUT_NAME luojianet_ms_grpc++_reflection)
 +
  if(WIN32 AND MSVC)
    set_target_properties(grpc++_reflection PROPERTIES COMPILE_PDB_NAME "grpc++_reflection"
@@ -113,8 +113,8 @@ diff -Npur grpc/CMakeLists.txt grpc-patch/CMakeLists.txt
 @@ -5896,6 +5906,8 @@ set_target_properties(upb PROPERTIES
    SOVERSION ${gRPC_CORE_SOVERSION}
  )
- 
-+set_target_properties(upb PROPERTIES OUTPUT_NAME mindspore_upb)
+
++set_target_properties(upb PROPERTIES OUTPUT_NAME luojianet_ms_upb)
 +
  if(WIN32 AND MSVC)
    set_target_properties(upb PROPERTIES COMPILE_PDB_NAME "upb"

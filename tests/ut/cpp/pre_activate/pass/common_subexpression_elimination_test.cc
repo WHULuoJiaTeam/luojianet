@@ -28,7 +28,7 @@
 #include "include/common/utils/utils.h"
 #include "utils/ms_context.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWCSE : public BackendCommon {
  public:
@@ -195,4 +195,4 @@ TEST_F(TestHWCSE, test_func_graph_cse_with_diff_kernel_info) {
   ASSERT_EQ(manager->all_nodes().size(), 8);
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

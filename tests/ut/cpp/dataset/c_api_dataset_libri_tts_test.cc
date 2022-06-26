@@ -17,8 +17,8 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "include/dataset/transforms.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -40,7 +40,7 @@ TEST_F(MindDataTestPipeline, TestLibriTTSBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   uint64_t i = 0;
 
@@ -85,7 +85,7 @@ TEST_F(MindDataTestPipeline, TestLibriTTSBasicWithPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   iter->GetNextRow(&row);
   std::vector<std::string> expected_original_text = {"good morning", "good afternoon"};
   std::vector<std::string> expected_normalized_text = {"Good morning", "Good afternoon"};
@@ -105,32 +105,32 @@ TEST_F(MindDataTestPipeline, TestLibriTTSBasicWithPipeline) {
 
     std::shared_ptr<Tensor> de_original_text;
     ASSERT_OK(Tensor::CreateFromVector(expected_original_text, &de_original_text));
-    mindspore::MSTensor fix_original_text =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_original_text));
+    luojianet_ms::MSTensor fix_original_text =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_original_text));
     EXPECT_MSTENSOR_EQ(original_text, fix_original_text);
 
     std::shared_ptr<Tensor> de_normalized_text;
     ASSERT_OK(Tensor::CreateFromVector(expected_normalized_text, &de_normalized_text));
-    mindspore::MSTensor fix_normalized_text =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_normalized_text));
+    luojianet_ms::MSTensor fix_normalized_text =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_normalized_text));
     EXPECT_MSTENSOR_EQ(normalized_text, fix_normalized_text);
 
     std::shared_ptr<Tensor> de_expected_speaker_id;
     ASSERT_OK(Tensor::CreateFromVector(expected_speaker_id, &de_expected_speaker_id));
-    mindspore::MSTensor fix_expected_speaker_id =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_speaker_id));
+    luojianet_ms::MSTensor fix_expected_speaker_id =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_speaker_id));
     EXPECT_MSTENSOR_EQ(speaker_id, fix_expected_speaker_id);
 
     std::shared_ptr<Tensor> de_expected_chapter_id;
     ASSERT_OK(Tensor::CreateFromVector(expected_chapter_id, &de_expected_chapter_id));
-    mindspore::MSTensor fix_expected_chapter_id =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_chapter_id));
+    luojianet_ms::MSTensor fix_expected_chapter_id =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_chapter_id));
     EXPECT_MSTENSOR_EQ(chapter_id, fix_expected_chapter_id);
 
     std::shared_ptr<Tensor> de_expected_utterance_id;
     ASSERT_OK(Tensor::CreateFromVector(expected_utterance_id, &de_expected_utterance_id));
-    mindspore::MSTensor fix_expected_utterance_id =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_utterance_id));
+    luojianet_ms::MSTensor fix_expected_utterance_id =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_utterance_id));
     EXPECT_MSTENSOR_EQ(utterance_id, fix_expected_utterance_id);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -246,7 +246,7 @@ TEST_F(MindDataTestPipeline, TestLibriTTSSequentialSamplers) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::string_view original_text_idx, normalized_text_idx, utterance_id_idx;
   uint32_t speaker_idx_id = 0, chapter_idx_id = 0;

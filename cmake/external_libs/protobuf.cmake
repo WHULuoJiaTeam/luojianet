@@ -50,7 +50,7 @@ else()
   set(PROTOBUF_PATCH_ROOT ${CMAKE_SOURCE_DIR}/third_party/patch/protobuf)
 endif()
 
-mindspore_add_pkg(protobuf
+luojianet_ms_add_pkg(protobuf
         VER 3.13.0
         LIBS protobuf
         EXE protoc
@@ -61,7 +61,7 @@ mindspore_add_pkg(protobuf
         PATCHES ${PROTOBUF_PATCH_ROOT}/CVE-2021-22570.patch)
 
 include_directories(${protobuf_INC})
-add_library(mindspore::protobuf ALIAS protobuf::protobuf)
+add_library(luojianet_ms::protobuf ALIAS protobuf::protobuf)
 set(CMAKE_CXX_FLAGS  ${_ms_tmp_CMAKE_CXX_FLAGS})
 if(MSVC)
     set(CMAKE_STATIC_LIBRARY_PREFIX, ${_ms_tmp_CMAKE_STATIC_LIBRARY_PREFIX})
@@ -135,7 +135,7 @@ function(ms_protobuf_generate_py c_var h_var py_var)
                     COMMAND perl -pi.bak -e "s/import (.+_pb2.*)/from . import \\1/"
                             "${CMAKE_BINARY_DIR}/proto/${file_name}_pb2.py"
                     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/proto/${file_name}_pb2.py"
-                            "${PROJECT_SOURCE_DIR}/mindspore/python/mindspore/train/"
+                            "${PROJECT_SOURCE_DIR}/luojianet_ms/python/luojianet_ms/train/"
                     DEPENDS protobuf::protoc ${abs_file}
                     COMMENT "Running C++ protocol buffer compiler on ${file}" VERBATIM)
         else()
@@ -151,7 +151,7 @@ function(ms_protobuf_generate_py c_var h_var py_var)
                     COMMAND perl -pi -e "s/import (.+_pb2.*)/from . import \\1/"
                             "${CMAKE_BINARY_DIR}/proto/${file_name}_pb2.py"
                     COMMAND cp "${CMAKE_BINARY_DIR}/proto/${file_name}_pb2.py"
-                            "${PROJECT_SOURCE_DIR}/mindspore/python/mindspore/train/"
+                            "${PROJECT_SOURCE_DIR}/luojianet_ms/python/luojianet_ms/train/"
                     DEPENDS protobuf::protoc ${abs_file}
                     COMMENT "Running C++ protocol buffer compiler on ${file}" VERBATIM)
         endif()

@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestEqual : public UT::Common {
  public:
@@ -61,4 +61,4 @@ TEST_F(TestEqual, test_ops_equal1) {
   EXPECT_EQ(shape_vec[3], 7);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

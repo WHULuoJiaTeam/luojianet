@@ -29,33 +29,33 @@
 #include "include/api/serialization.h"
 #include "include/api/context.h"
 
-using namespace mindspore;
-using namespace mindspore::dataset;
-using namespace mindspore::dataset::vision;
+using namespace luojianet_ms;
+using namespace luojianet_ms::dataset;
+using namespace luojianet_ms::dataset::vision;
 
 class TestDE : public ST::Common {
  public:
   TestDE() {}
 };
 
-mindspore::MSTensor ReadFileToTensor(const std::string &file) {
+luojianet_ms::MSTensor ReadFileToTensor(const std::string &file) {
   if (file.empty()) {
     std::cout << "[ERROR]Pointer file is nullptr, return an empty Tensor." << std::endl;
-    return mindspore::MSTensor();
+    return luojianet_ms::MSTensor();
   }
   std::ifstream ifs(file);
   if (!ifs.good()) {
     std::cout << "[ERROR]File: " << file << " does not exist, return an empty Tensor." << std::endl;
-    return mindspore::MSTensor();
+    return luojianet_ms::MSTensor();
   }
   if (!ifs.is_open()) {
     std::cout << "[ERROR]File: " << file << "open failed, return an empty Tensor." << std::endl;
-    return mindspore::MSTensor();
+    return luojianet_ms::MSTensor();
   }
 
   ifs.seekg(0, std::ios::end);
   size_t size = ifs.tellg();
-  mindspore::MSTensor buf("file", mindspore::DataType::kNumberTypeUInt8, {static_cast<int64_t>(size)}, nullptr, size);
+  luojianet_ms::MSTensor buf("file", luojianet_ms::DataType::kNumberTypeUInt8, {static_cast<int64_t>(size)}, nullptr, size);
 
   ifs.seekg(0, std::ios::beg);
   ifs.read(reinterpret_cast<char *>(buf.MutableData()), size);
@@ -75,7 +75,7 @@ TEST_F(TestDE, TestResNetPreprocess) {
     new vision::Normalize({0.485 * 255, 0.456 * 255, 0.406 * 255}, {0.229 * 255, 0.224 * 255, 0.225 * 255}));
   std::shared_ptr<TensorTransform> hwc2chw(new vision::HWC2CHW());
 
-  mindspore::dataset::Execute Transform({decode, resize, normalize, hwc2chw});
+  luojianet_ms::dataset::Execute Transform({decode, resize, normalize, hwc2chw});
 
   // Apply transform on images
   Status rc = Transform(image, &image);
@@ -93,10 +93,10 @@ TEST_F(TestDE, TestDvpp) {
   // Read images from target directory
 
   /* Old internal method, we deprecate it
-  std::shared_ptr<mindspore::dataset::Tensor> de_tensor;
-  Status rc = mindspore::dataset::Tensor::CreateFromFile("./data/dataset/apple.jpg", &de_tensor);
+  std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
+  Status rc = luojianet_ms::dataset::Tensor::CreateFromFile("./data/dataset/apple.jpg", &de_tensor);
   ASSERT_TRUE(rc.IsOk());
-  auto image = MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_tensor));
+  auto image = MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
   */
   auto context = ContextAutoSet();
   ASSERT_TRUE(context != nullptr);
@@ -111,7 +111,7 @@ TEST_F(TestDE, TestDvpp) {
   std::vector<uint32_t> crop_paras = {224, 224};
   std::vector<uint32_t> resize_paras = {256, 256};
   std::shared_ptr<TensorTransform> decode_resize_crop(new vision::DvppDecodeResizeCropJpeg(crop_paras, resize_paras));
-  mindspore::dataset::Execute Transform(decode_resize_crop, MapTargetDevice::kAscend310, device_id);
+  luojianet_ms::dataset::Execute Transform(decode_resize_crop, MapTargetDevice::kAscend310, device_id);
 
   // Apply transform on images
   Status rc = Transform(image, &image);
@@ -137,7 +137,7 @@ TEST_F(TestDE, TestDvpp) {
   ASSERT_EQ(image.DataSize(), real_h * real_w * 1.5);
 
   ASSERT_TRUE(image.Data().get() != nullptr);
-  ASSERT_EQ(image.DataType(), mindspore::DataType::kNumberTypeUInt8);
+  ASSERT_EQ(image.DataType(), luojianet_ms::DataType::kNumberTypeUInt8);
   ASSERT_EQ(image.IsDevice(), true);
 
   /* This is the criterion for previous method(Without pop)
@@ -168,7 +168,7 @@ TEST_F(TestDE, TestDvppSinkMode) {
   std::shared_ptr<TensorTransform> resize(new vision::Resize(resize_paras));
   std::shared_ptr<TensorTransform> centercrop(new vision::CenterCrop(crop_paras));
   std::vector<std::shared_ptr<TensorTransform>> trans_list = {decode, resize, centercrop};
-  mindspore::dataset::Execute Transform(trans_list, MapTargetDevice::kAscend310, device_id);
+  luojianet_ms::dataset::Execute Transform(trans_list, MapTargetDevice::kAscend310, device_id);
 
   // Apply transform on images
   Status rc = Transform(image, &image);
@@ -191,7 +191,7 @@ TEST_F(TestDE, TestDvppSinkMode) {
   ASSERT_EQ(image.DataSize(), real_h * real_w * 1.5);
 
   ASSERT_TRUE(image.Data().get() != nullptr);
-  ASSERT_EQ(image.DataType(), mindspore::DataType::kNumberTypeUInt8);
+  ASSERT_EQ(image.DataType(), luojianet_ms::DataType::kNumberTypeUInt8);
   ASSERT_EQ(image.IsDevice(), true);
   Transform.DeviceMemoryRelease();
 #endif
@@ -220,7 +220,7 @@ TEST_F(TestDE, TestDvppDecodeResizeCropNormalize) {
   std::shared_ptr<TensorTransform> normalize(new vision::Normalize(mean, std));
 
   std::vector<std::shared_ptr<TensorTransform>> trans_list = {decode, resize, centercrop, normalize};
-  mindspore::dataset::Execute Transform(trans_list, MapTargetDevice::kAscend310, device_id);
+  luojianet_ms::dataset::Execute Transform(trans_list, MapTargetDevice::kAscend310, device_id);
 
   std::string aipp_cfg = Transform.AippCfgGenerator();
   ASSERT_EQ(aipp_cfg, "./aipp.cfg");
@@ -247,7 +247,7 @@ TEST_F(TestDE, TestDvppDecodeResizeCropNormalize) {
   ASSERT_EQ(image.DataSize(), real_h * real_w * 1.5);
 
   ASSERT_TRUE(image.Data().get() != nullptr);
-  ASSERT_EQ(image.DataType(), mindspore::DataType::kNumberTypeUInt8);
+  ASSERT_EQ(image.DataType(), luojianet_ms::DataType::kNumberTypeUInt8);
   ASSERT_EQ(image.IsDevice(), true);
   Transform.DeviceMemoryRelease();
 #endif

@@ -16,11 +16,11 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops.operations import _grad_ops as G
-from mindspore.ops.composite import GradOperation
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops.operations import _grad_ops as G
+from luojianet_ms.ops.composite import GradOperation
 
 
 class Net_Pool_Grad(nn.Cell):

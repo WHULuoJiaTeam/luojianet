@@ -17,10 +17,10 @@
 #include "minddata/dataset/kernels/data/fill_op.h"
 #include "utils/log_adapter.h"
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
 class MindDataTestFillOp : public UT::Common {
  protected:

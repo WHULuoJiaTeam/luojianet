@@ -20,7 +20,7 @@
 #include "frontend/parallel/auto_parallel/operator_costmodel.h"
 #include "frontend/parallel/device_manager.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestMatMulCost : public UT::Common {
@@ -191,4 +191,4 @@ TEST_F(TestPReLUCost, test_CostGeneration) {
   ASSERT_EQ(GMC, 128);
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

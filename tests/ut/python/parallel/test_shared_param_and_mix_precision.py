@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,15 +15,15 @@
 # ============================================================================
 """ test_shared_param_and_mix_precision  """
 import numpy as np
-import mindspore.nn as nn
-import mindspore.common.dtype as mstype
-from mindspore import Tensor, Parameter
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import TrainOneStepCell
-from mindspore.nn.wrap.cell_wrapper import _VirtualDatasetCell
-from mindspore.nn.optim import Momentum
-from mindspore.ops import operations as P, functional as F
-from mindspore import context
+import luojianet_ms.nn as nn
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import TrainOneStepCell
+from luojianet_ms.nn.wrap.cell_wrapper import _VirtualDatasetCell
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.ops import operations as P, functional as F
+from luojianet_ms import context
 
 
 class Net1(nn.Cell):

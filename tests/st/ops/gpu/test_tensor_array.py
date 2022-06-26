@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,10 +16,10 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
 
 class TensorArrayNet(nn.Cell):
     def __init__(self, dtype, element_shape, is_dynamic_shape=True, size=0):
@@ -49,9 +50,9 @@ def test_tensorarray():
     Expectation: success.
     """
     context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
-    index = Tensor(0, mindspore.int64)
-    value = Tensor(5, mindspore.int64)
-    ta = TensorArrayNet(dtype=mindspore.int64, element_shape=())
+    index = Tensor(0, luojianet_ms.int64)
+    value = Tensor(5, luojianet_ms.int64)
+    ta = TensorArrayNet(dtype=luojianet_ms.int64, element_shape=())
     v, s = ta(index, value)
     expect_v = 24
     expect_s = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
@@ -59,7 +60,7 @@ def test_tensorarray():
     assert np.allclose(v.asnumpy(), expect_v)
 
     context.set_context(mode=context.PYNATIVE_MODE, device_target="GPU")
-    tb = nn.TensorArray(mindspore.int64, ())
+    tb = nn.TensorArray(luojianet_ms.int64, ())
     for i in range(5):
         tb.write(i, 99)
     v = tb.read(0)
@@ -81,7 +82,7 @@ def test_tensorarray():
     expect_s = [88]
     assert np.allclose(s.asnumpy(), expect_s)
     assert np.allclose(v.asnumpy(), expect_v)
-    tc = nn.TensorArray(mindspore.float32, ())
+    tc = nn.TensorArray(luojianet_ms.float32, ())
     tc.write(5, 1.)
     s = tc.stack()
     expect_s = [0., 0., 0., 0., 0., 1.]
@@ -91,8 +92,8 @@ def test_tensorarray():
     expect_s = [0., 0., 1., 0., 0., 1.]
     assert np.allclose(s.asnumpy(), expect_s)
     tc.close()
-    td = nn.TensorArray(mindspore.bool_, ())
-    td.write(1, Tensor(True, mindspore.bool_))
+    td = nn.TensorArray(luojianet_ms.bool_, ())
+    td.write(1, Tensor(True, luojianet_ms.bool_))
     s = td.stack()
     v = td.read(1)
     expect_s = [False, True]
@@ -110,9 +111,9 @@ def test_static_tensorarray():
     Expectation: success.
     """
     context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
-    index = Tensor(0, mindspore.int64)
-    value = Tensor(5, mindspore.int64)
-    ta = TensorArrayNet(dtype=mindspore.int64, element_shape=(), is_dynamic_shape=False, size=12)
+    index = Tensor(0, luojianet_ms.int64)
+    value = Tensor(5, luojianet_ms.int64)
+    ta = TensorArrayNet(dtype=luojianet_ms.int64, element_shape=(), is_dynamic_shape=False, size=12)
     v, s = ta(index, value)
     expect_v = 24
     expect_s = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 0, 0]

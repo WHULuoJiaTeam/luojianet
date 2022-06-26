@@ -15,10 +15,10 @@
 """ test graph fallback """
 import pytest
 import numpy as np
-from mindspore import Tensor, ms_function, context
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-from mindspore.common.initializer import One
+from luojianet_ms import Tensor, ms_function, context
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+from luojianet_ms.common.initializer import One
 
 
 context.set_context(mode=context.GRAPH_MODE)

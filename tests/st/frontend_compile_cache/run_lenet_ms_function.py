@@ -1,9 +1,9 @@
 import sys
 import numpy as np
 
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore import ms_function
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms import ms_function
 
 
 @ms_function

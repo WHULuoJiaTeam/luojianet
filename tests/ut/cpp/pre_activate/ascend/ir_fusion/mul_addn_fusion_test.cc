@@ -18,7 +18,7 @@
 #include "plugin/device/ascend/optimizer/ir_fusion/mul_addn_fusion.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWMulAddNFusion : public BackendCommon {
  public:
@@ -62,4 +62,4 @@ TEST_F(TestHWMulAddNFusion, test_unmatch) {
   EXPECT_TRUE(CheckEqualGraph(origin_fg, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

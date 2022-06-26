@@ -22,7 +22,7 @@
 #include "lite_cv/image_process.h"
 #include "minddata/dataset/kernels/image/resize_cubic_op.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 class MindDataImageProcess : public UT::Common {
  public:
   MindDataImageProcess() {}
@@ -1834,7 +1834,7 @@ TEST_F(MindDataImageProcess, testConvertRgbToBgr) {
   ASSERT_TRUE(ret == true);
 
   cv::Mat dst_image(lite_mat_bgr.height_, lite_mat_bgr.width_, CV_8UC1, lite_mat_bgr.data_ptr_);
-  cv::imwrite("./mindspore_image.jpg", dst_image);
+  cv::imwrite("./luojianet_ms_image.jpg", dst_image);
   CompareMat(image, lite_mat_bgr);
 }
 
@@ -1877,7 +1877,7 @@ TEST_F(MindDataImageProcess, testConvertRgbToGray) {
   ASSERT_TRUE(ret == true);
 
   cv::Mat dst_image(lite_mat_gray.height_, lite_mat_gray.width_, CV_8UC1, lite_mat_gray.data_ptr_);
-  cv::imwrite("./mindspore_image.jpg", dst_image);
+  cv::imwrite("./luojianet_ms_image.jpg", dst_image);
   CompareMat(rgb_mat, lite_mat_gray);
 }
 
@@ -1928,7 +1928,7 @@ TEST_F(MindDataImageProcess, testResizePreserveARWithFillerv) {
   bool ret = ResizePreserveARWithFiller(lite_mat_rgb, lite_mat_resize, h, w, &ratioShiftWShiftH, &invM, 0);
   ASSERT_TRUE(ret == true);
   cv::Mat dst_image(lite_mat_resize.height_, lite_mat_resize.width_, CV_32FC3, lite_mat_resize.data_ptr_);
-  cv::imwrite("./mindspore_image.jpg", dst_image);
+  cv::imwrite("./luojianet_ms_image.jpg", dst_image);
 }
 
 TEST_F(MindDataImageProcess, testResizePreserveARWithFillervFail) {

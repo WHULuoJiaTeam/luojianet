@@ -1,5 +1,6 @@
 /**
- * Copyright 2021 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MINDSPORE_INCLUDE_API_CALLBACK_CKPT_SAVER_H
-#define MINDSPORE_INCLUDE_API_CALLBACK_CKPT_SAVER_H
+#ifndef LUOJIANET_MS_INCLUDE_API_CALLBACK_CKPT_SAVER_H
+#define LUOJIANET_MS_INCLUDE_API_CALLBACK_CKPT_SAVER_H
 
 #include <cstddef>
 #include <string>
@@ -23,7 +24,7 @@
 #include "include/api/callback/callback.h"
 #include "include/api/dual_abi_helper.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 
 class CkptSaver: public TrainCallBack {
  public:
@@ -37,5 +38,5 @@ class CkptSaver: public TrainCallBack {
 CkptSaver::CkptSaver(int save_every_n, const std::string &filename_prefix)
     : CkptSaver(save_every_n, StringToChar(filename_prefix)) {}
 
-}  // namespace mindspore
-#endif  // MINDSPORE_INCLUDE_API_CALLBACK_CKPT_SAVER_H
+}  // namespace luojianet_ms
+#endif  // LUOJIANET_MS_INCLUDE_API_CALLBACK_CKPT_SAVER_H

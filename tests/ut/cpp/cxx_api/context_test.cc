@@ -17,7 +17,7 @@
 #include "common/common_test.h"
 #include "include/api/context.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestCxxApiContext : public UT::Common {
  public:
   TestCxxApiContext() = default;
@@ -111,4 +111,4 @@ TEST_F(TestCxxApiContext, test_context_ascend310_context_default_value_SUCCESS) 
   auto ctx = std::make_shared<AscendDeviceInfo>();
   ASSERT_EQ(ctx->GetOpSelectImplMode(), "");
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

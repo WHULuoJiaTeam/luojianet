@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the License);
 # you may not use this file except in compliance with the License.
@@ -16,7 +17,7 @@
 Defined callback for DeepFM.
 """
 import time
-from mindspore.train.callback import Callback
+from luojianet_ms.train.callback import Callback
 
 
 def add_write(file_path, out_str):

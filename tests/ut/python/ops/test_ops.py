@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,27 +19,27 @@ import pytest
 
 import numpy as np
 
-import mindspore.nn as nn
-import mindspore.ops.composite as C
-from mindspore import Tensor
-from mindspore import ops, Parameter, context
-from mindspore import ms_function
-from mindspore.common import dtype as mstype
-from mindspore.ops import functional as F
-from mindspore.ops import operations as P
-from mindspore.ops.operations import _grad_ops as G
-from mindspore.ops.operations import _inner_ops as inner
-from mindspore.ops.operations import _quant_ops as Q
-from mindspore.ops.operations import nn_ops as nps
-from mindspore.nn.layer import normalization
-from mindspore._c_expression import security
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.composite as C
+from luojianet_ms import Tensor
+from luojianet_ms import ops, Parameter, context
+from luojianet_ms import ms_function
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations import _grad_ops as G
+from luojianet_ms.ops.operations import _inner_ops as inner
+from luojianet_ms.ops.operations import _quant_ops as Q
+from luojianet_ms.ops.operations import nn_ops as nps
+from luojianet_ms.nn.layer import normalization
+from luojianet_ms._c_expression import security
 from tests.security_utils import security_off_wrap
 from ..ut_filter import non_graph_engine
-from ....mindspore_test_framework.mindspore_test import mindspore_test
-from ....mindspore_test_framework.pipeline.forward.compile_forward \
+from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
+from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import (pipeline_for_compile_forward_ge_graph_for_case_by_case_config,
             pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception)
-from ....mindspore_test_framework.pipeline.gradient.compile_gradient \
+from ....luojianet_ms_test_framework.pipeline.gradient.compile_gradient \
     import pipeline_for_compile_grad_ge_graph_for_case_by_case_config
 from ....ops_common import convert
 
@@ -3183,13 +3184,13 @@ test_backward_exec_case = filter(lambda x: 'skip' not in x[1] or 'backward' not 
 
 
 @non_graph_engine
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
 def test_exec():
     context.set_context(mode=context.GRAPH_MODE)
     return test_exec_case
 
 
-@mindspore_test(pipeline_for_compile_grad_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_grad_ge_graph_for_case_by_case_config)
 def test_backward_exec():
     context.set_context(mode=context.GRAPH_MODE)
     return test_backward_exec_case
@@ -3197,7 +3198,7 @@ def test_backward_exec():
 
 @security_off_wrap
 @non_graph_engine
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config)
 def test_summary_ops():
     if security.enable_security():
         return []
@@ -3263,6 +3264,6 @@ raise_set = [
 ]
 
 
-@mindspore_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception)
+@luojianet_ms_test(pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception)
 def test_check_exception():
     return raise_set

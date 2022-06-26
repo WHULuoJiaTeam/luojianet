@@ -17,10 +17,10 @@ else()
     set(INCLUDE "./include")
 endif()
 
-mindspore_add_pkg(nlohmann_json373
+luojianet_ms_add_pkg(nlohmann_json373
         VER 3.7.3
         HEAD_ONLY ${INCLUDE}
         URL ${REQ_URL}
         MD5 ${MD5})
 include_directories(${nlohmann_json373_INC})
-add_library(mindspore::json ALIAS nlohmann_json373)
+add_library(luojianet_ms::json ALIAS nlohmann_json373)

@@ -16,11 +16,11 @@
 Testing Normalize op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import diff_mse, save_and_check_md5, visualize_image
 
 DATA_DIR = ["../data/dataset/test_tf_file_3_images/train-0000-of-0001.data"]
@@ -60,7 +60,7 @@ def util_test_normalize(mean, std, op_type):
             py_vision.ToTensor(),
             py_vision.Normalize(mean, std)
         ]
-        transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+        transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
         # Generate dataset
         data = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
         data = data.map(operations=transform, input_columns=["image"])
@@ -79,7 +79,7 @@ def util_test_normalize_grayscale(num_output_channels, mean, std):
         py_vision.ToTensor(),
         py_vision.Normalize(mean, std)
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     # Generate dataset
     data = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
     data = data.map(operations=transform, input_columns=["image"])
@@ -132,7 +132,7 @@ def test_normalize_op_py(plot=False):
         py_vision.Decode(),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     normalize_op = py_vision.Normalize(mean, std)
 
     #  First dataset

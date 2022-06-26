@@ -42,14 +42,14 @@ class PyFuncGraphFetcher {
   // step 1. Call the function user input
   // step 2. Parse the return "fn"
   template <class... T>
-  mindspore::FuncGraphPtr CallAndParseRet(std::string func_name, T... args) {
+  luojianet_ms::FuncGraphPtr CallAndParseRet(std::string func_name, T... args) {
     try {
-      py::function fn = mindspore::python_adapter::CallPyFn(model_path_.c_str(), func_name.c_str(), args...);
-      mindspore::FuncGraphPtr func_graph = mindspore::parse::ParsePythonCode(fn);
+      py::function fn = luojianet_ms::python_adapter::CallPyFn(model_path_.c_str(), func_name.c_str(), args...);
+      luojianet_ms::FuncGraphPtr func_graph = luojianet_ms::parse::ParsePythonCode(fn);
       if (doResolve_) {
-        std::shared_ptr<mindspore::FuncGraphManager> manager = mindspore::Manage(func_graph, false);
-        mindspore::python_adapter::set_use_signature_in_resolve(false);
-        mindspore::parse::ResolveAll(manager);
+        std::shared_ptr<luojianet_ms::FuncGraphManager> manager = luojianet_ms::Manage(func_graph, false);
+        luojianet_ms::python_adapter::set_use_signature_in_resolve(false);
+        luojianet_ms::parse::ResolveAll(manager);
       }
       return func_graph;
     } catch (py::error_already_set& e) {
@@ -62,18 +62,18 @@ class PyFuncGraphFetcher {
   }
 
   // Fetch python function then parse to graph
-  mindspore::FuncGraphPtr operator()(std::string func_name, std::string model_path = "") {
+  luojianet_ms::FuncGraphPtr operator()(std::string func_name, std::string model_path = "") {
     try {
       std::string path = model_path_;
       if ("" != model_path) {
         path = model_path;
       }
-      py::function fn = mindspore::python_adapter::GetPyFn(path.c_str(), func_name.c_str());
-      mindspore::FuncGraphPtr func_graph = mindspore::parse::ParsePythonCode(fn);
+      py::function fn = luojianet_ms::python_adapter::GetPyFn(path.c_str(), func_name.c_str());
+      luojianet_ms::FuncGraphPtr func_graph = luojianet_ms::parse::ParsePythonCode(fn);
       if (doResolve_) {
-        std::shared_ptr<mindspore::FuncGraphManager> manager = mindspore::Manage(func_graph, false);
-        mindspore::python_adapter::set_use_signature_in_resolve(false);
-        mindspore::parse::ResolveAll(manager);
+        std::shared_ptr<luojianet_ms::FuncGraphManager> manager = luojianet_ms::Manage(func_graph, false);
+        luojianet_ms::python_adapter::set_use_signature_in_resolve(false);
+        luojianet_ms::parse::ResolveAll(manager);
       }
       return func_graph;
     } catch (py::error_already_set& e) {

@@ -16,13 +16,13 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.nn import Dense
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.optim import FTRL
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Dense
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.optim import FTRL
+from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 

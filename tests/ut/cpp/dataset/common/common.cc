@@ -40,42 +40,42 @@ void DatasetOpTesting::SetUp() {
   mindrecord_root_path_ = "data/mindrecord";
 }
 
-std::vector<mindspore::dataset::TensorShape> DatasetOpTesting::ToTensorShapeVec(
+std::vector<luojianet_ms::dataset::TensorShape> DatasetOpTesting::ToTensorShapeVec(
   const std::vector<std::vector<int64_t>> &v) {
-  std::vector<mindspore::dataset::TensorShape> ret_v;
+  std::vector<luojianet_ms::dataset::TensorShape> ret_v;
   std::transform(v.begin(), v.end(), std::back_inserter(ret_v),
-                 [](const auto &s) { return mindspore::dataset::TensorShape(s); });
+                 [](const auto &s) { return luojianet_ms::dataset::TensorShape(s); });
   return ret_v;
 }
 
-std::vector<mindspore::dataset::DataType> DatasetOpTesting::ToDETypes(const std::vector<mindspore::DataType> &t) {
-  std::vector<mindspore::dataset::DataType> ret_t;
-  std::transform(t.begin(), t.end(), std::back_inserter(ret_t), [](const mindspore::DataType &t) {
-    return mindspore::dataset::MSTypeToDEType(static_cast<mindspore::TypeId>(t));
+std::vector<luojianet_ms::dataset::DataType> DatasetOpTesting::ToDETypes(const std::vector<luojianet_ms::DataType> &t) {
+  std::vector<luojianet_ms::dataset::DataType> ret_t;
+  std::transform(t.begin(), t.end(), std::back_inserter(ret_t), [](const luojianet_ms::DataType &t) {
+    return luojianet_ms::dataset::MSTypeToDEType(static_cast<luojianet_ms::TypeId>(t));
   });
   return ret_t;
 }
 
 // Function to read a file into an MSTensor
 // Note: This provides the analogous support for DETensor's CreateFromFile.
-mindspore::MSTensor DatasetOpTesting::ReadFileToTensor(const std::string &file) {
+luojianet_ms::MSTensor DatasetOpTesting::ReadFileToTensor(const std::string &file) {
   if (file.empty()) {
     MS_LOG(ERROR) << "Pointer file is nullptr; return an empty Tensor.";
-    return mindspore::MSTensor();
+    return luojianet_ms::MSTensor();
   }
   std::ifstream ifs(file);
   if (!ifs.good()) {
     MS_LOG(ERROR) << "File: " << file << " does not exist; return an empty Tensor.";
-    return mindspore::MSTensor();
+    return luojianet_ms::MSTensor();
   }
   if (!ifs.is_open()) {
     MS_LOG(ERROR) << "File: " << file << " open failed; return an empty Tensor.";
-    return mindspore::MSTensor();
+    return luojianet_ms::MSTensor();
   }
 
   ifs.seekg(0, std::ios::end);
   size_t size = ifs.tellg();
-  mindspore::MSTensor buf("file", mindspore::DataType::kNumberTypeUInt8, {static_cast<int64_t>(size)}, nullptr, size);
+  luojianet_ms::MSTensor buf("file", luojianet_ms::DataType::kNumberTypeUInt8, {static_cast<int64_t>(size)}, nullptr, size);
 
   ifs.seekg(0, std::ios::beg);
   ifs.read(reinterpret_cast<char *>(buf.MutableData()), size);
@@ -85,53 +85,53 @@ mindspore::MSTensor DatasetOpTesting::ReadFileToTensor(const std::string &file) 
 }
 
 // Helper function to create a batch op
-std::shared_ptr<mindspore::dataset::BatchOp> DatasetOpTesting::Batch(int32_t batch_size, bool drop,
-                                                                     mindspore::dataset::PadInfo pad_map) {
+std::shared_ptr<luojianet_ms::dataset::BatchOp> DatasetOpTesting::Batch(int32_t batch_size, bool drop,
+                                                                     luojianet_ms::dataset::PadInfo pad_map) {
   /*
-  std::shared_ptr<mindspore::dataset::ConfigManager> cfg = mindspore::dataset::GlobalContext::config_manager();
+  std::shared_ptr<luojianet_ms::dataset::ConfigManager> cfg = luojianet_ms::dataset::GlobalContext::config_manager();
   int32_t num_workers = cfg->num_parallel_workers();
   int32_t op_connector_size = cfg->op_connector_size();
   std::vector<std::string> output_columns = {};
   std::vector<std::string> input_columns = {};
-  mindspore::dataset::py::function batch_size_func;
-  mindspore::dataset::py::function batch_map_func;
+  luojianet_ms::dataset::py::function batch_size_func;
+  luojianet_ms::dataset::py::function batch_map_func;
   bool pad = false;
   if (!pad_map.empty()) {
     pad = true;
   }
-  std::shared_ptr<mindspore::dataset::BatchOp> op =
-    std::make_shared<mindspore::dataset::BatchOp>(batch_size, drop, pad, op_connector_size, num_workers, input_columns,
+  std::shared_ptr<luojianet_ms::dataset::BatchOp> op =
+    std::make_shared<luojianet_ms::dataset::BatchOp>(batch_size, drop, pad, op_connector_size, num_workers, input_columns,
   output_columns, batch_size_func, batch_map_func, pad_map); return op;
   */
   Status rc;
-  std::shared_ptr<mindspore::dataset::BatchOp> op;
-  rc = mindspore::dataset::BatchOp::Builder(batch_size).SetDrop(drop).SetPaddingMap(pad_map).Build(&op);
+  std::shared_ptr<luojianet_ms::dataset::BatchOp> op;
+  rc = luojianet_ms::dataset::BatchOp::Builder(batch_size).SetDrop(drop).SetPaddingMap(pad_map).Build(&op);
   EXPECT_TRUE(rc.IsOk());
   return std::move(op);
 }
 
-std::shared_ptr<mindspore::dataset::RepeatOp> DatasetOpTesting::Repeat(int repeat_cnt) {
-  std::shared_ptr<mindspore::dataset::RepeatOp> op = std::make_shared<mindspore::dataset::RepeatOp>(repeat_cnt);
+std::shared_ptr<luojianet_ms::dataset::RepeatOp> DatasetOpTesting::Repeat(int repeat_cnt) {
+  std::shared_ptr<luojianet_ms::dataset::RepeatOp> op = std::make_shared<luojianet_ms::dataset::RepeatOp>(repeat_cnt);
   return std::move(op);
 }
 
-std::shared_ptr<mindspore::dataset::TFReaderOp> DatasetOpTesting::TFReader(std::string file, int num_works) {
-  std::shared_ptr<mindspore::dataset::ConfigManager> config_manager =
-    mindspore::dataset::GlobalContext::config_manager();
+std::shared_ptr<luojianet_ms::dataset::TFReaderOp> DatasetOpTesting::TFReader(std::string file, int num_works) {
+  std::shared_ptr<luojianet_ms::dataset::ConfigManager> config_manager =
+    luojianet_ms::dataset::GlobalContext::config_manager();
   auto op_connector_size = config_manager->op_connector_size();
   auto worker_connector_size = config_manager->worker_connector_size();
   std::vector<std::string> columns_to_load = {};
   std::vector<std::string> files = {file};
-  std::shared_ptr<mindspore::dataset::TFReaderOp> so = std::make_shared<mindspore::dataset::TFReaderOp>(
-    num_works, worker_connector_size, 0, files, std::make_unique<mindspore::dataset::DataSchema>(), op_connector_size,
+  std::shared_ptr<luojianet_ms::dataset::TFReaderOp> so = std::make_shared<luojianet_ms::dataset::TFReaderOp>(
+    num_works, worker_connector_size, 0, files, std::make_unique<luojianet_ms::dataset::DataSchema>(), op_connector_size,
     columns_to_load, false, 1, 0, false);
   (void)so->Init();
   return std::move(so);
 }
 
-std::shared_ptr<mindspore::dataset::ExecutionTree> DatasetOpTesting::Build(
-  std::vector<std::shared_ptr<mindspore::dataset::DatasetOp>> ops) {
-  std::shared_ptr<mindspore::dataset::ExecutionTree> tree = std::make_shared<mindspore::dataset::ExecutionTree>();
+std::shared_ptr<luojianet_ms::dataset::ExecutionTree> DatasetOpTesting::Build(
+  std::vector<std::shared_ptr<luojianet_ms::dataset::DatasetOp>> ops) {
+  std::shared_ptr<luojianet_ms::dataset::ExecutionTree> tree = std::make_shared<luojianet_ms::dataset::ExecutionTree>();
   for (int i = 0; i < ops.size(); i++) {
     tree->AssociateNode(ops[i]);
     if (i > 0) {
@@ -151,7 +151,7 @@ std::shared_ptr<mindspore::dataset::ExecutionTree> DatasetOpTesting::Build(
 #endif
 }  // namespace UT
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace dataset {
 MSTensorVec Predicate1(MSTensorVec in) {
   // Return true if input is equal to 3
@@ -181,11 +181,11 @@ MSTensorVec Predicate2(MSTensorVec in) {
   // Convert from boolean to TensorRow
   TensorRow output;
   std::shared_ptr<Tensor> out;
-  (void)Tensor::CreateEmpty(TensorShape({}), DataType(mindspore::dataset::DataType::Type::DE_BOOL), &out);
+  (void)Tensor::CreateEmpty(TensorShape({}), DataType(luojianet_ms::dataset::DataType::Type::DE_BOOL), &out);
   (void)out->SetItemAt({}, result);
   output.push_back(out);
 
   return RowToVec(output);
 }
 }  // namespace dataset
-}  // namespace mindspore
+}  // namespace luojianet_ms

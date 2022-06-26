@@ -15,8 +15,8 @@
 """ test a list of cell, and getattr by its item """
 import pytest
 import numpy as np
-from mindspore import context, nn, dtype, Tensor, ms_function
-from mindspore.ops import operations as P
+from luojianet_ms import context, nn, dtype, Tensor, ms_function
+from luojianet_ms.ops import operations as P
 
 
 class Actor(nn.Cell):

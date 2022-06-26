@@ -15,17 +15,17 @@
 import re
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
-from mindspore.parallel import _cost_model_context as cost_model_context
-from mindspore.parallel._cost_model_context import _set_algo_single_loop, _get_algo_single_loop
-from mindspore.parallel import set_algo_parameters, get_algo_parameters, reset_algo_parameters
-from mindspore.parallel._utils import _reset_op_id as reset_op_id
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
+from luojianet_ms.parallel import _cost_model_context as cost_model_context
+from luojianet_ms.parallel._cost_model_context import _set_algo_single_loop, _get_algo_single_loop
+from luojianet_ms.parallel import set_algo_parameters, get_algo_parameters, reset_algo_parameters
+from luojianet_ms.parallel._utils import _reset_op_id as reset_op_id
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 

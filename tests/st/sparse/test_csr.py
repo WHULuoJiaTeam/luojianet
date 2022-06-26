@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +19,11 @@ import os
 import pytest
 import numpy as np
 
-from mindspore import Tensor, CSRTensor, ms_function, nn, ops
-from mindspore.ops.operations import _csr_ops
-from mindspore.common import dtype as mstype
-from mindspore.train.serialization import export, load
-from mindspore.ops import functional as F
+from luojianet_ms import Tensor, CSRTensor, ms_function, nn, ops
+from luojianet_ms.ops.operations import _csr_ops
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.train.serialization import export, load
+from luojianet_ms.ops import functional as F
 
 from .sparse_utils import get_platform, compare_res
 

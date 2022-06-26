@@ -15,9 +15,9 @@
 import pytest
 import numpy as np
 
-import mindspore as ms
-from mindspore import context
-from mindspore import ops, Tensor, dtype, ms_function
+import luojianet_ms as ms
+from luojianet_ms import context
+from luojianet_ms import ops, Tensor, dtype, ms_function
 
 
 def test_cast():

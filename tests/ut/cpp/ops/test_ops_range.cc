@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestRange : public UT::Common {
  public:
@@ -121,4 +121,4 @@ TEST_F(TestRange, test_ops_range2) {
   EXPECT_EQ(range->get_delta(), 1);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

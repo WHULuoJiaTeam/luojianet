@@ -14,8 +14,8 @@
 # ==============================================================================
 import numpy as np
 
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 DATA_DIR = ["../data/dataset/testTFBert5Rows1/5TFDatas.data"]
 DATA_DIR_2 = ["../data/dataset/testTFBert5Rows2/5TFDatas.data"]

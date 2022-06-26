@@ -25,7 +25,7 @@
 #include "minddata/dataset/kernels/data/mask_op.h"
 #include "minddata/dataset/kernels/data/data_utils.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 namespace py = pybind11;
 

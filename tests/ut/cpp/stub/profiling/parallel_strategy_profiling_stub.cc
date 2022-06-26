@@ -16,11 +16,11 @@
 
 #include "profiler/device/ascend/parallel_strategy_profiling.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace profiler {
 namespace ascend {
 void DumpProfileParallelStrategy(const FuncGraphPtr &func_graph) {}
 void SaveParallelStrategyToFile() {}
 }  // namespace ascend
 }  // namespace profiler
-}  // namespace mindspore
+}  // namespace luojianet_ms

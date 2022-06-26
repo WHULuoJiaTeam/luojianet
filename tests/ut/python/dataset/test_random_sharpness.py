@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 Testing RandomSharpness op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as F
-import mindspore.dataset.vision.c_transforms as C
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as F
+import luojianet_ms.dataset.vision.c_transforms as C
+from luojianet_ms import log as logger
 from util import visualize_list, visualize_one_channel_dataset, diff_mse, save_and_check_md5, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -39,7 +40,7 @@ def test_random_sharpness_py(degrees=(0.7, 0.7), plot=False):
     # Original Images
     data = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
 
-    transforms_original = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_original = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                               F.Resize((224, 224)),
                                                                               F.ToTensor()])
 
@@ -62,7 +63,7 @@ def test_random_sharpness_py(degrees=(0.7, 0.7), plot=False):
     if degrees is not None:
         py_op = F.RandomSharpness(degrees)
 
-    transforms_random_sharpness = mindspore.dataset.transforms.py_transforms.Compose([F.Decode(),
+    transforms_random_sharpness = luojianet_ms.dataset.transforms.py_transforms.Compose([F.Decode(),
                                                                                       F.Resize((224, 224)),
                                                                                       py_op,
                                                                                       F.ToTensor()])
@@ -104,7 +105,7 @@ def test_random_sharpness_py_md5():
         F.RandomSharpness((20.0, 25.0)),
         F.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
 
     #  Generate dataset
     data = ds.ImageFolderDataset(dataset_dir=DATA_DIR, shuffle=False)
@@ -218,7 +219,7 @@ def test_random_sharpness_c_py(degrees=(1.0, 1.0), plot=False):
     python_op = F.RandomSharpness(degrees)
     c_op = C.RandomSharpness(degrees)
 
-    transforms_op = mindspore.dataset.transforms.py_transforms.Compose([lambda img: F.ToPIL()(img.astype(np.uint8)),
+    transforms_op = luojianet_ms.dataset.transforms.py_transforms.Compose([lambda img: F.ToPIL()(img.astype(np.uint8)),
                                                                         python_op,
                                                                         np.array])
 

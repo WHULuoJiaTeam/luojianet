@@ -30,7 +30,7 @@
 #undef private
 #undef protected
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWMergeCastToOp : public BackendCommon {
  public:
@@ -190,4 +190,4 @@ TEST_F(TestHWMergeCastToOp, test_merge_cast_to_prior_op) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 import json
 import time
 
-from mindspore._extends.parallel_compile.tbe_compiler.tbe_job_manager import TbeJobManager
+from luojianet_ms._extends.parallel_compile.tbe_compiler.tbe_job_manager import TbeJobManager
 
 MAX_COMPILE_SECONDS = 400
 QUERY_INTERVAL = 10

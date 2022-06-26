@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +16,13 @@
 
 import numpy as np
 import pytest
-import mindspore
+import luojianet_ms
 
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.ops import operations as P
-from mindspore.common.initializer import One
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.initializer import One
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -40,7 +41,7 @@ def test_zero_dimension_np_array():
 
 def test_zero_dimension_with_zero_shape():
     with pytest.raises(ValueError) as ex:
-        Tensor(shape=(1, 0, 3), dtype=mindspore.float32, init=One())
+        Tensor(shape=(1, 0, 3), dtype=luojianet_ms.float32, init=One())
     assert "Shape can not contain zero value." in str(ex.value)
 
 

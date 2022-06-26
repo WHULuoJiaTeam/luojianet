@@ -16,8 +16,8 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestEpochCtrl : public UT::DatasetOpTesting {
  protected:
@@ -43,7 +43,7 @@ TEST_F(MindDataTestEpochCtrl, TestAutoInjectEpoch) {
   ASSERT_NE(iter, nullptr);
 
   uint64_t i = 0;
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   for (int epoch = 0; epoch < num_epochs; epoch++) {
     // Iterate the dataset and get each row
@@ -91,7 +91,7 @@ TEST_F(MindDataTestEpochCtrl, TestEpoch) {
 
   // Iterate the dataset and get each row
   uint64_t i = 0;
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   for (int epoch = 0; epoch < num_epochs; epoch++) {
     ASSERT_OK(iter->GetNextRow(&row));
@@ -140,7 +140,7 @@ TEST_F(MindDataTestEpochCtrl, TestRepeatEpoch) {
 
   // Iterate the dataset and get each row
   uint64_t i = 0;
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   for (int epoch = 0; epoch < num_epochs; epoch++) {
     ASSERT_OK(iter->GetNextRow(&row));
@@ -189,7 +189,7 @@ TEST_F(MindDataTestEpochCtrl, TestRepeatRepeatEpoch) {
 
   // Iterate the dataset and get each row
   uint64_t i = 0;
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   for (int epoch = 0; epoch < num_epochs; epoch++) {
     ASSERT_OK(iter->GetNextRow(&row));

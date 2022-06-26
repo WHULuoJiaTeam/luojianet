@@ -23,7 +23,7 @@
 #include "frontend/operator/ops.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 
 using Named = Named;
 
@@ -73,4 +73,4 @@ TEST_F(TestAnf, is_exception) {
   assert(!a.isa<ValueNode>());
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

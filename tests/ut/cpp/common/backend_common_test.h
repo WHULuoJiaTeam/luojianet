@@ -19,7 +19,7 @@
 #include "utils/ms_context.h"
 #include "backend/common/session/kernel_graph.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class BackendCommon : public UT::Common {
  public:
   BackendCommon() = default;
@@ -30,5 +30,5 @@ class BackendCommon : public UT::Common {
                                                                bool need_infer = true);
   virtual FuncGraphPtr GetFuncGraph(const FuncGraphPtr &func_graph, const AbstractBasePtrList &args_spec_list);
 };
-}  // namespace mindspore
+}  // namespace luojianet_ms
 #endif  // TESTS_UT_CPP_COMMON_UT_BACKEND_COMMON_H_

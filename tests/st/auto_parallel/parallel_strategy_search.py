@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,30 +16,30 @@
 import os
 import numpy as np
 
-from mindspore.communication.management import init
-from mindspore.communication.management import release
-from mindspore.communication.management import get_rank
-from mindspore.communication.management import get_group_size
-from mindspore.nn import Cell
-from mindspore.nn import Conv2d
-from mindspore.nn import ReLU
-from mindspore.nn import Dense
-from mindspore.nn import Softmax
-import mindspore.ops.operations as P
-from mindspore.train.serialization import load_param_into_net
-from mindspore.train.callback import CheckpointConfig
-from mindspore.train.callback import ModelCheckpoint
-from mindspore.train.serialization import load_checkpoint
-from mindspore.nn import Momentum
-from mindspore.nn import SoftmaxCrossEntropyWithLogits
-from mindspore.train import Model
-from mindspore.parallel import set_algo_parameters
-from mindspore.common.initializer import initializer
-from mindspore.common import dtype as mstype
-from mindspore import Tensor
-from mindspore.common.parameter import Parameter
-from mindspore import context
-from mindspore.context import ParallelMode
+from luojianet_ms.communication.management import init
+from luojianet_ms.communication.management import release
+from luojianet_ms.communication.management import get_rank
+from luojianet_ms.communication.management import get_group_size
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Conv2d
+from luojianet_ms.nn import ReLU
+from luojianet_ms.nn import Dense
+from luojianet_ms.nn import Softmax
+import luojianet_ms.ops.operations as P
+from luojianet_ms.train.serialization import load_param_into_net
+from luojianet_ms.train.callback import CheckpointConfig
+from luojianet_ms.train.callback import ModelCheckpoint
+from luojianet_ms.train.serialization import load_checkpoint
+from luojianet_ms.nn import Momentum
+from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.train import Model
+from luojianet_ms.parallel import set_algo_parameters
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms import Tensor
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms import context
+from luojianet_ms.context import ParallelMode
 
 context.set_context(mode=context.GRAPH_MODE, device_target='Ascend')
 
@@ -296,7 +297,7 @@ class ParallelStrategySearchFactory:
         newest_ckpt_file = find_newest_ckpt_file(ckpt_path)
         return load_checkpoint(newest_ckpt_file)
 
-    def mindspore_auto_parallel_impl(self, dataset, epoch, device_num, search_mode="dynamic_programming"):
+    def luojianet_ms_auto_parallel_impl(self, dataset, epoch, device_num, search_mode="dynamic_programming"):
         parallel_mode_net = self.parallel_mode_net
         set_algo_parameters(fully_use_devices=False)
         context.reset_auto_parallel_context()
@@ -307,7 +308,7 @@ class ParallelStrategySearchFactory:
                                                              dataset=dataset, epoch=epoch)
         context.reset_auto_parallel_context()
 
-    def mindspore_standalone_impl(self, dataset, epoch):
+    def luojianet_ms_standalone_impl(self, dataset, epoch):
         standalone_mode_net = self.standalone_mode_net
         context.reset_auto_parallel_context()
         context.set_auto_parallel_context(parallel_mode=ParallelMode.STAND_ALONE)
@@ -347,11 +348,11 @@ def test_auto_parallel_strategy_search_axis_1_basic():
                                   image_size=(3, 224, 224), num_classes=12)
     fact = ParallelStrategySearchFactory(standalone_mode_net=standalone_mode_net,
                                          parallel_mode_net=parallel_mode_net)
-    fact.mindspore_standalone_impl(dataset=standalone_dataset, epoch=2)
+    fact.luojianet_ms_standalone_impl(dataset=standalone_dataset, epoch=2)
     parallel_dataset = FakeData(size=128, batch_size=4,
                                 image_size=(3, 224, 224), use_parallel=True,
                                 num_classes=12)
-    fact.mindspore_auto_parallel_impl(dataset=parallel_dataset,
+    fact.luojianet_ms_auto_parallel_impl(dataset=parallel_dataset,
                                       epoch=2, device_num=8)
     fact.checkpoint_cmp(inputs_np=inputs_np)
 
@@ -374,10 +375,10 @@ def test_auto_parallel_recursive_strategy_search_axis_1_basic():
                                   image_size=(3, 224, 224), num_classes=12)
     fact = ParallelStrategySearchFactory(standalone_mode_net=standalone_mode_net,
                                          parallel_mode_net=parallel_mode_net)
-    fact.mindspore_standalone_impl(dataset=standalone_dataset, epoch=2)
+    fact.luojianet_ms_standalone_impl(dataset=standalone_dataset, epoch=2)
     parallel_dataset = FakeData(size=128, batch_size=4,
                                 image_size=(3, 224, 224), use_parallel=True,
                                 num_classes=12)
-    fact.mindspore_auto_parallel_impl(dataset=parallel_dataset,
+    fact.luojianet_ms_auto_parallel_impl(dataset=parallel_dataset,
                                       epoch=2, device_num=8, search_mode="recursive_programming")
     fact.checkpoint_cmp(inputs_np=inputs_np)

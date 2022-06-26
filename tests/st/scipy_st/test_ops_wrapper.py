@@ -15,8 +15,8 @@
 """st for scipy.ops_wrapper."""
 import numpy as onp
 import pytest
-import mindspore.scipy.ops_wrapper as ops_wrapper
-from mindspore import context, Tensor
+import luojianet_ms.scipy.ops_wrapper as ops_wrapper
+from luojianet_ms import context, Tensor
 
 from tests.st.scipy_st.utils import match_matrix, match_array
 

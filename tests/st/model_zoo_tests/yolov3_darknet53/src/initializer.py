@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 import math
 from functools import reduce
 import numpy as np
-from mindspore.common import initializer as init
-from mindspore.common.initializer import Initializer as MeInitializer
-from mindspore.train.serialization import load_checkpoint, load_param_into_net
-import mindspore.nn as nn
+from luojianet_ms.common import initializer as init
+from luojianet_ms.common.initializer import Initializer as MeInitializer
+from luojianet_ms.train.serialization import load_checkpoint, load_param_into_net
+import luojianet_ms.nn as nn
 from .util import load_backbone
 
 def calculate_gain(nonlinearity, param=None):

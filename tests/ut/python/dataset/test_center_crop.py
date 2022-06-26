@@ -16,11 +16,11 @@
 Testing CenterCrop op in DE
 """
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as vision
-import mindspore.dataset.vision.py_transforms as py_vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+from luojianet_ms import log as logger
 from util import diff_mse, visualize_list, save_and_check_md5
 
 GENERATE_GOLDEN = False
@@ -95,7 +95,7 @@ def test_center_crop_comp(height=375, width=375, plot=False):
         py_vision.CenterCrop([height, width]),
         py_vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = data2.map(operations=transform, input_columns=["image"])
 
     image_c_cropped = []
@@ -126,7 +126,7 @@ def test_crop_grayscale(height=375, width=375):
         (lambda image: (image.transpose(1, 2, 0) * 255).astype(np.uint8))
     ]
 
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data1 = ds.TFRecordDataset(DATA_DIR, SCHEMA_DIR, columns_list=["image"], shuffle=False)
     data1 = data1.map(operations=transform, input_columns=["image"])
 

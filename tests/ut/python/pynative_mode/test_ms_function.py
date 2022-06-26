@@ -15,11 +15,11 @@
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore.ops import composite as C
-from mindspore.nn import Momentum
-from mindspore import context, Tensor
-from mindspore.common.api import ms_function
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import composite as C
+from luojianet_ms.nn import Momentum
+from luojianet_ms import context, Tensor
+from luojianet_ms.common.api import ms_function
 
 grad_all = C.GradOperation(get_all=True)
 

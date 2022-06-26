@@ -20,7 +20,7 @@
 #include "include/common/utils/anfalgo.h"
 #include "plugin/device/ascend/optimizer/ir_fusion/reshape_transpose_fusion.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 
 class TestHWReshapeTransposeFusion : public BackendCommon {
@@ -81,4 +81,4 @@ TEST_F(TestHWReshapeTransposeFusion, test_reshape_transpose_no_fusion) {
   EXPECT_TRUE(CheckEqualGraph(kg, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

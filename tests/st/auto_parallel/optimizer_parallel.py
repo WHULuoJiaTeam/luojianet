@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,28 +17,28 @@
 import os
 import numpy as np
 
-from mindspore.communication.management import init
-from mindspore.communication.management import release
-from mindspore.communication.management import get_rank
-from mindspore.communication.management import get_group_size
-from mindspore.nn import Cell
-from mindspore.nn import ReLU
-from mindspore.nn import Dense
-from mindspore.nn import Flatten
-from mindspore.nn import Momentum
-import mindspore.ops.operations as P
-from mindspore.train.serialization import load_param_into_net
-from mindspore.train.callback import CheckpointConfig
-from mindspore.train.callback import ModelCheckpoint
-from mindspore.train.serialization import load_checkpoint
+from luojianet_ms.communication.management import init
+from luojianet_ms.communication.management import release
+from luojianet_ms.communication.management import get_rank
+from luojianet_ms.communication.management import get_group_size
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import ReLU
+from luojianet_ms.nn import Dense
+from luojianet_ms.nn import Flatten
+from luojianet_ms.nn import Momentum
+import luojianet_ms.ops.operations as P
+from luojianet_ms.train.serialization import load_param_into_net
+from luojianet_ms.train.callback import CheckpointConfig
+from luojianet_ms.train.callback import ModelCheckpoint
+from luojianet_ms.train.serialization import load_checkpoint
 
-from mindspore.nn import SoftmaxCrossEntropyWithLogits
-from mindspore.train import Model
-from mindspore.parallel import set_algo_parameters
-from mindspore import Tensor
-from mindspore.common.parameter import Parameter
-from mindspore import context
-from mindspore.context import ParallelMode
+from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.train import Model
+from luojianet_ms.parallel import set_algo_parameters
+from luojianet_ms import Tensor
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms import context
+from luojianet_ms.context import ParallelMode
 
 context.set_context(mode=context.GRAPH_MODE, device_target='Ascend')
 
@@ -271,7 +272,7 @@ class OptimizerSemiAutoAndAutoParallelFactory:
         newest_ckpt_file = find_newest_ckpt_file(ckpt_path)
         return load_checkpoint(newest_ckpt_file)
 
-    def mindspore_auto_parallel_impl(self,
+    def luojianet_ms_auto_parallel_impl(self,
                                      dataset,
                                      epoch,
                                      device_num):
@@ -284,7 +285,7 @@ class OptimizerSemiAutoAndAutoParallelFactory:
                                                              dataset=dataset, epoch=epoch)
         context.reset_auto_parallel_context()
 
-    def mindspore_optimizer_auto_parallel_impl(self,
+    def luojianet_ms_optimizer_auto_parallel_impl(self,
                                                dataset,
                                                epoch,
                                                device_num):
@@ -329,6 +330,6 @@ def test_optimizer_parallel_auto_4p_6_parameter_same_strategy_1_1_2_1_momentum()
                      'mul3': ((1, 2), (1, 2))}
     fact = OptimizerSemiAutoAndAutoParallelFactory(net=OptimizerSemiAutoAndAutoParallel6Net,
                                                    strategy_dict=strategy_dict)
-    fact.mindspore_auto_parallel_impl(dataset=ds1, epoch=2, device_num=4)
-    fact.mindspore_optimizer_auto_parallel_impl(dataset=ds2, epoch=2, device_num=4)
+    fact.luojianet_ms_auto_parallel_impl(dataset=ds1, epoch=2, device_num=4)
+    fact.luojianet_ms_optimizer_auto_parallel_impl(dataset=ds2, epoch=2, device_num=4)
     fact.checkpoint_cmp(inputs_np=inputs_np)

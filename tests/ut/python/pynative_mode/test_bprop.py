@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +16,13 @@
 """ test_bprop """
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import context
-from mindspore.common import Tensor
-from mindspore.common.api import ms_function
-from mindspore.common.parameter import Parameter
-from mindspore.ops import operations as P
-from ....mindspore_test_framework.utils.bprop_util import bprop
+import luojianet_ms.nn as nn
+from luojianet_ms import context
+from luojianet_ms.common import Tensor
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.ops import operations as P
+from ....luojianet_ms_test_framework.utils.bprop_util import bprop
 
 
 def setup_module():

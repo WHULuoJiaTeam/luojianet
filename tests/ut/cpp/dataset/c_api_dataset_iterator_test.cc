@@ -16,7 +16,7 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -38,7 +38,7 @@ TEST_F(MindDataTestPipeline, TestIteratorEmptyColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<int64_t> expect_image = {32, 32, 3};
   std::vector<int64_t> expect_label = {};
@@ -78,7 +78,7 @@ TEST_F(MindDataTestPipeline, TestIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<int64_t> expect_image = {2, 28, 28, 1};
 
@@ -116,7 +116,7 @@ TEST_F(MindDataTestPipeline, TestIteratorReOrder) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<int64_t> expect_image = {32, 32, 3};
   std::vector<int64_t> expect_label = {};
@@ -157,7 +157,7 @@ TEST_F(MindDataTestPipeline, TestIteratorTwoColumns) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<std::vector<int64_t>> expect = {{173673}, {1, 4}, {173673}, {1, 4},
                                               {147025}, {1, 4}, {211653}, {1, 4}};
@@ -199,12 +199,12 @@ TEST_F(MindDataTestPipeline, TestIteratorNumEpoch) {
   std::shared_ptr<SchemaObj> schema = Schema();
   int32_t random_data_num_row = 2;
   int32_t num_epochs = 3;
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {2}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {2}));
   std::shared_ptr<Dataset> ds = RandomData(random_data_num_row, schema)->SetNumWorkers(1);
 
   std::shared_ptr<Iterator> iter = ds->CreateIterator({}, num_epochs);
   ASSERT_NE(iter, nullptr);  // should terminate test case if iterator is null
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   int32_t inner_row_cnt = 0;
   int32_t total_row_cnt = 0;
@@ -229,7 +229,7 @@ TEST_F(MindDataTestPipeline, TestIteratorNumEpochFail) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestIteratorNumEpochFail.";
 
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("image", mindspore::DataType::kNumberTypeUInt8, {2}));
+  ASSERT_OK(schema->add_column("image", luojianet_ms::DataType::kNumberTypeUInt8, {2}));
   std::shared_ptr<Dataset> ds = RandomData(3, schema)->SetNumWorkers(1);
   // expect nullptr due to incorrect num_epochs value.
   EXPECT_EQ(ds->CreateIterator({}, 0), nullptr);

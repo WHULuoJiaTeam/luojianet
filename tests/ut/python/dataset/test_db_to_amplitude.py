@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +16,9 @@
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms import log as logger
 
 
 def count_unequal_element(data_expected, data_me, rtol, atol):
@@ -37,7 +38,7 @@ def test_db_to_amplitude_eager():
     Description: test DBToAmplitude in eager mode
     Expectation: the data is processed successfully
     """
-    logger.info("mindspore eager mode normal testcase:DBToAmplitude op")
+    logger.info("luojianet_ms eager mode normal testcase:DBToAmplitude op")
 
     # Original waveform
     waveform = np.array([1, 2, 3, 4, 5, 6], dtype=np.float64)
@@ -55,7 +56,7 @@ def test_db_to_amplitude_pipeline():
     Description: test DBToAmplitude in pipeline mode
     Expectation: the data is processed successfully
     """
-    logger.info("mindspore pipeline mode normal testcase:DBToAmplitude op")
+    logger.info("luojianet_ms pipeline mode normal testcase:DBToAmplitude op")
 
     # Original waveform
     waveform = np.array([[2, 2, 3], [0.1, 0.2, 0.3]], dtype=np.float64)
@@ -79,7 +80,7 @@ def test_db_to_amplitude_invalid_input():
     Description: test param check of DBToAmplitude
     Expectation: throw correct error and message
     """
-    logger.info("mindspore eager mode invalid input testcase:filter_wikipedia_xml op")
+    logger.info("luojianet_ms eager mode invalid input testcase:filter_wikipedia_xml op")
 
     def test_invalid_input(test_name, ref, power, error, error_msg):
         logger.info("Test DBToAmplitude with bad input: {0}".format(test_name))

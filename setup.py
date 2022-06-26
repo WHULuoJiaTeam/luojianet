@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # encoding: utf-8
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -64,43 +65,43 @@ def _write_device_target(file):
 
 def build_dependencies():
     """generate python file"""
-    version_file = os.path.join(pkg_dir, 'mindspore', 'version.py')
+    version_file = os.path.join(pkg_dir, 'luojianet_ms', 'version.py')
     with open(version_file, 'w') as f:
         _write_version(f)
 
-    version_file = os.path.join(pwd, 'mindspore/python/mindspore', 'version.py')
+    version_file = os.path.join(pwd, 'luojianet_ms/python/luojianet_ms', 'version.py')
     with open(version_file, 'w') as f:
         _write_version(f)
 
-    config_file = os.path.join(pkg_dir, 'mindspore', 'default_config.py')
+    config_file = os.path.join(pkg_dir, 'luojianet_ms', 'default_config.py')
     with open(config_file, 'w') as f:
         _write_config(f)
 
-    config_file = os.path.join(pwd, 'mindspore/python/mindspore', 'default_config.py')
+    config_file = os.path.join(pwd, 'luojianet_ms/python/luojianet_ms', 'default_config.py')
     with open(config_file, 'w') as f:
         _write_config(f)
 
-    target = os.path.join(pkg_dir, 'mindspore', 'default_config.py')
+    target = os.path.join(pkg_dir, 'luojianet_ms', 'default_config.py')
     with open(target, 'a') as f:
         _write_device_target(f)
 
-    target = os.path.join(pwd, 'mindspore/python/mindspore', 'default_config.py')
+    target = os.path.join(pwd, 'luojianet_ms/python/luojianet_ms', 'default_config.py')
     with open(target, 'a') as f:
         _write_device_target(f)
 
-    package_info = os.path.join(pkg_dir, 'mindspore', 'default_config.py')
+    package_info = os.path.join(pkg_dir, 'luojianet_ms', 'default_config.py')
     with open(package_info, 'a') as f:
         _write_package_name(f)
 
-    package_info = os.path.join(pwd, 'mindspore/python/mindspore', 'default_config.py')
+    package_info = os.path.join(pwd, 'luojianet_ms/python/luojianet_ms', 'default_config.py')
     with open(package_info, 'a') as f:
         _write_package_name(f)
 
-    commit_file = os.path.join(pkg_dir, 'mindspore', '.commit_id')
+    commit_file = os.path.join(pkg_dir, 'luojianet_ms', '.commit_id')
     with open(commit_file, 'w') as f:
         _write_commit_file(f)
 
-    commit_file = os.path.join(pwd, 'mindspore/python/mindspore', '.commit_id')
+    commit_file = os.path.join(pwd, 'luojianet_ms/python/luojianet_ms', '.commit_id')
     with open(commit_file, 'w') as f:
         _write_commit_file(f)
 
@@ -162,7 +163,7 @@ class EggInfo(egg_info):
 
     def run(self):
         super().run()
-        egg_info_dir = os.path.join(pkg_dir, 'mindspore.egg-info')
+        egg_info_dir = os.path.join(pkg_dir, 'luojianet_ms.egg-info')
         update_permissions(egg_info_dir)
 
 
@@ -171,24 +172,24 @@ class BuildPy(build_py):
 
     def run(self):
         super().run()
-        mindspore_dir = os.path.join(pkg_dir, 'build', 'lib', 'mindspore')
-        update_permissions(mindspore_dir)
-        mindspore_dir = os.path.join(pkg_dir, 'build', 'lib', 'mindspore', '_akg')
-        update_permissions(mindspore_dir)
+        luojianet_ms_dir = os.path.join(pkg_dir, 'build', 'lib', 'luojianet_ms')
+        update_permissions(luojianet_ms_dir)
+        luojianet_ms_dir = os.path.join(pkg_dir, 'build', 'lib', 'luojianet_ms', '_akg')
+        update_permissions(luojianet_ms_dir)
 
 
 setup(
     name=package_name,
     version=version,
-    author='The MindSpore Authors',
-    author_email='contact@mindspore.cn',
-    url='https://www.mindspore.cn',
-    download_url='https://github.com/mindspore-ai/mindspore/tags',
+    author='The LuoJiaNET Authors',
+    author_email='contact@luojianet_ms.cn',
+    url='https://www.luojianet_ms.cn',
+    download_url='https://github.com/luojianet_ms-ai/luojianet_ms/tags',
     project_urls={
-        'Sources': 'https://github.com/mindspore-ai/mindspore',
-        'Issue Tracker': 'https://github.com/mindspore-ai/mindspore/issues',
+        'Sources': 'https://github.com/luojianet_ms-ai/luojianet_ms',
+        'Issue Tracker': 'https://github.com/luojianet_ms-ai/luojianet_ms/issues',
     },
-    description='MindSpore is a new open source deep learning training/inference '
+    description='LuoJiaNET is a new open source deep learning training/inference '
     'framework that could be used for mobile, edge and cloud scenarios.',
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -201,7 +202,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'cache_admin=mindspore.dataset.engine.cache_admin:main',
+            'cache_admin=luojianet_ms.dataset.engine.cache_admin:main',
         ],
     },
     python_requires='>=3.7',
@@ -223,5 +224,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     license='Apache 2.0',
-    keywords='mindspore machine learning',
+    keywords='luojianet_ms machine learning',
 )

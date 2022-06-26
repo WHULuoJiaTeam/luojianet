@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,30 +17,30 @@
 import os
 import argparse
 import numpy as np
-import mindspore.context as context
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as C
-import mindspore.dataset.vision.c_transforms as CV
-from mindspore.common import dtype as mstype
-from mindspore.dataset.vision import Inter
-from mindspore.common.tensor import Tensor
-from mindspore.nn import Cell
-from mindspore.nn import Flatten
-from mindspore.nn import Conv2d
-from mindspore.nn import BatchNorm2d
-from mindspore.nn import SoftmaxCrossEntropyWithLogits
-from mindspore.nn import Adam
-from mindspore.nn import EmbeddingLookup
-from mindspore.nn import ReLU
-import mindspore
-import mindspore.ops.operations as op
-from mindspore.common.parameter import Parameter
-from mindspore.train import Model
-from mindspore.common import set_seed
+import luojianet_ms.context as context
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset.vision.c_transforms as CV
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Flatten
+from luojianet_ms.nn import Conv2d
+from luojianet_ms.nn import BatchNorm2d
+from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn import Adam
+from luojianet_ms.nn import EmbeddingLookup
+from luojianet_ms.nn import ReLU
+import luojianet_ms
+import luojianet_ms.ops.operations as op
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.train import Model
+from luojianet_ms.common import set_seed
 
 parser = argparse.ArgumentParser(description='test_ps_lenet')
 parser.add_argument("--device_target", type=str, default="Ascend")
-parser.add_argument("--dataset_path", type=str, default="/home/workspace/mindspore_dataset/mnist")
+parser.add_argument("--dataset_path", type=str, default="/home/workspace/luojianet_ms_dataset/mnist")
 args, _ = parser.parse_known_args()
 device_target = args.device_target
 dataset_path = args.dataset_path
@@ -63,7 +64,7 @@ class Menet(Cell):
         self.cast = op.Cast()
         self.bias = Parameter(Tensor(np.ones([output_channels]).astype(np.float32)), name='bias')
         self.biasadd = op.BiasAdd()
-        self.type = mindspore.int32
+        self.type = luojianet_ms.int32
 
     def construct(self, x):
         x = self.conv(x)

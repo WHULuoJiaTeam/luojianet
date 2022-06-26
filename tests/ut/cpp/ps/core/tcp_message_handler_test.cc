@@ -20,7 +20,7 @@
 #include <memory>
 #include <thread>
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ps {
 namespace core {
 class TestTcpMessageHandler : public UT::Common {
@@ -174,4 +174,4 @@ TEST_F(TestTcpMessageHandler, 16Header_2meta_4062Data_16Header_2meta_4062_data) 
 }
 }  // namespace core
 }  // namespace ps
-}  // namespace mindspore
+}  // namespace luojianet_ms

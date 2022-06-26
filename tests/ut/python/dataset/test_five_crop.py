@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd.
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +18,10 @@ Testing FiveCrop in DE
 import pytest
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.py_transforms as vision
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.py_transforms as vision
+from luojianet_ms import log as logger
 from util import visualize_list, save_and_check_md5
 
 DATA_DIR = ["../data/dataset/test_tf_file_3_images/train-0000-of-0001.data"]
@@ -40,7 +41,7 @@ def test_five_crop_op(plot=False):
         vision.Decode(),
         vision.ToTensor(),
     ]
-    transform_1 = mindspore.dataset.transforms.py_transforms.Compose(transforms_1)
+    transform_1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms_1)
     data1 = data1.map(operations=transform_1, input_columns=["image"])
 
     # Second dataset
@@ -50,7 +51,7 @@ def test_five_crop_op(plot=False):
         vision.FiveCrop(200),
         lambda *images: np.stack([vision.ToTensor()(image) for image in images])  # 4D stack of 5 images
     ]
-    transform_2 = mindspore.dataset.transforms.py_transforms.Compose(transforms_2)
+    transform_2 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms_2)
     data2 = data2.map(operations=transform_2, input_columns=["image"])
 
     num_iter = 0
@@ -85,7 +86,7 @@ def test_five_crop_error_msg():
         vision.FiveCrop(200),
         vision.ToTensor()
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
 
     with pytest.raises(RuntimeError) as info:
@@ -110,7 +111,7 @@ def test_five_crop_md5():
         vision.FiveCrop(100),
         lambda *images: np.stack([vision.ToTensor()(image) for image in images])  # 4D stack of 5 images
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data = data.map(operations=transform, input_columns=["image"])
     # Compare with expected md5 from images
     filename = "five_crop_01_result.npz"

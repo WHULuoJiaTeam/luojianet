@@ -14,9 +14,9 @@
 # ============================================================================
 import numpy as np
 
-from mindspore import context, Tensor
-from mindspore.ops import operations as P
-from mindspore import nn
+from luojianet_ms import context, Tensor
+from luojianet_ms.ops import operations as P
+from luojianet_ms import nn
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 

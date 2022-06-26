@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,15 +23,15 @@ from unittest import mock
 import numpy as np
 import pytest
 
-import mindspore.common.dtype as mstype
-import mindspore.nn as nn
-from mindspore.common.api import ms_function
-from mindspore.common.tensor import Tensor
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.optim import Momentum
-from mindspore.train.callback import ModelCheckpoint, RunContext, LossMonitor, _InternalCallbackParam, \
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.nn as nn
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.train.callback import ModelCheckpoint, RunContext, LossMonitor, _InternalCallbackParam, \
     _CallbackManager, Callback, CheckpointConfig, _set_cur_net, _checkpoint_cb_for_save_op, History, LambdaCallback
-from mindspore.train.callback._checkpoint import _chg_ckpt_file_name_if_same_exist
+from luojianet_ms.train.callback._checkpoint import _chg_ckpt_file_name_if_same_exist
 
 
 class Net(nn.Cell):

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +18,12 @@ import tempfile
 import pytest
 import scipy
 import numpy as np
-import mindspore.nn as nn
-import mindspore.ops.operations as P
-from mindspore import context, Tensor
-from mindspore.common import dtype as mstype
-from mindspore.common.parameter import Parameter
-from mindspore.train.summary.summary_record import SummaryRecord
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.operations as P
+from luojianet_ms import context, Tensor
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.train.summary.summary_record import SummaryRecord
 from tests.summary_utils import SummaryReader
 from tests.security_utils import security_off_wrap
 

@@ -16,15 +16,15 @@
 
 import pytest
 import numpy as np
-import mindspore.nn as nn
-import mindspore.numpy as mnp
-import mindspore.context as context
-import mindspore.ops.operations as P
-import mindspore.ops.functional as F
-from mindspore import dtype as mstype
-from mindspore.common import Tensor
-from mindspore.ops.functional import vmap
-from mindspore.common.parameter import Parameter
+import luojianet_ms.nn as nn
+import luojianet_ms.numpy as mnp
+import luojianet_ms.context as context
+import luojianet_ms.ops.operations as P
+import luojianet_ms.ops.functional as F
+from luojianet_ms import dtype as mstype
+from luojianet_ms.common import Tensor
+from luojianet_ms.ops.functional import vmap
+from luojianet_ms.common.parameter import Parameter
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -278,7 +278,7 @@ def test_vmap_general_rule():
         1. The general VmapRule.
         2. The specific VmapRule of `Reshape` operation.
         3. The same `vmap` object is called multiple times.
-        4. The `mindspore.numpy` objects as the arguments.
+        4. The `luojianet_ms.numpy` objects as the arguments.
     Expectation: success
     """
     def convolve(x, w):

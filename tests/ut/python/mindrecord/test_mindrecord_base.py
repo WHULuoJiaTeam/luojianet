@@ -19,8 +19,8 @@ import pytest
 import numpy as np
 from utils import get_data, get_nlp_data
 
-from mindspore import log as logger
-from mindspore.mindrecord import FileWriter, FileReader, MindPage, SUCCESS
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import FileWriter, FileReader, MindPage, SUCCESS
 
 FILES_NUM = 4
 

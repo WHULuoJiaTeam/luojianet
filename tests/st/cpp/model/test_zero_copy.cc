@@ -32,9 +32,9 @@
 #include "include/api/serialization.h"
 #include "include/api/context.h"
 
-using namespace mindspore;
-using namespace mindspore::dataset;
-using namespace mindspore::dataset::vision;
+using namespace luojianet_ms;
+using namespace luojianet_ms::dataset;
+using namespace luojianet_ms::dataset::vision;
 
 class TestZeroCopy : public ST::Common {
  public:
@@ -42,13 +42,13 @@ class TestZeroCopy : public ST::Common {
 };
 
 typedef timeval TimeValue;
-constexpr auto resnet_file = "/home/workspace/mindspore_dataset/mindir/resnet50/resnet50_imagenet.mindir";
-constexpr auto image_path = "/home/workspace/mindspore_dataset/imagenet/imagenet_original/val/n01440764/";
+constexpr auto resnet_file = "/home/workspace/luojianet_ms_dataset/mindir/resnet50/resnet50_imagenet.mindir";
+constexpr auto image_path = "/home/workspace/luojianet_ms_dataset/imagenet/imagenet_original/val/n01440764/";
 constexpr auto aipp_path = "./data/dataset/aipp_resnet50.cfg";
 constexpr uint64_t kUSecondInSecond = 1000000;
 constexpr uint64_t run_nums = 10;
 
-size_t GetMax(mindspore::MSTensor data);
+size_t GetMax(luojianet_ms::MSTensor data);
 std::string RealPath(std::string_view path);
 DIR *OpenDir(std::string_view dir_name);
 std::vector<std::string> GetAllFiles(std::string_view dir_name);
@@ -69,23 +69,23 @@ TEST_F(TestZeroCopy, TestMindIR) {
   Model resnet50;
   ASSERT_TRUE(resnet50.Build(GraphCell(graph), context) == kSuccess);
   // Get model info
-  std::vector<mindspore::MSTensor> model_inputs = resnet50.GetInputs();
+  std::vector<luojianet_ms::MSTensor> model_inputs = resnet50.GetInputs();
   ASSERT_EQ(model_inputs.size(), 1);
   // Define transform operations
   std::shared_ptr<TensorTransform> decode(new vision::Decode());
   std::shared_ptr<TensorTransform> resize(new vision::Resize({256}));
   std::shared_ptr<TensorTransform> center_crop(new vision::CenterCrop({224, 224}));
-  mindspore::dataset::Execute Transform({decode, resize, center_crop}, MapTargetDevice::kAscend310, device_id);
+  luojianet_ms::dataset::Execute Transform({decode, resize, center_crop}, MapTargetDevice::kAscend310, device_id);
   size_t count = 0;
   // Read images
   std::vector<std::string> images = GetAllFiles(image_path);
   for (const auto &image_file : images) {
     // prepare input
-    std::vector<mindspore::MSTensor> inputs;
-    std::vector<mindspore::MSTensor> outputs;
-    std::shared_ptr<mindspore::dataset::Tensor> de_tensor;
-    mindspore::dataset::Tensor::CreateFromFile(image_file, &de_tensor);
-    auto image = mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_tensor));
+    std::vector<luojianet_ms::MSTensor> inputs;
+    std::vector<luojianet_ms::MSTensor> outputs;
+    std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
+    luojianet_ms::dataset::Tensor::CreateFromFile(image_file, &de_tensor);
+    auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
     // Apply transform on images
     Status rc = Transform(image, &image);
     ASSERT_TRUE(rc == kSuccess);
@@ -117,23 +117,23 @@ TEST_F(TestZeroCopy, TestDeviceTensor) {
   Model resnet50;
   ASSERT_TRUE(resnet50.Build(GraphCell(graph), context) == kSuccess);
   // Get model info
-  std::vector<mindspore::MSTensor> model_inputs = resnet50.GetInputs();
+  std::vector<luojianet_ms::MSTensor> model_inputs = resnet50.GetInputs();
   ASSERT_EQ(model_inputs.size(), 1);
   // Define transform operations
   std::shared_ptr<TensorTransform> decode(new vision::Decode());
   std::shared_ptr<TensorTransform> resize(new vision::Resize({256}));
   std::shared_ptr<TensorTransform> center_crop(new vision::CenterCrop({224, 224}));
-  mindspore::dataset::Execute Transform({decode, resize, center_crop}, MapTargetDevice::kAscend310, device_id);
+  luojianet_ms::dataset::Execute Transform({decode, resize, center_crop}, MapTargetDevice::kAscend310, device_id);
   // Read images
   std::vector<std::string> images = GetAllFiles(image_path);
   uint64_t cost = 0, device_cost = 0;
   for (const auto &image_file : images) {
     // prepare input
-    std::vector<mindspore::MSTensor> inputs;
-    std::vector<mindspore::MSTensor> outputs;
-    std::shared_ptr<mindspore::dataset::Tensor> de_tensor;
-    mindspore::dataset::Tensor::CreateFromFile(image_file, &de_tensor);
-    auto image = mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_tensor));
+    std::vector<luojianet_ms::MSTensor> inputs;
+    std::vector<luojianet_ms::MSTensor> outputs;
+    std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
+    luojianet_ms::dataset::Tensor::CreateFromFile(image_file, &de_tensor);
+    auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
     // Apply transform on images
     Status rc = Transform(image, &image);
     ASSERT_TRUE(rc == kSuccess);
@@ -175,7 +175,7 @@ TEST_F(TestZeroCopy, TestDeviceTensor) {
 #endif
 }
 
-size_t GetMax(mindspore::MSTensor data) {
+size_t GetMax(luojianet_ms::MSTensor data) {
   float max_value = -1;
   size_t max_idx = 0;
   const float *p = reinterpret_cast<const float *>(data.MutableData());

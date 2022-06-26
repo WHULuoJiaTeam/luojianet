@@ -16,13 +16,13 @@
 
 import time
 import numpy as np
-import mindspore.nn as nn
-from mindspore.common.tensor import Tensor
-from mindspore.ops import functional as F
-from mindspore.ops import composite as C
-from mindspore import ParameterTuple
-from mindspore.train.callback import Callback
-from mindspore.nn.wrap.grad_reducer import DistributedGradReducer
+import luojianet_ms.nn as nn
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops import functional as F
+from luojianet_ms.ops import composite as C
+from luojianet_ms import ParameterTuple
+from luojianet_ms.train.callback import Callback
+from luojianet_ms.nn.wrap.grad_reducer import DistributedGradReducer
 
 time_stamp_init = False
 time_stamp_first = 0

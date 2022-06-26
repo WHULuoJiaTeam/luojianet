@@ -14,17 +14,17 @@
 
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-import mindspore.common.dtype as mstype
-from mindspore.common.seed import _get_graph_seed
-from mindspore.common.api import _cell_graph_executor
-from mindspore._checkparam import Validator
-from mindspore.ops.primitive import constexpr
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.common.seed import _get_graph_seed
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms._checkparam import Validator
+from luojianet_ms.ops.primitive import constexpr
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 

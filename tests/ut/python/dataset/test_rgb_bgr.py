@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +19,11 @@ Testing RgbToBgr op in DE
 
 import numpy as np
 from numpy.testing import assert_allclose
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as vision
-import mindspore.dataset.vision.py_transforms as py_vision
-import mindspore.dataset.vision.py_transforms_util as util
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
+import luojianet_ms.dataset.vision.py_transforms_util as util
 
 DATA_DIR = ["../data/dataset/test_tf_file_3_images/train-0000-of-0001.data"]
 SCHEMA_DIR = "../data/dataset/test_tf_file_3_images/datasetSchema.json"
@@ -82,7 +83,7 @@ def test_rgb_bgr_chw_py():
 def test_rgb_bgr_pipeline_py():
     # First dataset
     transforms1 = [py_vision.Decode(), py_vision.Resize([64, 64]), py_vision.ToTensor()]
-    transforms1 = mindspore.dataset.transforms.py_transforms.Compose(
+    transforms1 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms1)
     ds1 = ds.TFRecordDataset(DATA_DIR,
                              SCHEMA_DIR,
@@ -97,7 +98,7 @@ def test_rgb_bgr_pipeline_py():
         py_vision.ToTensor(),
         py_vision.RgbToBgr()
     ]
-    transforms2 = mindspore.dataset.transforms.py_transforms.Compose(
+    transforms2 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms2)
     ds2 = ds.TFRecordDataset(DATA_DIR,
                              SCHEMA_DIR,
@@ -125,7 +126,7 @@ def test_rgb_bgr_pipeline_c():
         vision.Decode(),
         vision.Resize([64, 64])
     ]
-    transforms1 = mindspore.dataset.transforms.py_transforms.Compose(
+    transforms1 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms1)
     ds1 = ds.TFRecordDataset(DATA_DIR,
                              SCHEMA_DIR,
@@ -139,7 +140,7 @@ def test_rgb_bgr_pipeline_c():
         vision.Resize([64, 64]),
         vision.RgbToBgr()
     ]
-    transforms2 = mindspore.dataset.transforms.py_transforms.Compose(
+    transforms2 = luojianet_ms.dataset.transforms.py_transforms.Compose(
         transforms2)
     ds2 = ds.TFRecordDataset(DATA_DIR,
                              SCHEMA_DIR,

@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,12 @@
 # ============================================================================
 set -e
 BASE_PATH=$(cd "$(dirname $0)"; pwd)
-CONFIG_PATH=/home/workspace/mindspore_config
+CONFIG_PATH=/home/workspace/luojianet_ms_config
 export DEVICE_NUM=8
 export RANK_SIZE=$DEVICE_NUM
 source ${BASE_PATH}/env.sh
 unset SLOG_PRINT_TO_STDOUT
-export MINDSPORE_HCCL_CONFIG_PATH=$CONFIG_PATH/hccl/rank_table_${DEVICE_NUM}p.json
+export LUOJIANET_MS_HCCL_CONFIG_PATH=$CONFIG_PATH/hccl/rank_table_${DEVICE_NUM}p.json
 export LD_LIBRARY_PATH=/usr/local/Ascend/opp/op_impl/built-in/ai_core/tbe/op_tiling:${LD_LIBRARY_PATH}
 export ASCEND_OPP_PATH=/usr/local/Ascend/opp/
 

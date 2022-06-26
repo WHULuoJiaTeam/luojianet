@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 # just a basic test with parallel random data op
 def test_randomdataset_basic1():

@@ -19,8 +19,8 @@
 #include "minddata/dataset/include/dataset/transforms.h"
 #include "minddata/dataset/include/dataset/vision.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::InterpolationMode;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::InterpolationMode;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -98,7 +98,7 @@ TEST_F(MindDataTestPipeline, TestRandomAffineSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -146,7 +146,7 @@ TEST_F(MindDataTestPipeline, TestRandomAffineSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -198,7 +198,7 @@ TEST_F(MindDataTestPipeline, TestRandomColor) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -262,7 +262,7 @@ TEST_F(MindDataTestPipeline, TestRandomColorAdjust) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -320,7 +320,7 @@ TEST_F(MindDataTestPipeline, TestRandomCropSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -346,7 +346,7 @@ TEST_F(MindDataTestPipeline, TestRandomCropWithMultiField) {
 
   // Create objects for the tensor ops
   transforms::Duplicate duplicate = transforms::Duplicate();
-  std::shared_ptr<TensorTransform> random_crop(new mindspore::dataset::vision::RandomCrop({500, 500}));
+  std::shared_ptr<TensorTransform> random_crop(new luojianet_ms::dataset::vision::RandomCrop({500, 500}));
 
   // Create a Map operation on ds
   ds = ds->Map({duplicate}, {"image"}, {"image", "image_copy"});
@@ -361,7 +361,7 @@ TEST_F(MindDataTestPipeline, TestRandomCropWithMultiField) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -497,7 +497,7 @@ TEST_F(MindDataTestPipeline, TestRandomCropWithBboxSuccess) {
   EXPECT_NE(ds, nullptr);
 
   // Create objects for the tensor ops
-  std::shared_ptr<TensorTransform> random_crop(new mindspore::dataset::vision::RandomCropWithBBox({128, 128}));
+  std::shared_ptr<TensorTransform> random_crop(new luojianet_ms::dataset::vision::RandomCropWithBBox({128, 128}));
 
   // Create a Map operation on ds
   ds = ds->Map({random_crop}, {"image", "bbox"}, {"image", "bbox"}, {"image", "bbox"});
@@ -509,7 +509,7 @@ TEST_F(MindDataTestPipeline, TestRandomCropWithBboxSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -639,7 +639,7 @@ TEST_F(MindDataTestPipeline, TestRandomHorizontalFlipWithBBoxSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -687,7 +687,7 @@ TEST_F(MindDataTestPipeline, TestRandomHorizontalAndVerticalFlip) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -729,7 +729,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizeWithMultiField) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -779,7 +779,7 @@ TEST_F(MindDataTestPipeline, TestRandomPosterizeSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -827,7 +827,7 @@ TEST_F(MindDataTestPipeline, TestRandomPosterizeSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -865,7 +865,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizeSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -909,7 +909,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizeSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -952,7 +952,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizeWithBBoxSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -999,7 +999,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizeWithBBoxSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1039,7 +1039,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizedCropSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1067,7 +1067,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizedCropSuccess2) {
 
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> random_resized_crop(new vision::RandomResizedCrop(
-    {5, 10}, {0.25, 0.75}, {0.5, 1.25}, mindspore::dataset::InterpolationMode::kArea, 20));
+    {5, 10}, {0.25, 0.75}, {0.5, 1.25}, luojianet_ms::dataset::InterpolationMode::kArea, 20));
 
   // Create a Map operation on ds
   ds = ds->Map({random_resized_crop}, {"image"});
@@ -1079,7 +1079,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizedCropSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1201,7 +1201,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizedCropWithBBoxSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1233,7 +1233,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizedCropWithBBoxSuccess2) {
 
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> random_resized_crop(new vision::RandomResizedCropWithBBox(
-    {5, 10}, {0.25, 0.75}, {0.5, 1.25}, mindspore::dataset::InterpolationMode::kArea, 20));
+    {5, 10}, {0.25, 0.75}, {0.5, 1.25}, luojianet_ms::dataset::InterpolationMode::kArea, 20));
 
   // Create a Map operation on ds
   ds = ds->Map({random_resized_crop}, {"image", "bbox"});
@@ -1245,7 +1245,7 @@ TEST_F(MindDataTestPipeline, TestRandomResizedCropWithBBoxSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1377,7 +1377,7 @@ TEST_F(MindDataTestPipeline, TestRandomRotation) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1434,7 +1434,7 @@ TEST_F(MindDataTestPipeline, TestRandomRotationFail) {
   // Case 4: Testing the size of center vector is 1
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> random_rotation_op4(
-    new vision::RandomRotation({-50.0, 50.0}, mindspore::dataset::InterpolationMode::kNearestNeighbour, false, {-1.0}));
+    new vision::RandomRotation({-50.0, 50.0}, luojianet_ms::dataset::InterpolationMode::kNearestNeighbour, false, {-1.0}));
   auto ds4 = ds->Map({random_rotation_op4});
   EXPECT_NE(ds4, nullptr);
   // Create an iterator over the result of the above dataset
@@ -1445,7 +1445,7 @@ TEST_F(MindDataTestPipeline, TestRandomRotationFail) {
   // Case 5: Testing the size of center vector is 3
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> random_rotation_op5(new vision::RandomRotation(
-    {-50.0, 50.0}, mindspore::dataset::InterpolationMode::kNearestNeighbour, false, {-1.0, -1.0, -1.0}));
+    {-50.0, 50.0}, luojianet_ms::dataset::InterpolationMode::kNearestNeighbour, false, {-1.0, -1.0, -1.0}));
   auto ds5 = ds->Map({random_rotation_op5});
   EXPECT_NE(ds5, nullptr);
   // Create an iterator over the result of the above dataset
@@ -1456,7 +1456,7 @@ TEST_F(MindDataTestPipeline, TestRandomRotationFail) {
   // Case 6: Testing the size of fill_value vector is 2
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> random_rotation_op6(new vision::RandomRotation(
-    {-50.0, 50.0}, mindspore::dataset::InterpolationMode::kNearestNeighbour, false, {-1.0, -1.0}, {2, 2}));
+    {-50.0, 50.0}, luojianet_ms::dataset::InterpolationMode::kNearestNeighbour, false, {-1.0, -1.0}, {2, 2}));
   auto ds6 = ds->Map({random_rotation_op6});
   EXPECT_NE(ds6, nullptr);
   // Create an iterator over the result of the above dataset
@@ -1467,7 +1467,7 @@ TEST_F(MindDataTestPipeline, TestRandomRotationFail) {
   // Case 7: Testing the size of fill_value vector is 4
   // Create objects for the tensor ops
   std::shared_ptr<TensorTransform> random_rotation_op7(new vision::RandomRotation(
-    {-50.0, 50.0}, mindspore::dataset::InterpolationMode::kNearestNeighbour, false, {-1.0, -1.0}, {2, 2, 2, 2}));
+    {-50.0, 50.0}, luojianet_ms::dataset::InterpolationMode::kNearestNeighbour, false, {-1.0, -1.0}, {2, 2, 2, 2}));
   auto ds7 = ds->Map({random_rotation_op7});
   EXPECT_NE(ds7, nullptr);
   // Create an iterator over the result of the above dataset
@@ -1511,7 +1511,7 @@ TEST_F(MindDataTestPipeline, TestRandomSharpness) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1539,7 +1539,7 @@ TEST_F(MindDataTestPipeline, TestRandomSolarizeSucess1) {
   // Create objects for the tensor ops
   std::vector<uint8_t> threshold = {10, 100};
   std::shared_ptr<TensorTransform> random_solarize =
-    std::make_shared<mindspore::dataset::vision::RandomSolarize>(threshold);
+    std::make_shared<luojianet_ms::dataset::vision::RandomSolarize>(threshold);
 
   // Create a Map operation on ds
   ds = ds->Map({random_solarize});
@@ -1551,7 +1551,7 @@ TEST_F(MindDataTestPipeline, TestRandomSolarizeSucess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1577,7 +1577,7 @@ TEST_F(MindDataTestPipeline, TestRandomSolarizeSucess2) {
   EXPECT_NE(ds, nullptr);
 
   // Create objects for the tensor ops
-  std::shared_ptr<TensorTransform> random_solarize = std::make_shared<mindspore::dataset::vision::RandomSolarize>();
+  std::shared_ptr<TensorTransform> random_solarize = std::make_shared<luojianet_ms::dataset::vision::RandomSolarize>();
 
   // Create a Map operation on ds
   ds = ds->Map({random_solarize});
@@ -1589,7 +1589,7 @@ TEST_F(MindDataTestPipeline, TestRandomSolarizeSucess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1627,7 +1627,7 @@ TEST_F(MindDataTestPipeline, TestRandomVerticalFlipWithBBoxSuccess) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1670,7 +1670,7 @@ TEST_F(MindDataTestPipeline, TestRandomHorizontalAndVerticalFlipWithMultiField) 
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1714,7 +1714,7 @@ TEST_F(MindDataTestPipeline, TestRandomCropDecodeResizeWithMultiField) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -1724,7 +1724,7 @@ TEST_F(MindDataTestPipeline, TestRandomCropDecodeResizeWithMultiField) {
     auto image_copy = row["image_copy"];
     MS_LOG(INFO) << "Tensor image shape: " << image.Shape();
     MS_LOG(INFO) << "Tensor image_copy shape: " << image_copy.Shape();
-    
+
     ASSERT_OK(iter->GetNextRow(&row));
   }
 
@@ -1759,7 +1759,7 @@ TEST_F(MindDataTestPipeline, TestRandomCropResizeWithMultiField) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

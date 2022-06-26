@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class LogSoftmaxInfo;
@@ -55,7 +55,7 @@ void TestLogSoftmaxInfo::SetUp() {
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
   ValuePtr axis = MakeValue(static_cast<int64_t>(-2));
-  mindspore::HashMap<std::string, ValuePtr> attr = {{"axis", axis}};
+  luojianet_ms::HashMap<std::string, ValuePtr> attr = {{"axis", axis}};
 
   Shapes inputs_shape = {{2, 4, 8, 16}};
   Shapes outputs_shape = {{2, 4, 8, 16}};
@@ -176,4 +176,4 @@ TEST_F(TestLogSoftmaxInfo, GetDeviceList1) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

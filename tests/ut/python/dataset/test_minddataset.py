@@ -24,11 +24,11 @@ import string
 import pytest
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.vision.c_transforms as vision
-from mindspore import log as logger
-from mindspore.dataset.vision import Inter
-from mindspore.mindrecord import FileWriter
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.vision.c_transforms as vision
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.vision import Inter
+from luojianet_ms.mindrecord import FileWriter
 
 FILES_NUM = 4
 CV_DIR_NAME = "../data/mindrecord/testImageNetData"

@@ -14,17 +14,17 @@
 
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.common.parameter import Parameter
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
-from mindspore.train import Model
-from mindspore.context import ParallelMode
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
+from luojianet_ms.train import Model
+from luojianet_ms.context import ParallelMode
 from tests.dataset_mock import MindData
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 

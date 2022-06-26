@@ -16,9 +16,9 @@
 import pytest
 import numpy as np
 
-import mindspore.nn as nn
-import mindspore.common.dtype as mstype
-from mindspore import Tensor, context, ms_class, ms_function
+import luojianet_ms.nn as nn
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms import Tensor, context, ms_class, ms_function
 from . import test_graph_fallback
 
 context.set_context(mode=context.GRAPH_MODE)

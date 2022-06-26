@@ -16,7 +16,7 @@
 #include <vector>
 #include "plugin/device/ascend/hal/hccl_adapter/hccl_adapter.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace hccl {
 HcclAdapter &HcclAdapter::GetInstance() {
   static HcclAdapter instance;
@@ -59,4 +59,4 @@ HcclResult HcclAdapter::HcclExecEnqueueOp(const ::HcomOperation &op_info, const 
   return HCCL_SUCCESS;
 }
 }  // namespace hccl
-}  // namespace mindspore
+}  // namespace luojianet_ms

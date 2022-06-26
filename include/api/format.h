@@ -1,7 +1,8 @@
 /**
  * This is the C++ adaptation and derivative work of Myia (https://github.com/mila-iqia/myia/).
  *
- * Copyright 2021 Huawei Technologies Co., Ltd
+ * Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+ * Copyright 2021, 2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +17,8 @@
  * limitations under the License.
  */
 
-#ifndef MINDSPORE_INCLUDE_API_FORMAT_H
-#define MINDSPORE_INCLUDE_API_FORMAT_H
+#ifndef LUOJIANET_MS_INCLUDE_API_FORMAT_H
+#define LUOJIANET_MS_INCLUDE_API_FORMAT_H
 
 #if __has_include("include/mindapi/base/format.h")
 #include "include/mindapi/base/format.h"
@@ -25,4 +26,4 @@
 #include "mindapi/base/format.h"
 #endif
 
-#endif  // MINDSPORE_INCLUDE_API_FORMAT_H
+#endif  // LUOJIANET_MS_INCLUDE_API_FORMAT_H

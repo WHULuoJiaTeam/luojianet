@@ -29,7 +29,7 @@
 #include "include/common/debug/draw.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace abstract {
 class TestSpecializeGraph : public UT::Common {
  public:
@@ -220,4 +220,4 @@ TEST_F(TestSpecializeMetaFuncGraph, test_specialize) {
 }
 
 }  // namespace abstract
-}  // namespace mindspore
+}  // namespace luojianet_ms

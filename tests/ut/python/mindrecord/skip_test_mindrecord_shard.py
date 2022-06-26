@@ -17,9 +17,9 @@ import os
 import random
 from utils import get_data, get_nlp_data, get_mkv_data
 
-from mindspore import log as logger
-from mindspore.mindrecord import ShardHeader, SUCCESS
-from mindspore.mindrecord import ShardWriter, ShardIndexGenerator, ShardReader, ShardSegment
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import ShardHeader, SUCCESS
+from luojianet_ms.mindrecord import ShardWriter, ShardIndexGenerator, ShardReader, ShardSegment
 
 FILES_NUM = 4
 CV_FILE_NAME = "./imagenet.mindrecord"

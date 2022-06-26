@@ -16,7 +16,7 @@
 #include "include/common/utils/comm_manager.h"
 #include "common/common_test.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestCommManager : public UT::Common {
  public:
   TestCommManager() {}
@@ -34,4 +34,4 @@ TEST_F(TestCommManager, TestGetSize) {
   ASSERT_TRUE(CommManager::GetInstance().GetRankSize(std::string("hccl_world_group"), &rank_size));
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -17,7 +17,7 @@ import re
 import platform
 from collections import defaultdict
 import pytest
-import mindspore.context as context
+import luojianet_ms.context as context
 
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')

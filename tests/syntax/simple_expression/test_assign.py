@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,10 +15,10 @@
 # ============================================================================
 """ test syntax for logic expression """
 
-import mindspore.nn as nn
-import mindspore
-from mindspore import context
-from mindspore.common.tensor import Tensor
+import luojianet_ms.nn as nn
+import luojianet_ms
+from luojianet_ms import context
+from luojianet_ms.common.tensor import Tensor
 
 context.set_context(mode=context.GRAPH_MODE)
 
@@ -39,7 +40,7 @@ class Net(nn.Cell):
 
 def test_assign():
     net = Net()
-    y = Tensor((1), mindspore.int32)
+    y = Tensor((1), luojianet_ms.int32)
     x = 1
     ret = net(x, y)
     print(ret)

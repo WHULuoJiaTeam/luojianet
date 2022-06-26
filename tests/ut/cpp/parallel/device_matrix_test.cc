@@ -18,7 +18,7 @@
 #include "common/py_func_graph_fetcher.h"
 #include "frontend/parallel/device_matrix.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestDeviceMatrix : public UT::Common {
@@ -125,4 +125,4 @@ TEST_F(TestDeviceMatrix, TestCornerCase2GetAlongDim) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

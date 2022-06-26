@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,18 +17,18 @@
 
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import context
-from mindspore import Tensor, Parameter
-from mindspore.ops import operations as P
-import mindspore.ops.functional as F
-import mindspore.ops as ops
-from mindspore.ops.operations import _inner_ops as inner
-import mindspore.common.dtype as mstype
-from mindspore.common.initializer import initializer
-from mindspore.ops.bprop_mindir import serializable_bprop_ops
-from mindspore._c_expression import load_mindir
-import mindspore.ops._grad as g
+import luojianet_ms.nn as nn
+from luojianet_ms import context
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.ops import operations as P
+import luojianet_ms.ops.functional as F
+import luojianet_ms.ops as ops
+from luojianet_ms.ops.operations import _inner_ops as inner
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.ops.bprop_mindir import serializable_bprop_ops
+from luojianet_ms._c_expression import load_mindir
+import luojianet_ms.ops._grad as g
 
 
 class Net(nn.Cell):

@@ -24,9 +24,9 @@
 #include "ir/tensor.h"
 #include "pybind_api/ir/tensor_py.h"
 
-using mindspore::tensor::TensorPy;
+using luojianet_ms::tensor::TensorPy;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace tensor {
 
 class TestMetaTensor : public UT::Common {
@@ -375,4 +375,4 @@ TEST_F(TestTensor, TensorPyCast) {
 }
 
 }  // namespace tensor
-}  // namespace mindspore
+}  // namespace luojianet_ms

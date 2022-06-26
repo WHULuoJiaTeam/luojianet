@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +17,12 @@
 import numpy as np
 import pytest
 
-import mindspore
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-import mindspore.ops as ops
-from mindspore.ops import operations as P
+import luojianet_ms
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+import luojianet_ms.ops as ops
+from luojianet_ms.ops import operations as P
 
 
 class Net(nn.Cell):
@@ -119,8 +120,8 @@ def test_functional_select_type_error():
     Expectation: TypeError.
     """
     input_cond = Tensor([True, True])
-    input_x_int = Tensor([2, 3], mindspore.int32)
-    input_x_float = Tensor([2, 3], mindspore.float32)
+    input_x_int = Tensor([2, 3], luojianet_ms.int32)
+    input_x_float = Tensor([2, 3], luojianet_ms.float32)
 
     with pytest.raises(TypeError):
         ops.select(input_cond, input_x_int, 2.0)

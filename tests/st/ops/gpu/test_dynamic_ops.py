@@ -16,9 +16,9 @@
 import numpy as np
 import pytest
 
-from mindspore import ops, nn, ParameterTuple, context, set_seed
-from mindspore.train import DatasetHelper, connect_network_with_dataset
-import mindspore.dataset as ds
+from luojianet_ms import ops, nn, ParameterTuple, context, set_seed
+from luojianet_ms.train import DatasetHelper, connect_network_with_dataset
+import luojianet_ms.dataset as ds
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 set_seed(2)

@@ -19,9 +19,9 @@ import pytest
 import numpy as np
 from utils import get_data
 
-from mindspore import log as logger
-from mindspore.mindrecord import FileWriter, FileReader, MindPage, SUCCESS
-from mindspore.mindrecord import ParamValueError, MRMGetMetaError
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import FileWriter, FileReader, MindPage, SUCCESS
+from luojianet_ms.mindrecord import ParamValueError, MRMGetMetaError
 
 FILES_NUM = 4
 

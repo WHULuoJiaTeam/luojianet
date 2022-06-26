@@ -15,13 +15,13 @@
 
 import numpy as np
 import pytest
-import mindspore.common.dtype as mstype
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.c_transforms as c_transforms
-import mindspore.dataset.transforms.py_transforms as py_transforms
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.c_transforms as c_transforms
+import luojianet_ms.dataset.transforms.py_transforms as py_transforms
 
-import mindspore.dataset.vision.c_transforms as c_vision
-import mindspore.dataset.vision.py_transforms as py_vision
+import luojianet_ms.dataset.vision.c_transforms as c_vision
+import luojianet_ms.dataset.vision.py_transforms as py_vision
 
 from util import visualize_list, save_and_check_md5, config_get_set_seed, config_get_set_num_parallel_workers
 

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +15,11 @@
 # ============================================================================
 """test cases for exp"""
 import pytest
-import mindspore.nn as nn
-import mindspore.nn.probability.bijector as msb
-from mindspore import Tensor
-from mindspore import dtype
-from mindspore import context
+import luojianet_ms.nn as nn
+import luojianet_ms.nn.probability.bijector as msb
+from luojianet_ms import Tensor
+from luojianet_ms import dtype
+from luojianet_ms import context
 
 skip_flag = context.get_context("device_target") == "CPU"
 

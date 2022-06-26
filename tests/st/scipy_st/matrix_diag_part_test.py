@@ -15,9 +15,9 @@
 """st for scipy.ops_wrapper."""
 import numpy
 import pytest
-import mindspore.scipy as msp
-from mindspore import context, Tensor
-from mindspore import dtype
+import luojianet_ms.scipy as msp
+from luojianet_ms import context, Tensor
+from luojianet_ms import dtype
 from tests.st.scipy_st.utils import match_array
 
 aligndict = {0: "LEFT_RIGHT", 1: "LEFT_LEFT", 2: "RIGHT_LEFT", 3: "RIGHT_RIGHT"}

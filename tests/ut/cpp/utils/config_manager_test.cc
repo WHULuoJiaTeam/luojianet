@@ -16,7 +16,7 @@
 #include "common/common_test.h"
 #include "include/common/utils/config_manager.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestConfigManager : public UT::Common {
  public:
   TestConfigManager() {}
@@ -29,4 +29,4 @@ TEST_F(TestConfigManager, TestAPI) {
   ASSERT_TRUE(ConfigManager::GetInstance().parallel_strategy() == ParallelStrategy::DISTRIBUTION);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

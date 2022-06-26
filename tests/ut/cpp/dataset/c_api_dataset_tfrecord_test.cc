@@ -18,11 +18,11 @@
 #include "minddata/dataset/include/dataset/vision.h"
 #include "minddata/dataset/core/global_context.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
-using mindspore::dataset::DataType;
-using mindspore::dataset::ShuffleMode;
-using mindspore::dataset::TensorShape;
+using luojianet_ms::dataset::DataType;
+using luojianet_ms::dataset::ShuffleMode;
+using luojianet_ms::dataset::TensorShape;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -62,7 +62,7 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check column
@@ -142,9 +142,9 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetShuffle) {
   EXPECT_NE(iter2, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row1;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row1;
   ASSERT_OK(iter1->GetNextRow(&row1));
-  std::unordered_map<std::string, mindspore::MSTensor> row2;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row2;
   ASSERT_OK(iter2->GetNextRow(&row2));
 
   uint64_t i = 0;
@@ -197,7 +197,7 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetShuffle2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int> expect = {9, 3, 4, 7, 2, 1, 6, 8, 10, 5};
@@ -240,7 +240,7 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetSchemaPath) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check column
@@ -284,7 +284,7 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetSchemaObj) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check column
@@ -313,9 +313,9 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetSchemaObj) {
     ASSERT_EQ(col_2d.Shape().size(), 2);
 
     // Validate type
-    ASSERT_EQ(col_sint16.DataType(), mindspore::DataType::kNumberTypeInt16);
-    ASSERT_EQ(col_float.DataType(), mindspore::DataType::kNumberTypeFloat32);
-    ASSERT_EQ(col_2d.DataType(), mindspore::DataType::kNumberTypeInt64);
+    ASSERT_EQ(col_sint16.DataType(), luojianet_ms::DataType::kNumberTypeInt16);
+    ASSERT_EQ(col_float.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col_2d.DataType(), luojianet_ms::DataType::kNumberTypeInt64);
 
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
@@ -342,7 +342,7 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetNoSchema) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check column
@@ -382,7 +382,7 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetColName) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Check column
@@ -422,9 +422,9 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetShard) {
   EXPECT_NE(iter2, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row1;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row1;
   ASSERT_OK(iter1->GetNextRow(&row1));
-  std::unordered_map<std::string, mindspore::MSTensor> row2;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row2;
   ASSERT_OK(iter2->GetNextRow(&row2));
 
   uint64_t i = 0;
@@ -539,7 +539,7 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetBasic1Row) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -572,7 +572,7 @@ TEST_F(MindDataTestPipeline, TestTFRecordDatasetBasic7Row) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

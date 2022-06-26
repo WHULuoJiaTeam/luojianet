@@ -41,11 +41,11 @@ using std::pair;
 using std::string;
 using std::vector;
 
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace mindrecord {
 class TestShardSchema : public UT::Common {
  public:
@@ -150,4 +150,4 @@ TEST_F(TestStatistics, StatisticPart) {
 }
 
 }  // namespace mindrecord
-}  // namespace mindspore
+}  // namespace luojianet_ms

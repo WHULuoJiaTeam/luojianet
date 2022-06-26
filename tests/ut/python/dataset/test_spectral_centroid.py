@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,9 +18,9 @@ Testing SpectralCentroid Python API
 """
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms import log as logger
 
 
 def count_unequal_element(data_expected, data_me, rtol, atol):
@@ -35,7 +36,7 @@ def count_unequal_element(data_expected, data_me, rtol, atol):
 
 def test_spectral_centroid_pipeline():
     """
-    Feature: mindspore pipeline mode normal testcase: spectral_centroid op.
+    Feature: luojianet_ms pipeline mode normal testcase: spectral_centroid op.
     Description: input audio signal to test pipeline.
     Expectation: success.
     """
@@ -54,7 +55,7 @@ def test_spectral_centroid_pipeline():
 
 def test_spectral_centroid_eager():
     """
-    Feature: mindspore eager mode normal testcase: spectral_centroid op.
+    Feature: luojianet_ms eager mode normal testcase: spectral_centroid op.
     Description: input audio signal to test eager.
     Expectation: success.
     """

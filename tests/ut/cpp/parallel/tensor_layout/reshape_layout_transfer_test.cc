@@ -23,7 +23,7 @@
 #include "utils/log_adapter.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class TestReshapeLayoutTransfer : public UT::Common {
@@ -319,4 +319,4 @@ TEST_F(TestReshapeLayoutTransfer, ValidInferUnifiedLayoutCheckAll2) {
   }
 }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

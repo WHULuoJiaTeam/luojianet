@@ -14,8 +14,8 @@
 
 from hccl_test.manage.api import Hccl
 
-from mindspore import Tensor
-from mindspore.parallel._tensor import _load_tensor
+from luojianet_ms import Tensor
+from luojianet_ms.parallel._tensor import _load_tensor
 
 
 def test_load_tensor():

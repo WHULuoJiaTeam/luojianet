@@ -16,9 +16,9 @@
 
 import pytest
 import numpy as onp
-import mindspore.numpy as mnp
-from mindspore import context
-from mindspore.common.dtype import dtype_to_nptype
+import luojianet_ms.numpy as mnp
+from luojianet_ms import context
+from luojianet_ms.common.dtype import dtype_to_nptype
 
 from .utils import rand_int, rand_bool, run_binop_test, run_unary_test, run_multi_test, \
     run_single_test, match_res, match_array, match_meta, match_all_arrays, to_tensor

@@ -24,7 +24,7 @@
 #include "abstract/abstract_function.h"
 #include "pipeline/jit/debug/trace.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 using Shape = abstract::Shape;
 
 using AbstractScalar = abstract::AbstractScalar;
@@ -529,4 +529,4 @@ TEST_F(TestComposite, test_shard) {
   auto shape = build_shape->cast<abstract::ShapePtr>();
   ASSERT_EQ(shape->shape(), std::vector<int64_t>({2, 3, 4}));
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

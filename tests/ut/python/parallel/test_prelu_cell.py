@@ -14,15 +14,15 @@
 
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore import context
-from mindspore.nn.loss import SoftmaxCrossEntropyWithLogits
-from mindspore.nn.optim.momentum import Momentum
-from mindspore.train import Model
-from mindspore.context import ParallelMode
-from mindspore.nn import PReLU
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms import context
+from luojianet_ms.nn.loss import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms.train import Model
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.nn import PReLU
 from tests.dataset_mock import MindData
 
 context.set_context(mode=context.GRAPH_MODE)

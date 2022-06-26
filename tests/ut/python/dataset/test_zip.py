@@ -14,8 +14,8 @@
 # ==============================================================================
 from util import save_and_check_dict, save_and_check_md5
 
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 
 # Dataset in DIR_1 has 5 rows and 5 columns
 DATA_DIR_1 = ["../data/dataset/testTFBert5Rows1/5TFDatas.data"]

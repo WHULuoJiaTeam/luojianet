@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +19,10 @@ Testing ComputeDeltas op in DE
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as c_audio
-from mindspore import log as logger
-from mindspore.dataset.audio.utils import BorderType
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as c_audio
+from luojianet_ms import log as logger
+from luojianet_ms.dataset.audio.utils import BorderType
 
 CHANNEL = 1
 FREQ = 20
@@ -56,7 +57,7 @@ def allclose_nparray(data_expected, data_me, rtol, atol, equal_nan=True):
 def test_compute_deltas_eager():
     """
     Feature: test the basic function in eager mode.
-    Description: mindspore eager mode normal testcase:compute_deltas op.
+    Description: luojianet_ms eager mode normal testcase:compute_deltas op.
     Expectation: compile done without error.
     """
 
@@ -78,15 +79,15 @@ def test_compute_deltas_eager():
                             [0.3112, 0.4753, 0.4793, 0.3212, 0.0205]]]).astype(np.float32)
 
     compute_deltas_op = c_audio.ComputeDeltas()
-    out_mindspore = compute_deltas_op(ndarr_in)
+    out_luojianet_ms = compute_deltas_op(ndarr_in)
 
-    allclose_nparray(out_mindspore, out_expect, 0.0001, 0.0001)
+    allclose_nparray(out_luojianet_ms, out_expect, 0.0001, 0.0001)
 
 
 def test_compute_deltas_pipeline():
     """
     Feature: test the basic function in pipeline mode.
-    Description: mindspore pipeline mode normal testcase:compute_deltas op.
+    Description: luojianet_ms pipeline mode normal testcase:compute_deltas op.
     Expectation: compile done without error.
     """
 
@@ -108,7 +109,7 @@ def test_compute_deltas_pipeline():
 def test_compute_deltas_invalid_input():
     """
     Feature: test the validate function with invalid parameters.
-    Description: mindspore invalid parameters testcase:compute_deltas op.
+    Description: luojianet_ms invalid parameters testcase:compute_deltas op.
     Expectation: compile done without error.
     """
     def test_invalid_input(test_name, win_length, pad_mode, error, error_msg):

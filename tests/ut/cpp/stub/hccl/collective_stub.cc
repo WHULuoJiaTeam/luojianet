@@ -16,7 +16,7 @@
 
 #include "plugin/device/ascend/hal/device/distribute/ascend_collective.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace device {
 namespace ascend {
 namespace collective {
@@ -32,4 +32,4 @@ void HcclCollectiveGroup::FinalizeCollective() { return; }
 }  // namespace collective
 }  // namespace ascend
 }  // namespace device
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -18,7 +18,7 @@
 #include "common/common_test.h"
 #include "plugin/device/gpu/kernel/cuda_impl/cuda_ops/complex.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 
 class TestComplex : public UT::Common {
  public:
@@ -155,4 +155,4 @@ TEST_F(TestComplex, test_arithmetic) {
                                                              Complex<float>(0.2, -0.4));
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

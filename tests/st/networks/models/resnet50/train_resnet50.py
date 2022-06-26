@@ -15,8 +15,8 @@
 """resnet train & eval case."""
 import os
 import time
-import mindspore as ms
-from mindspore import nn
+import luojianet_ms as ms
+from luojianet_ms import nn
 from tests.st.networks.models.resnet50.src.callback import LossGet
 from tests.st.networks.models.resnet50.src.config import config
 from tests.st.networks.models.resnet50.src.resnet import resnet50
@@ -25,8 +25,8 @@ from tests.st.networks.models.resnet50.src.dataset import create_dataset
 from tests.st.networks.models.resnet50.src.lr_generator import get_learning_rate
 from tests.st.networks.models.resnet50.src.CrossEntropySmooth import CrossEntropySmooth
 
-TRAIN_PATH = "/home/workspace/mindspore_dataset/imagenet/imagenet_original/train"
-EVAL_PATH = "/home/workspace/mindspore_dataset/imagenet/imagenet_original/val"
+TRAIN_PATH = "/home/workspace/luojianet_ms_dataset/imagenet/imagenet_original/train"
+EVAL_PATH = "/home/workspace/luojianet_ms_dataset/imagenet/imagenet_original/val"
 ms.set_seed(1)
 
 

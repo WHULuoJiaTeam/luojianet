@@ -21,10 +21,10 @@
 #include "minddata/dataset/include/dataset/datasets.h"
 #include "minddata/dataset/include/dataset/transforms.h"
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 using namespace std;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
@@ -35,7 +35,7 @@ TEST_F(MindDataTestPipeline, TestAmplitudeToDBPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestAmplitudeToDBPipeline.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -50,7 +50,7 @@ TEST_F(MindDataTestPipeline, TestAmplitudeToDBPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -60,7 +60,7 @@ TEST_F(MindDataTestPipeline, TestAmplitudeToDBPipeline) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -73,7 +73,7 @@ TEST_F(MindDataTestPipeline, TestAmplitudeToDBWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestAmplitudeToDBWrongArgs.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -94,7 +94,7 @@ TEST_F(MindDataTestPipeline, TestBandBiquadBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBandBiquadBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -110,7 +110,7 @@ TEST_F(MindDataTestPipeline, TestBandBiquadBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -120,7 +120,7 @@ TEST_F(MindDataTestPipeline, TestBandBiquadBasic) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -133,7 +133,7 @@ TEST_F(MindDataTestPipeline, TestBandBiquadParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBandBiquadParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -162,7 +162,7 @@ TEST_F(MindDataTestPipeline, TestAllpassBiquadBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestAllpassBiquadBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -178,7 +178,7 @@ TEST_F(MindDataTestPipeline, TestAllpassBiquadBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -188,7 +188,7 @@ TEST_F(MindDataTestPipeline, TestAllpassBiquadBasic) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -201,7 +201,7 @@ TEST_F(MindDataTestPipeline, TestAllpassBiquadParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestAllpassBiquadParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -230,7 +230,7 @@ TEST_F(MindDataTestPipeline, TestBandpassBiquadBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBandpassBiquadBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -246,7 +246,7 @@ TEST_F(MindDataTestPipeline, TestBandpassBiquadBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -256,7 +256,7 @@ TEST_F(MindDataTestPipeline, TestBandpassBiquadBasic) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -269,7 +269,7 @@ TEST_F(MindDataTestPipeline, TestBandpassBiquadParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBandpassBiquadParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -298,7 +298,7 @@ TEST_F(MindDataTestPipeline, TestBandrejectBiquadBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBandrejectBiquadBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -314,7 +314,7 @@ TEST_F(MindDataTestPipeline, TestBandrejectBiquadBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -324,7 +324,7 @@ TEST_F(MindDataTestPipeline, TestBandrejectBiquadBasic) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -337,7 +337,7 @@ TEST_F(MindDataTestPipeline, TestBandrejectBiquadParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBandrejectBiquadParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -366,7 +366,7 @@ TEST_F(MindDataTestPipeline, TestBassBiquadBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBassBiquadBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -382,7 +382,7 @@ TEST_F(MindDataTestPipeline, TestBassBiquadBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -392,7 +392,7 @@ TEST_F(MindDataTestPipeline, TestBassBiquadBasic) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -405,7 +405,7 @@ TEST_F(MindDataTestPipeline, TestBassBiquadParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBassBiquadParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -434,7 +434,7 @@ TEST_F(MindDataTestPipeline, TestAnglePipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestAnglePipeline.";
 
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("complex", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("complex", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -449,7 +449,7 @@ TEST_F(MindDataTestPipeline, TestAnglePipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2};
@@ -459,7 +459,7 @@ TEST_F(MindDataTestPipeline, TestAnglePipeline) {
     auto col = row["complex"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 1);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -472,7 +472,7 @@ TEST_F(MindDataTestPipeline, TestAnglePipelineError) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestAnglePipelineError.";
 
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("complex", mindspore::DataType::kNumberTypeFloat32, {3, 2, 1}));
+  ASSERT_OK(schema->add_column("complex", luojianet_ms::DataType::kNumberTypeFloat32, {3, 2, 1}));
   std::shared_ptr<Dataset> ds = RandomData(4, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -485,7 +485,7 @@ TEST_F(MindDataTestPipeline, TestAnglePipelineError) {
   EXPECT_NE(ds, nullptr);
 
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   EXPECT_ERROR(iter->GetNextRow(&row));
 }
 
@@ -494,7 +494,7 @@ TEST_F(MindDataTestPipeline, TestEqualizerBiquadSuccess) {
 
   // Create an input tensor
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeFloat32, {1, 200}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeFloat32, {1, 200}));
   std::shared_ptr<Dataset> ds = RandomData(8, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -504,7 +504,7 @@ TEST_F(MindDataTestPipeline, TestEqualizerBiquadSuccess) {
   EXPECT_NE(ds1, nullptr);
   std::shared_ptr<Iterator> iter = ds1->CreateIterator();
   EXPECT_NE(iter, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -519,7 +519,7 @@ TEST_F(MindDataTestPipeline, TestEqualizerBiquadWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestEqualizerBiquadWrongArgs.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 10}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 10}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -549,7 +549,7 @@ TEST_F(MindDataTestPipeline, TestLowpassBiquadSuccess) {
 
   // Create an input tensor
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeFloat32, {1, 200}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeFloat32, {1, 200}));
   std::shared_ptr<Dataset> ds = RandomData(8, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -559,7 +559,7 @@ TEST_F(MindDataTestPipeline, TestLowpassBiquadSuccess) {
   EXPECT_NE(ds1, nullptr);
   std::shared_ptr<Iterator> iter = ds1->CreateIterator();
   EXPECT_NE(iter, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -574,7 +574,7 @@ TEST_F(MindDataTestPipeline, TestLowpassBiquadWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestLowpassBiquadWrongArgs.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 10}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 10}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -603,7 +603,7 @@ TEST_F(MindDataTestPipeline, TestFrequencyMaskingPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFrequencyMaskingPipeline.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {200, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {200, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -618,7 +618,7 @@ TEST_F(MindDataTestPipeline, TestFrequencyMaskingPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {200, 200};
@@ -628,7 +628,7 @@ TEST_F(MindDataTestPipeline, TestFrequencyMaskingPipeline) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -641,7 +641,7 @@ TEST_F(MindDataTestPipeline, TestFrequencyMaskingWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFrequencyMaskingWrongArgs.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {20, 20}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {20, 20}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -664,7 +664,7 @@ TEST_F(MindDataTestPipeline, TestComplexNormBasic) {
 
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeInt64, {3, 2, 4, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeInt64, {3, 2, 4, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -680,7 +680,7 @@ TEST_F(MindDataTestPipeline, TestComplexNormBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {3, 2, 4};
@@ -689,7 +689,7 @@ TEST_F(MindDataTestPipeline, TestComplexNormBasic) {
   while (row.size() != 0) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -703,7 +703,7 @@ TEST_F(MindDataTestPipeline, TestComplexNormWrongArgs) {
 
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeInt64, {3, 2, 4, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeInt64, {3, 2, 4, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -721,7 +721,7 @@ TEST_F(MindDataTestPipeline, TestContrastBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestContrastBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -736,7 +736,7 @@ TEST_F(MindDataTestPipeline, TestContrastBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -746,7 +746,7 @@ TEST_F(MindDataTestPipeline, TestContrastBasic) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -759,7 +759,7 @@ TEST_F(MindDataTestPipeline, TestContrastParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestContrastParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat64, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat64, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -787,7 +787,7 @@ TEST_F(MindDataTestPipeline, TestDeemphBiquadPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestDeemphBiquadPipeline.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -803,7 +803,7 @@ TEST_F(MindDataTestPipeline, TestDeemphBiquadPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -813,7 +813,7 @@ TEST_F(MindDataTestPipeline, TestDeemphBiquadPipeline) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -826,7 +826,7 @@ TEST_F(MindDataTestPipeline, TestDeemphBiquadWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestDeemphBiquadWrongArgs.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   EXPECT_NE(ds, nullptr);
@@ -848,7 +848,7 @@ TEST_F(MindDataTestPipeline, TestDitherBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestDitherBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -864,7 +864,7 @@ TEST_F(MindDataTestPipeline, TestDitherBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -886,7 +886,7 @@ TEST_F(MindDataTestPipeline, TestHighpassBiquadSuccess) {
 
   // Create an input tensor
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeFloat32, {1, 200}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeFloat32, {1, 200}));
   std::shared_ptr<Dataset> ds = RandomData(8, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -896,7 +896,7 @@ TEST_F(MindDataTestPipeline, TestHighpassBiquadSuccess) {
   EXPECT_NE(ds1, nullptr);
   std::shared_ptr<Iterator> iter = ds1->CreateIterator();
   EXPECT_NE(iter, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -911,7 +911,7 @@ TEST_F(MindDataTestPipeline, TestHighpassBiquadWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestHighpassBiquadWrongArgs.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 10}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 10}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -941,7 +941,7 @@ TEST_F(MindDataTestPipeline, TestHighpassBiquadWrongArgs) {
 /// Expectation: As expected.
 TEST_F(MindDataTestPipeline, TestMelscaleFbanksNormal) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-MelscaleFbanksNormal.";
-  mindspore::MSTensor output;
+  luojianet_ms::MSTensor output;
   NormType norm = NormType::kSlaney;
   MelType mel_type = MelType::kHtk;
   Status s01 = audio::MelscaleFbanks(&output, 1024, 0, 1000, 40, 16000, norm, mel_type);
@@ -953,7 +953,7 @@ TEST_F(MindDataTestPipeline, TestMelscaleFbanksNormal) {
 /// Expectation: Throw exception as expected.
 TEST_F(MindDataTestPipeline, TestMelscaleFbanksWithInvalidInput) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestMelscaleFbanksWithInvalidInput.";
-  mindspore::MSTensor output;
+  luojianet_ms::MSTensor output;
   MS_LOG(INFO) << "n_freqs is too low.";
   NormType norm = NormType::kNone;
   MelType mel_type = MelType::kHtk;
@@ -969,7 +969,7 @@ TEST_F(MindDataTestPipeline, TestMuLawDecodingBasic) {
 
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeInt32, {1, 100}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeInt32, {1, 100}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -985,7 +985,7 @@ TEST_F(MindDataTestPipeline, TestMuLawDecodingBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {1, 100};
@@ -994,7 +994,7 @@ TEST_F(MindDataTestPipeline, TestMuLawDecodingBasic) {
   while (row.size() != 0) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1008,7 +1008,7 @@ TEST_F(MindDataTestPipeline, TestMuLawDecodingWrongArgs) {
 
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeInt32, {1, 100}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeInt32, {1, 100}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1038,7 +1038,7 @@ TEST_F(MindDataTestPipeline, TestMuLawEncodingBasic) {
 
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 100}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 100}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1054,7 +1054,7 @@ TEST_F(MindDataTestPipeline, TestMuLawEncodingBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {1, 100};
@@ -1063,7 +1063,7 @@ TEST_F(MindDataTestPipeline, TestMuLawEncodingBasic) {
   while (row.size() != 0) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeInt32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeInt32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1080,7 +1080,7 @@ TEST_F(MindDataTestPipeline, TestMuLawEncodingWrongArgs) {
 
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 100}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 100}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1109,7 +1109,7 @@ TEST_F(MindDataTestPipeline, TestOverdriveBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestOverdriveBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1125,7 +1125,7 @@ TEST_F(MindDataTestPipeline, TestOverdriveBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -1135,7 +1135,7 @@ TEST_F(MindDataTestPipeline, TestOverdriveBasic) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1150,7 +1150,7 @@ TEST_F(MindDataTestPipeline, TestOverdriveWrongArg) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestOverdriveWrongArg.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -1180,7 +1180,7 @@ TEST_F(MindDataTestPipeline, TestPhaserBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestPhaserBasic";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1196,7 +1196,7 @@ TEST_F(MindDataTestPipeline, TestPhaserBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -1206,7 +1206,7 @@ TEST_F(MindDataTestPipeline, TestPhaserBasic) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1221,7 +1221,7 @@ TEST_F(MindDataTestPipeline, TestPhaserWrongArg) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestPhaserWrongArg.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -1315,7 +1315,7 @@ TEST_F(MindDataTestPipeline, TestLfilterPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestLfilterPipeline.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1333,7 +1333,7 @@ TEST_F(MindDataTestPipeline, TestLfilterPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -1343,7 +1343,7 @@ TEST_F(MindDataTestPipeline, TestLfilterPipeline) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1356,7 +1356,7 @@ TEST_F(MindDataTestPipeline, TestLfilterWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestLfilterWrongArgs.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   EXPECT_NE(ds, nullptr);
@@ -1377,7 +1377,7 @@ TEST_F(MindDataTestPipeline, TestDCShiftPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestDCShiftPipeline.";
 
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 2, 100}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 2, 100}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1389,7 +1389,7 @@ TEST_F(MindDataTestPipeline, TestDCShiftPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {1, 2, 100};
@@ -1399,7 +1399,7 @@ TEST_F(MindDataTestPipeline, TestDCShiftPipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 3);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1411,7 +1411,7 @@ TEST_F(MindDataTestPipeline, TestDCShiftPipeline) {
 TEST_F(MindDataTestPipeline, TestDCShiftPipelineError) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestDCShiftPipelineError.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {100}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {100}));
   std::shared_ptr<Dataset> ds = RandomData(4, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1428,7 +1428,7 @@ TEST_F(MindDataTestPipeline, TestBiquadBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBiquadBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1444,7 +1444,7 @@ TEST_F(MindDataTestPipeline, TestBiquadBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -1454,7 +1454,7 @@ TEST_F(MindDataTestPipeline, TestBiquadBasic) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1467,7 +1467,7 @@ TEST_F(MindDataTestPipeline, TestBiquadParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestBiquadParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   EXPECT_NE(ds, nullptr);
@@ -1485,7 +1485,7 @@ TEST_F(MindDataTestPipeline, TestBiquadParamCheck) {
 TEST_F(MindDataTestPipeline, TestFadeWithPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFadeWithPipeline.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {1, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {1, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1500,7 +1500,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {1, 200};
@@ -1510,7 +1510,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithPipeline) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1522,7 +1522,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithPipeline) {
 TEST_F(MindDataTestPipeline, TestFadeWithLinear) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFadeWithLinear.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 10}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 10}));
   std::shared_ptr<Dataset> ds = RandomData(10, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1537,7 +1537,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithLinear) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 10};
@@ -1547,7 +1547,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithLinear) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1559,7 +1559,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithLinear) {
 TEST_F(MindDataTestPipeline, TestFadeWithLogarithmic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFadeWithLogarithmic.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat64, {1, 150}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat64, {1, 150}));
   std::shared_ptr<Dataset> ds = RandomData(30, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1574,7 +1574,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithLogarithmic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {1, 150};
@@ -1584,7 +1584,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithLogarithmic) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat64);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat64);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1596,7 +1596,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithLogarithmic) {
 TEST_F(MindDataTestPipeline, TestFadeWithQuarterSine) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFadeWithQuarterSine.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeInt32, {20, 20000}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeInt32, {20, 20000}));
   std::shared_ptr<Dataset> ds = RandomData(40, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1611,7 +1611,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithQuarterSine) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {20, 20000};
@@ -1621,7 +1621,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithQuarterSine) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1633,7 +1633,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithQuarterSine) {
 TEST_F(MindDataTestPipeline, TestFadeWithHalfSine) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFadeWithHalfSine.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeInt16, {1, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeInt16, {1, 200}));
   std::shared_ptr<Dataset> ds = RandomData(40, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1648,7 +1648,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithHalfSine) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(iter, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {1, 200};
@@ -1658,7 +1658,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithHalfSine) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1670,7 +1670,7 @@ TEST_F(MindDataTestPipeline, TestFadeWithHalfSine) {
 TEST_F(MindDataTestPipeline, TestFadeWithInvalidArg) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFadeWithInvalidArg.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {1, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {1, 200}));
   std::shared_ptr<Dataset> ds_01 = RandomData(50, schema);
   EXPECT_NE(ds_01, nullptr);
 
@@ -1705,7 +1705,7 @@ TEST_F(MindDataTestPipeline, TestMagphase) {
 
   float power = 2.0;
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeFloat32, {1, 2}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeFloat32, {1, 2}));
   std::shared_ptr<Dataset> ds = RandomData(8, schema);
   EXPECT_NE(ds, nullptr);
   std::shared_ptr<TensorTransform> magphase(new audio::Magphase(power));
@@ -1713,7 +1713,7 @@ TEST_F(MindDataTestPipeline, TestMagphase) {
   EXPECT_NE(ds1, nullptr);
   std::shared_ptr<Iterator> iter = ds1->CreateIterator();
   EXPECT_NE(iter, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -1729,11 +1729,11 @@ TEST_F(MindDataTestPipeline, TestMagphaseWrongArgs) {
 
   float power_wrong = -1.0;
   std::shared_ptr<TensorTransform> magphase(new audio::Magphase(power_wrong));
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
 
   // Magphase: power must be greater than or equal to 0.
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("col1", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("col1", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(8, schema);
   EXPECT_NE(ds, nullptr);
   ds = ds->Map({magphase}, {"col1"}, {"mag", "phase"});
@@ -1746,7 +1746,7 @@ TEST_F(MindDataTestPipeline, TestDetectPitchFrequencyBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestDetectPitchFrequencyBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 10000}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 10000}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1762,7 +1762,7 @@ TEST_F(MindDataTestPipeline, TestDetectPitchFrequencyBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 8};
@@ -1772,7 +1772,7 @@ TEST_F(MindDataTestPipeline, TestDetectPitchFrequencyBasic) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -1784,7 +1784,7 @@ TEST_F(MindDataTestPipeline, TestDetectPitchFrequencyParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestDetectPitchFrequencyParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   std::shared_ptr<Dataset> ds01;
   std::shared_ptr<Dataset> ds02;
@@ -1843,7 +1843,7 @@ TEST_F(MindDataTestPipeline, TestFlangerBasic) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFlangerBasic.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1859,7 +1859,7 @@ TEST_F(MindDataTestPipeline, TestFlangerBasic) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -1880,7 +1880,7 @@ TEST_F(MindDataTestPipeline, TestFlangerParamCheck) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestFlangerParamCheck.";
   std::shared_ptr<SchemaObj> schema = Schema();
   // Original waveform
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 2}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 2}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -1953,7 +1953,7 @@ TEST_F(MindDataTestPipeline, TestFlangerParamCheck) {
 /// Expectation: the returned result is as expected
 TEST_F(MindDataTestPipeline, TestCreateDctNone) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestCreateDctNone.";
-  mindspore::MSTensor output;
+  luojianet_ms::MSTensor output;
   Status s01 = audio::CreateDct(&output, 200, 400, NormMode::kNone);
   EXPECT_TRUE(s01.IsOk());
 }
@@ -1963,7 +1963,7 @@ TEST_F(MindDataTestPipeline, TestCreateDctNone) {
 /// Expectation: the returned result is as expected
 TEST_F(MindDataTestPipeline, TestCreateDctOrtho) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestCreateDctOrtho.";
-  mindspore::MSTensor output;
+  luojianet_ms::MSTensor output;
   Status s02 = audio::CreateDct(&output, 200, 400, NormMode::kOrtho);
   EXPECT_TRUE(s02.IsOk());
 }
@@ -1973,7 +1973,7 @@ TEST_F(MindDataTestPipeline, TestCreateDctOrtho) {
 /// Expectation: return error
 TEST_F(MindDataTestPipeline, TestCreateDctWrongArg) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestCreateDctWrongArg.";
-  mindspore::MSTensor output;
+  luojianet_ms::MSTensor output;
   // Check n_mfcc
   MS_LOG(INFO) << "n_mfcc is negative.";
   Status s03 = audio::CreateDct(&output, -200, 400, NormMode::kNone);
@@ -1991,7 +1991,7 @@ TEST_F(MindDataTestPipeline, TestDBToAmplitudePipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestDBToAmplitudePipeline.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2006,7 +2006,7 @@ TEST_F(MindDataTestPipeline, TestDBToAmplitudePipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -2016,7 +2016,7 @@ TEST_F(MindDataTestPipeline, TestDBToAmplitudePipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2032,7 +2032,7 @@ TEST_F(MindDataTestPipeline, TestComputeDeltas) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestComputeDeltas.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2047,7 +2047,7 @@ TEST_F(MindDataTestPipeline, TestComputeDeltas) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -2057,7 +2057,7 @@ TEST_F(MindDataTestPipeline, TestComputeDeltas) {
     auto col = row["inputData"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2073,13 +2073,13 @@ TEST_F(MindDataTestPipeline, TestComputeDeltasWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestComputeDeltasWrongArgs.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("inputData", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("inputData", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
   ds = ds->SetNumWorkers(4);
   EXPECT_NE(ds, nullptr);
-  auto compute_deltas_op = audio::ComputeDeltas(2, mindspore::dataset::BorderType::kEdge);
+  auto compute_deltas_op = audio::ComputeDeltas(2, luojianet_ms::dataset::BorderType::kEdge);
   ds = ds->Map({compute_deltas_op});
   EXPECT_NE(ds, nullptr);
 
@@ -2095,7 +2095,7 @@ TEST_F(MindDataTestPipeline, TestGainPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestGainPipeline.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2111,7 +2111,7 @@ TEST_F(MindDataTestPipeline, TestGainPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 200};
@@ -2121,7 +2121,7 @@ TEST_F(MindDataTestPipeline, TestGainPipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2137,7 +2137,7 @@ TEST_F(MindDataTestPipeline, TestMelScalePipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestMelScalePipeline.";
   // Original waveform
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 4, 3}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 4, 3}));
   std::shared_ptr<Dataset> ds = RandomData(10, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2149,7 +2149,7 @@ TEST_F(MindDataTestPipeline, TestMelScalePipeline) {
   EXPECT_NE(ds, nullptr);
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
   std::vector<int64_t> expected = {2, 2, 3};
   int i = 0;
@@ -2157,7 +2157,7 @@ TEST_F(MindDataTestPipeline, TestMelScalePipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 3);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2165,7 +2165,7 @@ TEST_F(MindDataTestPipeline, TestMelScalePipeline) {
   iter->Stop();
 
   std::shared_ptr<SchemaObj> schema2 = Schema();
-  ASSERT_OK(schema2->add_column("waveform", mindspore::DataType::kNumberTypeFloat64, {4, 20}));
+  ASSERT_OK(schema2->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat64, {4, 20}));
   ds = RandomData(10, schema2);
   EXPECT_NE(ds, nullptr);
   auto mel_scale_op2 = audio::MelScale(2, 10, -50, 100, 4);
@@ -2180,7 +2180,7 @@ TEST_F(MindDataTestPipeline, TestMelScalePipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat64);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat64);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2188,7 +2188,7 @@ TEST_F(MindDataTestPipeline, TestMelScalePipeline) {
   iter->Stop();
 
   std::shared_ptr<SchemaObj> schema3 = Schema();
-  ASSERT_OK(schema3->add_column("waveform", mindspore::DataType::kNumberTypeInt16, {8, 50}));
+  ASSERT_OK(schema3->add_column("waveform", luojianet_ms::DataType::kNumberTypeInt16, {8, 50}));
   ds = RandomData(10, schema3);
   EXPECT_NE(ds, nullptr);
   auto mel_scale_op3 =
@@ -2204,7 +2204,7 @@ TEST_F(MindDataTestPipeline, TestMelScalePipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 2);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2220,7 +2220,7 @@ TEST_F(MindDataTestPipeline, TestMelScaleWrongArgs) {
 
   // MelScale: f_max must be greater than f_min.
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, 200}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
   ds = ds->SetNumWorkers(4);
@@ -2255,7 +2255,7 @@ TEST_F(MindDataTestPipeline, TestPhaseVocoderPipeline) {
 
   int freq = 1025;
   int hop_length = 512;
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, freq, 30, 2}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, freq, 30, 2}));
 
   std::vector<float> phase_advance;
   float tpnum = 0;
@@ -2273,7 +2273,7 @@ TEST_F(MindDataTestPipeline, TestPhaseVocoderPipeline) {
 
   std::shared_ptr<Tensor> phase_advance_tensor;
   Tensor::CreateFromVector(phase_advance, TensorShape({1025, 1}), &phase_advance_tensor);
-  auto input_ms = mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(phase_advance_tensor));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(phase_advance_tensor));
 
   float rate = 1.3;
   auto PhaseVocoder = audio::PhaseVocoder(rate, input_ms);
@@ -2284,7 +2284,7 @@ TEST_F(MindDataTestPipeline, TestPhaseVocoderPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {2, 1025, 24, 2};
@@ -2294,7 +2294,7 @@ TEST_F(MindDataTestPipeline, TestPhaseVocoderPipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 4);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2312,7 +2312,7 @@ TEST_F(MindDataTestPipeline, TestPhaseVocoderWrongArgs) {
 
   int freq = 1025;
   int hop_length = 512;
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {2, freq, 30, 2}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {2, freq, 30, 2}));
 
   std::vector<float> phase_advance;
   float tpnum = 0;
@@ -2324,7 +2324,7 @@ TEST_F(MindDataTestPipeline, TestPhaseVocoderWrongArgs) {
 
   std::shared_ptr<Tensor> phase_advance_tensor;
   Tensor::CreateFromVector(phase_advance, TensorShape({1025, 1}), &phase_advance_tensor);
-  auto input_ms = mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(phase_advance_tensor));
+  auto input_ms = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(phase_advance_tensor));
 
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
@@ -2348,7 +2348,7 @@ TEST_F(MindDataTestPipeline, TestPhaseVocoderWrongArgs) {
 TEST_F(MindDataTestPipeline, TestMaskAlongAxisIIDPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestMaskAlongAxisIIDPipeline.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 1, 200, 200}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 1, 200, 200}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2369,7 +2369,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisIIDPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {1, 1, 200, 200};
@@ -2379,7 +2379,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisIIDPipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 4);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2394,7 +2394,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisIIDPipeline) {
 TEST_F(MindDataTestPipeline, TestMaskAlongAxisIIDInvalidMaskParam) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestMaskAlongAxisIIDInvalidMaskParam.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 1, 20, 20}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 1, 20, 20}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2423,7 +2423,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisIIDInvalidMaskParam) {
 TEST_F(MindDataTestPipeline, TestMaskAlongAxisIIDInvaildAxis) {
   MS_LOG(INFO) << "MindDataTestPipeline-TestMaskAlongAxisIIDInvaildAxis.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 1, 20, 20}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 1, 20, 20}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2452,7 +2452,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisIIDInvaildAxis) {
 TEST_F(MindDataTestPipeline, TestMaskAlongAxisPipeline) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestMaskAlongAxisPipeline.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 20, 20}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 20, 20}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2474,7 +2474,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisPipeline) {
   std::shared_ptr<Iterator> iter = ds->CreateIterator();
   EXPECT_NE(ds, nullptr);
 
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   std::vector<int64_t> expected = {1, 20, 20};
@@ -2484,7 +2484,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisPipeline) {
     auto col = row["waveform"];
     ASSERT_EQ(col.Shape(), expected);
     ASSERT_EQ(col.Shape().size(), 3);
-    ASSERT_EQ(col.DataType(), mindspore::DataType::kNumberTypeFloat32);
+    ASSERT_EQ(col.DataType(), luojianet_ms::DataType::kNumberTypeFloat32);
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
@@ -2499,7 +2499,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisPipeline) {
 TEST_F(MindDataTestPipeline, TestMaskAlongAxisWrongArgs) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestMaskAlongAxisWrongArgs.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 20, 20}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 20, 20}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2529,7 +2529,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisWrongArgs) {
 TEST_F(MindDataTestPipeline, TestMaskAlongAxisNegativeMaskWidth) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestMaskAlongAxisNegativeMaskWidth.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 20, 20}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 20, 20}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2559,7 +2559,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisNegativeMaskWidth) {
 TEST_F(MindDataTestPipeline, TestMaskAlongAxisInvaildAxis) {
   MS_LOG(INFO) << "Doing MindDataTestPipeline-TestMaskAlongAxisInvaildAxis.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 20, 20}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 20, 20}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 
@@ -2589,7 +2589,7 @@ TEST_F(MindDataTestPipeline, TestMaskAlongAxisInvaildAxis) {
 TEST_F(MindDataTestPipeline, TestMaskAlongAxisRank) {
   MS_LOG(INFO) << "Doing TestMaskAlongAxis-TestMaskAlongAxisRank.";
   std::shared_ptr<SchemaObj> schema = Schema();
-  ASSERT_OK(schema->add_column("waveform", mindspore::DataType::kNumberTypeFloat32, {1, 20, 20, 20}));
+  ASSERT_OK(schema->add_column("waveform", luojianet_ms::DataType::kNumberTypeFloat32, {1, 20, 20, 20}));
   std::shared_ptr<Dataset> ds = RandomData(50, schema);
   EXPECT_NE(ds, nullptr);
 

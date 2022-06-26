@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class ActivationInfo;
@@ -55,7 +55,7 @@ void TestActivationInfo::SetUp() {
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
   ValuePtr relu = MakeValue(std::string("relu"));
-  mindspore::HashMap<std::string, ValuePtr> attr = {{"activation_type", relu}};
+  luojianet_ms::HashMap<std::string, ValuePtr> attr = {{"activation_type", relu}};
 
   Shapes inputs_shape = {{2, 4, 8, 16}};
   Shapes outputs_shape = {{2, 4, 8, 16}};
@@ -178,4 +178,4 @@ TEST_F(TestActivationInfo, CheckStrategy2) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

@@ -16,8 +16,8 @@
 #include "common/common.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -42,7 +42,7 @@ TEST_F(MindDataTestPipeline, TestAlbumBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -77,7 +77,7 @@ TEST_F(MindDataTestPipeline, TestAlbumNoOrder) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -110,7 +110,7 @@ TEST_F(MindDataTestPipeline, TestAlbumWithSchemaFloat) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -143,7 +143,7 @@ TEST_F(MindDataTestPipeline, TestAlbumWithFullSchema) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -199,7 +199,7 @@ TEST_F(MindDataTestPipeline, TestAlbumBasicWithPipeline) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -240,7 +240,7 @@ TEST_F(MindDataTestPipeline, TestAlbumIteratorOneColumn) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -251,7 +251,7 @@ TEST_F(MindDataTestPipeline, TestAlbumIteratorOneColumn) {
     ASSERT_OK(iter->GetNextRow(&row));
     i++;
   }
-  
+
   EXPECT_EQ(i, 7);
 
   // Manually terminate the pipeline
@@ -300,7 +300,7 @@ TEST_F(MindDataTestPipeline, TestAlbumGetters) {
   EXPECT_EQ(repeat_count, 1);
   EXPECT_EQ(ds->GetColumnNames(), column_names);
 
-  // Test get dataset size with num_samples > files in dataset 
+  // Test get dataset size with num_samples > files in dataset
   auto sampler = std::make_shared<SequentialSampler>(0, 12);
   std::shared_ptr<Dataset> ds2 = Album(folder_path, schema_file, column_names, false, sampler);
   num_samples = ds->GetDatasetSize();
@@ -325,7 +325,7 @@ TEST_F(MindDataTestPipeline, TestAlbumDecode) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -364,7 +364,7 @@ TEST_F(MindDataTestPipeline, TestAlbumNumSamplers) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;

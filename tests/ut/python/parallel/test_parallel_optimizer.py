@@ -16,14 +16,14 @@
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.wrap.cell_wrapper import _VirtualDatasetCell
-from mindspore.nn.optim import Adam, AdamWeightDecay, Lamb, Momentum
-from mindspore.ops import operations as P
-from mindspore import context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.wrap.cell_wrapper import _VirtualDatasetCell
+from luojianet_ms.nn.optim import Adam, AdamWeightDecay, Lamb, Momentum
+from luojianet_ms.ops import operations as P
+from luojianet_ms import context
 
 
 class Net(nn.Cell):

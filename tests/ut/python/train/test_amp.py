@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +17,14 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore import amp
-from mindspore import nn
-from mindspore.communication.management import init
-from mindspore.communication._comm_helper import GlobalComm
-from mindspore.context import ParallelMode
-from mindspore.train import Model
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms import amp
+from luojianet_ms import nn
+from luojianet_ms.communication.management import init
+from luojianet_ms.communication._comm_helper import GlobalComm
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.train import Model
 from ....dataset_mock import MindData
 
 

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,9 +17,9 @@
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms import log as logger
 
 
 def count_unequal_element(data_expected, data_me, rtol, atol):
@@ -32,7 +33,7 @@ def count_unequal_element(data_expected, data_me, rtol, atol):
 
 
 def test_func_contrast_eager():
-    """ mindspore eager mode normal testcase:contrast op"""
+    """ luojianet_ms eager mode normal testcase:contrast op"""
     # Original waveform
     waveform = np.array([[1, 2], [3, 4]], dtype=np.float32)
     # Expect waveform
@@ -46,7 +47,7 @@ def test_func_contrast_eager():
 
 
 def test_func_contrast_pipeline():
-    """ mindspore pipeline mode normal testcase:contrast op"""
+    """ luojianet_ms pipeline mode normal testcase:contrast op"""
     # Original waveform
     waveform = np.array([[0.4941969, 0.53911686, 0.4846254], [0.10841596, 0.029320478, 0.52353495],
                          [0.23657, 0.087965, 0.43579]], dtype=np.float64)

@@ -25,7 +25,7 @@
 #include "minddata/dataset/include/dataset/vision.h"
 #include "minddata/dataset/kernels/tensor_op.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
 class MindDataTestTensorOpFusionPass : public UT::DatasetOpTesting {
  public:

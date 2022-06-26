@@ -18,7 +18,7 @@
 #include "frontend/parallel/strategy_checkpoint/parallel_strategy_checkpoint.h"
 #include "utils/log_adapter.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 StrategyCheckpoint& StrategyCheckpoint::GetInstance() {
   static StrategyCheckpoint instance = StrategyCheckpoint();
@@ -37,4 +37,4 @@ Status StrategyCheckpoint::LoadGroupInfo(const std::string &file, GroupInfoMap *
 Status StrategyCheckpoint::SaveGroupInfo(const GroupInfoMap &group_info_map,
                                          const RankList &restore_rank_list) { return SUCCESS; }
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

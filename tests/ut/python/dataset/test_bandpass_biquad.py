@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +15,9 @@
 # ==============================================================================
 import numpy as np
 import pytest
-import mindspore.dataset as ds
-import mindspore.dataset.audio.transforms as audio
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.audio.transforms as audio
+from luojianet_ms import log as logger
 
 
 def count_unequal_element(data_expected, data_me, rtol, atol):
@@ -30,7 +31,7 @@ def count_unequal_element(data_expected, data_me, rtol, atol):
 
 
 def test_func_bandpass_biquad_eager():
-    """ mindspore eager mode normal testcase:bandpass_biquad op"""
+    """ luojianet_ms eager mode normal testcase:bandpass_biquad op"""
 
     # Original waveform
     waveform = np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float64)
@@ -44,7 +45,7 @@ def test_func_bandpass_biquad_eager():
 
 
 def test_func_bandpass_biquad_pipeline():
-    """ mindspore pipeline mode normal testcase:bandpass_biquad op"""
+    """ luojianet_ms pipeline mode normal testcase:bandpass_biquad op"""
 
     # Original waveform
     waveform = np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float64)

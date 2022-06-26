@@ -1,8 +1,8 @@
 import numpy as np
-import mindspore.context as context
-import mindspore.nn as nn
-from mindspore import Tensor
-from mindspore.ops import operations as P
+import luojianet_ms.context as context
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
 
 context.set_context(enable_graph_kernel=False, save_graphs=False, mode=context.PYNATIVE_MODE, device_target="Ascend")
 

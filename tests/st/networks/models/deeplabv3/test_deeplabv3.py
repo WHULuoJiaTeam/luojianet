@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +18,10 @@ import argparse
 import time
 import pytest
 import numpy as np
-from mindspore import context, Tensor
-from mindspore.nn.optim.momentum import Momentum
-from mindspore import Model
-from mindspore.train.callback import Callback
+from luojianet_ms import context, Tensor
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms import Model
+from luojianet_ms.train.callback import Callback
 from src.md_dataset import create_dataset
 from src.losses import OhemLoss
 from src.deeplabv3 import deeplabv3_resnet50
@@ -35,7 +36,7 @@ context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 #  --SegmentationClassRaw
 #    --2008_001135.png
 #    --2008_001404.png
-data_url = "/home/workspace/mindspore_dataset/voc/voc2012"
+data_url = "/home/workspace/luojianet_ms_dataset/voc/voc2012"
 class LossCallBack(Callback):
     """
     Monitor the loss in training.

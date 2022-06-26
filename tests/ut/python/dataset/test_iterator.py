@@ -15,10 +15,10 @@
 import numpy as np
 import pytest
 
-import mindspore.common.dtype as mstype
-from mindspore.common.tensor import Tensor
-import mindspore.dataset as ds
-from mindspore.dataset.engine.iterators import ITERATORS_LIST, _cleanup
+import luojianet_ms.common.dtype as mstype
+from luojianet_ms.common.tensor import Tensor
+import luojianet_ms.dataset as ds
+from luojianet_ms.dataset.engine.iterators import ITERATORS_LIST, _cleanup
 
 DATA_DIR = ["../data/dataset/testTFTestAllTypes/test.data"]
 SCHEMA_DIR = "../data/dataset/testTFTestAllTypes/datasetSchema.json"

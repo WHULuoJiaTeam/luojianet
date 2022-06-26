@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 """train."""
 import argparse
 import time
-from mindspore import context
-from mindspore.nn.optim.momentum import Momentum
-from mindspore import Model
-from mindspore.train.serialization import load_checkpoint, load_param_into_net
-from mindspore.train.callback import Callback
+from luojianet_ms import context
+from luojianet_ms.nn.optim.momentum import Momentum
+from luojianet_ms import Model
+from luojianet_ms.train.serialization import load_checkpoint, load_param_into_net
+from luojianet_ms.train.callback import Callback
 from src.md_dataset import create_dataset
 from src.losses import OhemLoss
 from src.deeplabv3 import deeplabv3_resnet50

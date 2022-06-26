@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,12 @@
 """ test model train """
 import numpy as np
 
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter, Model
-from mindspore.common.initializer import initializer
-from mindspore.nn.loss import SoftmaxCrossEntropyWithLogits
-from mindspore.nn.optim import Momentum
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter, Model
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.nn.loss import SoftmaxCrossEntropyWithLogits
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.ops import operations as P
 
 
 # fn is a funcation use i as input
@@ -46,7 +47,7 @@ def me_train_tensor(net, input_np, label_np, epoch_size=2):
 
 def test_bias_add(test_with_simu):
     """test_bias_add"""
-    import mindspore.context as context
+    import luojianet_ms.context as context
     is_pynative_mode = (context.get_context("mode") == context.PYNATIVE_MODE)
     # training api is implemented under Graph mode
     if is_pynative_mode:
@@ -82,7 +83,7 @@ def test_bias_add(test_with_simu):
 
 def test_conv(test_with_simu):
     """test_conv"""
-    import mindspore.context as context
+    import luojianet_ms.context as context
     is_pynative_mode = (context.get_context("mode") == context.PYNATIVE_MODE)
     # training api is implemented under Graph mode
     if is_pynative_mode:
@@ -114,7 +115,7 @@ def test_conv(test_with_simu):
 
 def test_net():
     """test_net"""
-    import mindspore.context as context
+    import luojianet_ms.context as context
     is_pynative_mode = (context.get_context("mode") == context.PYNATIVE_MODE)
     # training api is implemented under Graph mode
     if is_pynative_mode:
@@ -151,7 +152,7 @@ def test_net():
 
 def test_bn():
     """test_bn"""
-    import mindspore.context as context
+    import luojianet_ms.context as context
     is_pynative_mode = (context.get_context("mode") == context.PYNATIVE_MODE)
     # training api is implemented under Graph mode
     if is_pynative_mode:

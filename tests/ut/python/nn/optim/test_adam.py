@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +17,12 @@
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import Tensor, Parameter, context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.optim import Adam, AdamWeightDecay
-from mindspore.ops import operations as P
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor, Parameter, context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.optim import Adam, AdamWeightDecay
+from luojianet_ms.ops import operations as P
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_teardown():
@@ -221,7 +222,7 @@ def test_AdamWeightDecay_e():
         AdamWeightDecay(net.get_parameters(), eps=-0.1, learning_rate=0.1)
 
 
-def test_adam_mindspore_with_empty_params():
+def test_adam_luojianet_ms_with_empty_params():
     net = nn.Flatten()
     with pytest.raises(ValueError, match=r"For 'Optimizer', the argument parameters must not be empty"):
         AdamWeightDecay(net.get_parameters())

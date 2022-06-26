@@ -17,11 +17,11 @@ Testing CutOut op in DE
 """
 import numpy as np
 
-import mindspore.dataset as ds
-import mindspore.dataset.transforms.py_transforms
-import mindspore.dataset.vision.c_transforms as c
-import mindspore.dataset.vision.py_transforms as f
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.transforms.py_transforms
+import luojianet_ms.dataset.vision.c_transforms as c
+import luojianet_ms.dataset.vision.py_transforms as f
+from luojianet_ms import log as logger
 from util import visualize_image, visualize_list, diff_mse, save_and_check_md5, \
     config_get_set_seed, config_get_set_num_parallel_workers
 
@@ -45,7 +45,7 @@ def test_cut_out_op(plot=False):
         f.ToTensor(),
         f.RandomErasing(value='random')
     ]
-    transform_1 = mindspore.dataset.transforms.py_transforms.Compose(transforms_1)
+    transform_1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms_1)
     data1 = data1.map(operations=transform_1, input_columns=["image"])
 
     # Second dataset
@@ -92,7 +92,7 @@ def test_cut_out_op_multicut(plot=False):
         f.Decode(),
         f.ToTensor(),
     ]
-    transform_1 = mindspore.dataset.transforms.py_transforms.Compose(transforms_1)
+    transform_1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms_1)
     data1 = data1.map(operations=transform_1, input_columns=["image"])
 
     # Second dataset
@@ -148,7 +148,7 @@ def test_cut_out_md5():
         f.ToTensor(),
         f.Cutout(100)
     ]
-    transform = mindspore.dataset.transforms.py_transforms.Compose(transforms)
+    transform = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms)
     data2 = data2.map(operations=transform, input_columns=["image"])
 
     # Compare with expected md5 from images
@@ -176,7 +176,7 @@ def test_cut_out_comp(plot=False):
         f.ToTensor(),
         f.Cutout(200)
     ]
-    transform_1 = mindspore.dataset.transforms.py_transforms.Compose(transforms_1)
+    transform_1 = luojianet_ms.dataset.transforms.py_transforms.Compose(transforms_1)
     data1 = data1.map(operations=transform_1, input_columns=["image"])
 
     # Second dataset

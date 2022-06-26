@@ -23,7 +23,7 @@
 #include "abstract/abstract_value.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestBatchNormGrad : public UT::Common {
  public:
@@ -95,4 +95,4 @@ TEST_F(TestBatchNormGrad, test_ops_batch_norm_grad1) {
   EXPECT_EQ(data_type4->type_id(), kNumberTypeFloat32);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

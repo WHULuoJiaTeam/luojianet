@@ -25,7 +25,7 @@
 #include "common/py_func_graph_fetcher.h"
 #include "include/common/utils/convert_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace prim {
 class TestGradImplementations : public UT::Common {
  public:
@@ -45,4 +45,4 @@ TEST_F(TestGradImplementations, TestGetAugmentedGraph) {
 }
 
 }  // namespace prim
-}  // namespace mindspore
+}  // namespace luojianet_ms

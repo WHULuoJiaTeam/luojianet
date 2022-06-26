@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
 # limitations under the License.
 # ============================================================================
 
-import mindspore
-from mindspore.common.initializer import initializer, Identity, Dirac, Sparse, VarianceScaling, Orthogonal
+import luojianet_ms
+from luojianet_ms.common.initializer import initializer, Identity, Dirac, Sparse, VarianceScaling, Orthogonal
 import numpy as np
 
 
@@ -24,7 +25,7 @@ def test_sparse():
     Description: Initialize a 2 dimension sparse matrix to fill the input tensor.
     Expectation: The Tensor is initialized with a 2 dimension sparse matrix.
     """
-    tensor1 = initializer(Sparse(sparsity=0.1, sigma=0.01), [5, 8], mindspore.float32)
+    tensor1 = initializer(Sparse(sparsity=0.1, sigma=0.01), [5, 8], luojianet_ms.float32)
     tensor1.init_data()
 
 
@@ -34,8 +35,8 @@ def test_orthogonal():
     Description: Initialize a (semi) orthogonal matrix to fill the input tensor.
     Expectation: The Tensor is initialized with values from orthogonal matrix.
     """
-    tensor1 = initializer(Orthogonal(gain=2.), [2, 3, 4], mindspore.float32)
-    tensor2 = initializer('orthogonal', [2, 3, 4], mindspore.float32)
+    tensor1 = initializer(Orthogonal(gain=2.), [2, 3, 4], luojianet_ms.float32)
+    tensor2 = initializer('orthogonal', [2, 3, 4], luojianet_ms.float32)
     tensor1.init_data()
     tensor2.init_data()
 
@@ -46,13 +47,13 @@ def test_variancescaling():
     Description: Randomly initialize an array with scaling to fill the input tensor.
     Expectation: The Tensor is initialized successfully.
     """
-    tensor1 = initializer('varianceScaling', [2, 3], mindspore.float32)
+    tensor1 = initializer('varianceScaling', [2, 3], luojianet_ms.float32)
     tensor2 = initializer(VarianceScaling(scale=1.0, mode='fan_out', distribution='untruncated_normal'), [2, 3],
-                          mindspore.float32)
+                          luojianet_ms.float32)
     tensor3 = initializer(VarianceScaling(scale=2.0, mode='fan_in', distribution='truncated_normal'), [2, 3],
-                          mindspore.float32)
+                          luojianet_ms.float32)
     tensor4 = initializer(VarianceScaling(scale=3.0, mode='fan_avg', distribution='uniform'), [2, 3],
-                          mindspore.float32)
+                          luojianet_ms.float32)
     tensor1.init_data()
     tensor2.init_data()
     tensor3.init_data()
@@ -65,9 +66,9 @@ def test_identity():
     Description: Initialize an identity matrix to fill a Tensor.
     Expectation: The Tensor is initialized with identity matrix.
     """
-    tensor1 = initializer(Identity(), [3, 3], mindspore.float32)
-    tensor2 = initializer('identity', [3, 4], mindspore.float32)
-    tensor3 = initializer('identity', [4, 3], mindspore.float32)
+    tensor1 = initializer(Identity(), [3, 3], luojianet_ms.float32)
+    tensor2 = initializer('identity', [3, 4], luojianet_ms.float32)
+    tensor3 = initializer('identity', [4, 3], luojianet_ms.float32)
     expect1 = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.float32)
     expect2 = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]], dtype=np.float32)
     expect3 = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=np.float32)
@@ -82,17 +83,17 @@ def test_dirac():
     Description: Initialize input tensor with the Dirac delta function.
     Expectation: The Tensor is correctly initialized.
     """
-    tensor3_1 = initializer(Dirac(groups=1), [6, 2, 3], mindspore.float32)
-    tensor3_2 = initializer(Dirac(groups=2), [6, 2, 3], mindspore.float32)
-    tensor3_3 = initializer(Dirac(groups=3), [6, 2, 3], mindspore.float32)
+    tensor3_1 = initializer(Dirac(groups=1), [6, 2, 3], luojianet_ms.float32)
+    tensor3_2 = initializer(Dirac(groups=2), [6, 2, 3], luojianet_ms.float32)
+    tensor3_3 = initializer(Dirac(groups=3), [6, 2, 3], luojianet_ms.float32)
 
-    tensor4_1 = initializer(Dirac(groups=1), [6, 4, 3, 3], mindspore.float32)
-    tensor4_2 = initializer(Dirac(groups=2), [6, 4, 3, 3], mindspore.float32)
-    tensor4_3 = initializer(Dirac(groups=3), [6, 4, 3, 3], mindspore.float32)
+    tensor4_1 = initializer(Dirac(groups=1), [6, 4, 3, 3], luojianet_ms.float32)
+    tensor4_2 = initializer(Dirac(groups=2), [6, 4, 3, 3], luojianet_ms.float32)
+    tensor4_3 = initializer(Dirac(groups=3), [6, 4, 3, 3], luojianet_ms.float32)
 
-    tensor5_1 = initializer(Dirac(groups=1), [6, 2, 3, 3, 3], mindspore.float32)
-    tensor5_2 = initializer(Dirac(groups=2), [6, 2, 3, 3, 3], mindspore.float32)
-    tensor5_3 = initializer(Dirac(groups=3), [6, 2, 3, 3, 3], mindspore.float32)
+    tensor5_1 = initializer(Dirac(groups=1), [6, 2, 3, 3, 3], luojianet_ms.float32)
+    tensor5_2 = initializer(Dirac(groups=2), [6, 2, 3, 3, 3], luojianet_ms.float32)
+    tensor5_3 = initializer(Dirac(groups=3), [6, 2, 3, 3, 3], luojianet_ms.float32)
 
     expectation3_1 = np.array([[[0., 1., 0.], [0., 0., 0.]],
                                [[0., 0., 0.], [0., 1., 0.]],

@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +16,13 @@
 
 import pytest
 import numpy as np
-import mindspore.nn as nn
-import mindspore.ops as ops
-from mindspore import context, Tensor, Parameter
-from mindspore.nn import TrainOneStepCell
-from mindspore.nn.optim import Momentum
-from mindspore.ops.composite import GradOperation
-from mindspore.common import ParameterTuple
+import luojianet_ms.nn as nn
+import luojianet_ms.ops as ops
+from luojianet_ms import context, Tensor, Parameter
+from luojianet_ms.nn import TrainOneStepCell
+from luojianet_ms.nn.optim import Momentum
+from luojianet_ms.ops.composite import GradOperation
+from luojianet_ms.common import ParameterTuple
 
 context.set_context(mode=context.GRAPH_MODE)
 

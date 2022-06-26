@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +16,11 @@
 
 import numpy as np
 import pytest
-import mindspore.context as context
-from mindspore import Tensor
-from mindspore.nn import Cell
-import mindspore.ops.operations as P
-import mindspore.common.dtype as mstype
+import luojianet_ms.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.nn import Cell
+import luojianet_ms.ops.operations as P
+import luojianet_ms.common.dtype as mstype
 
 class Net(Cell):
     def __init__(self):

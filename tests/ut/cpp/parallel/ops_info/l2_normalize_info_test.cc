@@ -23,7 +23,7 @@
 #include "frontend/parallel/device_manager.h"
 #include "frontend/parallel/step_parallel.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace parallel {
 
 class L2NormalizeInfo;
@@ -55,7 +55,7 @@ void TestL2NormalizeInfo::SetUp() {
   g_device_manager->Init(dev_list, local_dev, stage_map, "hccl");
 
   ValuePtr axis = MakeValue(std::vector<int64_t>{1});
-  mindspore::HashMap<std::string, ValuePtr> attr = {{AXIS, axis}};
+  luojianet_ms::HashMap<std::string, ValuePtr> attr = {{AXIS, axis}};
 
   Shapes inputs_shape = {{32, 64, 96}};
   Shapes outputs_shape = {{32, 64, 96}};
@@ -190,4 +190,4 @@ TEST_F(TestL2NormalizeInfo, mirror_ops) {
 }
 
 }  // namespace parallel
-}  // namespace mindspore
+}  // namespace luojianet_ms

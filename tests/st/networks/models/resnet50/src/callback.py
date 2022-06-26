@@ -15,8 +15,8 @@
 """custom callback."""
 import time
 import numpy as np
-import mindspore as ms
-from mindspore.train.callback import Callback
+import luojianet_ms as ms
+from luojianet_ms.train.callback import Callback
 
 
 class LossGet(Callback):

@@ -14,12 +14,12 @@
 
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-from mindspore import Parameter, Tensor, context
-from mindspore.common.api import _cell_graph_executor
-from mindspore.ops import composite as C
-from mindspore.ops import operations as P
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+from luojianet_ms import Parameter, Tensor, context
+from luojianet_ms.common.api import _cell_graph_executor
+from luojianet_ms.ops import composite as C
+from luojianet_ms.ops import operations as P
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 

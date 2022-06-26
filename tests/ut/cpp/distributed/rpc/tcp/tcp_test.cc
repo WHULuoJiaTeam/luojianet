@@ -29,7 +29,7 @@
 #include "distributed/rpc/tcp/constants.h"
 #include "common/common_test.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace distributed {
 namespace rpc {
 int g_recv_num = 0;
@@ -273,4 +273,4 @@ TEST_F(TCPTest, SendSyncMessage) {
 }
 }  // namespace rpc
 }  // namespace distributed
-}  // namespace mindspore
+}  // namespace luojianet_ms

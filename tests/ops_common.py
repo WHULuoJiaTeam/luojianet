@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,12 @@
 """ test ops """
 import numpy as np
 
-import mindspore.nn as nn
-import mindspore.ops.composite as C
-import mindspore.ops.functional as F
-import mindspore.ops.operations as P
-from mindspore import Tensor
-from mindspore.common.api import _cell_graph_executor
+import luojianet_ms.nn as nn
+import luojianet_ms.ops.composite as C
+import luojianet_ms.ops.functional as F
+import luojianet_ms.ops.operations as P
+from luojianet_ms import Tensor
+from luojianet_ms.common.api import _cell_graph_executor
 
 
 grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)

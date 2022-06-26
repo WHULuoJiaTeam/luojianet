@@ -16,13 +16,13 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-from mindspore.common.api import ms_function
-from mindspore.common.initializer import initializer
-from mindspore.common.parameter import Parameter
-from mindspore.common.tensor import Tensor
-from mindspore.nn import Cell
-from mindspore.ops.operations import Tile
+import luojianet_ms.context as context
+from luojianet_ms.common.api import ms_function
+from luojianet_ms.common.initializer import initializer
+from luojianet_ms.common.parameter import Parameter
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops.operations import Tile
 
 
 class TileNet(Cell):

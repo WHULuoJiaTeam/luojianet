@@ -19,16 +19,16 @@ import shutil
 import glob
 import numpy as np
 
-import mindspore as ms
-import mindspore.nn as nn
-import mindspore.dataset as ds
-from mindspore import Tensor, Parameter, Model
-from mindspore.train import DynamicLossScaleManager
-from mindspore.nn.wrap.cell_wrapper import _VirtualDatasetCell, MicroBatchInterleaved, PipelineCell
-from mindspore.nn.optim import AdamWeightDecay
-from mindspore.ops import operations as P
-from mindspore.ops import composite as C
-from mindspore import context
+import luojianet_ms as ms
+import luojianet_ms.nn as nn
+import luojianet_ms.dataset as ds
+from luojianet_ms import Tensor, Parameter, Model
+from luojianet_ms.train import DynamicLossScaleManager
+from luojianet_ms.nn.wrap.cell_wrapper import _VirtualDatasetCell, MicroBatchInterleaved, PipelineCell
+from luojianet_ms.nn.optim import AdamWeightDecay
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops import composite as C
+from luojianet_ms import context
 
 
 class OneParameterNet(nn.Cell):

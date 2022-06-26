@@ -26,7 +26,7 @@
 #include "include/common/debug/draw.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class FuncGraphIndex {
  public:
   explicit FuncGraphIndex(const FuncGraphPtr &fg, const SearchFunc &search = DeepScopedGraphSearch,
@@ -274,4 +274,4 @@ TEST_F(TestCloner, test_clone_total) {
   ASSERT_TRUE(idx0.GetFirstFuncGraph("clone_total_sub") == idx2.GetFirstFuncGraph("clone_total_sub"));
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

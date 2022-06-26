@@ -14,8 +14,8 @@
 # ==============================================================================
 import pytest
 
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 from util import config_get_set_num_parallel_workers, config_get_set_seed
 
 DATA_FILE = "../data/dataset/testEnWik9Dataset"
@@ -47,7 +47,7 @@ def test_enwik9_total_rows_dataset_shuffle_false_parallel_worker_two():
     data = ds.EnWik9Dataset(DATA_FILE, shuffle=False)
     count = 0
     line = ["  <page>",
-            "    <title>MindSpore</title>",
+            "    <title>LuoJiaNET</title>",
             "    <id>1</id>",
             "    <revision>",
             "      <id>234</id>",
@@ -80,7 +80,7 @@ def test_enwik9_total_rows_dataset_shuffle_false_parallel_worker_one():
     data = ds.EnWik9Dataset(DATA_FILE, shuffle=False)
     count = 0
     line = ["  <page>",
-            "    <title>MindSpore</title>",
+            "    <title>LuoJiaNET</title>",
             "    <id>1</id>",
             "    <revision>",
             "      <id>234</id>",
@@ -113,7 +113,7 @@ def test_enwik9_total_rows_dataset_shuffle_true_parallel_worker_two():
     data = ds.EnWik9Dataset(DATA_FILE, shuffle=True)
     count = 0
     line = ["        <username>MS</username>",
-            "    <title>MindSpore</title>",
+            "    <title>LuoJiaNET</title>",
             "      <id>234</id>",
             "    </revision>",
             "      </contributor>",
@@ -146,7 +146,7 @@ def test_enwik9_total_rows_dataset_shuffle_true_parallel_worker_one():
     data = ds.EnWik9Dataset(DATA_FILE, shuffle=True)
     count = 0
     line = ["        <username>MS</username>",
-            "    <title>MindSpore</title>",
+            "    <title>LuoJiaNET</title>",
             "      <id>234</id>",
             "    </revision>",
             "      </contributor>",
@@ -204,7 +204,7 @@ def test_enwik9_total_rows_dataset_repeat():
     data = data.repeat(2)
     count = 0
     line = ["  <page>",
-            "    <title>MindSpore</title>",
+            "    <title>LuoJiaNET</title>",
             "    <id>1</id>",
             "    <revision>",
             "      <id>234</id>",
@@ -217,7 +217,7 @@ def test_enwik9_total_rows_dataset_repeat():
             "    </revision>",
             "  </page>",
             "  <page>",
-            "    <title>MindSpore</title>",
+            "    <title>LuoJiaNET</title>",
             "    <id>1</id>",
             "    <revision>",
             "      <id>234</id>",

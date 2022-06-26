@@ -24,7 +24,7 @@
 #include "pipeline/jit/static_analysis/prim.h"
 #include "frontend/operator/ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 class TestIrImporter : public UT::Common {
  public:
   TestIrImporter() {}
@@ -32,4 +32,4 @@ class TestIrImporter : public UT::Common {
 
   virtual void TearDown() {}
 };
-}  // namespace mindspore
+}  // namespace luojianet_ms

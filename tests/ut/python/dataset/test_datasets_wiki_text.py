@@ -1,4 +1,5 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,8 +15,8 @@
 # ==============================================================================
 import pytest
 
-import mindspore.dataset as ds
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
 from util import config_get_set_num_parallel_workers, config_get_set_seed
 
 FILE_DIR = '../data/dataset/testWikiText'
@@ -46,7 +47,7 @@ def test_wiki_text_dataset_train():
     """
     data = ds.WikiTextDataset(FILE_DIR, usage='train', shuffle=False)
     count = 0
-    train_content = [" go to china ", " I lova MindSpore ", " black white grapes "]
+    train_content = [" go to china ", " I lova LuoJiaNET ", " black white grapes "]
     for i in data.create_dict_iterator(num_epochs=1, output_numpy=True):
         logger.info("{}".format(i["text"]))
         strs = i["text"].item().decode("utf8")
@@ -63,7 +64,7 @@ def test_wiki_text_dataset_valid():
     """
     data = ds.WikiTextDataset(FILE_DIR, usage='valid', shuffle=False)
     count = 0
-    valid_content = [" just ahead of them there was a huge fissure ", " zhejiang, china ", " MindSpore Ascend "]
+    valid_content = [" just ahead of them there was a huge fissure ", " zhejiang, china ", " LuoJiaNET Ascend "]
     for i in data.create_dict_iterator(num_epochs=1, output_numpy=True):
         logger.info("{}".format(i["text"]))
         strs = i["text"].item().decode("utf8")
@@ -115,11 +116,11 @@ def test_wiki_text_dataset_shuffle_false_and_workers_4():
             " go to china ",
             " just ahead of them there was a huge fissure ",
             " I am happy ",
-            " I lova MindSpore ",
+            " I lova LuoJiaNET ",
             " zhejiang, china ",
             " finish math homework ",
             " black white grapes ",
-            " MindSpore Ascend "]
+            " LuoJiaNET Ascend "]
     for i in data.create_dict_iterator(num_epochs=1, output_numpy=True):
         strs = i["text"].item().decode("utf8")
         assert strs == line[count]
@@ -144,11 +145,11 @@ def test_wiki_text_dataset_shuffle_false_and_workers_1():
             " I am happy ",
             " finish math homework ",
             " go to china ",
-            " I lova MindSpore ",
+            " I lova LuoJiaNET ",
             " black white grapes ",
             " just ahead of them there was a huge fissure ",
             " zhejiang, china ",
-            " MindSpore Ascend "]
+            " LuoJiaNET Ascend "]
     for i in data.create_dict_iterator(num_epochs=1, output_numpy=True):
         strs = i["text"].item().decode("utf8")
         assert strs == line[count]
@@ -173,9 +174,9 @@ def test_wiki_text_dataset_shuffle_files_and_workers_4():
             " go to china ",
             " no it was black friday ",
             " zhejiang, china ",
-            " I lova MindSpore ",
+            " I lova LuoJiaNET ",
             " I am happy ",
-            " MindSpore Ascend ",
+            " LuoJiaNET Ascend ",
             " black white grapes ",
             " finish math homework "]
     for i in data.create_dict_iterator(num_epochs=1, output_numpy=True):
@@ -200,9 +201,9 @@ def test_wiki_text_dataset_shuffle_files_and_workers_1():
     count = 0
     line = [" just ahead of them there was a huge fissure ",
             " zhejiang, china ",
-            " MindSpore Ascend ",
+            " LuoJiaNET Ascend ",
             " go to china ",
-            " I lova MindSpore ",
+            " I lova LuoJiaNET ",
             " black white grapes ",
             " no it was black friday ",
             " I am happy ",
@@ -227,14 +228,14 @@ def test_wiki_text_dataset_shuffle_global4():
     original_seed = config_get_set_seed(246)
     data = ds.WikiTextDataset(FILE_DIR, usage='all', shuffle=ds.Shuffle.GLOBAL)
     count = 0
-    line = [" MindSpore Ascend ",
+    line = [" LuoJiaNET Ascend ",
             " go to china ",
             " I am happy ",
             " no it was black friday ",
             " just ahead of them there was a huge fissure ",
             " zhejiang, china ",
             " finish math homework ",
-            " I lova MindSpore ",
+            " I lova LuoJiaNET ",
             " black white grapes "]
     for i in data.create_dict_iterator(num_epochs=1, output_numpy=True):
         strs = i["text"].item().decode("utf8")
@@ -256,10 +257,10 @@ def test_wiki_text_dataset_shuffle_global1():
     original_seed = config_get_set_seed(246)
     data = ds.WikiTextDataset(FILE_DIR, usage='all', shuffle=ds.Shuffle.GLOBAL)
     count = 0
-    line = [" MindSpore Ascend ",
+    line = [" LuoJiaNET Ascend ",
             " go to china ",
             " I am happy ",
-            " I lova MindSpore ",
+            " I lova LuoJiaNET ",
             " black white grapes ",
             " finish math homework ",
             " zhejiang, china ",

@@ -15,10 +15,10 @@
 import numpy as np
 import pytest
 
-import mindspore.dataset as ds
-import mindspore.common.dtype as mstype
-import mindspore.dataset.vision.c_transforms as C
-import mindspore.dataset.transforms.c_transforms as C2
+import luojianet_ms.dataset as ds
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.dataset.vision.c_transforms as C
+import luojianet_ms.dataset.transforms.c_transforms as C2
 
 
 DATA_DIR = "../data/dataset/testPK/data"

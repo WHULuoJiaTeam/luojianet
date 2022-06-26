@@ -15,10 +15,10 @@
 """Resnet backbone."""
 
 import numpy as np
-import mindspore.nn as nn
-from mindspore.ops import operations as P
-from mindspore.common.tensor import Tensor
-from mindspore.ops import functional as F
+import luojianet_ms.nn as nn
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.ops import functional as F
 
 
 def weight_init_ones(shape):

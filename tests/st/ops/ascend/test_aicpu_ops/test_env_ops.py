@@ -15,12 +15,12 @@
 """ test grad ops """
 from dataclasses import dataclass
 
-import mindspore.ops as ops
-import mindspore.nn as nn
-from mindspore import ms_function
-from mindspore import Tensor, context
-from mindspore.common import dtype as mstype
-from mindspore import ParameterTuple, Parameter
+import luojianet_ms.ops as ops
+import luojianet_ms.nn as nn
+from luojianet_ms import ms_function
+from luojianet_ms import Tensor, context
+from luojianet_ms.common import dtype as mstype
+from luojianet_ms import ParameterTuple, Parameter
 
 one = Tensor([1], mstype.int32)
 zero = Tensor([0], mstype.int32)

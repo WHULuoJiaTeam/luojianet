@@ -33,11 +33,11 @@
 #include "minddata/mindrecord/include/shard_segment.h"
 #include "ut_common.h"
 
-using mindspore::LogStream;
-using mindspore::ExceptionType::NoExceptionType;
-using mindspore::MsLogLevel::INFO;
+using luojianet_ms::LogStream;
+using luojianet_ms::ExceptionType::NoExceptionType;
+using luojianet_ms::MsLogLevel::INFO;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace mindrecord {
 class TestShardSegment : public UT::Common {
  public:
@@ -220,4 +220,4 @@ TEST_F(TestShardSegment, TestReadAtPageByIdOfPageRows) {
 }
 
 }  // namespace mindrecord
-}  // namespace mindspore
+}  // namespace luojianet_ms

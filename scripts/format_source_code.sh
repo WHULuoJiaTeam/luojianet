@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2019 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -86,11 +87,11 @@ cd "${SCRIPTS_PATH}/.." || exit 1
 FMT_FILE_LIST='__format_files_list__'
 
 if [[ "X${mode}" == "Xall" ]]; then
-  find mindspore/{ccsrc,core,lite} -type f -name "*" | grep -E "(\.h$|\.cc$|\.c$)" > "${FMT_FILE_LIST}" || true
+  find luojianet_ms/{ccsrc,core,lite} -type f -name "*" | grep -E "(\.h$|\.cc$|\.c$)" > "${FMT_FILE_LIST}" || true
 elif [[ "X${mode}" == "Xchanged" ]]; then
-  git diff --name-only | grep "mindspore/ccsrc\|mindspore/core\|mindspore/lite\|include" | grep -E "(\.h$|\.cc$|\.c$)" > "${FMT_FILE_LIST}" || true
+  git diff --name-only | grep "luojianet_ms/ccsrc\|luojianet_ms/core\|luojianet_ms/lite\|include" | grep -E "(\.h$|\.cc$|\.c$)" > "${FMT_FILE_LIST}" || true
 else  # "X${mode}" == "Xlastcommit"
-  git diff --name-only HEAD~ HEAD | grep "mindspore/ccsrc\|mindspore/core\|mindspore/lite\|include" | grep -E "(\.h$|\.cc$|\.c$)" > "${FMT_FILE_LIST}" || true
+  git diff --name-only HEAD~ HEAD | grep "luojianet_ms/ccsrc\|luojianet_ms/core\|luojianet_ms/lite\|include" | grep -E "(\.h$|\.cc$|\.c$)" > "${FMT_FILE_LIST}" || true
 fi
 
 while read line; do

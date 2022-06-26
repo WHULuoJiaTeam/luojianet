@@ -19,7 +19,7 @@
 #include "common/py_func_graph_fetcher.h"
 #include "include/common/debug/anf_ir_dump.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 class TestHWSingleBatchNormFission : public BackendCommon {
  public:
@@ -75,4 +75,4 @@ TEST_F(TestHWSingleBatchNormFission, test_no_fission) {
   EXPECT_TRUE(CheckEqualGraph(origin_graph, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

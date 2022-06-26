@@ -24,7 +24,7 @@
 #include "include/common/debug/draw.h"
 #include "utils/label.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 
 namespace {
 std::vector<std::string> SplitString(std::string str, std::string pattern) {
@@ -762,4 +762,4 @@ TEST_F(TestManager, test_set_edge) {
   ASSERT_EQ(mgr->node_users()[t].front().first, get_item);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

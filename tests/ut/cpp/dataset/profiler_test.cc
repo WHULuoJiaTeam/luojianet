@@ -19,11 +19,11 @@
 #include "minddata/dataset/engine/perf/profiling.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
-using mindspore::LogStream;
-using mindspore::MsLogLevel::INFO;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::LogStream;
+using luojianet_ms::MsLogLevel::INFO;
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace dataset {
 namespace test {
 class MindDataTestProfiler : public UT::DatasetOpTesting {
@@ -114,7 +114,7 @@ TEST_F(MindDataTestProfiler, TestProfilerManager1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -167,7 +167,7 @@ TEST_F(MindDataTestProfiler, TestProfilerManager2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -219,7 +219,7 @@ TEST_F(MindDataTestProfiler, TestProfilerManagerByEpoch) {
   EXPECT_ERROR(profiler_manager->GetUserCpuUtilByEpoch(0, &cpu_result));
   EXPECT_ERROR(profiler_manager->GetBatchTimeByEpoch(0, &time_result));
 
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   for (int i = 0; i < 3; i++) {
     // Iterate the dataset and get each row
     ASSERT_OK(iter->GetNextRow(&row));
@@ -310,7 +310,7 @@ TEST_F(MindDataTestProfiler, TestProfilerManagerByStep) {
   ASSERT_ERROR(profiler_manager->GetPushTimeByStep(
     i + 1, i, &time_result));  // Fail in GetRecordEntryFieldValue for start_step > end_steps
 
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   for (int i = 0; i < 3; i++) {
     // Iterate the dataset and get each row
     ASSERT_OK(iter->GetNextRow(&row));
@@ -395,7 +395,7 @@ TEST_F(MindDataTestProfiler, TestProfilerManagerByTime) {
   float_t queue_result;
   std::vector<uint64_t> ts = {};
 
-  std::vector<mindspore::MSTensor> row;
+  std::vector<luojianet_ms::MSTensor> row;
   for (int i = 0; i < 5; i++) {
     ts.push_back(ProfilingTime::GetCurMilliSecond());
     // Iterate the dataset and get each row
@@ -450,4 +450,4 @@ TEST_F(MindDataTestProfiler, TestProfilerManagerByTime) {
 }
 }  // namespace test
 }  // namespace dataset
-}  // namespace mindspore
+}  // namespace luojianet_ms

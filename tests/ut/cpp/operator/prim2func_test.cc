@@ -24,7 +24,7 @@
 #include "frontend/operator/prim_to_function.h"
 #include "base/core_ops.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace prim {
 
 class TestPrimFunc : public UT::Common {
@@ -64,4 +64,4 @@ TEST_F(TestPrimFunc, ScalarExpTest) {
 }
 
 }  // namespace prim
-}  // namespace mindspore
+}  // namespace luojianet_ms

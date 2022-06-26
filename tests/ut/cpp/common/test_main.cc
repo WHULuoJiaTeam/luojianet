@@ -27,6 +27,6 @@ GTEST_API_ int main(int argc, char** argv) {
   common_log_init();
   testing::InitGoogleTest(&argc, argv);
   int ret = RUN_ALL_TESTS();
-  mindspore::pipeline::ClearResAtexit();
+  luojianet_ms::pipeline::ClearResAtexit();
   return ret;
 }

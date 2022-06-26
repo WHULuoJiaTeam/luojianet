@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,14 +20,14 @@ import numpy as np
 
 from utils import create_dataset, save_img
 
-import mindspore.nn as nn
+import luojianet_ms.nn as nn
 
-from mindspore import context
-from mindspore import Tensor
-from mindspore.train import Model
-from mindspore.train.callback import LossMonitor
-from mindspore.ops import operations as P
-from mindspore.common import dtype as mstype
+from luojianet_ms import context
+from luojianet_ms import Tensor
+from luojianet_ms.train import Model
+from luojianet_ms.train.callback import LossMonitor
+from luojianet_ms.ops import operations as P
+from luojianet_ms.common import dtype as mstype
 
 import zhusuan as zs
 
@@ -117,7 +118,7 @@ def main():
     context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
     epoch_size = 1
     batch_size = 32
-    mnist_path = "/data/chengzi/zhusuan-mindspore/data/MNIST"
+    mnist_path = "/data/chengzi/zhusuan-luojianet_ms/data/MNIST"
     repeat_size = 1
 
     # Define model parameters

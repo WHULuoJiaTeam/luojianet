@@ -15,10 +15,10 @@
 
 import numpy as np
 import pytest
-from mindspore import Tensor
-from mindspore.ops import operations as P
-import mindspore.nn as nn
-import mindspore.context as context
+from luojianet_ms import Tensor
+from luojianet_ms.ops import operations as P
+import luojianet_ms.nn as nn
+import luojianet_ms.context as context
 
 class GatherNdNet(nn.Cell):
     def __init__(self):

@@ -16,12 +16,12 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-from mindspore.common.tensor import Tensor
-from mindspore.common.parameter import ParameterTuple
-from mindspore.nn import BatchNorm2d, BatchNorm1d, SGD
-from mindspore.nn import Cell
-from mindspore.ops import composite as C
+import luojianet_ms.context as context
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms.common.parameter import ParameterTuple
+from luojianet_ms.nn import BatchNorm2d, BatchNorm1d, SGD
+from luojianet_ms.nn import Cell
+from luojianet_ms.ops import composite as C
 
 
 class Batchnorm_Net(Cell):

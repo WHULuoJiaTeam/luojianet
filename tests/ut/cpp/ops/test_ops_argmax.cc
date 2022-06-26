@@ -22,7 +22,7 @@
 #include "abstract/dshape.h"
 #include "utils/tensor_construct_utils.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace ops {
 class TestArgMax : public UT::Common {
  public:
@@ -86,4 +86,4 @@ TEST_F(TestArgMax, test_ops_argmax2) {
   EXPECT_EQ(shape_vec[1], 4);
 }
 }  // namespace ops
-}  // namespace mindspore
+}  // namespace luojianet_ms

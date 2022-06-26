@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +16,9 @@
 """
 Testing PythonTokenizer op in DE
 """
-import mindspore.dataset as ds
-import mindspore.dataset.text as text
-from mindspore import log as logger
+import luojianet_ms.dataset as ds
+import luojianet_ms.dataset.text as text
+from luojianet_ms import log as logger
 
 DATA_FILE = "../data/dataset/testTokenizerData/1.txt"
 

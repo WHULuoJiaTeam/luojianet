@@ -17,7 +17,7 @@ This module contains common utility functions for minddataset tests.
 """
 import os
 import pytest
-from mindspore.mindrecord import FileWriter
+from luojianet_ms.mindrecord import FileWriter
 
 FILES_NUM = 4
 CV_DIR_NAME = "../data/mindrecord/testImageNetData"

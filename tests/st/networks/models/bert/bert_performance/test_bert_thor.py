@@ -20,25 +20,25 @@ import time
 from multiprocessing import Process, Queue
 import pytest
 import numpy as np
-import mindspore.dataset as ds
-import mindspore.common.dtype as mstype
-import mindspore.communication.management as D
-from mindspore import context
-from mindspore import log as logger
-from mindspore.train.callback import Callback
-from mindspore.context import ParallelMode
-from mindspore.train.serialization import load_checkpoint, load_param_into_net
-from mindspore.nn.optim import thor
-from mindspore.train.model import Model
-from mindspore.train.train_thor import ConvertModelUtils
-import mindspore.dataset.transforms.c_transforms as C
+import luojianet_ms.dataset as ds
+import luojianet_ms.common.dtype as mstype
+import luojianet_ms.communication.management as D
+from luojianet_ms import context
+from luojianet_ms import log as logger
+from luojianet_ms.train.callback import Callback
+from luojianet_ms.context import ParallelMode
+from luojianet_ms.train.serialization import load_checkpoint, load_param_into_net
+from luojianet_ms.nn.optim import thor
+from luojianet_ms.train.model import Model
+from luojianet_ms.train.train_thor import ConvertModelUtils
+import luojianet_ms.dataset.transforms.c_transforms as C
 
 from tests.models.official.nlp.bert.src.bert_for_pre_training import BertNetworkWithLoss, BertTrainOneStepCell
 from tests.models.official.nlp.bert.src.utils import get_bert_thor_lr, get_bert_thor_damping
 from tests.models.official.nlp.bert.src.bert_model import BertConfig
 
-MINDSPORE_HCCL_CONFIG_PATH = "/home/workspace/mindspore_config/hccl/rank_table_8p.json"
-DATASET_PATH = "/home/workspace/mindspore_dataset/bert/thor/en-wiki-512_test_first1wan"
+LUOJIANET_MS_HCCL_CONFIG_PATH = "/home/workspace/luojianet_ms_config/hccl/rank_table_8p.json"
+DATASET_PATH = "/home/workspace/luojianet_ms_dataset/bert/thor/en-wiki-512_test_first1wan"
 
 load_checkpoint_path = ""
 data_sink_steps = 100
@@ -146,7 +146,7 @@ def train_process_bert_thor(q, device_id, epoch_size, device_num):
     context.set_context(mode=context.GRAPH_MODE, device_target="Ascend", device_id=device_id)
     context.set_context(reserve_class_name_in_scope=False)
     context.set_context(max_call_depth=3000)
-    os.environ['MINDSPORE_HCCL_CONFIG_PATH'] = MINDSPORE_HCCL_CONFIG_PATH
+    os.environ['LUOJIANET_MS_HCCL_CONFIG_PATH'] = LUOJIANET_MS_HCCL_CONFIG_PATH
     os.environ['RANK_ID'] = str(device_id)
     os.environ['RANK_SIZE'] = str(device_num)
 

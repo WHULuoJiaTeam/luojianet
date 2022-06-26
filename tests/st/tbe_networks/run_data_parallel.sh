@@ -19,7 +19,7 @@ export DEVICE_NUM=2
 export RANK_SIZE=$DEVICE_NUM
 ulimit -n 65535
 export DISTRIBUTION_FILE=$BASE_PATH/tdt${DEVICE_NUM}p/tdt_
-export MINDSPORE_HCCL_CONFIG_PATH=$BASE_PATH/hccl_${DEVICE_NUM}p.json
+export LUOJIANET_MS_HCCL_CONFIG_PATH=$BASE_PATH/hccl_${DEVICE_NUM}p.json
 
 for((i=0;i<$DEVICE_NUM;i++))
 do

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +16,13 @@
 """test transform_to_bnn_layer"""
 
 import numpy as np
-from mindspore import Tensor
-from mindspore.common.initializer import TruncatedNormal
-import mindspore.nn as nn
-from mindspore.nn import TrainOneStepCell, WithLossCell
-from mindspore.nn.probability import transforms, bnn_layers
-import mindspore.ops as ops
-from mindspore import context
+from luojianet_ms import Tensor
+from luojianet_ms.common.initializer import TruncatedNormal
+import luojianet_ms.nn as nn
+from luojianet_ms.nn import TrainOneStepCell, WithLossCell
+from luojianet_ms.nn.probability import transforms, bnn_layers
+import luojianet_ms.ops as ops
+from luojianet_ms import context
 from dataset import create_dataset
 
 
@@ -136,8 +137,8 @@ if __name__ == "__main__":
     # train_bnn_network = bnn_transformer.transform_to_bnn_layer(nn.Dense, bnn_layers.DenseReparam)
     train_bnn_network.set_train()
 
-    train_set = create_dataset('/home/workspace/mindspore_dataset/mnist_data/train', 64, 1)
-    test_set = create_dataset('/home/workspace/mindspore_dataset/mnist_data/test', 64, 1)
+    train_set = create_dataset('/home/workspace/luojianet_ms_dataset/mnist_data/train', 64, 1)
+    test_set = create_dataset('/home/workspace/luojianet_ms_dataset/mnist_data/test', 64, 1)
 
     epoch = 100
 

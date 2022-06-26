@@ -23,12 +23,12 @@
 #include "minddata/dataset/include/dataset/text.h"
 #include "minddata/dataset/include/dataset/transforms.h"
 
-using namespace mindspore::dataset;
-using mindspore::Status;
-using mindspore::dataset::DataType;
-using mindspore::dataset::ShuffleMode;
-using mindspore::dataset::Tensor;
-using mindspore::dataset::Vocab;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::Status;
+using luojianet_ms::dataset::DataType;
+using luojianet_ms::dataset::ShuffleMode;
+using luojianet_ms::dataset::Tensor;
+using luojianet_ms::dataset::Vocab;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -96,7 +96,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOp) {
 
   // Create Lookup operation on ds
   std::shared_ptr<TensorTransform> lookup =
-    std::make_shared<text::Lookup>(vocab, "<unk>", mindspore::DataType::kNumberTypeInt32);
+    std::make_shared<text::Lookup>(vocab, "<unk>", luojianet_ms::DataType::kNumberTypeInt32);
   EXPECT_NE(lookup, nullptr);
 
   // Create Map operation on ds
@@ -109,7 +109,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOp) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -120,8 +120,8 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOp) {
     TEST_MS_LOG_MSTENSOR(INFO, "ind: ", ind);
     std::shared_ptr<Tensor> de_expected_item;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -150,7 +150,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOpEmptyString) {
 
   // Create Lookup operation on ds
   std::shared_ptr<TensorTransform> lookup =
-    std::make_shared<text::Lookup>(vocab, "", mindspore::DataType::kNumberTypeInt32);
+    std::make_shared<text::Lookup>(vocab, "", luojianet_ms::DataType::kNumberTypeInt32);
   EXPECT_NE(lookup, nullptr);
 
   // Create Map operation on ds
@@ -163,7 +163,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOpEmptyString) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -174,8 +174,8 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOpEmptyString) {
     TEST_MS_LOG_MSTENSOR(INFO, "ind: ", ind);
     std::shared_ptr<Tensor> de_expected_item;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -205,7 +205,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupBool) {
 
   // Create Lookup operation on ds
   std::shared_ptr<TensorTransform> lookup =
-    std::make_shared<text::Lookup>(vocab, "<unk>", mindspore::DataType::kNumberTypeBool);
+    std::make_shared<text::Lookup>(vocab, "<unk>", luojianet_ms::DataType::kNumberTypeBool);
   EXPECT_NE(lookup, nullptr);
 
   // Create Map operation on ds
@@ -218,7 +218,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupBool) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -252,7 +252,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOpFail1) {
 
   // Create lookup op for ds
   std::shared_ptr<TensorTransform> lookup =
-    std::make_shared<text::Lookup>(vocab, "<unk>", mindspore::DataType::kNumberTypeInt32);
+    std::make_shared<text::Lookup>(vocab, "<unk>", luojianet_ms::DataType::kNumberTypeInt32);
   EXPECT_NE(lookup, nullptr);
 
   // Create a Map operation on ds
@@ -276,7 +276,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOpFail2) {
 
   // Create lookup op
   std::shared_ptr<TensorTransform> lookup =
-    std::make_shared<text::Lookup>(vocab, "", mindspore::DataType::kNumberTypeInt32);
+    std::make_shared<text::Lookup>(vocab, "", luojianet_ms::DataType::kNumberTypeInt32);
   EXPECT_NE(lookup, nullptr);
 
   // Create a Map operation on ds
@@ -303,7 +303,7 @@ TEST_F(MindDataTestPipeline, TestVocabLookupOpFail3DataType) {
 
   // Create lookup op for ds
   std::shared_ptr<TensorTransform> lookup =
-    std::make_shared<text::Lookup>(vocab, "", mindspore::DataType::kObjectTypeString);
+    std::make_shared<text::Lookup>(vocab, "", luojianet_ms::DataType::kObjectTypeString);
   EXPECT_NE(lookup, nullptr);
 
   // Create a Map operation on ds
@@ -334,7 +334,7 @@ TEST_F(MindDataTestPipeline, TestVocabFromDataset) {
 
   // Create Lookup operation on ds
   std::shared_ptr<TensorTransform> lookup =
-    std::make_shared<text::Lookup>(vocab, "<unk>", mindspore::DataType::kNumberTypeInt32);
+    std::make_shared<text::Lookup>(vocab, "<unk>", luojianet_ms::DataType::kNumberTypeInt32);
   EXPECT_NE(lookup, nullptr);
 
   // Create Map operation on ds
@@ -347,7 +347,7 @@ TEST_F(MindDataTestPipeline, TestVocabFromDataset) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -358,8 +358,8 @@ TEST_F(MindDataTestPipeline, TestVocabFromDataset) {
     TEST_MS_LOG_MSTENSOR(INFO, "ind: ", ind);
     std::shared_ptr<Tensor> de_expected_item;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -403,7 +403,7 @@ TEST_F(MindDataTestPipeline, TestVocabFromDatasetDefault) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -416,14 +416,14 @@ TEST_F(MindDataTestPipeline, TestVocabFromDatasetDefault) {
 
     std::shared_ptr<Tensor> de_expected_item;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     std::shared_ptr<Tensor> de_not_expected_item;
     ASSERT_OK(Tensor::CreateScalar(not_expected[i], &de_not_expected_item));
-    mindspore::MSTensor ms_not_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_not_expected_item));
+    luojianet_ms::MSTensor ms_not_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_not_expected_item));
     EXPECT_MSTENSOR_DATA_NE(ind, ms_not_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));
@@ -513,7 +513,7 @@ TEST_F(MindDataTestPipeline, TestVocabFromDatasetInt64) {
 
   // Create Lookup operation on ds
   std::shared_ptr<TensorTransform> lookup =
-    std::make_shared<text::Lookup>(vocab, "home", mindspore::DataType::kNumberTypeInt64);
+    std::make_shared<text::Lookup>(vocab, "home", luojianet_ms::DataType::kNumberTypeInt64);
   EXPECT_NE(lookup, nullptr);
 
   // Create Map operation on ds
@@ -526,7 +526,7 @@ TEST_F(MindDataTestPipeline, TestVocabFromDatasetInt64) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   uint64_t i = 0;
@@ -539,14 +539,14 @@ TEST_F(MindDataTestPipeline, TestVocabFromDatasetInt64) {
 
     std::shared_ptr<Tensor> de_expected_item;
     ASSERT_OK(Tensor::CreateScalar(expected[i], &de_expected_item));
-    mindspore::MSTensor ms_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_item));
+    luojianet_ms::MSTensor ms_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_item));
     EXPECT_MSTENSOR_EQ(ind, ms_expected_item);
 
     std::shared_ptr<Tensor> de_not_expected_item;
     ASSERT_OK(Tensor::CreateScalar(not_expected[i], &de_not_expected_item));
-    mindspore::MSTensor ms_not_expected_item =
-      mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_not_expected_item));
+    luojianet_ms::MSTensor ms_not_expected_item =
+      luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_not_expected_item));
     EXPECT_MSTENSOR_DATA_NE(ind, ms_not_expected_item);
 
     ASSERT_OK(iter->GetNextRow(&row));

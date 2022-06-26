@@ -17,9 +17,9 @@
 #include "minddata/dataset/core/global_context.h"
 #include "minddata/dataset/include/dataset/datasets.h"
 
-using namespace mindspore::dataset;
+using namespace luojianet_ms::dataset;
 
-using mindspore::dataset::ShuffleMode;
+using luojianet_ms::dataset::ShuffleMode;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -53,11 +53,11 @@ TEST_F(MindDataTestPipeline, TestEnWik9DatasetBasic) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
-  std::vector<std::string> expected_result = {"    <title>MindSpore</title>", "  <page>"};
+  std::vector<std::string> expected_result = {"    <title>LuoJiaNET</title>", "  <page>"};
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -129,11 +129,11 @@ TEST_F(MindDataTestPipeline, TestEnWik9DatasetBasicAndRepeat) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
-  std::vector<std::string> expected_result = {"  <page>", "    <title>MindSpore</title>"};
+  std::vector<std::string> expected_result = {"  <page>", "    <title>LuoJiaNET</title>"};
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -235,12 +235,12 @@ TEST_F(MindDataTestPipeline, TestEnWik9DatasetShuffleFalse1A) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::string> expected_result = {"  <page>",
-                                              "    <title>MindSpore</title>",
+                                              "    <title>LuoJiaNET</title>",
                                               "    <id>1</id>",
                                               "    <revision>",
                                               "      <id>234</id>",
@@ -308,12 +308,12 @@ TEST_F(MindDataTestPipeline, TestEnWik9DatasetShuffleFalse4Shard) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
   std::vector<std::string> expected_result = {"  <page>",
-                                              "    <title>MindSpore</title>",
+                                              "    <title>LuoJiaNET</title>",
                                               "    <id>1</id>",
                                               "    <revision>",
                                               "      <id>234</id>",
@@ -380,7 +380,7 @@ TEST_F(MindDataTestPipeline, TestEnWik9DatasetShuffleGlobal1A) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row.
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   EXPECT_NE(row.find("text"), row.end());
@@ -388,7 +388,7 @@ TEST_F(MindDataTestPipeline, TestEnWik9DatasetShuffleGlobal1A) {
                                               "  <page>",
                                               "      <contributor>",
                                               "        <username>MS</username>",
-                                              "    <title>MindSpore</title>",
+                                              "    <title>LuoJiaNET</title>",
                                               "      <timestamp>2020-01-01T00:00:00Z</timestamp>",
                                               "      <text xml:space=\"preserve\">666</text>",
                                               "    <revision>",

@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +18,7 @@ import os
 import tempfile
 import shutil
 
-from mindspore.profiler.parser.aicpu_data_parser import DataPreProcessParser
+from luojianet_ms.profiler.parser.aicpu_data_parser import DataPreProcessParser
 
 
 class TestAicpuParser:

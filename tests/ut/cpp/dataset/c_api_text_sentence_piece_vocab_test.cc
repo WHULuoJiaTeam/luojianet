@@ -24,11 +24,11 @@
 #include "minddata/dataset/include/dataset/text.h"
 #include "minddata/dataset/include/dataset/transforms.h"
 
-using namespace mindspore::dataset;
-using mindspore::dataset::SentencePieceModel;
-using mindspore::dataset::SentencePieceVocab;
-using mindspore::dataset::ShuffleMode;
-using mindspore::dataset::Tensor;
+using namespace luojianet_ms::dataset;
+using luojianet_ms::dataset::SentencePieceModel;
+using luojianet_ms::dataset::SentencePieceVocab;
+using luojianet_ms::dataset::ShuffleMode;
+using luojianet_ms::dataset::Tensor;
 
 class MindDataTestPipeline : public UT::DatasetOpTesting {
  protected:
@@ -53,7 +53,7 @@ TEST_F(MindDataTestPipeline, TestSentencePieceVocabSuccess1) {
 
   // Create SentencePieceTokenizer operation from vocab object
   std::shared_ptr<TensorTransform> sentencepiece_tokenizer =
-    std::make_shared<text::SentencePieceTokenizer>(vocab, mindspore::dataset::SPieceTokenizerOutType::kString);
+    std::make_shared<text::SentencePieceTokenizer>(vocab, luojianet_ms::dataset::SPieceTokenizerOutType::kString);
   EXPECT_NE(sentencepiece_tokenizer, nullptr);
 
   // Create Map operation on ds
@@ -66,15 +66,15 @@ TEST_F(MindDataTestPipeline, TestSentencePieceVocabSuccess1) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Expected result after tokenization
   std::vector<std::string> expected = {"▁I", "▁sa", "w", "▁a", "▁girl", "▁with", "▁a", "▁te", "les", "co", "pe", "."};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -116,7 +116,7 @@ TEST_F(MindDataTestPipeline, TestSentencePieceVocabSuccess2) {
   // Create SentencePieceTokenizer operation from local vocab model
   std::string vocab_model = datasets_root_path_ + "/test_sentencepiece/m.model";
   std::shared_ptr<TensorTransform> sentencepiece_tokenizer =
-    std::make_shared<text::SentencePieceTokenizer>(vocab_model, mindspore::dataset::SPieceTokenizerOutType::kString);
+    std::make_shared<text::SentencePieceTokenizer>(vocab_model, luojianet_ms::dataset::SPieceTokenizerOutType::kString);
   EXPECT_NE(sentencepiece_tokenizer, nullptr);
 
   // Create Map operation on ds
@@ -129,15 +129,15 @@ TEST_F(MindDataTestPipeline, TestSentencePieceVocabSuccess2) {
   EXPECT_NE(iter, nullptr);
 
   // Iterate the dataset and get each row
-  std::unordered_map<std::string, mindspore::MSTensor> row;
+  std::unordered_map<std::string, luojianet_ms::MSTensor> row;
   ASSERT_OK(iter->GetNextRow(&row));
 
   // Expected result after tokenization
   std::vector<std::string> expected = {"▁I", "▁sa", "w", "▁a", "▁girl", "▁with", "▁a", "▁te", "les", "co", "pe", "."};
   std::shared_ptr<Tensor> de_expected_tensor;
   ASSERT_OK(Tensor::CreateFromVector(expected, &de_expected_tensor));
-  mindspore::MSTensor expected_tensor =
-    mindspore::MSTensor(std::make_shared<mindspore::dataset::DETensor>(de_expected_tensor));
+  luojianet_ms::MSTensor expected_tensor =
+    luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_expected_tensor));
 
   uint64_t i = 0;
   while (row.size() != 0) {
@@ -195,7 +195,7 @@ TEST_F(MindDataTestPipeline, TestSentencePieceTokenizerFail1) {
   // Create SentencePieceTokenizer operation from local vocab model
   std::string vocab_model = "";
   std::shared_ptr<TensorTransform> sentencepiece_tokenizer =
-    std::make_shared<text::SentencePieceTokenizer>(vocab_model, mindspore::dataset::SPieceTokenizerOutType::kString);
+    std::make_shared<text::SentencePieceTokenizer>(vocab_model, luojianet_ms::dataset::SPieceTokenizerOutType::kString);
   EXPECT_NE(sentencepiece_tokenizer, nullptr);
 
   // Create Map operation on ds
@@ -219,7 +219,7 @@ TEST_F(MindDataTestPipeline, TestSentencePieceTokenizerFail2) {
   // Create SentencePieceTokenizer operation from local vocab model
   std::string vocab_model = "m.model";
   std::shared_ptr<TensorTransform> sentencepiece_tokenizer =
-    std::make_shared<text::SentencePieceTokenizer>(vocab_model, mindspore::dataset::SPieceTokenizerOutType::kString);
+    std::make_shared<text::SentencePieceTokenizer>(vocab_model, luojianet_ms::dataset::SPieceTokenizerOutType::kString);
   EXPECT_NE(sentencepiece_tokenizer, nullptr);
 
   // Create Map operation on ds
@@ -243,7 +243,7 @@ TEST_F(MindDataTestPipeline, TestSentencePieceTokenizerFail3) {
   // Create SentencePieceTokenizer operation from vocab object
   std::shared_ptr<SentencePieceVocab> vocab_model = nullptr;
   std::shared_ptr<TensorTransform> sentencepiece_tokenizer =
-    std::make_shared<text::SentencePieceTokenizer>(vocab_model, mindspore::dataset::SPieceTokenizerOutType::kString);
+    std::make_shared<text::SentencePieceTokenizer>(vocab_model, luojianet_ms::dataset::SPieceTokenizerOutType::kString);
   EXPECT_NE(sentencepiece_tokenizer, nullptr);
 
   // Create Map operation on ds
@@ -267,7 +267,7 @@ TEST_F(MindDataTestPipeline, TestSentencePieceTokenizerFail4) {
   // Create SentencePieceTokenizer operation from vocab object
   std::shared_ptr<SentencePieceVocab> vocab_model4 = std::make_shared<SentencePieceVocab>();
   std::shared_ptr<TensorTransform> sentencepiece_tokenizer4 =
-    std::make_shared<text::SentencePieceTokenizer>(vocab_model4, mindspore::dataset::SPieceTokenizerOutType::kString);
+    std::make_shared<text::SentencePieceTokenizer>(vocab_model4, luojianet_ms::dataset::SPieceTokenizerOutType::kString);
   EXPECT_NE(sentencepiece_tokenizer4, nullptr);
 
   // Create Map operation on ds

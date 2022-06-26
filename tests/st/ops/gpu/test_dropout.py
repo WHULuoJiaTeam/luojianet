@@ -15,11 +15,11 @@
 import numpy as np
 import pytest
 
-import mindspore.nn as nn
-from mindspore import Tensor
-import mindspore.context as context
-from mindspore.ops import operations as P
-from mindspore.ops.operations import _inner_ops as inner
+import luojianet_ms.nn as nn
+from luojianet_ms import Tensor
+import luojianet_ms.context as context
+from luojianet_ms.ops import operations as P
+from luojianet_ms.ops.operations import _inner_ops as inner
 
 class Net(nn.Cell):
     def __init__(self, keep_prob):

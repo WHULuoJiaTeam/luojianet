@@ -23,7 +23,7 @@
 #include "pipeline/jit/parse/parse.h"
 #include "include/common/debug/draw.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 void CheckNoFreeVariables(FuncGraphPtr root) {
   auto mng = Manage(root);
   for (auto &iter : mng->func_graphs()) {
@@ -140,4 +140,4 @@ TEST_F(TestCconv, TestClosureLiftCNode) {
   CheckCconv(func_graph);
 }
 
-}  // namespace mindspore
+}  // namespace luojianet_ms

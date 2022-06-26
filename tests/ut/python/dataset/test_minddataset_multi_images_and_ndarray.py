@@ -18,9 +18,9 @@ This is the test module for mindrecord
 import os
 import numpy as np
 
-import mindspore.dataset as ds
-from mindspore import log as logger
-from mindspore.mindrecord import FileWriter
+import luojianet_ms.dataset as ds
+from luojianet_ms import log as logger
+from luojianet_ms.mindrecord import FileWriter
 
 FILES_NUM = 1
 

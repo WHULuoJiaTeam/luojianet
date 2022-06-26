@@ -1,4 +1,5 @@
-# Copyright 2020 Huawei Technologies Co., Ltd
+# Copyright 2021, 2022 LuoJiaNET Research and Development Group, Wuhan University
+# Copyright 2021, 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +17,10 @@
 import numpy as np
 import pytest
 
-import mindspore.context as context
-from mindspore.common.tensor import Tensor
-from mindspore import nn
-from mindspore.ops.operations import _quant_ops as Q
+import luojianet_ms.context as context
+from luojianet_ms.common.tensor import Tensor
+from luojianet_ms import nn
+from luojianet_ms.ops.operations import _quant_ops as Q
 
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 

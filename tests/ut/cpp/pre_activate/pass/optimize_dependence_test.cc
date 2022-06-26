@@ -18,7 +18,7 @@
 #include "backend/common/optimizer/optimizer.h"
 #include "backend/common/pass/optimize_dependence.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 namespace opt {
 
 class TestHWOptimizeDependence : public BackendCommon {
@@ -111,4 +111,4 @@ TEST_F(TestHWOptimizeDependence, test_optimize_control_dependence) {
   EXPECT_TRUE(CheckEqualGraph(g_after, new_graph));
 }
 }  // namespace opt
-}  // namespace mindspore
+}  // namespace luojianet_ms

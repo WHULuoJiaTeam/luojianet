@@ -24,7 +24,7 @@
 #include "abstract/abstract_value.h"
 #include "utils/log_adapter.h"
 
-namespace mindspore {
+namespace luojianet_ms {
 using AbstractScalar = abstract::AbstractScalar;
 using AbstractTuple = abstract::AbstractTuple;
 using AbstractBasePtrList = abstract::AbstractBasePtrList;
@@ -93,4 +93,4 @@ TEST_F(TestValue, GetValue) {
   MS_LOG(INFO) << "" << GetValue<const char*>(fv);
   ASSERT_TRUE(fv_c != nullptr);
 }
-}  // namespace mindspore
+}  // namespace luojianet_ms

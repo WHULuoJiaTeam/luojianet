@@ -14,3 +14,7 @@
 	url  = https://gitee.com/mizhangwhuer/akg
 	path = akg
 
+[submodule "graphengine"]
+	url  = https://gitee.com/mizhangwhuer/graphengine
+	path = graphengine
+

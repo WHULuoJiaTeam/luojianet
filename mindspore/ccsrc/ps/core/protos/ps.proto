@@ -1,0 +1,64 @@
+/**
+ * Copyright 2020 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+package mindspore.ps;
+option optimize_for = LITE_RUNTIME;
+
+message Command {
+  CommandCode cmd = 1;
+}
+
+enum CommandCode {
+  PUSH = 0;
+  PULL = 1;
+  INIT_EMBEDDING_TABLE = 2;
+  INIT_WEIGHT = 3;
+  INIT_WEIGHT_TO_OPTIM_ID = 4;
+  INIT_INPUTS_SHAPE = 5;
+  CHECK_READY_FOR_PUSH = 6;
+  CHECK_READY_FOR_PULL = 7;
+  EMBEDDING_LOOKUP = 8;
+  UPDATE_EMBEDDING = 9;
+  FINALIZE = 10;
+}
+
+message ParamInitInfoMessage {
+  string param_name = 1;
+  int32 param_type = 2;
+  uint64 global_seed = 3;
+  uint64 op_seed = 4;
+  float init_val = 5;
+}
+
+message KVMessage {
+  repeated uint64 keys = 2;
+  repeated float values = 3;
+  repeated uint64 len = 4;
+}
+
+message EmbeddingTableMeta {
+  uint64 key = 1;
+  repeated uint64 input_shape = 2;
+  repeated uint64 indices_shape = 3;
+  repeated uint64 output_shape = 4;
+  ParamInitInfoMessage info = 5;
+}
+
+message EmbeddingTableLookup {
+  uint64 key = 2;
+  repeated int32 keys = 3;
+  repeated float values = 4;
+}

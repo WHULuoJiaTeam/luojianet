@@ -1,0 +1,1268 @@
+/**
+ * Copyright 2019-2021 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+include "ops_types.fbs";
+
+namespace mindspore.schema;
+
+union PrimitiveType {
+    Abs,
+    Activation,
+    ActivationGrad,
+    Adam,
+    AddFusion,
+    AdderFusion,
+    AddGrad,
+    AddN,
+    All,
+    ApplyMomentum,
+    ArgMaxFusion,
+    ArgMinFusion,
+    Assert,
+    Assign,
+    AssignAdd,
+    AudioSpectrogram,
+    AvgPoolFusion,
+    AvgPoolGrad,
+    BatchNorm,
+    BatchNormGrad,
+    BatchToSpace,
+    BatchToSpaceND,
+    BiasAdd,
+    BinaryCrossEntropy,
+    BinaryCrossEntropyGrad,
+    BiasAddGrad,
+    BroadcastTo,
+    Cast,
+    Ceil,
+    Clip,
+    Concat,
+    Attention,
+    Conv2DBackpropFilterFusion,
+    Conv2DBackpropInputFusion,
+    Conv2DFusion,
+    Conv2dTransposeFusion,
+    Cos,
+    ConstantOfShape,
+    Crop,
+    CustomExtractFeatures,
+    CustomNormalize,
+    CustomPredict,
+    DeConv2DGradFilter,
+    Depend,
+    DepthToSpace,
+    DetectionPostProcess,
+    DivFusion,
+    DivGrad,
+    Dropout,
+    DropoutGrad,
+    Elu,
+    Eltwise,
+    Equal,
+    EmbeddingLookupFusion,
+    ExpFusion,
+    ExpandDims,
+    FakeQuantWithMinMaxVars,
+    FakeQuantWithMinMaxVarsPerChannel,
+    FftReal,
+    FftImag,
+    Flatten,
+    FlattenGrad,
+    Floor,
+    FloorDiv,
+    FloorMod,
+    Fill,
+    FullConnection,
+    FusedBatchNorm,
+    Gather,
+    GatherNd,
+    Greater,
+    GreaterEqual,
+    HashtableLookup,
+    InstanceNorm,
+    LayerNormFusion,
+    LeakyRelu,
+    Less,
+    LessEqual,
+    Log,
+    LogGrad,
+    LogicalAnd,
+    LogicalNot,
+    LogicalOr,
+    LpNormalization,
+    LRN,
+    LshProjection,
+    LSTM,
+    L2NormalizeFusion,
+    MatMulFusion,
+    Maximum,
+    MaximumGrad,
+    MaxPoolFusion,
+    MaxPoolGrad,
+    SwitchLayer,
+    Mfcc,
+    Minimum,
+    MinimumGrad,
+    Mod,
+    MulFusion,
+    MulGrad,
+    Neg,
+    NegGrad,
+    NotEqual,
+    NonMaxSuppression,
+    OneHot,
+    OnesLike,
+    PadFusion,
+    PartialFusion,
+    PowerGrad,
+    PowFusion,
+    PriorBox,
+    PReLUFusion,
+    QuantDTypeCast,
+    Rank,
+    Range,
+    Reciprocal,
+    RealDiv,
+    ReduceFusion,
+    Reshape,
+    Resize,
+    ReverseSequence,
+    ReverseV2,
+    Rfft,
+    ROIPooling,
+    Round,
+    Rsqrt,
+    ScaleFusion,
+    ScatterNd,
+    SGD,
+    Shape,
+    SigmoidCrossEntropyWithLogits,
+    SigmoidCrossEntropyWithLogitsGrad,
+    Sin,
+    SkipGram,
+    SliceFusion,
+    SmoothL1Loss,
+    SmoothL1LossGrad,
+    Softmax,
+    SoftmaxCrossEntropyWithLogits,
+    SpaceToBatch,
+    SpaceToBatchND,
+    SpaceToDepth,
+    SparseSoftmaxCrossEntropyWithLogits,
+    SparseToDense,
+    Split,
+    Sqrt,
+    Squeeze,
+    Square,
+    SquaredDifference,
+    Stack,
+    StridedSlice,
+    SubFusion,
+    SubGrad,
+    Switch,
+    TensorListFromTensor,
+    TensorListGetItem,
+    TensorListReserve,
+    TensorListSetItem,
+    TensorListStack,
+    TileFusion,
+    TopKFusion,
+    Transpose,
+    Unique,
+    UnsortedSegmentSum,
+    Unsqueeze,
+    Unstack,
+    LSTMGrad,
+    Where,
+    ZerosLike,
+    Select,
+    ScatterNdUpdate,
+    GRU,
+    NonZero,
+    InvertPermutation,
+    Size,
+    RandomStandardNormal,
+    CropAndResize,
+    Erf,
+    StridedSliceGrad,
+    IsFinite,
+    LinSpace,
+    UniformReal,
+    AbsGrad,
+    RsqrtGrad,
+    SqrtGrad,
+    LayerNormGrad,
+    ResizeGrad,
+    Splice,
+    LogSoftmax,
+    Call,
+    Custom,
+    CumSum,
+    SplitWithOverlap,
+    GenOP,
+    RaggedRange,
+    GLU,
+    TensorArray,
+    TensorArrayRead,
+    TensorArrayWrite,
+    Affine,
+    AllGather,
+    ReduceScatter,
+    DynamicQuant,
+    LSTMGradData,
+    LSTMGradWeight,
+    RandomNormal,
+    NLLLoss,
+    NLLLossGrad,
+}
+
+table Abs {
+}
+
+table Activation {
+    activation_type: ActivationType = 0;
+    alpha: float;
+    min_val: float;
+    max_val: float;
+    approximate: bool = false;
+}
+
+table ActivationGrad {
+    activation_type: ActivationType;
+    alpha: float;
+}
+
+table Adam {
+    use_locking: bool;
+    use_nesterov: bool;
+}
+
+table AddFusion {
+    activation_type: ActivationType = 0;
+}
+
+table AdderFusion {
+    format: Format = 0;
+    kernel_size: [long];
+    stride: [long];
+    dilation: [long];
+    pad_mode: PadMode;
+    pad_list: [long];
+    group: long;
+    in_channel: long;
+    out_channel: long;
+    activation_type: ActivationType = 0;
+}
+
+table AddGrad {
+}
+
+table AddN {
+}
+
+table All {
+    keep_dims: long;
+}
+
+table ApplyMomentum {
+    use_nesterov: bool;
+    use_locking: bool;
+    gradient_scale: float;
+}
+
+table ArgMaxFusion {
+    axis: long;
+    top_k: long = 1;
+    keep_dims: bool;
+    out_max_value: bool;
+}
+
+table ArgMinFusion {
+    axis: long;
+    top_k: long;
+    keep_dims: bool;
+    out_max_value: bool;
+}
+
+table Assert {
+    summarize: long;
+}
+
+table Assign {
+}
+
+table AssignAdd {
+}
+
+table AudioSpectrogram {
+    window_size: long;
+    stride: long;
+    mag_square: bool;
+}
+
+table AvgPoolFusion {
+    kernel_size: [long];
+    strides: [long];
+    pad: [long];
+    pad_mode: PadMode;
+    round_mode: RoundMode;
+    format: Format;
+    global: bool;
+    activation_type: ActivationType = 0;
+}
+
+table AvgPoolGrad {
+    kernel_size: [long];
+    strides: [long];
+    pad_mode: PadMode;
+    format: Format;
+}
+
+table BatchNorm {
+    epsilon: float;
+    format: Format;
+    is_training: bool;
+}
+
+table BatchNormGrad {
+    epsilon: float;
+    is_training: bool;
+}
+
+table BatchToSpace {
+    block_size: [long];
+    crops: Vec2D;
+}
+
+table BatchToSpaceND {
+    block_shape: [long];
+    crops: Vec2D;
+}
+
+table BiasAdd {
+    format: Format;
+}
+
+table BinaryCrossEntropy {
+    reduction: Reduction;
+}
+
+table BinaryCrossEntropyGrad {
+    reduction: Reduction = 1;
+}
+
+table BiasAddGrad {
+}
+
+table BroadcastTo {
+    shape: [long];
+}
+
+table Cast {
+}
+
+table Ceil {
+}
+
+table Clip {
+    max: float;
+    min: float;
+}
+
+table Concat {
+    axis: long;
+}
+
+table Attention {
+}
+
+table Conv2DBackpropFilterFusion {
+    format: Format = 0;
+    kernel_size: [long];
+    stride: [long];
+    dilation: [long];
+    pad_mode: PadMode;
+    pad_list: [long];
+    mode: long;
+    group: long;
+    in_channel: long;
+    out_channel: long;
+    activation_type: ActivationType = 0;
+}
+
+table Conv2DBackpropInputFusion {
+    format: Format = 0;
+    kernel_size: [long];
+    stride: [long];
+    dilation: [long];
+    pad_mode: PadMode;
+    pad: [long];
+    pad_list: [long];
+    mode: long;
+    group: long;
+    in_channel: long;
+    out_channel: long;
+    activation_type: ActivationType = 0;
+}
+
+table Conv2DFusion {
+    format: Format = 0;
+    kernel_size: [long];
+    stride: [long];
+    dilation: [long];
+    pad_mode: PadMode;
+    pad_list: [long];
+    mode: long;
+    group: long;
+    in_channel: long;
+    out_channel: long;
+    activation_type: ActivationType = 0;
+}
+
+table Conv2dTransposeFusion {
+    format: Format = 0;
+    kernel_size: [long];
+    stride: [long];
+    dilation: [long];
+    pad_mode: PadMode;
+    pad: [long];
+    pad_list: [long];
+    mode: long;
+    group: long;
+    in_channel: long;
+    out_channel: long;
+    activation_type: ActivationType = 0;
+    output_paddings: [long];
+}
+
+table Cos {
+}
+
+table ConstantOfShape {
+    data_type: long;
+    value: [float];
+}
+
+table Crop {
+    axis: long;
+    offsets: [long];
+}
+
+table CustomExtractFeatures {
+}
+
+table CustomNormalize {
+}
+
+table CustomPredict {
+    output_num: long;
+    weight_threshold: float;
+}
+
+table DeConv2DGradFilter {
+    in_channel: long;
+    out_channel: long;
+    kernel_size: [long];
+    pad_mode: PadMode;
+    pad_list: [long];
+    stride: [long];
+    dilation: [long];
+    group: long;
+    format: Format;
+    activation_type: ActivationType;
+}
+
+table Depend {
+}
+
+table DepthToSpace {
+    block_size: long;
+    format: Format = 0;
+}
+
+table DetectionPostProcess {
+    format: Format = 0;
+    input_size: long;
+    scale: [float];
+    nms_iou_threshold: float;
+    nms_score_threshold: float;
+    max_detections: long;
+    detections_per_class: long;
+    max_classes_per_detection: long;
+    num_classes: long;
+    use_regular_nms: bool;
+    out_quantized: bool;
+}
+
+table DivFusion {
+    activation_type: ActivationType = 0;
+}
+
+table DivGrad {
+}
+
+table Dropout {
+    keep_prob: float = 0.5;
+}
+
+table DropoutGrad {
+    keep_prob: float;
+}
+
+table Elu {
+    alpha: float;
+}
+
+table Eltwise {
+    mode: EltwiseMode;
+}
+
+table Equal {
+}
+
+table EmbeddingLookupFusion {
+    max_norm: float;
+}
+
+table ExpFusion {
+    base: float = -1;
+    scale: float = 1.0;
+    shift: float = 0.0;
+}
+
+table ExpandDims {
+}
+
+table FakeQuantWithMinMaxVars {
+    num_bits: long;
+    narrow_range: bool;
+}
+
+table FakeQuantWithMinMaxVarsPerChannel {
+    num_bits: long;
+    narrow_range: bool;
+}
+
+table FftReal {
+}
+
+table FftImag {
+}
+
+table Flatten {
+}
+
+table FlattenGrad {
+}
+
+table Floor {
+}
+
+table FloorDiv {
+}
+
+table FloorMod {
+}
+
+table Fill {
+}
+
+table FullConnection {
+    has_bias: bool;
+    use_axis: bool;
+    axis: long;
+    activation_type: ActivationType = 0;
+}
+
+table FusedBatchNorm {
+    epsilon: float = 0.0001;
+    momentum: float = 0.9;
+    mode: long;
+}
+
+table Gather {
+}
+
+table GatherNd {
+}
+
+table Greater {
+}
+
+table GreaterEqual {
+}
+
+table HashtableLookup {
+}
+
+table InstanceNorm {
+    epsilon: float;
+}
+
+table LayerNormFusion {
+    begin_norm_axis: long;
+    epsilon: float = 0.00001;
+    elementwise_affine: bool;
+    begin_params_axis: long;
+}
+
+table LeakyRelu {
+    negative_slope: float;
+}
+
+table Less {
+}
+
+table LessEqual {
+}
+
+table Log {
+}
+
+table LogGrad {
+}
+
+table LogicalAnd {
+}
+
+table LogicalNot {
+}
+
+table LogicalOr {
+}
+
+table LpNormalization {
+    axis: long;
+    p: long;
+}
+
+table LRN {
+    depth_radius: long;
+    bias: float;
+    alpha: float;
+    beta: float;
+    norm_region: string;
+}
+
+table LshProjection {
+    type: LshProjectionType;
+}
+
+table LSTM {
+    bidirectional: bool;
+    has_bias: bool;
+    input_size: long;
+    hidden_size: long;
+    num_layers: long;
+    num_directions: long;
+    dropout: float;
+    zoneout_cell: float = 0;
+    zoneout_hidden: float = 0;
+}
+
+table LSTMGrad {
+    bidirectional: bool;
+    has_bias: bool;
+    input_size: long;
+    hidden_size: long;
+    num_layers: long;
+    num_directions: long;
+    dropout: float;
+    zoneout_cell: float = 0;
+    zoneout_hidden: float = 0;
+}
+
+table L2NormalizeFusion {
+    axis: [long];
+    epsilon: float;
+    activation_type: ActivationType = 0;
+}
+
+table MatMulFusion {
+    transpose_a: bool = false;
+    transpose_b: bool = false;
+    activation_type: ActivationType = 0;
+}
+
+table Maximum {
+}
+
+table MaximumGrad {
+    grad_x: bool;
+    grad_y: bool;
+}
+
+table MaxPoolFusion {
+    kernel_size: [long];
+    strides: [long];
+    pad: [long];
+    pad_mode: PadMode;
+    round_mode: RoundMode;
+    format: Format;
+    global: bool;
+    activation_type: ActivationType = 0;
+}
+
+table MaxPoolGrad {
+    kernel_size: [long];
+    strides: [long];
+    pad_mode: PadMode;
+    format: Format;
+}
+
+table SwitchLayer {
+}
+
+table Mfcc {
+    freq_upper_limit: float;
+    freq_lower_limit: float;
+    filter_bank_channel_num: long;
+    dct_coeff_num: long;
+}
+
+table Minimum {
+}
+
+table MinimumGrad {
+    grad_x: bool;
+    grad_y: bool;
+}
+
+table Mod {
+}
+
+table MulFusion {
+    activation_type: ActivationType = 0;
+}
+
+table MulGrad {
+}
+
+table Neg {
+}
+
+table NegGrad {
+}
+
+table NotEqual {
+}
+
+table NonMaxSuppression {
+    center_point_box: long;
+}
+
+table OneHot {
+    axis: long;
+}
+
+table OnesLike {
+}
+
+table PadFusion {
+    paddings: Vec2D;
+    padding_mode: PaddingMode;
+    constant_value: float;
+}
+
+table PartialFusion {
+    sub_graph_index: long;
+}
+
+table PowerGrad {
+    power: float;
+    scale: float;
+    shift: float;
+}
+
+table PowFusion {
+    scale: float = 1;
+    shift: float = 0;
+}
+
+table PriorBox {
+    min_sizes: [long];
+    max_sizes: [long];
+    aspect_ratios: [float];
+    variances: [float];
+    image_size_w: long;
+    image_size_h: long;
+    step_w: float;
+    step_h: float;
+    clip: bool;
+    flip: bool;
+    offset: float;
+}
+
+table PReLUFusion {
+    channel_shared: bool;
+}
+
+table Rank {
+}
+
+table Range {
+    d_type: long;
+    start: long;
+    limit: long;
+    delta: long = 1;
+}
+
+table Reciprocal {
+}
+
+table RealDiv {
+}
+
+table ReduceFusion {
+    keep_dims: bool;
+    mode: ReduceMode;
+    reduce_to_end: bool;
+    coeff: float;
+}
+
+table Reshape {
+}
+
+table Resize {
+    format: Format = 0;
+    method: ResizeMethod;
+    new_height: long;
+    new_width: long;
+    preserve_aspect_ratio: bool = false;
+    coordinate_transform_mode: CoordinateTransformMode;
+    cubic_coeff: float;
+    exclude_outside: long;
+    extrapolation_value: float;
+    nearest_mode: NearestMode;
+}
+
+table ReverseSequence {
+    seq_dim: long;
+    batch_dim: long;
+}
+
+table ReverseV2 {
+    axis: [long];
+}
+
+table Rfft {
+    fft_length: long;
+}
+
+table ROIPooling {
+    pooled_h: long;
+    pooled_w: long;
+    scale: float;
+}
+
+table Round {
+}
+
+table Rsqrt {
+}
+
+table QuantDTypeCast {
+    src_t: long;
+    dst_t: long;
+}
+
+table ScaleFusion {
+    axis: long;
+    activation_type: ActivationType = 0;
+}
+
+table ScatterNd {
+}
+
+table SGD {
+    nesterov: bool;
+    dampening: float;
+    weight_decay: float;
+}
+
+table Shape {
+}
+
+table SigmoidCrossEntropyWithLogits {
+}
+
+table SigmoidCrossEntropyWithLogitsGrad {
+}
+
+table Sin {
+}
+
+table SkipGram {
+    include_all_grams: bool;
+    max_skip_size: long;
+    ngram_size: long;
+}
+
+table SliceFusion {
+    axes: [long];
+}
+
+table SmoothL1Loss {
+    beta: float;
+}
+
+table SmoothL1LossGrad {
+    beta: float;
+}
+
+table Softmax {
+    axis: [long];
+}
+
+table SoftmaxCrossEntropyWithLogits {
+}
+
+table SpaceToBatch {
+    block_size: [long];
+    paddings: Vec2D;
+}
+
+table SpaceToBatchND {
+    block_shape: [long];
+    paddings: Vec2D;
+}
+
+table SpaceToDepth {
+    block_size: long;
+    format: Format;
+}
+
+table SparseSoftmaxCrossEntropyWithLogits {
+    is_grad: bool;
+}
+
+table SparseToDense {
+}
+
+table Split {
+    output_num: long;
+    size_splits: [long];
+    axis: long;
+}
+
+table Sqrt {
+}
+
+table Squeeze {
+    axis: [long];
+}
+
+table Square {
+}
+
+table SquaredDifference {
+}
+
+table Stack {
+    axis: long;
+}
+
+table StridedSlice {
+    begin_mask: long;
+    end_mask: long;
+    ellipsis_mask: long;
+    new_axis_mask: long;
+    shrink_axis_mask: long;
+}
+
+table SubFusion {
+    activation_type: ActivationType = 0;
+}
+
+table SubGrad {
+}
+
+table Switch {
+}
+
+table TensorListFromTensor {
+    element_dtype: long;
+    shape_type: long;
+}
+
+table TensorListGetItem {
+    element_dtype: long;
+}
+
+table TensorListReserve {
+    element_dtype: long;
+    shape_type: long;
+}
+
+table TensorListSetItem {
+    element_dtype: long;
+}
+
+table TensorListStack {
+    num_elements: long;
+    element_dtype: long;
+}
+
+table TileFusion {
+    dims: [long];
+}
+
+table TopKFusion {
+    sorted: bool = true;
+    axis: long;
+    largest: long;
+}
+
+table Transpose {
+}
+
+table Unique {
+}
+
+table UnsortedSegmentSum {
+}
+
+table Unsqueeze {
+    axis: [long];
+}
+
+table Unstack {
+    axis: long = 0;
+}
+
+table Where {
+}
+
+table ZerosLike {
+}
+
+table Select {
+}
+
+table GRU {
+    bidirectional: bool = false;
+}
+
+table NonZero {
+}
+
+table InvertPermutation {
+}
+
+table Size {
+}
+
+table RandomStandardNormal {
+    seed: long;
+    seed2: long;
+}
+
+table CropAndResize {
+    method: ResizeMethod;
+    extrapolation_value: float;
+}
+
+table Erf {
+}
+
+table StridedSliceGrad {
+    begin_mask: long;
+    end_mask: long;
+    ellipsis_mask: long;
+    new_axis_mask: long;
+    shrink_axis_mask: long;
+}
+
+table IsFinite {
+}
+
+table LinSpace {
+}
+
+table UniformReal {
+    seed: long;
+    seed2: long;
+}
+
+table AbsGrad {
+}
+
+table RsqrtGrad {
+}
+
+table SqrtGrad {
+}
+
+table LayerNormGrad {
+    begin_norm_axis: long;
+    begin_params_axis: long;
+}
+
+table ResizeGrad {
+    method: ResizeMethod;
+    align_corners: bool;
+}
+
+table Splice {
+    context: [long];
+    forward_indexes: [long];
+    output_dim: long;
+}
+
+table LogSoftmax {
+    axis: long;
+}
+
+table Call {
+    is_tail_call: bool = true;
+}
+
+table CumSum {
+    exclusive: bool;
+    reverse: bool;
+}
+
+table Custom {
+    type: string;
+    attr: [Attribute];
+}
+
+table SplitWithOverlap {
+    split_dim: long;
+    number_split: long;
+    ratio: [long];
+    extend_top: [long];
+    extend_bottom: [long];
+}
+
+table GenOP {
+    activation_type: ActivationType = 0;
+    alpha: float;
+    min_val: float;
+    max_val: float;
+    is_training: bool;
+    format: Format = 0;
+    kernel_size: [long];
+    stride: [long];
+    dilation: [long];
+    pad_mode: PadMode;
+    pad_list: [long];
+    mode: long;
+    group: long;
+    in_channel: long;
+    out_channel: long;
+    eltwise_mode: EltwiseMode;
+    has_bias: bool;
+    use_axis: bool;
+    axis: long;
+    epsilon: float = 0.0001;
+    momentum: float = 0.9;
+    transpose_a: bool = false;
+    transpose_b: bool = false;
+    pad: [long];
+    round_mode: RoundMode;
+    global: bool;
+    channel_shared: bool;
+    axes: [long];
+    keep_dims: bool;
+    reduce_mode: ReduceMode;
+    reduce_to_end: bool;
+    coeff: float;
+}
+
+table RaggedRange {
+}
+
+table GLU {
+    axis: long = -1;
+}
+
+table TensorArray {
+    dynamic_size: bool = false;
+    identical_element_shapes: bool = false;
+    element_shape: [int];
+    data_type: int;
+}
+
+table TensorArrayRead {
+}
+
+table TensorArrayWrite {
+}
+
+table Affine {
+    context: [long];
+    output_dim: long;
+    activation_type: ActivationType = 0;
+    transpose_a: bool = false;
+    transpose_b: bool = false;
+}
+
+table ScatterNdUpdate {
+}
+
+table AllGather {
+    group: string;
+    rank_size: int;
+}
+
+table ReduceScatter {
+    group: string;
+    mode: ReduceMode;
+    rank_size: int;
+}
+
+table DynamicQuant {
+    symmetric: bool = false;
+    dst_type: long = 32;
+}
+
+table LSTMGradData {
+    bidirectional: bool;
+    has_bias: bool;
+    input_size: long;
+    hidden_size: long;
+    num_layers: long;
+    num_directions: long;
+    dropout: float;
+    zoneout_cell: float = 0;
+    zoneout_hidden: float = 0;
+}
+
+table LSTMGradWeight {
+    bidirectional: bool;
+    has_bias: bool;
+    input_size: long;
+    hidden_size: long;
+    num_layers: long;
+    num_directions: long;
+    dropout: float;
+    zoneout_cell: float = 0;
+    zoneout_hidden: float = 0;
+}
+
+table RandomNormal {
+    seed: float;
+    mean: float;
+    scale: float;
+}
+
+table NLLLoss {
+    reduction: Reduction;
+}
+
+table NLLLossGrad {
+    reduction: Reduction;
+}

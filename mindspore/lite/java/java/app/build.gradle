@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.1"
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 1
+        versionName project.hasProperty("LITE_VERSION") ? LITE_VERSION : ""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        sourceSets {
+            main {
+                jniLibs.srcDirs=['libs']
+            }
+        }
+    }
+    android.libraryVariants.all {
+        variant->variant.outputs.all {
+            outputFileName = "mindspore-lite.aar"
+        }
+    }
+    aaptOptions {
+        noCompress = ['.so']
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+}
+

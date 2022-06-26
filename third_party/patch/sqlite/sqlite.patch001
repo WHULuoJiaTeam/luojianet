@@ -1,0 +1,395 @@
+diff -Npur sqlite-version-3.32.2-new/src/expr.c sqlite-version-3.32.2/src/expr.c
+--- sqlite-version-3.32.2-new/src/expr.c	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/src/expr.c	2021-08-04 11:57:45.029230992 -0400
+@@ -3813,6 +3813,7 @@ expr_code_doover:
+       AggInfo *pAggInfo = pExpr->pAggInfo;
+       struct AggInfo_col *pCol;
+       assert( pAggInfo!=0 );
++      assert( AggInfoValid(pAggInfo) );
+       assert( pExpr->iAgg>=0 && pExpr->iAgg<pAggInfo->nColumn );
+       pCol = &pAggInfo->aCol[pExpr->iAgg];
+       if( !pAggInfo->directMode ){
+@@ -4121,6 +4122,7 @@ expr_code_doover:
+         assert( !ExprHasProperty(pExpr, EP_IntValue) );
+         sqlite3ErrorMsg(pParse, "misuse of aggregate: %s()", pExpr->u.zToken);
+       }else{
++        assert( AggInfoValid(pInfo) );
+         return pInfo->aFunc[pExpr->iAgg].iMem;
+       }
+       break;
+@@ -5658,13 +5660,7 @@ struct SrcCount {
+ ** Count the number of references to columns.
+ */
+ static int exprSrcCount(Walker *pWalker, Expr *pExpr){
+-  /* There was once a NEVER() on the second term on the grounds that
+-  ** sqlite3FunctionUsesThisSrc() was always called before 
+-  ** sqlite3ExprAnalyzeAggregates() and so the TK_COLUMNs have not yet 
+-  ** been converted into TK_AGG_COLUMN. But this is no longer true due
+-  ** to window functions - sqlite3WindowRewrite() may now indirectly call
+-  ** FunctionUsesThisSrc() when creating a new sub-select. */
+-  if( pExpr->op==TK_COLUMN || pExpr->op==TK_AGG_COLUMN ){
++  if( pExpr->op==TK_COLUMN || NEVER(pExpr->op==TK_AGG_COLUMN) ){
+     int i;
+     struct SrcCount *p = pWalker->u.pSrcCount;
+     SrcList *pSrc = p->pSrc;
+diff -Npur sqlite-version-3.32.2-new/src/global.c sqlite-version-3.32.2/src/global.c
+--- sqlite-version-3.32.2-new/src/global.c	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/src/global.c	2021-08-04 11:57:45.033230992 -0400
+@@ -300,6 +300,11 @@ sqlite3_uint64 sqlite3NProfileCnt = 0;
+ int sqlite3PendingByte = 0x40000000;
+ #endif
+ 
++/*
++** Flags for select tracing and the ".selecttrace" macro of the CLI
++*/
++/**/ u32 sqlite3SelectTrace = 0;
++
+ #include "opcodes.h"
+ /*
+ ** Properties of opcodes.  The OPFLG_INITIALIZER macro is
+diff -Npur sqlite-version-3.32.2-new/src/resolve.c sqlite-version-3.32.2/src/resolve.c
+--- sqlite-version-3.32.2-new/src/resolve.c	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/src/resolve.c	2021-08-04 11:57:45.033230992 -0400
+@@ -1715,6 +1715,14 @@ static int resolveSelectStep(Walker *pWa
+           return WRC_Abort;
+         }
+       }
++    }else if( p->pWin && ALWAYS( (p->selFlags & SF_WinRewrite)==0 ) ){
++      sqlite3WindowRewrite(pParse, p);
++#if SELECTTRACE_ENABLED
++      if( (sqlite3SelectTrace & 0x108)!=0 ){
++        SELECTTRACE(0x104,pParse,p, ("after window rewrite:\n"));
++        sqlite3TreeViewSelect(0, p, 0);
++      }
++#endif
+     }
+ #endif
+ 
+diff -Npur sqlite-version-3.32.2-new/src/select.c sqlite-version-3.32.2/src/select.c
+--- sqlite-version-3.32.2-new/src/select.c	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/src/select.c	2021-08-04 12:27:34.737267443 -0400
+@@ -15,20 +15,6 @@
+ #include "sqliteInt.h"
+ 
+ /*
+-** Trace output macros
+-*/
+-#if SELECTTRACE_ENABLED
+-/***/ int sqlite3SelectTrace = 0;
+-# define SELECTTRACE(K,P,S,X)  \
+-  if(sqlite3SelectTrace&(K))   \
+-    sqlite3DebugPrintf("%u/%d/%p: ",(S)->selId,(P)->addrExplain,(S)),\
+-    sqlite3DebugPrintf X
+-#else
+-# define SELECTTRACE(K,P,S,X)
+-#endif
+-
+-
+-/*
+ ** An instance of the following object is used to record information about
+ ** how to process the DISTINCT keyword, to simplify passing that information
+ ** into the selectInnerLoop() routine.
+@@ -2717,9 +2703,7 @@ static int multiSelect(
+                           selectOpName(p->op)));
+         rc = sqlite3Select(pParse, p, &uniondest);
+         testcase( rc!=SQLITE_OK );
+-        /* Query flattening in sqlite3Select() might refill p->pOrderBy.
+-        ** Be sure to delete p->pOrderBy, therefore, to avoid a memory leak. */
+-        sqlite3ExprListDelete(db, p->pOrderBy);
++        assert( p->pOrderBy==0 );
+         pDelete = p->pPrior;
+         p->pPrior = pPrior;
+         p->pOrderBy = 0;
+@@ -4105,7 +4089,7 @@ static int flattenSubquery(
+     ** We look at every expression in the outer query and every place we see
+     ** "a" we substitute "x*3" and every place we see "b" we substitute "y+10".
+     */
+-    if( pSub->pOrderBy ){
++    if( pSub->pOrderBy && (pParent->selFlags & SF_NoopOrderBy)==0 ){
+       /* At this point, any non-zero iOrderByCol values indicate that the
+       ** ORDER BY column expression is identical to the iOrderByCol'th
+       ** expression returned by SELECT statement pSub. Since these values
+@@ -4426,11 +4410,14 @@ static int pushDownWhereTerms(
+ ){
+   Expr *pNew;
+   int nChng = 0;
++  Select *pSel;
+   if( pWhere==0 ) return 0;
+   if( pSubq->selFlags & SF_Recursive ) return 0;  /* restriction (2) */
+ 
+ #ifndef SQLITE_OMIT_WINDOWFUNC
+-  if( pSubq->pWin ) return 0;    /* restriction (6) */
++  for(pSel=pSubq; pSel; pSel=pSel->pPrior){
++    if( pSel->pWin ) return 0;    /* restriction (6) */
++  }
+ #endif
+ 
+ #ifdef SQLITE_DEBUG
+@@ -5553,7 +5540,9 @@ static void explainSimpleCount(
+ static int havingToWhereExprCb(Walker *pWalker, Expr *pExpr){
+   if( pExpr->op!=TK_AND ){
+     Select *pS = pWalker->u.pSelect;
+-    if( sqlite3ExprIsConstantOrGroupBy(pWalker->pParse, pExpr, pS->pGroupBy) ){
++    if( sqlite3ExprIsConstantOrGroupBy(pWalker->pParse, pExpr, pS->pGroupBy)
++     && ExprAlwaysFalse(pExpr)==0
++    ){
+       sqlite3 *db = pWalker->pParse->db;
+       Expr *pNew = sqlite3Expr(db, TK_INTEGER, "1");
+       if( pNew ){
+@@ -5766,6 +5755,9 @@ int sqlite3Select(
+   }
+   if( sqlite3AuthCheck(pParse, SQLITE_SELECT, 0, 0, 0) ) return 1;
+   memset(&sAggInfo, 0, sizeof(sAggInfo));
++#ifdef SQLITE_DEBUG
++  sAggInfo.iAggMagic = SQLITE_AGGMAGIC_VALID;
++#endif
+ #if SELECTTRACE_ENABLED
+   SELECTTRACE(1,pParse,p, ("begin processing:\n", pParse->addrExplain));
+   if( sqlite3SelectTrace & 0x100 ){
+@@ -5787,6 +5779,7 @@ int sqlite3Select(
+     sqlite3ExprListDelete(db, p->pOrderBy);
+     p->pOrderBy = 0;
+     p->selFlags &= ~SF_Distinct;
++    p->selFlags |= SF_NoopOrderBy;
+   }
+   sqlite3SelectPrep(pParse, p, 0);
+   if( pParse->nErr || db->mallocFailed ){
+@@ -5804,19 +5797,6 @@ int sqlite3Select(
+     generateColumnNames(pParse, p);
+   }
+ 
+-#ifndef SQLITE_OMIT_WINDOWFUNC
+-  rc = sqlite3WindowRewrite(pParse, p);
+-  if( rc ){
+-    assert( db->mallocFailed || pParse->nErr>0 );
+-    goto select_end;
+-  }
+-#if SELECTTRACE_ENABLED
+-  if( p->pWin && (sqlite3SelectTrace & 0x108)!=0 ){
+-    SELECTTRACE(0x104,pParse,p, ("after window rewrite:\n"));
+-    sqlite3TreeViewSelect(0, p, 0);
+-  }
+-#endif
+-#endif /* SQLITE_OMIT_WINDOWFUNC */
+   pTabList = p->pSrc;
+   isAgg = (p->selFlags & SF_Aggregate)!=0;
+   memset(&sSort, 0, sizeof(sSort));
+@@ -6144,7 +6124,7 @@ int sqlite3Select(
+   if( (p->selFlags & (SF_Distinct|SF_Aggregate))==SF_Distinct 
+    && sqlite3ExprListCompare(sSort.pOrderBy, pEList, -1)==0
+ #ifndef SQLITE_OMIT_WINDOWFUNC
+-   && p->pWin==0
++   && ALWAYS(p->pWin==0)
+ #endif
+   ){
+     p->selFlags &= ~SF_Distinct;
+@@ -6791,6 +6771,14 @@ int sqlite3Select(
+ select_end:
+   sqlite3ExprListDelete(db, pMinMaxOrderBy);
+   sqlite3DbFree(db, sAggInfo.aCol);
++#ifdef SQLITE_DEBUG
++  for(i=0; i<sAggInfo.nFunc; i++){
++    assert( sAggInfo.aFunc[i].pExpr!=0 );
++    assert( sAggInfo.aFunc[i].pExpr->pAggInfo==&sAggInfo );
++    sAggInfo.aFunc[i].pExpr->pAggInfo = 0;
++  }
++  sAggInfo.iAggMagic = 0;
++#endif
+   sqlite3DbFree(db, sAggInfo.aFunc);
+ #if SELECTTRACE_ENABLED
+   SELECTTRACE(0x1,pParse,p,("end processing\n"));
+diff -Npur sqlite-version-3.32.2-new/src/sqliteInt.h sqlite-version-3.32.2/src/sqliteInt.h
+--- sqlite-version-3.32.2-new/src/sqliteInt.h	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/src/sqliteInt.h	2021-08-04 12:28:22.825268422 -0400
+@@ -976,7 +976,12 @@ typedef INT16_TYPE LogEst;
+ */
+ #if defined(SQLITE_ENABLE_SELECTTRACE)
+ # define SELECTTRACE_ENABLED 1
++# define SELECTTRACE(K,P,S,X)  \
++  if(sqlite3SelectTrace&(K))   \
++    sqlite3DebugPrintf("%u/%d/%p: ",(S)->selId,(P)->addrExplain,(S)),\
++    sqlite3DebugPrintf X
+ #else
++# define SELECTTRACE(K,P,S,X)
+ # define SELECTTRACE_ENABLED 0
+ #endif
+ 
+@@ -2523,9 +2528,24 @@ struct AggInfo {
+     int iDistinct;           /* Ephemeral table used to enforce DISTINCT */
+   } *aFunc;
+   int nFunc;              /* Number of entries in aFunc[] */
++#ifdef SQLITE_DEBUG
++  u32 iAggMagic;          /* Sanity checking constant */
++#endif
+ };
+ 
+ /*
++** Allowed values for AggInfo.iAggMagic
++*/
++#define SQLITE_AGGMAGIC_VALID  0x05cadade
++
++/*
++** True if the AggInfo object is valid.  Used inside of assert() only.
++*/
++#ifdef SQLITE_DEBUG
++#  define AggInfoValid(P) ((P)->iAggMagic==SQLITE_AGGMAGIC_VALID)
++#endif
++
++/*
+ ** The datatype ynVar is a signed integer, either 16-bit or 32-bit.
+ ** Usually it is 16-bits.  But if SQLITE_MAX_VARIABLE_NUMBER is greater
+ ** than 32767 we have to make it 32-bit.  16-bit is preferred because
+@@ -3105,6 +3125,7 @@ struct Select {
+ #define SF_WhereBegin    0x0080000 /* Really a WhereBegin() call.  Debug Only */
+ #define SF_WinRewrite    0x0100000 /* Window function rewrite accomplished */
+ #define SF_View          0x0200000 /* SELECT statement is a view */
++#define SF_NoopOrderBy   0x0400000 /* ORDER BY is ignored for this query */
+ 
+ /*
+ ** The results of a SELECT can be distributed in several ways, as defined
+@@ -4546,10 +4567,11 @@ extern const unsigned char sqlite3UpperT
+ extern const unsigned char sqlite3CtypeMap[];
+ extern SQLITE_WSD struct Sqlite3Config sqlite3Config;
+ extern FuncDefHash sqlite3BuiltinFunctions;
++extern u32 sqlite3SelectTrace;
+ #ifndef SQLITE_OMIT_WSD
+ extern int sqlite3PendingByte;
+ #endif
+-#endif
++#endif /* !defined(SQLITE_AMALGAMATION) */
+ #ifdef VDBE_PROFILE
+ extern sqlite3_uint64 sqlite3NProfileCnt;
+ #endif
+diff -Npur sqlite-version-3.32.2-new/src/test1.c sqlite-version-3.32.2/src/test1.c
+--- sqlite-version-3.32.2-new/src/test1.c	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/src/test1.c	2021-08-04 11:57:45.037230992 -0400
+@@ -8164,7 +8164,7 @@ int Sqlitetest1_Init(Tcl_Interp *interp)
+ #endif
+ #endif
+ #if defined(SQLITE_ENABLE_SELECTTRACE)
+-  extern int sqlite3SelectTrace;
++  extern u32 sqlite3SelectTrace;
+ #endif
+ 
+   for(i=0; i<sizeof(aCmd)/sizeof(aCmd[0]); i++){
+diff -Npur sqlite-version-3.32.2-new/src/window.c sqlite-version-3.32.2/src/window.c
+--- sqlite-version-3.32.2-new/src/window.c	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/src/window.c	2021-08-04 11:57:45.041230992 -0400
+@@ -942,7 +942,7 @@ static int sqlite3WindowExtraAggFuncDept
+ */
+ int sqlite3WindowRewrite(Parse *pParse, Select *p){
+   int rc = SQLITE_OK;
+-  if( p->pWin && p->pPrior==0 && (p->selFlags & SF_WinRewrite)==0 ){
++  if( ALWAYS(p->pWin && (p->selFlags & SF_WinRewrite)==0) ){
+     Vdbe *v = sqlite3GetVdbe(pParse);
+     sqlite3 *db = pParse->db;
+     Select *pSub = 0;             /* The subquery */
+diff -Npur sqlite-version-3.32.2-new/test/having.test sqlite-version-3.32.2/test/having.test
+--- sqlite-version-3.32.2-new/test/having.test	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/test/having.test	2021-08-04 11:57:45.041230992 -0400
+@@ -154,5 +154,24 @@ do_execsql_test 4.3 {
+   SELECT a, sum(b) FROM t3 WHERE nondeter(a) GROUP BY a
+ } {1 4 2 2}
+ 
++#-------------------------------------------------------------------------
++reset_db
++do_execsql_test 5.0 {
++  CREATE TABLE t1(a, b);
++  CREATE TABLE t2(x, y);
++  INSERT INTO t1 VALUES('a', 'b');
++}
++
++# The WHERE clause (a=2), uses an aggregate column from the outer query.
++# If the HAVING term (0) is moved into the WHERE clause in this case,
++# SQLite would at one point optimize (a=2 AND 0) to simply (0). Which
++# is logically correct, but happened to cause problems in aggregate
++# processing for the outer query. This test case verifies that those
++# problems are no longer present.
++do_execsql_test 5.1 {
++  SELECT min(b), (
++    SELECT x FROM t2 WHERE a=2 GROUP BY y HAVING 0
++  ) FROM t1;
++} {b {}}
+ 
+ finish_test
+diff -Npur sqlite-version-3.32.2-new/test/selectA.test sqlite-version-3.32.2/test/selectA.test
+--- sqlite-version-3.32.2-new/test/selectA.test	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/test/selectA.test	2021-08-04 12:29:43.021270055 -0400
+@@ -1446,5 +1446,26 @@ do_execsql_test 6.1 {
+   SELECT * FROM (SELECT a FROM t1 UNION SELECT b FROM t2) WHERE a=a;
+ } {12345}
+ 
++# 2020-06-15 ticket 8f157e8010b22af0
++#
++reset_db
++do_execsql_test 7.1 {
++  CREATE TABLE t1(c1);     INSERT INTO t1 VALUES(12),(123),(1234),(NULL),('abc');
++  CREATE TABLE t2(c2);     INSERT INTO t2 VALUES(44),(55),(123);
++  CREATE TABLE t3(c3,c4);  INSERT INTO t3 VALUES(66,1),(123,2),(77,3);
++  CREATE VIEW t4 AS SELECT c3 FROM t3;
++  CREATE VIEW t5 AS SELECT c3 FROM t3 ORDER BY c4;
++}
++do_execsql_test 7.2 {
++  SELECT * FROM t1, t2 WHERE c1=(SELECT 123 INTERSECT SELECT c2 FROM t4) AND c1=123;
++} {123 123}
++do_execsql_test 7.3 {
++  SELECT * FROM t1, t2 WHERE c1=(SELECT 123 INTERSECT SELECT c2 FROM t5) AND c1=123;
++} {123 123}
++do_execsql_test 7.4 {
++  CREATE TABLE a(b);
++  CREATE VIEW c(d) AS SELECT b FROM a ORDER BY b;
++  SELECT sum(d) OVER( PARTITION BY(SELECT 0 FROM c JOIN a WHERE b =(SELECT b INTERSECT SELECT d FROM c) AND b = 123)) FROM c;
++} {}
+ 
+ finish_test
+diff -Npur sqlite-version-3.32.2-new/test/window1.test sqlite-version-3.32.2/test/window1.test
+--- sqlite-version-3.32.2-new/test/window1.test	2020-06-04 08:58:43.000000000 -0400
++++ sqlite-version-3.32.2/test/window1.test	2021-08-04 11:57:45.041230992 -0400
+@@ -1743,5 +1743,47 @@ do_execsql_test 53.0 {
+                WHERE a.c);
+ } {4 4 4 4}
+ 
++#-------------------------------------------------------------------------
++reset_db
++do_execsql_test 54.1 {
++  CREATE TABLE t1(a VARCHAR(20), b FLOAT);
++  INSERT INTO t1 VALUES('1',10.0);
++}
++
++do_execsql_test 54.2 {
++  SELECT * FROM ( 
++    SELECT sum(b) OVER() AS c FROM t1 
++      UNION
++    SELECT b AS c FROM t1
++  ) WHERE c>10;
++}
++
++do_execsql_test 54.3 {
++  INSERT INTO t1 VALUES('2',5.0);
++  INSERT INTO t1 VALUES('3',15.0);
++}
++
++do_execsql_test 54.4 {
++  SELECT * FROM ( 
++    SELECT sum(b) OVER() AS c FROM t1 
++      UNION
++    SELECT b AS c FROM t1
++  ) WHERE c>10;
++} {15.0 30.0}
++
++# 2020-06-05 ticket c8d3b9f0a750a529
++reset_db
++do_execsql_test 55.1 {
++   CREATE TABLE a(b);
++   SELECT
++      (SELECT b FROM a
++        GROUP BY b
++        HAVING (SELECT COUNT()OVER() + lead(b)OVER(ORDER BY SUM(DISTINCT b) + b))
++      ) 
++    FROM a
++  UNION
++   SELECT 99
++    ORDER BY 1;
++} {99}
+ 
+ finish_test

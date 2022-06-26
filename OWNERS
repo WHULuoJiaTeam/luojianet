@@ -1,0 +1,32 @@
+approvers:
+- kingxian
+- guoqi1024
+- baochong
+- zhaizhiqiang
+
+files:
+  "akg":
+    approvers:
+    - gaoxiong1
+    - ckey_dou
+    - anyrenwei
+
+  "graphengine":
+    approvers:
+    - zhoufeng54
+    - jjfeing
+    - guoqi1024
+    - baochong
+
+  "version.txt":
+    approvers:
+    - zhoufeng54
+    - jjfeing
+    - guoqi1024
+    - baochong
+
+  ".*\\.md$":
+    approvers:
+    - gemini524
+    - Hanshize
+    - rudy_tan

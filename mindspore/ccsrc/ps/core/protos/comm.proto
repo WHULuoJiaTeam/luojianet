@@ -1,0 +1,335 @@
+/**
+ * Copyright 2020 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+syntax = "proto3";
+package mindspore.ps.core;
+option optimize_for = LITE_RUNTIME;
+
+enum NodeCommand {
+  TERMINATE = 0;
+  REGISTER = 1;
+  HEARTBEAT = 2;
+  SEND_DATA = 3;
+  // The worker or server asks the scheduler for metadata
+  FETCH_METADATA = 4;
+  FINISH = 5;
+  COLLECTIVE_SEND_DATA = 6;
+  // The scheduler actively sends metadata to the worker and server
+  SEND_METADATA = 7;
+  // This command is used to start scale out
+  SCALE_OUT = 8;
+  // This command is used to start scale in
+  SCALE_IN = 9;
+  // This command is used to synchronize the scale out status of the cluster
+  SCALE_OUT_DONE = 10;
+  // This command is used to synchronize the scale in status of the cluster
+  SCALE_IN_DONE = 11;
+  // This command is used to send user defined event.
+  SEND_EVENT = 12;
+  // This command is used to send scheduler recovery event.
+  SCHEDULER_RECOVERY = 13;
+  // This command is used to send prepare building network msg.
+  PREPARE_BUILDING_NETWORK = 14;
+  // Register address for actor's route table.
+  REGISTER_ACTOR_ROUTE = 15;
+  // Delete address of actor.
+  DELETE_ACTOR_ROUTE = 16;
+  // Lookup address of the actor.
+  LOOKUP_ACTOR_ROUTE = 17;
+  // Send host name to scheduler.
+  SEND_HOST_NAME = 18;
+  // Query all worker nodes' host name.
+  QUERY_HOST_NAMES = 19;
+  // Send unique id used to initialize collective communication.
+  SEND_UNIQUE_ID = 20;
+  // Query unique id used to initialize collective communication.
+  QUERY_UNIQUE_ID = 21;
+  // Send the ready status to finish transform graph of computed node,
+  // used in disaster recovery mode to prevent timeout of waiting for graph transformation.
+  SEND_FINISH_TRANSFORM = 22;
+  // Query the ready status to finish transform graph of computed node,
+  // used in disaster recovery mode to prevent timeout of waiting for graph transformation.
+  QUERY_FINISH_TRANSFORM = 23;
+  // This command is used to start scale out rollback
+  SCALE_OUT_ROLLBACK = 24;
+}
+
+enum NodeRole {
+  SERVER = 0;
+  WORKER = 1;
+  SCHEDULER = 2;
+}
+
+enum PersistentCommand {
+  DEFAULT = 0;
+  PREPARE_PERSIST = 1;
+  BEGIN_PERSIST = 2;
+}
+
+enum PersistentState {
+  NOT_ENABLE_PERSIST = 0;
+  PREPARING_PERSIST = 1;
+  READY_PERSIST = 2;
+  PERSISTING = 3;
+  FINISH_PERSIST = 4;
+}
+
+message CollectiveMessageMeta {
+  bool enable_flag = 1;
+  uint32 send_rank_id = 2;
+  uint32 recv_rank_id = 3;
+  uint32 iteration = 4;
+  bytes weight_name = 5;
+  bytes phase = 6; // ring, gather, reduce, broadcast
+  uint32 chunk_index = 7;
+  uint32 for_index = 8;
+}
+
+message MessageMeta {
+  // the command of this message,for example: register,heartbeat,data
+  NodeCommand cmd = 1;
+  // the request id of this message
+  uint64 request_id = 2;
+  // the role of the current node: worker,server,scheduler
+  NodeRole role = 3;
+  // the current Node rank id,the worker node range is:[0,numOfWorker-1], the server node range is:[0, numOfServer-1]
+  uint32 rank_id = 4;
+  // User-defined commands
+  int32 user_cmd = 5;
+
+  CollectiveMessageMeta collective_meta = 6;
+}
+
+message RegisterMessage {
+  // ip
+  string ip = 1;
+  // the port of this node
+  uint32 port = 2;
+  // the current Node unique id:0,1,2...
+  string node_id = 3;
+  // the role of the node: worker,server,scheduler
+  NodeRole role = 4;
+  // the number of the fl job iteration
+  uint64 fl_iteration_num = 5;
+}
+
+message RegisterRespMessage {
+  string node_id = 1;
+  uint32 rank_id = 2;
+}
+
+message HeartbeatMessage {
+  // the current Node unique id:0,1,2...
+  string node_id = 1;
+  PersistentState persistent_state = 2;
+  bool has_address = 3;
+  string ip = 4;
+  uint32 port = 5;
+}
+
+enum NodeState {
+  NODE_STARTING = 0;
+  NODE_FINISH = 1;
+  NODE_READY = 2;
+}
+
+enum ClusterState {
+  CLUSTER_STARTING = 0;
+  CLUSTER_READY = 1;
+  CLUSTER_EXIT = 2;
+  NODE_TIMEOUT = 3;
+  CLUSTER_SCALE_OUT = 4;
+  CLUSTER_SCALE_IN = 5;
+  CLUSTER_NEW_INSTANCE = 6;
+  CLUSTER_ENABLE_FLS = 7;
+  CLUSTER_DISABLE_FLS = 8;
+  CLUSTER_SCHEDULER_RECOVERY = 9;
+  CLUSTER_SCALE_OUT_ROLLBACK = 10;
+}
+
+message HeartbeatRespMessage {
+  ClusterState cluster_state = 1;
+  repeated ServersMeta servers_meta = 2;
+  bool is_worker = 3;
+  PersistentCommand persistent_cmd = 5;
+}
+
+message FetchServersMessage {
+  string node_id = 1;
+}
+
+message FetchServersRespMessage {
+  repeated ServersMeta servers_meta = 1;
+}
+
+message ServersMeta {
+  uint32 rank_id = 1;
+  string ip = 2;
+  uint32 port = 3;
+  bool is_alive = 4;
+  NodeRole role = 5;
+  string node_id = 6;
+  PersistentState persistent_state = 7;
+}
+
+message SendMetadataMessage {
+  repeated ServersMeta servers_meta = 1;
+  // the current worker number.
+  uint32 worker_num = 2;
+  // the current server number.
+  uint32 server_num = 3;
+  // the current cluster state.
+  ClusterState cluster_state = 4;
+  // The rank id of the node that received this message.
+  uint32 rank_id = 5;
+}
+
+message FinishMessage {
+  // the current Node unique id:0,1,2...
+  string node_id = 1;
+}
+
+message CommMessage {
+  MessageMeta pb_meta = 1;
+  bytes data = 2;
+}
+
+// The scheduler will broadcast the worker/server numbers after scale out to all nodes.
+message ScaleOutMessage {
+  // the worker number after scale out
+  uint32 worker_num = 1;
+  // the server number after scale out
+  uint32 server_num = 2;
+}
+
+// The scheduler will broadcast the worker/server numbers after scale in to all nodes.
+message ScaleInMessage {
+  // the worker number after scale in.
+  uint32 worker_num = 1;
+  // the server number after scale in.
+  uint32 server_num = 2;
+  // Determine whether the current node is a scale in node.
+  bool is_node_scale_in = 3;
+}
+
+// This message is sent to the scheduler to notify the completion of scale out
+message ScaleOutDoneMessage {
+  string node_id = 1;
+}
+
+// This message is sent to the scheduler to notify the completion of scale out
+message ScaleInDoneMessage {
+  string node_id = 1;
+}
+
+// This message is sent by the worker/server to the scheduler, and the scheduler is broadcast the event to all other nodes.
+message EventMessage {
+  uint32 event = 1;
+  string node_id = 2;
+}
+
+// scheduler broadcasts the event to all other nodes through this message
+message EventRespMessage {
+  uint32 event = 1;
+}
+
+message ScaleInFinishMessage {
+  bool is_all_nodes_registered = 1;
+}
+
+message GeneralResponseMsg {
+  bool is_success = 1;
+  string error = 2;
+}
+
+message ActorAddress {
+  string actor_id = 1;
+  string ip = 2;
+  uint32 port = 3;
+}
+
+message GeneralQueryMessage {
+  // The unique node id.
+  string node_id = 1;
+  // The rank id of the node in the cluster.
+  uint32 rank_id = 2;
+}
+
+message SendHostHashNameMessage {
+  // The unique node id.
+  string node_id = 1;
+  // The rank id of the node in the cluster.
+  uint32 rank_id = 2;
+  // The host hash name of the node.
+  uint64 host_hash_name = 3;
+}
+
+message QueryHostHashNameRespMessage {
+  bool is_success = 1;
+  // The host hash names of all worker nodes.
+  repeated uint64 host_hash_names = 2;
+}
+
+message SendUniqueIDMessage {
+  // The unique node id.
+  string node_id = 1;
+  // The rank id of the node in the cluster.
+  uint32 rank_id = 2;
+  // The group name of goupt which need to initialize collective communication.
+  string group_name = 3;
+  // The unique id used to initialize collective communication.
+  bytes unique_id = 4;
+}
+
+message QueryUniqueIDMessage {
+  // The unique node id.
+  string node_id = 1;
+  // The group name of goupt which need to initialize collective communication.
+  string group_name = 2;
+}
+
+message QueryUniqueIDRespMessage {
+  bool is_success = 1;
+  // The unique id used to initialize collective communication.
+  bytes unique_id = 2;
+}
+
+message SendFinishTransformMessage {
+  // The unique node id.
+  string node_id = 1;
+  // The rank id of the node in the cluster.
+  uint32 rank_id = 2;
+  // Whether finish transform graph.
+  bool is_ready = 3;
+  // The actor set name of actor set which finish transform.
+  string actor_set_name = 4;
+}
+
+message QueryFinishTransformMessage {
+  // The unique node id.
+  string node_id = 1;
+  // The rank id of the node in the cluster.
+  uint32 rank_id = 2;
+  // The actor set name of actor set which queries finish transform status.
+  string actor_set_name = 3;
+}
+
+message QueryFinishTransformRespMessage {
+  // Whether all computed nodes are ready to run dag.
+  bool is_ready = 1;
+  // Whether there is any worker timeout.
+  bool is_worker_timeout = 2;
+}

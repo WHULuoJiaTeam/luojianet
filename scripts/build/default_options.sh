@@ -64,4 +64,5 @@ init_default_options()
   export USER_ENABLE_DEBUGGER=false
   export ENABLE_SYM_FILE="off"
   export ENABLE_FAST_HASH_TABLE="on"
+  export ENABLE_THIRD="off"
 }

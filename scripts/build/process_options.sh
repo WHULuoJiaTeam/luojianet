@@ -21,7 +21,7 @@ set -e
 process_options()
 {
   # Process the options
-  while getopts 'drvj:c:t:hb:s:a:g:p:ie:l:I:RP:D:zM:V:K:B:En:A:S:k:W:F:H:L:y' opt
+  while getopts 'drvj:c:t:hb:s:a:g:p:ie:l:I:RP:D:zM:V:K:B:En:A:S:k:W:F:H:L:T:y' opt
   do
     CASE_SENSIVE_ARG=${OPTARG}
     OPTARG=$(echo ${OPTARG} | tr '[A-Z]' '[a-z]')
@@ -106,6 +106,9 @@ process_options()
         export ENABLE_TRT="on"
         export TENSORRT_HOME="$CASE_SENSIVE_ARG"
         echo "Link Tensor-RT library. Path: ${CASE_SENSIVE_ARG}" ;;
+      T)
+        export ENABLE_THIRD="on"
+        echo "Clean the third party dependencies CMake cache files" ;;
       *)
         echo "Unknown option ${opt}!"
         usage

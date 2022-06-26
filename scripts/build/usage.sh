@@ -26,6 +26,7 @@ usage()
   echo "              [-B on|off] [-E] [-l on|off] [-n full|lite|off] [-H on|off] \\"
   echo "              [-A on|off] [-S on|off] [-k on|off] [-W sse|neon|avx|avx512|off] \\"
   echo "              [-L Tensor-RT path] [-y on|off] [-F on|off] \\"
+  echo "              [-T on|off] \\"
   echo ""
   echo "Options:"
   echo "    -d Debug mode"
@@ -64,4 +65,5 @@ usage()
   echo "    -L Link and specify Tensor-RT library path, default disable Tensor-RT lib linking"
   echo "    -y Compile the symbol table switch and save the symbol table to the directory output"
   echo "    -F Use fast hash table in luojianet_ms compiler, default on"
+  echo "    -T Clean the third party dependencies CMake cache files, default off"
 }

@@ -48,6 +48,6 @@ IF "%FROM_GITEE%" == "1" (
 
 
 cd %BASE_PATH%/third_party
-IF DEFINED ENABLE_RS (
+IF "%ENABLE_RS%" == "ON" (
 	call gdal.bat
 )

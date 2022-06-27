@@ -77,8 +77,9 @@ parse_device
 
 if [[ "X$ENABLE_THIRD" = "Xon" ]]; then
   #remove default patches for third party library
-  PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
-  echo "folder: ${PATCHES_FOLDER}"
+#  PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
+#  echo "folder: ${PATCHES_FOLDER}"
+  echo "folder on"
   # # if [[ -d $PATCHES_FOLDER ]]; then
   # rm -rf $PATCHES_FOLDER
   # # fi

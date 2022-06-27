@@ -11,7 +11,7 @@ from luojianet_ms import context
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.initializer import Normal
 from luojianet_ms.dataset.vision import Inter
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
@@ -37,7 +37,7 @@ def _clear_grad_sum(grad_sum, zero):
     return success
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """
     Lenet network
 
@@ -61,7 +61,7 @@ class LeNet5(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.max_pool2d(self.relu(self.conv1(x)))
         x = self.max_pool2d(self.relu(self.conv2(x)))
         x = self.flatten(x)
@@ -71,7 +71,7 @@ class LeNet5(nn.Cell):
         return x
 
 
-class TrainForwardBackward(Cell):
+class TrainForwardBackward(Module):
     def __init__(self, network, optimizer, grad_sum, sens=1.0):
         super(TrainForwardBackward, self).__init__(auto_prefix=False)
         self.network = network
@@ -84,7 +84,7 @@ class TrainForwardBackward(Cell):
         self.sens = sens
         self.hyper_map = C.HyperMap()
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         weights = self.weights
         loss = self.network(*inputs)
         sens = P.Fill()(P.DType()(loss), P.Shape()(loss), self.sens)
@@ -92,24 +92,24 @@ class TrainForwardBackward(Cell):
         return F.depend(loss, self.hyper_map(F.partial(_sum_op), self.grad_sum, grads))
 
 
-class TrainOptim(Cell):
+class TrainOptim(Module):
     def __init__(self, optimizer, grad_sum):
         super(TrainOptim, self).__init__(auto_prefix=False)
         self.optimizer = optimizer
         self.grad_sum = grad_sum
 
-    def construct(self):
+    def forward(self):
         return self.optimizer(self.grad_sum)
 
 
-class TrainClear(Cell):
+class TrainClear(Module):
     def __init__(self, grad_sum, zeros):
         super(TrainClear, self).__init__(auto_prefix=False)
         self.grad_sum = grad_sum
         self.zeros = zeros
         self.hyper_map = C.HyperMap()
 
-    def construct(self):
+    def forward(self):
         seccess = self.hyper_map(F.partial(_clear_op), self.grad_sum, self.zeros)
         return seccess
 

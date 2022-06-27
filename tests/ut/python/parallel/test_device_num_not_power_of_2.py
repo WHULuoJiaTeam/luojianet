@@ -17,11 +17,11 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -32,7 +32,7 @@ class Net(Cell):
         self.matmul_weight = Parameter(Tensor(np.ones([32 * 3, 32 * 3]), dtype=ms.float32), "w2")
         self.embedding_table = Parameter(Tensor(np.ones([64 * 3, 32 * 3]), dtype=ms.float32), "embedding_table")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.gather(self.embedding_table, x, 0)
         out = self.matmul(out, self.matmul_weight)
         out = self.mul(out, self.mul_weight)
@@ -40,7 +40,7 @@ class Net(Cell):
         return self.reduce_sum(out)
 
 
-class Net1(Cell):
+class Net1(Module):
     def __init__(self):
         super().__init__()
         self.mul = P.Mul()
@@ -54,7 +54,7 @@ class Net1(Cell):
         self.matmul_weight3 = Parameter(Tensor(np.ones([32 * 3, 32 * 3]), dtype=ms.float32), "mat_w3")
         self.matmul_weight4 = Parameter(Tensor(np.ones([32 * 3, 32 * 3]), dtype=ms.float32), "mat_w4")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.matmul1(x, self.matmul_weight1)
         out = self.matmul2(out, self.matmul_weight2)
         out = self.matmul3(out, self.matmul_weight3)

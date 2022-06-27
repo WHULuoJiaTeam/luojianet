@@ -24,13 +24,13 @@ from luojianet_ms.ops.functional import vjp
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class SingleInputNet(nn.Cell):
-    def construct(self, x):
+class SingleInputNet(nn.Module):
+    def forward(self, x):
         return x**3
 
 
-class MultipleInputsOutputNet(nn.Cell):
-    def construct(self, x, y):
+class MultipleInputsOutputNet(nn.Module):
+    def forward(self, x, y):
         return 2*x, y**3
 
 

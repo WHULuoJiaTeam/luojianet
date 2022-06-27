@@ -19,11 +19,11 @@ import pytest
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, conv2d_weight, out_channel, kernel_size, pad_mode, stride, pool_kernel_size, pool_strides,
                  strategy1=None, strategy2=None):
         super().__init__()
@@ -32,13 +32,13 @@ class Net(Cell):
         self.conv2d_weight = Parameter(conv2d_weight, "w1")
         self.max_pool = P.MaxPool(kernel_size=pool_kernel_size, strides=pool_strides).shard(strategy2)
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.conv2d(x, self.conv2d_weight)
         out = self.max_pool(out)
         return out
 
 
-class Net2(Cell):
+class Net2(Module):
     def __init__(self, conv2d_weight, out_channel, kernel_size, pad_mode, stride, pool_kernel_size, pool_strides,
                  strategy1=None, strategy2=None):
         super().__init__()
@@ -47,7 +47,7 @@ class Net2(Cell):
         self.conv2d_weight = Parameter(conv2d_weight, "w1")
         self.avg_pool = P.AvgPool(kernel_size=pool_kernel_size, strides=pool_strides).shard(strategy2)
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.conv2d(x, self.conv2d_weight)
         out = self.avg_pool(out)
         return out

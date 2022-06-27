@@ -172,7 +172,7 @@ TEST_F(TestOptLib, test_arithmetic) {
 TEST_F(TestOptLib, test_elim_cast_same_dtype) {
   FuncGraphPtr before = getPyFun.CallAndParseRet("test_elim_cast_same_dtype", "fp32_cast_fp32");
   FuncGraphPtr after = getPyFun.CallAndParseRet("test_elim_cast_same_dtype", "after");
-  // construct such case that cast srcT equal dstT
+  // forward such case that cast srcT equal dstT
   auto &inputs = before->output()->cast<CNodePtr>()->inputs();
   if (inputs.size() > 2) {
     auto cast_node = inputs[0];
@@ -207,7 +207,7 @@ TEST_F(TestOptLib, test_elim_cast_same_dtype) {
 TEST_F(TestOptLib, test_elim_reshape_same_shape) {
   FuncGraphPtr before = getPyFun.CallAndParseRet("elim_reshape_same_shape", "reshape_to_2_3");
   FuncGraphPtr after = getPyFun.CallAndParseRet("elim_reshape_same_shape", "after");
-  // construct such case that shape is equal to reshape target
+  // forward such case that shape is equal to reshape target
   auto &inputs = before->output()->cast<CNodePtr>()->inputs();
   if (inputs.size() > 1) {
     auto x_node = inputs[1];
@@ -275,7 +275,7 @@ TEST_F(TestOptLib, test_elim_reduce_mean_shape_one) {
   FuncGraphPtr before = getPyFun.CallAndParseRet("test_elim_reduce_mean_shape_one", "before");
   FuncGraphPtr after = getPyFun.CallAndParseRet("test_elim_reduce_mean_shape_one", "after");
 
-  // construct such case that input x shape is (1), keepdims is true
+  // forward such case that input x shape is (1), keepdims is true
   auto inputs = before->output()->cast<CNodePtr>()->inputs();
   if (inputs.size() > 2) {
     auto x_node = inputs[1];
@@ -297,7 +297,7 @@ TEST_F(TestOptLib, test_elim_all_shape_one) {
   FuncGraphPtr before = getPyFun.CallAndParseRet("test_elim_all_shape_one", "before");
   FuncGraphPtr after = getPyFun.CallAndParseRet("test_elim_all_shape_one", "after");
 
-  // construct such case that input x shape is (1) keep_dims is true
+  // forward such case that input x shape is (1) keep_dims is true
   auto inputs = before->output()->cast<CNodePtr>()->inputs();
   if (inputs.size() > 2) {
     auto x_node = inputs[1];
@@ -318,7 +318,7 @@ TEST_F(TestOptLib, test_elim_sum_shape_one) {
   FuncGraphPtr before = getPyFun.CallAndParseRet("test_elim_sum_shape_one", "before");
   FuncGraphPtr after = getPyFun.CallAndParseRet("test_elim_sum_shape_one", "after");
 
-  // construct such case that input x shape is (1) keepdims is true
+  // forward such case that input x shape is (1) keepdims is true
   auto inputs = before->output()->cast<CNodePtr>()->inputs();
   if (inputs.size() > 2) {
     auto x_node = inputs[1];

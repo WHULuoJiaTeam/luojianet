@@ -29,32 +29,32 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return grad_all(self.network)(x, y)
 
 
-class CustomMatMul(nn.Cell):
+class CustomMatMul(nn.Module):
     def __init__(self, transpose_a=False, transpose_b=False):
         super(CustomMatMul, self).__init__()
         self.fc = P.MatMul(transpose_a=transpose_a, transpose_b=transpose_b)
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         out = self.fc(x1, x2)
         return out
 
@@ -70,7 +70,7 @@ class MarginCE(LossBase):
         self.param = Parameter(Tensor(np.ones([512, 512]), dtype=mstype.float32), name="param", requires_grad=False)
         self.param2 = Parameter(Tensor(np.ones([512, 512]), dtype=mstype.float32), name="param", requires_grad=False)
 
-    def construct(self, feature, label):
+    def forward(self, feature, label):
         fc_out = self.fc(feature, label)
 
         fc1_out = self.fc1(self.param2, self.param)

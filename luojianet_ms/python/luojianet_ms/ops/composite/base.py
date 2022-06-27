@@ -214,22 +214,22 @@ class GradOperation(GradOperation_):
         >>> from luojianet_ms import ParameterTuple
         >>> from luojianet_ms.ops.composite import GradOperation
         >>> from luojianet_ms.ops import operations as P
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.matmul = P.MatMul()
         ...         self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         x = x * self.z
         ...         out = self.matmul(x, y)
         ...         return out
         ...
-        >>> class GradNetWrtX(nn.Cell):
+        >>> class GradNetWrtX(nn.Module):
         ...     def __init__(self, net):
         ...         super(GradNetWrtX, self).__init__()
         ...         self.net = net
         ...         self.grad_op = GradOperation()
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         gradient_function = self.grad_op(self.net)
         ...         return gradient_function(x, y)
         ...
@@ -240,12 +240,12 @@ class GradOperation(GradOperation_):
         [[1.4100001 1.5999999 6.6      ]
          [1.4100001 1.5999999 6.6      ]]
         >>>
-        >>> class GradNetWrtXY(nn.Cell):
+        >>> class GradNetWrtXY(nn.Module):
         ...     def __init__(self, net):
         ...         super(GradNetWrtXY, self).__init__()
         ...         self.net = net
         ...         self.grad_op = GradOperation(get_all=True)
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         gradient_function = self.grad_op(self.net)
         ...         return gradient_function(x, y)
         >>>
@@ -260,13 +260,13 @@ class GradOperation(GradOperation_):
          [ 1.89999998e+00,  1.89999998e+00,  1.89999998e+00],
          [ 1.30000007e+00,  1.30000007e+00,  1.30000007e+00]]))
         >>>
-        >>> class GradNetWrtXYWithSensParam(nn.Cell):
+        >>> class GradNetWrtXYWithSensParam(nn.Module):
         ...     def __init__(self, net):
         ...         super(GradNetWrtXYWithSensParam, self).__init__()
         ...         self.net = net
         ...         self.grad_op = GradOperation(get_all=True, sens_param=True)
         ...         self.grad_wrt_output = Tensor([[0.1, 0.6, 0.2], [0.8, 1.3, 1.1]], dtype=mstype.float32)
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         gradient_function = self.grad_op(self.net)
         ...         return gradient_function(x, y, self.grad_wrt_output)
         >>>
@@ -281,13 +281,13 @@ class GradOperation(GradOperation_):
          [ 1.09999990e+00,  2.04999995e+00,  1.54999995e+00],
          [ 9.00000036e-01,  1.54999995e+00,  1.25000000e+00]]))
         >>>
-        >>> class GradNetWithWrtParams(nn.Cell):
+        >>> class GradNetWithWrtParams(nn.Module):
         ...     def __init__(self, net):
         ...         super(GradNetWithWrtParams, self).__init__()
         ...         self.net = net
         ...         self.params = ParameterTuple(net.trainable_params())
         ...         self.grad_op = GradOperation(get_by_list=True)
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         gradient_function = self.grad_op(self.net, self.params)
         ...         return gradient_function(x, y)
         >>>
@@ -297,13 +297,13 @@ class GradOperation(GradOperation_):
         >>> print(output)
         (Tensor(shape=[1], dtype=Float32, value= [ 2.15359993e+01]),)
         >>>
-        >>> class GradNetWrtInputsAndParams(nn.Cell):
+        >>> class GradNetWrtInputsAndParams(nn.Module):
         ...     def __init__(self, net):
         ...         super(GradNetWrtInputsAndParams, self).__init__()
         ...         self.net = net
         ...         self.params = ParameterTuple(net.trainable_params())
         ...         self.grad_op = GradOperation(get_all=True, get_by_list=True)
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         gradient_function = self.grad_op(self.net, self.params)
         ...         return gradient_function(x, y)
         >>>

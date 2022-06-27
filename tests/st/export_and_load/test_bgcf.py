@@ -28,7 +28,7 @@ from luojianet_ms.train.serialization import export
 context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class MeanConv(nn.Cell):
+class MeanConv(nn.Module):
     def __init__(self,
                  feature_in_dim,
                  feature_out_dim,
@@ -49,7 +49,7 @@ class MeanConv(nn.Cell):
         self.reduce_mean = P.ReduceMean(keep_dims=False)
         self.dropout = nn.Dropout(keep_prob=1 - dropout)
 
-    def construct(self, self_feature, neigh_feature):
+    def forward(self, self_feature, neigh_feature):
         neigh_matrix = self.reduce_mean(neigh_feature, 1)
         neigh_matrix = self.dropout(neigh_matrix)
         output = self.concat((self_feature, neigh_matrix))
@@ -57,7 +57,7 @@ class MeanConv(nn.Cell):
         return output
 
 
-class AttenConv(nn.Cell):
+class AttenConv(nn.Module):
     def __init__(self,
                  feature_in_dim,
                  feature_out_dim,
@@ -75,7 +75,7 @@ class AttenConv(nn.Cell):
         self.matmul_t = P.BatchMatMul(transpose_b=True)
         self.dropout = nn.Dropout(keep_prob=1 - dropout)
 
-    def construct(self, self_feature, neigh_feature):
+    def forward(self, self_feature, neigh_feature):
         query = self.expanddims(self_feature, 1)
         neigh_matrix = self.dropout(neigh_feature)
         score = self.matmul_t(query, neigh_matrix)
@@ -86,7 +86,7 @@ class AttenConv(nn.Cell):
         return output
 
 
-class BGCF(nn.Cell):
+class BGCF(nn.Module):
     def __init__(self,
                  dataset_argv,
                  architect_argv,
@@ -126,7 +126,7 @@ class BGCF(nn.Cell):
                                            activation=activation, dropout=neigh_drop_rate[0])
         self.raw_agg_funcs_item.to_float(mstype.float16)
 
-    def construct(self,
+    def forward(self,
                   u_id,
                   pos_item_id,
                   neg_item_id,
@@ -180,13 +180,13 @@ class BGCF(nn.Cell):
         return all_user_embed, all_user_rep, all_pos_item_embed, all_pos_item_rep, neg_item_embed, neg_item_rep
 
 
-class ForwardBGCF(nn.Cell):
+class ForwardBGCF(nn.Module):
     def __init__(self,
                  network):
         super(ForwardBGCF, self).__init__()
         self.network = network
 
-    def construct(self, users, items, neg_items, u_neighs, u_gnew_neighs, i_neighs, i_gnew_neighs):
+    def forward(self, users, items, neg_items, u_neighs, u_gnew_neighs, i_neighs, i_gnew_neighs):
         _, user_rep, _, item_rep, _, _, = self.network(users, items, neg_items, users, items, users,
                                                        u_neighs, u_gnew_neighs, items, i_neighs, i_gnew_neighs,
                                                        items, i_neighs, i_gnew_neighs, 1)

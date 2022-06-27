@@ -24,27 +24,27 @@ import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from dump_test_utils import generate_dump_json
 from tests.security_utils import security_off_wrap
 
 
-class AddNet(Cell):
+class AddNet(Module):
     def __init__(self):
         super(AddNet, self).__init__()
         self.add = P.TensorAdd()
 
-    def construct(self, input_x, input_y):
+    def forward(self, input_x, input_y):
         output_z = self.add(input_x, input_y)
         return output_z
 
 
-class NewAddNet(Cell):
+class NewAddNet(Module):
     def __init__(self):
         super(NewAddNet, self).__init__()
         self.add = P.AddN()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         z = self.add([x, y, y])
         return z
 

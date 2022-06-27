@@ -25,25 +25,25 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.ops import composite as c
 
 
-class GradOfAllInputsAndParams(nn.Cell):
+class GradOfAllInputsAndParams(nn.Module):
     def __init__(self, network, sens_param):
         super(GradOfAllInputsAndParams, self).__init__()
         self.grad = c.GradOperation(get_all=True, get_by_list=True, sens_param=sens_param)
         self.network = network
         self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         gout = self.grad(self.network, self.params)(*inputs)
         return gout
 
 
-class RNN(nn.Cell):
+class RNN(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, has_bias, batch_first, bidirectional, dropout):
         super(RNN, self).__init__()
         self.rnn = nn.RNN(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, has_bias=has_bias,
                           batch_first=batch_first, bidirectional=bidirectional, dropout=dropout)
 
-    def construct(self, inp, h0):
+    def forward(self, inp, h0):
         return self.rnn(inp, h0)
 
 

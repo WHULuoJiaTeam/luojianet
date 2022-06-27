@@ -44,12 +44,12 @@ def test_bn_init():
     assert isinstance(bn.moving_variance, Parameter)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bn = nn.BatchNorm2d(num_features=3)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.bn(input_x)
 
 
@@ -59,12 +59,12 @@ def test_compile():
     _cell_graph_executor.compile(net, input_data)
 
 
-class GroupNet(nn.Cell):
+class GroupNet(nn.Module):
     def __init__(self):
         super(GroupNet, self).__init__()
         self.group_bn = nn.GroupNorm()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.group_bn(x)
 
 

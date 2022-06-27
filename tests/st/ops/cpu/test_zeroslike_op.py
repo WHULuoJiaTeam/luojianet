@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetZerosLike(nn.Cell):
+class NetZerosLike(nn.Module):
     def __init__(self):
         super(NetZerosLike, self).__init__()
         self.zeros_like = P.ZerosLike()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.zeros_like(x)
 
 

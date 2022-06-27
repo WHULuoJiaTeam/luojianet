@@ -17,7 +17,7 @@ import pytest
 
 from luojianet_ms import Tensor, context
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 BATCH_SIZE = 32
@@ -31,18 +31,18 @@ _box_index = Tensor(np.random.uniform(size=[NUM_BOXES], low=0, high=BATCH_SIZE).
 _crop_size = (24, 24)
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, crop_size, strategy=None):
         super(Net, self).__init__()
         self.crop_size = crop_size
         self.crop_and_resize = P.CropAndResize().shard(strategy)
 
-    def construct(self, images, boxes, box_index):
+    def forward(self, images, boxes, box_index):
         output = self.crop_and_resize(images, boxes, box_index, self.crop_size)
         return output
 
 
-def compile_net(net: Cell, *inputs):
+def compile_net(net: Module, *inputs):
     net.set_auto_parallel()
     net.set_train()
     _cell_graph_executor.compile(net, *inputs)

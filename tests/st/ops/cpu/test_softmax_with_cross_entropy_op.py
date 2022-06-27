@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class NetSoftmaxWithCrossEntropy(nn.Cell):
+class NetSoftmaxWithCrossEntropy(nn.Module):
     def __init__(self):
         super(NetSoftmaxWithCrossEntropy, self).__init__()
         logits = Tensor(np.array([[1, 1, 10],
@@ -37,7 +37,7 @@ class NetSoftmaxWithCrossEntropy(nn.Cell):
         self.labels = Parameter(initializer(labels, labels.shape), name='labels')
         self.SoftmaxWithCrossEntropy = P.SparseSoftmaxCrossEntropyWithLogits(True)
 
-    def construct(self):
+    def forward(self):
         return self.SoftmaxWithCrossEntropy(self.logits, self.labels)
 
 

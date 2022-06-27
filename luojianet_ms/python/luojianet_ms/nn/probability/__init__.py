@@ -16,7 +16,7 @@
 """
 Probability.
 
-The high-level components used to construct the probabilistic network.
+The high-level components used to forward the probabilistic network.
 """
 
 from . import bijector

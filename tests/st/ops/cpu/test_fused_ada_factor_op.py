@@ -24,7 +24,7 @@ from luojianet_ms import dtype as mstype
 param_shape = [2, 3, 2]
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.opt = ops.FusedAdaFactor()
@@ -34,7 +34,7 @@ class Net(nn.Cell):
         self.exp_avg_sq_row = Parameter(Tensor(np.zeros([2, 3]), mstype.float32), name="exp_avg_sq_row")
         self.exp_avg_sq_col = Parameter(Tensor(np.zeros([2, 2]), mstype.float32), name="exp_avg_sq_col")
 
-    def construct(self, epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad):
+    def forward(self, epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad):
         out = self.opt(epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad, self.param, self.exp_avg,
                        self.exp_avg_sq_row, self.exp_avg_sq_col, self.exp_avg_sq)
         return out
@@ -45,7 +45,7 @@ class NetWithGlobalNorm(Net):
         super(NetWithGlobalNorm, self).__init__()
         self.opt = ops.FusedAdaFactorWithGlobalNorm()
 
-    def construct(self, epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad, global_norm):
+    def forward(self, epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad, global_norm):
         out = self.opt(epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad, self.param, self.exp_avg,
                        self.exp_avg_sq_row, self.exp_avg_sq_col, self.exp_avg_sq, global_norm)
         return out

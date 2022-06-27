@@ -16,7 +16,7 @@
 import pytest
 import numpy as np
 from luojianet_ms import context, Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 from luojianet_ms.ops import ms_hybrid
 
@@ -64,7 +64,7 @@ def grid_example(a, b):
     return c
 
 
-class TestMsHybridDSL(Cell):
+class TestMsHybridDSL(Module):
     """Net definition"""
 
     def __init__(self, func, func_type, out_shape=None, out_dtype=None):
@@ -72,7 +72,7 @@ class TestMsHybridDSL(Cell):
 
         self.program = ops.Custom(func, out_shape=out_shape, out_dtype=out_dtype, func_type=func_type)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.program(x, y)
 
 

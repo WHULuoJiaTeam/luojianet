@@ -23,8 +23,8 @@ from luojianet_ms import context
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class ForwardNet(nn.Cell):
-    def construct(self, x, y):
+class ForwardNet(nn.Module):
+    def forward(self, x, y):
         y = y + 10
         while x < y:
             x = (x + 2) * (y - 9)
@@ -33,13 +33,13 @@ class ForwardNet(nn.Cell):
         return x
 
 
-class BackwardNet(nn.Cell):
+class BackwardNet(nn.Module):
     def __init__(self, forward_net):
         super(BackwardNet, self).__init__()
         self.forward_net = forward_net
         self.grad = C.GradOperation()
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         grads = self.grad(self.forward_net)(*inputs)
         return grads
 

@@ -22,22 +22,22 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _grad_ops as G
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, dim=0):
         super(Net, self).__init__()
         self.op = P.GatherD()
         self.dim = dim
 
-    def construct(self, x, index):
+    def forward(self, x, index):
         return self.op(x, self.dim, index)
 
 
-class NetGrad(nn.Cell):
+class NetGrad(nn.Module):
     def __init__(self, dim=0, shape=None):
         super(NetGrad, self).__init__()
         self.op = G.GatherDGrad(dim, shape)
 
-    def construct(self, index, x):
+    def forward(self, index, x):
         return self.op(index, x)
 
 

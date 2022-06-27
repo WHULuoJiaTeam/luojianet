@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.ops = P.Pow()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.ops(x, y)
 
 

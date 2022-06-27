@@ -421,13 +421,13 @@ class AssignAdd(Primitive):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.AssignAdd = ops.AssignAdd()
         ...         self.variable = luojianet_ms.Parameter(initializer(1, [1], luojianet_ms.int64), name="global_step")
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         self.AssignAdd(self.variable, x)
         ...         return self.variable
         ...
@@ -484,13 +484,13 @@ class AssignSub(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.AssignSub = ops.AssignSub()
         ...         self.variable = luojianet_ms.Parameter(initializer(1, [1], luojianet_ms.int32), name="global_step")
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         self.AssignSub(self.variable, x)
         ...         return self.variable
         ...
@@ -1583,12 +1583,12 @@ class AddN(Primitive):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class NetAddN(nn.Cell):
+        >>> class NetAddN(nn.Module):
         ...     def __init__(self):
         ...         super(NetAddN, self).__init__()
         ...         self.addN = ops.AddN()
         ...
-        ...     def construct(self, *z):
+        ...     def forward(self, *z):
         ...         return self.addN(z)
         ...
         >>> net = NetAddN()
@@ -1640,12 +1640,12 @@ class AccumulateNV2(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class NetAccumulateNV2(nn.Cell):
+        >>> class NetAccumulateNV2(nn.Module):
         ...     def __init__(self):
         ...         super(NetAccumulateNV2, self).__init__()
         ...         self.accumulateNV2 = ops.AccumulateNV2()
         ...
-        ...     def construct(self, *z):
+        ...     def forward(self, *z):
         ...         return self.accumulateNV2(z)
         ...
         >>> net = NetAccumulateNV2()
@@ -4469,7 +4469,7 @@ class NPUGetFloatStatus(PrimitiveWithInfer):
         >>> from luojianet_ms.common import dtype as mstype
         >>> from luojianet_ms.common.tensor import Tensor
         >>> from luojianet_ms.ops import operations as P
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super().__init__()
         ...         self.alloc_status = P.NPUAllocFloatStatus()
@@ -4478,7 +4478,7 @@ class NPUGetFloatStatus(PrimitiveWithInfer):
         ...         self.sub = P.Sub()
         ...         self.neg = P.Neg()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         init = self.alloc_status()
         ...         clear_status = self.clear_status(init)
         ...         x = F.depend(x, clear_status)
@@ -4543,7 +4543,7 @@ class NPUClearFloatStatus(PrimitiveWithInfer):
         >>> from luojianet_ms.common import dtype as mstype
         >>> from luojianet_ms.common.tensor import Tensor
         >>> from luojianet_ms.ops import operations as P
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super().__init__()
         ...         self.alloc_status = P.NPUAllocFloatStatus()
@@ -4552,7 +4552,7 @@ class NPUClearFloatStatus(PrimitiveWithInfer):
         ...         self.sub = P.Sub()
         ...         self.neg = P.Neg()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         init = self.alloc_status()
         ...         clear_status = self.clear_status(init)
         ...         x = F.depend(x, clear_status)
@@ -5702,7 +5702,7 @@ class IndexAdd(Primitive):
         ``Ascend`` ``GPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.index_add = ops.IndexAdd(axis=1)
@@ -5710,7 +5710,7 @@ class IndexAdd(Primitive):
         ...                 name="name_x")
         ...         self.indices = Tensor(np.array([0, 2]), luojianet_ms.int32)
         ...
-        ...     def construct(self, y):
+        ...     def forward(self, y):
         ...         return self.index_add(self.x, self.indices, y)
         ...
         >>> y = Tensor(np.array([[0.5, 1.0], [1.0, 1.5], [2.0, 2.5]]), luojianet_ms.float32)

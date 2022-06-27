@@ -24,21 +24,21 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class NetSigmoidCrossEntropyWithLogits(nn.Cell):
+class NetSigmoidCrossEntropyWithLogits(nn.Module):
     def __init__(self):
         super(NetSigmoidCrossEntropyWithLogits, self).__init__()
         self.loss = P.SigmoidCrossEntropyWithLogits()
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         return self.loss(logits, labels)
 
 
-class NetSigmoidCrossEntropyWithLogitsGrad(nn.Cell):
+class NetSigmoidCrossEntropyWithLogitsGrad(nn.Module):
     def __init__(self):
         super(NetSigmoidCrossEntropyWithLogitsGrad, self).__init__()
         self.sigmoid_cross_entropy_with_logits_grad = G.SigmoidCrossEntropyWithLogitsGrad()
 
-    def construct(self, logits, labels, dout):
+    def forward(self, logits, labels, dout):
         return self.sigmoid_cross_entropy_with_logits_grad(logits, labels, dout)
 
 

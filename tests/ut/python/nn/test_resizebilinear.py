@@ -25,12 +25,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_resizebilinear():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[[[1, 2, 3, 4], [5, 6, 7, 8]]]], mstype.float32)
 
-        def construct(self):
+        def forward(self):
             interpolate = nn.ResizeBilinear()
             return interpolate(self.value, size=(5, 5))
 
@@ -39,12 +39,12 @@ def test_resizebilinear():
 
 
 def test_resizebilinear_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[[[1, 2, 3, 4], [5, 6, 7, 8]]]], mstype.float32)
 
-        def construct(self):
+        def forward(self):
             interpolate = nn.ResizeBilinear()
             return interpolate(self.value, scale_factor=2)
 
@@ -53,11 +53,11 @@ def test_resizebilinear_1():
 
 
 def test_resizebilinear_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             interpolate = nn.ResizeBilinear()
             return interpolate(x, size=(5, 5))
 
@@ -66,11 +66,11 @@ def test_resizebilinear_parameter():
 
 
 def test_resizebilinear_parameter_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             interpolate = nn.ResizeBilinear()
             return interpolate(x, scale_factor=2)
 
@@ -79,12 +79,12 @@ def test_resizebilinear_parameter_1():
 
 
 def test_resizebilinear_error():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[[[1, 2, 3, 4], [5, 6, 7, 8]]]], mstype.float32)
 
-        def construct(self):
+        def forward(self):
             interpolate = nn.ResizeBilinear()
             return interpolate(self.value)
 
@@ -95,12 +95,12 @@ def test_resizebilinear_error():
 
 
 def test_resizebilinear_error_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[[[1, 2, 3, 4], [5, 6, 7, 8]]]], mstype.float32)
 
-        def construct(self):
+        def forward(self):
             interpolate = nn.ResizeBilinear()
             return interpolate(self.value, size=(5, 5), scale_factor=2)
 

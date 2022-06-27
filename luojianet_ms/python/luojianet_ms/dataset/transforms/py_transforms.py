@@ -223,7 +223,7 @@ class Compose(PyTensorOperation):
         # import nn and ops locally for type check
         from luojianet_ms import nn, ops
         for item in operations:
-            if isinstance(item, (nn.Cell, ops.Primitive)):
+            if isinstance(item, (nn.Module, ops.Primitive)):
                 raise ValueError("Input operations should not contain network computing operator like in "
                                  "luojianet_ms.nn or luojianet_ms.ops, got operation:", str(item))
         if len(operations) == 1:

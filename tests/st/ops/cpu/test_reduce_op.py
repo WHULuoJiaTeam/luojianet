@@ -24,7 +24,7 @@ from luojianet_ms.common.api import ms_function
 context.set_context(mode=context.PYNATIVE_MODE, device_target="CPU")
 
 
-class NetReduce(nn.Cell):
+class NetReduce(nn.Module):
     def __init__(self):
         super(NetReduce, self).__init__()
         self.axis0 = 0
@@ -40,7 +40,7 @@ class NetReduce(nn.Cell):
         self.reduce_min = P.ReduceMin(False)
 
     @ms_function
-    def construct(self, indice):
+    def forward(self, indice):
         return (self.reduce_mean(indice, self.axis0),
                 self.reduce_mean(indice, self.axis1),
                 self.reduce_mean(indice, self.axis2),
@@ -61,7 +61,7 @@ class NetReduce(nn.Cell):
                 self.reduce_min(indice, self.axis6))
 
 
-class NetReduceLogic(nn.Cell):
+class NetReduceLogic(nn.Module):
     def __init__(self):
         super(NetReduceLogic, self).__init__()
         self.axis0 = 0
@@ -72,7 +72,7 @@ class NetReduceLogic(nn.Cell):
         self.reduce_any = P.ReduceAny(False)
 
     @ms_function
-    def construct(self, indice):
+    def forward(self, indice):
         return (self.reduce_all(indice, self.axis0),
                 self.reduce_all(indice, self.axis1),
                 self.reduce_all(indice, self.axis2),
@@ -83,7 +83,7 @@ class NetReduceLogic(nn.Cell):
                 self.reduce_any(indice, self.axis3),)
 
 
-class NetReduceProd(nn.Cell):
+class NetReduceProd(nn.Module):
     def __init__(self):
         super(NetReduceProd, self).__init__()
         self.axis0 = 0
@@ -95,7 +95,7 @@ class NetReduceProd(nn.Cell):
         self.reduce_prod_keep = P.ReduceProd(True)
 
     @ms_function
-    def construct(self, indices):
+    def forward(self, indices):
         return (self.reduce_prod(indices, self.axis0),
                 self.reduce_prod(indices, self.axis1),
                 self.reduce_prod(indices, self.axis2),

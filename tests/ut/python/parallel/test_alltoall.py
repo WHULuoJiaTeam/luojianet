@@ -61,14 +61,14 @@ class Dataset(MindData):
         self.index = 0
 
 
-class AllToAllNet(nn.Cell):
+class AllToAllNet(nn.Module):
     def __init__(self, strategy1):
         super(AllToAllNet, self).__init__()
         self.matmul = P.MatMul().shard(((1, 1), (1, 8)))
         self.matmul_weight = Parameter(Tensor(np.ones([128, 256]), dtype=ms.float32), name="weight")
         self.transpose1 = P.Transpose().shard(strategy1)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.matmul(x, self.matmul_weight)
         x = self.transpose1(x, (1, 0))
         return x
@@ -126,12 +126,12 @@ def test_all_to_all_success():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=8, split_dim=2, concat_dim=3)
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 
@@ -147,12 +147,12 @@ def test_all_to_all_invalid_split_count_value_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=7, split_dim=2, concat_dim=3)
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 
@@ -169,12 +169,12 @@ def test_all_to_all_invalid_split_count_type_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=[8], split_dim=2, concat_dim=3)
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 
@@ -191,12 +191,12 @@ def test_all_to_all_invalid_split_dim_value_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=8, split_dim=4, concat_dim=3)
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 
@@ -213,12 +213,12 @@ def test_all_to_all_invalid_split_dim_type_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=8, split_dim=(3,), concat_dim=3)
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 
@@ -235,12 +235,12 @@ def test_all_to_all_invalid_concat_dim_value_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=8, split_dim=3, concat_dim=4)
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 
@@ -257,12 +257,12 @@ def test_all_to_all_invalid_concat_dim_type_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=8, split_dim=3, concat_dim=([3],))
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 
@@ -279,12 +279,12 @@ def test_all_to_all_invalid_split_count_cannot_be_divisible_failed():
     """
     context.set_auto_parallel_context(device_num=3, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=3, split_dim=3, concat_dim=3)
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 
@@ -301,12 +301,12 @@ def test_all_to_all_invalid_group_type_failed():
     """
     context.set_auto_parallel_context(device_num=8, global_rank=0)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.alltoallv = AlltoAll(split_count=8, split_dim=3, concat_dim=3, group=3)
 
-        def construct(self, x1):
+        def forward(self, x1):
             out = self.alltoallv(x1)
             return out
 

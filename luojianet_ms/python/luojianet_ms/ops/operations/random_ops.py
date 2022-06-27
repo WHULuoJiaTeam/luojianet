@@ -489,12 +489,12 @@ class RandomCategorical(PrimitiveWithInfer):
         ``Ascend`` ``GPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...   def __init__(self, num_sample):
         ...     super(Net, self).__init__()
         ...     self.random_categorical = ops.RandomCategorical(luojianet_ms.int64)
         ...     self.num_sample = num_sample
-        ...   def construct(self, logits, seed=0):
+        ...   def forward(self, logits, seed=0):
         ...     return self.random_categorical(logits, self.num_sample, seed)
         ...
         >>> x = np.random.random((10, 5)).astype(np.float32)

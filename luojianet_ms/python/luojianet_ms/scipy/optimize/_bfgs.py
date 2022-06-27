@@ -62,7 +62,7 @@ class _BFGSResults(NamedTuple):
     line_search_status: int
 
 
-class MinimizeBfgs(nn.Cell):
+class MinimizeBfgs(nn.Module):
     """minimize bfgs"""
 
     def __init__(self, func):
@@ -71,7 +71,7 @@ class MinimizeBfgs(nn.Cell):
         self.func = func
         self.line_search = LineSearch(func)
 
-    def construct(self, x0, maxiter=None, norm=mnp.inf, gtol=1e-5, line_search_maxiter=10):
+    def forward(self, x0, maxiter=None, norm=mnp.inf, gtol=1e-5, line_search_maxiter=10):
         # Constant tensors which avoid loop unrolling
         _BOOL_FALSE = _to_tensor(False)
         _INT_ZERO = _to_tensor(0)

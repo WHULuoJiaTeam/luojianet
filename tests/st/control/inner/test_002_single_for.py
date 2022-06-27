@@ -32,25 +32,25 @@ grad_all = C.GradOperation(get_all=True)
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_single_for_01():
-    class SingleForNet(nn.Cell):
+    class SingleForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.add = P.Add()
             self.mul = P.Mul()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             x = self.add(x, y)
             for _ in range(0, 3):
                 z = self.add(z, x)
             y = self.mul(z, y)
             return y
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([2], mstype.int32)
@@ -76,25 +76,25 @@ def test_single_for_01():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_single_for_02():
-    class SingleForNet(nn.Cell):
+    class SingleForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.add = P.Add()
             self.mul = P.Mul()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             x = self.add(x, y)
             for _ in range(10, -5, -3):
                 z = self.add(z, x)
             y = self.mul(z, y)
             return y
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([2], mstype.int32)
@@ -120,7 +120,7 @@ def test_single_for_02():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_single_for_03():
-    class SingleForNet(nn.Cell):
+    class SingleForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -137,18 +137,18 @@ def test_single_for_03():
                 self.param_b = self.param_b + 1
             return x - self.param_b
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.assign(self.param_a, x + self.param_a)
             z = self.func(x)
             x = self.param_a + y + z
             return x, self.param_b
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([2], mstype.int32)
@@ -173,7 +173,7 @@ def test_single_for_03():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_single_for_04():
-    class SingleForNet(nn.Cell):
+    class SingleForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -183,18 +183,18 @@ def test_single_for_04():
             self.param_a = Parameter(Tensor([5], dtype=mstype.int32), name='a')
             self.param_b = Parameter(Tensor([2], dtype=mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             self.assign(self.param_a, x + self.param_a)
             for _ in range(1):
                 F.assign(self.param_b, x - self.param_a)
             return self.param_b
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([2], mstype.int32)
@@ -218,7 +218,7 @@ def test_single_for_04():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_single_for_05():
-    class SingleForNet(nn.Cell):
+    class SingleForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -228,18 +228,18 @@ def test_single_for_05():
             self.param_a = Parameter(Tensor(np.array(5), mstype.int32), name='a')
             self.param_b = Parameter(Tensor(np.array(2), mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             self.assign(self.param_a, x + self.param_a)
             for _ in range(0, 3):
                 self.assign(self.param_b, x - self.param_a)
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([6], mstype.int32)

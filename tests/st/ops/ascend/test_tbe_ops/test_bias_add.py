@@ -25,7 +25,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
 
     def __init__(self,
@@ -42,7 +42,7 @@ class Net(nn.Cell):
         self.bias = Parameter(initializer(
             bias_init, [output_channels]), name="bias")
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.biasAdd(input_x, self.bias)
 
 

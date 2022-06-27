@@ -21,20 +21,20 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
-class ResizeNearestNeighborGradAlignCornerT(nn.Cell):
+class ResizeNearestNeighborGradAlignCornerT(nn.Module):
     def __init__(self):
         super(ResizeNearestNeighborGradAlignCornerT, self).__init__()
         self.ResizeNearestNeighborGradAlignCornerT = G.ResizeNearestNeighborGrad(align_corners=True)
 
-    def construct(self, dy, size):
+    def forward(self, dy, size):
         return self.ResizeNearestNeighborGradAlignCornerT(dy, size)
 
-class ResizeNearestNeighborGradAlignCornerF(nn.Cell):
+class ResizeNearestNeighborGradAlignCornerF(nn.Module):
     def __init__(self):
         super(ResizeNearestNeighborGradAlignCornerF, self).__init__()
         self.ResizeNearestNeighborGradAlignCornerF = G.ResizeNearestNeighborGrad(align_corners=False)
 
-    def construct(self, dy, size):
+    def forward(self, dy, size):
         return self.ResizeNearestNeighborGradAlignCornerF(dy, size)
 
 

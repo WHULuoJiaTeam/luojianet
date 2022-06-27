@@ -20,14 +20,14 @@ from .api import _pynative_executor
 
 class HookHandle:
     r"""
-    It is the return object of forward pre hook function, forward hook function and backward hook function of Cell
+    It is the return object of forward pre hook function, forward hook function and backward hook function of Module
     object. It corresponds to the cell hook function and is used to remove the cell hook function by calling 'remove()'.
 
     Note:
-        It is only supported in pynative mode and works when registering or removing hook function for Cell object.
+        It is only supported in pynative mode and works when registering or removing hook function for Module object.
 
     Args:
-        hook_cell (Cell): The Cell object with hook function registered on. Default value: None.
+        hook_cell (Module): The Module object with hook function registered on. Default value: None.
         hook_key (int): The key of cell hook function in dict. It is generated during cell hook function registration.
                         Default value: -1.
         hook_type (str): The type of cell hook function: '_forward_pre_hook', '_forward_hook' or '_cell_backward_hook'.
@@ -48,7 +48,7 @@ class HookHandle:
         """
         Remove the cell hook function, which corresponds to this 'HookHandle' object.
         In order to prevent running failed when switching to graph mode, it is not recommended to call the `remove()`
-        function in the construct function of Cell object.
+        function in the forward function of Module object.
 
         Args:
             None.
@@ -70,13 +70,13 @@ class HookHandle:
             >>> def forward_pre_hook_fn(cell_id, inputs):
             ...     print("forward inputs: ", inputs)
             ...
-            >>> class Net(nn.Cell):
+            >>> class Net(nn.Module):
             ...     def __init__(self):
             ...         super(Net, self).__init__()
             ...         self.mul = nn.MatMul()
             ...         self.handle = self.mul.register_forward_pre_hook(forward_pre_hook_fn)
             ...
-            ...     def construct(self, x, y):
+            ...     def forward(self, x, y):
             ...         x = x + x
             ...         x = self.mul(x, y)
             ...         return x

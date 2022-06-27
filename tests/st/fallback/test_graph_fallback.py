@@ -24,14 +24,14 @@ import luojianet_ms.common.dtype as mstype
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class ControlNet(nn.Cell):
+class ControlNet(nn.Module):
     def inner_function_1(self, a, b):
         return a + b
 
     def inner_function_2(self, a, b):
         return a - b
 
-    def construct(self, x):
+    def forward(self, x):
         a = Tensor(np.array(4), mstype.int32)
         b = Tensor(np.array(5), mstype.int32)
         if a + b > x:
@@ -46,9 +46,9 @@ class ControlNet(nn.Cell):
 @pytest.mark.env_onecard
 def test_fallback_control_sink_tensor():
     """
-    Feature: Fallback feature: support define Tensor in Class construct.
-    Description: Fallback feature: support define Tensor in Class construct.
-    Expectation: Fallback feature: support define Tensor in Class construct.
+    Feature: Fallback feature: support define Tensor in Class forward.
+    Description: Fallback feature: support define Tensor in Class forward.
+    Expectation: Fallback feature: support define Tensor in Class forward.
     """
     x = Tensor(np.array(1), mstype.int32)
     net = ControlNet()

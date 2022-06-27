@@ -249,7 +249,7 @@ def grad(fn, grad_position=0, sens_param=False):
     A wrapper function to generate the gradient function for the input function.
 
     Args:
-        fn (Union(Cell, function)): Function to do GradOperation.
+        fn (Union(Module, function)): Function to do GradOperation.
         grad_position (Union(int, tuple[int])): If int, get the gradient with respect to single input.
             If tuple, get the gradients with respect to selected inputs. 'grad_position' begins with 0. Default: 0.
         sens_param (bool): Whether to append sensitivity (gradient with respect to output) as input.
@@ -268,8 +268,8 @@ def grad(fn, grad_position=0, sens_param=False):
         >>> from luojianet_ms import Tensor
         >>> from luojianet_ms.ops.functional import grad
         >>> context.set_context(mode=context.GRAPH_MODE)
-        >>> class Net(nn.Cell):
-        ...     def construct(self, x, y, z):
+        >>> class Net(nn.Module):
+        ...     def forward(self, x, y, z):
         ...         return x*y*z
         >>> x = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
         >>> y = Tensor(np.array([[-2, 3], [-1, 2]]).astype(np.float32))
@@ -335,7 +335,7 @@ def jet(fn, primals, series):
     while the other to 0.
 
     Args:
-        fn (Union(Cell, function)): Function to do TaylorOperation.
+        fn (Union(Module, function)): Function to do TaylorOperation.
         primals (Union(Tensor, Tuple of Tensors)): The inputs to `fn`.
         series (Union(Tensor, Tuple of Tensors)): If tuple, the length and type of series should be the same as inputs.
             For each Tensor, the length of first dimension `i` represents the `1` to `i+1`-th order of derivative of
@@ -359,12 +359,12 @@ def jet(fn, primals, series):
         >>> from luojianet_ms import Tensor
         >>> from luojianet_ms.ops.functional import jet
         >>> context.set_context(mode=context.GRAPH_MODE)
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super().__init__()
         ...         self.sin = P.Sin()
         ...         self.exp = P.Exp()
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         out1 = self.sin(x)
         ...         out2 = self.exp(out1)
         ...         return out2
@@ -412,7 +412,7 @@ def derivative(fn, primals, order):
     input first order derivative is set to 1, while the other to 0.
 
     Args:
-        fn (Union(Cell, function)): Function to do TaylorOperation.
+        fn (Union(Module, function)): Function to do TaylorOperation.
         primals (Union(Tensor, Tuple of Tensors)): The inputs to `fn`.
         order (int): For each Tensor, the `order`-th order of derivative of output with respect to the inputs will be
             figured out.
@@ -435,12 +435,12 @@ def derivative(fn, primals, order):
         >>> from luojianet_ms import Tensor
         >>> from luojianet_ms.ops.functional import derivative
         >>> context.set_context(mode=context.GRAPH_MODE)
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super().__init__()
         ...         self.sin = P.Sin()
         ...         self.exp = P.Exp()
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         out1 = self.sin(x)
         ...         out2 = self.exp(out1)
         ...         return out2
@@ -479,7 +479,7 @@ def jvp(fn, inputs, v):
     Compute the jacobian-vector-product of the given network.
 
     Args:
-        fn (Function or Cell): The function or net that takes Tensor inputs and returns a tensor or tuple of Tensors.
+        fn (Function or Module): The function or net that takes Tensor inputs and returns a tensor or tuple of Tensors.
         inputs (Tensor or tuple or list): The inputs to `fn`.
         v (Tensor or tuple or list): The shape and type of v should be the same as inputs.
 
@@ -498,8 +498,8 @@ def jvp(fn, inputs, v):
     Examples:
         >>> from luojianet_ms.ops import functional as F
         >>> from luojianet_ms import Tensor
-        >>> class Net(nn.Cell):
-        ...     def construct(self, x, y):
+        >>> class Net(nn.Module):
+        ...     def forward(self, x, y):
         ...         return x**3 + y
         >>> x = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
         >>> y = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
@@ -531,7 +531,7 @@ def vjp(fn, inputs, v):
     Compute the vector-jacobian-product of the given network.
 
     Args:
-        fn (Function or Cell): The function or net that takes Tensor inputs and returns a tensor or tuple of Tensors.
+        fn (Function or Module): The function or net that takes Tensor inputs and returns a tensor or tuple of Tensors.
         inputs (Tensor or tuple or list): The inputs to `fn`.
         v (Tensor or tuple or list): The shape and type of v should be the same as outputs.
 
@@ -550,8 +550,8 @@ def vjp(fn, inputs, v):
     Examples:
         >>> from luojianet_ms.ops import functional as F
         >>> from luojianet_ms import Tensor
-        >>> class Net(nn.Cell):
-        ...     def construct(self, x, y):
+        >>> class Net(nn.Module):
+        ...     def forward(self, x, y):
         ...         return x**3 + y
         >>> x = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
         >>> y = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
@@ -877,7 +877,7 @@ def vmap(fn, in_axes=0, out_axes=0):
         you need to generate batch random numbers externally in advance and then transfer them to vmap.
 
     Args:
-        fn (Function or Cell): Function to be mapped over batch axes, which takes at least one argument and returns
+        fn (Function or Module): Function to be mapped over batch axes, which takes at least one argument and returns
             one or more Tensors or the type of data supported by the LuoJiaNET Tensor.
         in_axes (int or nested structure): Specifies which dimensions (axes) of the inputs should be mapped over.
             If `in_axes` is an integer, all arguments of `fn` are mapped over according to this axis. If `in_axes`

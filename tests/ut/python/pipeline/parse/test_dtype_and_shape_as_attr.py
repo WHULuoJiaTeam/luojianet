@@ -27,11 +27,11 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_dtype_and_shape_as_attr():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             shape = x.shape
             dtype = x.dtype
             return shape, dtype
@@ -43,13 +43,13 @@ def test_dtype_and_shape_as_attr():
 
 
 def test_dtype_and_shape_as_attr_to_new_tensor():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, value):
             super(Net, self).__init__()
             self.fill = P.Fill()
             self.value = value
 
-        def construct(self, x):
+        def forward(self, x):
             dtype = x.dtype
             shape = x.shape
             y = self.fill(dtype, shape, self.value)
@@ -62,11 +62,11 @@ def test_dtype_and_shape_as_attr_to_new_tensor():
 
 
 def test_type_not_have_the_attr():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             shape = x.shapes
             return shape
 
@@ -77,11 +77,11 @@ def test_type_not_have_the_attr():
 
 
 def test_type_not_have_the_method():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             shape = x.dtypes()
             return shape
 

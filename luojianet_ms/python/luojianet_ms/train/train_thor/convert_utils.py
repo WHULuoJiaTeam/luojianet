@@ -159,7 +159,7 @@ class ConvertNetUtils:
             This interface is automatically called by the second-order optimizer thor.
 
         Args:
-            net (Cell): Network to be trained by the second-order optimizer thor.
+            net (Module): Network to be trained by the second-order optimizer thor.
 
         Supported Platforms:
             ``Ascend`` ``GPU``
@@ -187,9 +187,9 @@ class ConvertModelUtils:
         Args:
             model (Object): High-Level API for Training.
                             `Model` groups layers into an object with training features.
-            network (Cell): A training network.
-            loss_fn (Cell): Objective function. Default: None.
-            optimizer (Cell): Optimizer used to updating the weights. Default: None.
+            network (Module): A training network.
+            loss_fn (Module): Objective function. Default: None.
+            optimizer (Module): Optimizer used to updating the weights. Default: None.
             metrics (Union[dict, set]): A Dictionary or a set of metrics to be evaluated by the model during
                                         training. eg: {'accuracy', 'recall'}. Default: None.
             amp_level (str): Level for mixed precision training. Supports ["O0", "O2", "O3", "auto"]. Default: "O0".

@@ -23,13 +23,13 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.parallel._cost_model_context import set_cost_model_context
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, input_ch, out_ch):
         super(Net, self).__init__()
         self.dense = nn.Dense(input_ch, out_ch)
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.dense(x)
         x = self.relu(x)
         return x

@@ -43,18 +43,18 @@ class PrintShapeType(PrimitiveWithInfer):
         Tensor, return x directly, PrintShapeType does not affect the forward and gradient result.
 
     Examples:
-        >>> class PrintShapeType(nn.Cell):
+        >>> class PrintShapeType(nn.Module):
         >>>    def __init__(self):
         >>>        super(PrintShapeType, self).__init__()
-        >>>    def construct(self, msg, x):
+        >>>    def forward(self, msg, x):
         >>>        P.PrintShapeType(msg)(x)
         >>>        return x
         >>>
-        >>> class PrintShapeTypeGrad(nn.Cell):
+        >>> class PrintShapeTypeGrad(nn.Module):
         >>>    def __init__(self, msg):
         >>>        super(PrintShapeTypeGrad, self).__init__()
         >>>        self.print_shape_type = P.InsertGradientOf(P.PrintShapeType(msg))
-        >>>    def construct(self, x):
+        >>>    def forward(self, x):
         >>>        self.print_shape_type(x)
         >>>        return x
     """
@@ -87,20 +87,20 @@ def get_bprop_print_shape_type(self):
     return bprop
 
 
-class PrintShapeTypeCell(nn.Cell):
+class PrintShapeTypeCell(nn.Module):
     def __init__(self):
         super(PrintShapeTypeCell, self).__init__()
 
-    def construct(self, msg, x):
+    def forward(self, msg, x):
         PrintShapeType(msg)(x)
         return x
 
 
-class PrintGradShapeTypeCell(nn.Cell):
+class PrintGradShapeTypeCell(nn.Module):
     def __init__(self, msg):
         super(PrintGradShapeTypeCell, self).__init__()
         self.print_shape_type = P.InsertGradientOf(PrintShapeType(msg))
 
-    def construct(self, x):
+    def forward(self, x):
         self.print_shape_type(x)
         return x

@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 from ..ut_filter import non_graph_engine
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bn = nn.BatchNorm2d(num_features=3, eps=1e-5, momentum=0.1)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.bn(input_x)
 
 

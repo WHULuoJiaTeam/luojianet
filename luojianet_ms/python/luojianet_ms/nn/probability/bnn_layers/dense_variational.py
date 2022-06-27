@@ -16,7 +16,7 @@
 """dense_variational"""
 from luojianet_ms.ops import operations as P
 from luojianet_ms._checkparam import Validator
-from ...cell import Cell
+from ...cell import Module
 from ...layer.activation import get_activation
 from ..distribution.normal import Normal
 from .layer_distribution import NormalPrior, normal_post_fn
@@ -25,7 +25,7 @@ from ._util import check_prior, check_posterior
 __all__ = ['DenseReparam', 'DenseLocalReparam']
 
 
-class _DenseVariational(Cell):
+class _DenseVariational(Module):
     """
     Base class for all dense variational layers.
     """
@@ -61,7 +61,7 @@ class _DenseVariational(Cell):
             self.activation_flag = True
             if isinstance(self.activation, str):
                 self.activation = get_activation(activation)
-            elif isinstance(self.activation, Cell):
+            elif isinstance(self.activation, Module):
                 self.activation = activation
             else:
                 raise ValueError('The type of `activation` is wrong.')
@@ -70,7 +70,7 @@ class _DenseVariational(Cell):
         self.bias_add = P.BiasAdd()
         self.sum = P.ReduceSum()
 
-    def construct(self, x):
+    def forward(self, x):
         outputs = self._apply_variational_weight(x)
         if self.has_bias:
             outputs = self.apply_variational_bias(outputs)
@@ -134,12 +134,12 @@ class DenseReparam(_DenseVariational):
     Args:
         in_channels (int): The number of input channel.
         out_channels (int): The number of output channel .
-        activation (str, Cell): A regularization function applied to the output of the layer.
-            The type of `activation` can be a string (eg. 'relu') or a Cell (eg. nn.ReLU()).
-            Note that if the type of activation is Cell, it must be instantiated beforehand.
+        activation (str, Module): A regularization function applied to the output of the layer.
+            The type of `activation` can be a string (eg. 'relu') or a Module (eg. nn.ReLU()).
+            Note that if the type of activation is Module, it must be instantiated beforehand.
             Default: None.
         has_bias (bool): Specifies whether the layer uses a bias vector. Default: False.
-        weight_prior_fn (Cell): The prior distribution for weight.
+        weight_prior_fn (Module): The prior distribution for weight.
             It must return a luojianet_ms distribution instance.
             Default: NormalPrior. (which creates an instance of standard
             normal distribution). The current version only supports normal distribution.
@@ -147,7 +147,7 @@ class DenseReparam(_DenseVariational):
             It must be a function handle which returns a luojianet_ms
             distribution instance. Default: normal_post_fn.
             The current version only supports normal distribution.
-        bias_prior_fn (Cell): The prior distribution for bias vector. It must return
+        bias_prior_fn (Module): The prior distribution for bias vector. It must return
             a luojianet_ms distribution. Default: NormalPrior(which creates an
             instance of standard normal distribution). The current version
             only supports normal distribution.
@@ -228,12 +228,12 @@ class DenseLocalReparam(_DenseVariational):
     Args:
         in_channels (int): The number of input channel.
         out_channels (int): The number of output channel .
-        activation (str, Cell): A regularization function applied to the output of the layer.
-            The type of `activation` can be a string (eg. 'relu') or a Cell (eg. nn.ReLU()).
-            Note that if the type of activation is Cell, it must be instantiated beforehand.
+        activation (str, Module): A regularization function applied to the output of the layer.
+            The type of `activation` can be a string (eg. 'relu') or a Module (eg. nn.ReLU()).
+            Note that if the type of activation is Module, it must be instantiated beforehand.
             Default: None.
         has_bias (bool): Specifies whether the layer uses a bias vector. Default: False.
-        weight_prior_fn (Cell): The prior distribution for weight.
+        weight_prior_fn (Module): The prior distribution for weight.
             It must return a luojianet_ms distribution instance.
             Default: NormalPrior. (which creates an instance of standard
             normal distribution). The current version only supports normal distribution.
@@ -241,7 +241,7 @@ class DenseLocalReparam(_DenseVariational):
             It must be a function handle which returns a luojianet_ms
             distribution instance. Default: normal_post_fn.
             The current version only supports normal distribution.
-        bias_prior_fn (Cell): The prior distribution for bias vector. It must return
+        bias_prior_fn (Module): The prior distribution for bias vector. It must return
             a luojianet_ms distribution. Default: NormalPrior(which creates an
             instance of standard normal distribution). The current version
             only supports normal distribution.

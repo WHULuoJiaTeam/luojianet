@@ -25,31 +25,31 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.unique = P.Unique()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.unique(x)
 
 
-class NetFunc(nn.Cell):
+class NetFunc(nn.Module):
     def __init__(self):
         super(NetFunc, self).__init__()
         self.unique = ops.unique
 
-    def construct(self, x):
+    def forward(self, x):
         return self.unique(x)
 
 
-class UniqueSquare(nn.Cell):
+class UniqueSquare(nn.Module):
     def __init__(self):
         super(UniqueSquare, self).__init__()
         self.unique = P.Unique()
         self.square = P.Square()
 
-    def construct(self, x):
+    def forward(self, x):
         x, _ = self.unique(x)
         return self.square(x)
 

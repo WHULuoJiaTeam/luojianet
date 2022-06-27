@@ -15,10 +15,10 @@
 # ============================================================================
 """Sparse related tools."""
 from luojianet_ms.ops import operations as P
-from ..cell import Cell
+from ..cell import Module
 
 
-class SparseToDense(Cell):
+class SparseToDense(Module):
     """
     Converts a sparse tensor(COOTensor) into dense.
 
@@ -50,13 +50,13 @@ class SparseToDense(Cell):
         >>> indices = Tensor([[0, 1], [1, 2]])
         >>> values = Tensor([1, 2], dtype=ms.int32)
         >>> dense_shape = (3, 4)
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, dense_shape):
         ...         super(Net, self).__init__()
         ...         self.dense_shape = dense_shape
         ...         self.op = nn.SparseToDense()
         ...
-        ...     def construct(self, indices, values):
+        ...     def forward(self, indices, values):
         ...         x = COOTensor(indices, values, self.dense_shape)
         ...         return self.op(x)
         ...
@@ -71,13 +71,13 @@ class SparseToDense(Cell):
         super(SparseToDense, self).__init__()
         self.sparse_to_dense = P.SparseToDense()
 
-    def construct(self, sparse_tensor):
+    def forward(self, sparse_tensor):
         return self.sparse_to_dense(sparse_tensor.indices,
                                     sparse_tensor.values,
                                     sparse_tensor.shape)
 
 
-class SparseTensorDenseMatmul(Cell):
+class SparseTensorDenseMatmul(Module):
     """
     Multiplies sparse matrix `a` and dense matrix `b`.
     The rank of sparse matrix and dense matrix must be equal to `2`.
@@ -136,5 +136,5 @@ class SparseTensorDenseMatmul(Cell):
         self.adj_dt = adjoint_dt
         self.sparse_dense_matmul = P.SparseTensorDenseMatmul(adjoint_st=self.adj_st, adjoint_dt=self.adj_dt)
 
-    def construct(self, indices, values, sparse_shape, dense):
+    def forward(self, indices, values, sparse_shape, dense):
         return self.sparse_dense_matmul(indices, values, sparse_shape, dense)

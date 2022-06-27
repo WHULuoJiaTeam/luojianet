@@ -35,8 +35,8 @@ def create_model():
     Define and return a simple model
     """
 
-    class Net(nn.Cell):
-        def construct(self, x, y):
+    class Net(nn.Module):
+        def forward(self, x, y):
             return x
 
     net = Net()

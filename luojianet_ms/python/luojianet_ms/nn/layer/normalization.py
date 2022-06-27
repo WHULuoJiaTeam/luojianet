@@ -33,7 +33,7 @@ from luojianet_ms.communication.management import get_group_size, get_rank
 from luojianet_ms.communication import management
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.parallel._utils import _is_in_auto_parallel_mode
-from ..cell import Cell
+from ..cell import Module
 
 __all__ = ['BatchNorm1d', 'BatchNorm2d', 'BatchNorm3d', 'LayerNorm', 'GroupNorm',
            'GlobalBatchNorm', 'SyncBatchNorm', 'InstanceNorm2d']
@@ -41,7 +41,7 @@ __all__ = ['BatchNorm1d', 'BatchNorm2d', 'BatchNorm3d', 'LayerNorm', 'GroupNorm'
 SYNC_BN_GROUP_NAME = ""
 
 
-class _BatchNorm(Cell):
+class _BatchNorm(Module):
     """Batch Normalization base class."""
 
     @cell_attr_register
@@ -206,7 +206,7 @@ class _BatchNorm(Cell):
                     SYNC_BN_GROUP_NAME = "sync_bn_group%d" % i
                     management.create_group(SYNC_BN_GROUP_NAME, self.process_groups[i])
 
-    def construct(self, x):
+    def forward(self, x):
         _shape_check_bn(self.shape(x), self.input_dims, self.cls_name)
         if self.use_batch_statistics is None:
             if self.training:
@@ -503,7 +503,7 @@ def _check_dtype(dtype, valid_dtypes, args_name, prim_name=None):
     validator.check_type_name(args_name, dtype, valid_dtypes, prim_name)
 
 
-class BatchNorm3d(Cell):
+class BatchNorm3d(Module):
     r"""
     Batch Normalization layer over a 5D input.
 
@@ -594,7 +594,7 @@ class BatchNorm3d(Cell):
                                 use_batch_statistics=use_batch_statistics,
                                 data_format="NCHW")
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         x_shape = F.shape(input_x)
         _check_3d_shape(x_shape, self.cls_name)
         input_x = self.reshape(input_x, (x_shape[0], x_shape[1], x_shape[2] * x_shape[3], x_shape[4]))
@@ -764,7 +764,7 @@ class SyncBatchNorm(_BatchNorm):
             pass
 
 
-class LayerNorm(Cell):
+class LayerNorm(Module):
     r"""
     Applies Layer Normalization over a mini-batch of inputs.
 
@@ -843,7 +843,7 @@ class LayerNorm(Cell):
                                       begin_params_axis=self.begin_params_axis,
                                       epsilon=self.epsilon)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         y, _, _ = self.layer_norm(input_x, self.gamma, self.beta)
         return y
 
@@ -852,7 +852,7 @@ class LayerNorm(Cell):
             self.normalized_shape, self.begin_norm_axis, self.begin_params_axis, self.gamma, self.beta)
 
 
-class InstanceNorm2d(Cell):
+class InstanceNorm2d(Module):
     r"""
     Instance Normalization layer over a 4D input.
 
@@ -961,7 +961,7 @@ class InstanceNorm2d(Cell):
     def _check_data_dim(self, x):
         raise NotImplementedError
 
-    def construct(self, x):
+    def forward(self, x):
         _shape_check_bn(self.shape(x), self.input_dims, self.cls_name)
         return self.instance_bn(x,
                                 self.gamma,
@@ -984,7 +984,7 @@ class InstanceNorm2d(Cell):
                                 f"but got {val.dtype}.")
 
 
-class GroupNorm(Cell):
+class GroupNorm(Module):
     r"""
     Group Normalization over a mini-batch of inputs.
 
@@ -1075,7 +1075,7 @@ class GroupNorm(Cell):
         output = x * self.reshape(self.gamma, (-1, 1, 1)) + self.reshape(self.beta, (-1, 1, 1))
         return output
 
-    def construct(self, x):
+    def forward(self, x):
         _shape_check(self.shape(x), self.cls_name)
         _check_dtype(x.dtype, [mstype.float16, mstype.float32], "input", self.cls_name)
         output = self._cal_output(x)

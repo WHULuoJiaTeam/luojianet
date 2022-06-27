@@ -21,7 +21,7 @@ from luojianet_ms.common.tensor import Tensor
 import luojianet_ms.common.dtype as mstype
 
 
-class BboxAssignSample(nn.Cell):
+class BboxAssignSample(nn.Module):
     """
     Bbox assigner and sampler definition.
 
@@ -98,7 +98,7 @@ class BboxAssignSample(nn.Cell):
         self.check_gt_one = Tensor(np.full((self.num_gts, 4), -1, dtype=self.dtype))
         self.check_anchor_two = Tensor(np.full((self.num_bboxes, 4), -2, dtype=self.dtype))
 
-    def construct(self, gt_bboxes_i, gt_labels_i, valid_mask, bboxes, gt_valids):
+    def forward(self, gt_bboxes_i, gt_labels_i, valid_mask, bboxes, gt_valids):
         gt_bboxes_i = self.select(self.cast(self.tile(self.reshape(self.cast(gt_valids, mstype.int32), \
                                   (self.num_gts, 1)), (1, 4)), mstype.bool_), gt_bboxes_i, self.check_gt_one)
         bboxes = self.select(self.cast(self.tile(self.reshape(self.cast(valid_mask, mstype.int32), \

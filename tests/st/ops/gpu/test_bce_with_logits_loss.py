@@ -24,12 +24,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, reduction):
         super(Net, self).__init__()
         self.loss = P.BCEWithLogitsLoss(reduction=reduction)
 
-    def construct(self, predict, target, weight, pos_weight):
+    def forward(self, predict, target, weight, pos_weight):
         return self.loss(predict, target, weight, pos_weight)
 
 

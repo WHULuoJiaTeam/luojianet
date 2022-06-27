@@ -30,12 +30,12 @@ def test_fallback_self_attr():
     Description: Test self.attr in graph.
     Expectation: No exception.
     """
-    class Network(nn.Cell):
+    class Network(nn.Module):
         def __init__(self):
             super(Network, self).__init__()
             self.dim = 1
 
-        def construct(self, x):
+        def forward(self, x):
             batch = x.shape[0]
             one = Tensor(np.ones([batch, self.dim]), mstype.float32)
             return one * x
@@ -53,12 +53,12 @@ def test_fallback_self_attr_fn():
     Description: Test self.attr in graph.
     Expectation: No exception.
     """
-    class Network(nn.Cell):
+    class Network(nn.Module):
         def __init__(self, fn):
             super(Network, self).__init__()
             self.fn = fn
 
-        def construct(self):
+        def forward(self):
             x = np.array([1, 2, 3])
             y = np.array([3, 4, 5])
             out = Tensor(self.fn(x, y))
@@ -79,12 +79,12 @@ def test_fallback_self_attr_attr():
     Description: Test self.attr in graph.
     Expectation: No exception.
     """
-    class Network(nn.Cell):
+    class Network(nn.Module):
         def __init__(self):
             super(Network, self).__init__()
             self.value = [2, 2, 3]
 
-        def construct(self):
+        def forward(self):
             x = np.array(self.value.count(2))
             return Tensor(x)
 
@@ -99,8 +99,8 @@ def test_fallback_self_method():
     Description: Test self.method in graph.
     Expectation: No exception.
     """
-    class Network(nn.Cell):
-        def construct(self):
+    class Network(nn.Module):
+        def forward(self):
             x = np.array([1, 2, 3])
             y = np.array([3, 4, 5])
             out = Tensor(self.fn(x, y))
@@ -122,8 +122,8 @@ def test_fallback_self_method_tensor():
     Description: Test self.method in graph.
     Expectation: No exception.
     """
-    class Network(nn.Cell):
-        def construct(self):
+    class Network(nn.Module):
+        def forward(self):
             x = np.array([1, 2, 3])
             y = np.array([3, 4, 5])
             z = self.fn(x, y)
@@ -166,12 +166,12 @@ def test_fallback_class_attr():
         def __init__(self):
             self.number = 1
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.inner_net = InnerNet()
 
-        def construct(self):
+        def forward(self):
             out = self.inner_net.number
             return out
 
@@ -194,12 +194,12 @@ def test_fallback_class_method():
         def act(self, x, y):
             return self.val * (x + y)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.inner_net = InnerNet()
 
-        def construct(self):
+        def forward(self):
             out = self.inner_net.act(1, 2)
             return out
 
@@ -219,12 +219,12 @@ def test_fallback_class_input_attr():
         def __init__(self):
             self.number = Tensor(np.array([1, 2, 3]))
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, net):
             super(Net, self).__init__()
             self.inner_net = net()
 
-        def construct(self):
+        def forward(self):
             out = self.inner_net.number
             return out
 
@@ -248,12 +248,12 @@ def test_fallback_class_input_method():
         def act(self, x, y):
             return self.val * (x + y)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, net):
             super(Net, self).__init__()
             self.inner_net = net()
 
-        def construct(self):
+        def forward(self):
             out = self.inner_net.act(1, 2)
             return out
 
@@ -278,12 +278,12 @@ def test_fallback_class_class_nested():
         def __init__(self):
             self.inner = Inner()
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.inner_net = InnerNet()
 
-        def construct(self):
+        def forward(self):
             out = self.inner_net.inner.number
             return out
 
@@ -298,22 +298,22 @@ def test_fallback_class_cell_nested():
     Description: Test nested ms_class and cell in graph.
     Expectation: No exception.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, val):
             super().__init__()
             self.val = val
 
-        def construct(self, x):
+        def forward(self, x):
             return x + self.val
 
     @ms_class
     class TrainNet():
-        class Loss(nn.Cell):
+        class Loss(nn.Module):
             def __init__(self, net):
                 super().__init__()
                 self.net = net
 
-            def construct(self, x):
+            def forward(self, x):
                 out = self.net(x)
                 return out * 2
 
@@ -323,12 +323,12 @@ def test_fallback_class_cell_nested():
             self.number = loss_net(10)
 
     global_net = Net(1)
-    class LearnNet(nn.Cell):
+    class LearnNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.value = TrainNet(global_net).number
 
-        def construct(self, x):
+        def forward(self, x):
             return x + self.value
 
     leanrn_net = LearnNet()
@@ -349,12 +349,12 @@ def test_fallback_class_isinstance():
         def __init__(self):
             self.number = 1
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.inner_net = InnerNet()
 
-        def construct(self, x):
+        def forward(self, x):
             if isinstance(self.inner_net, InnerNet):
                 return x + 10
             return x
@@ -389,8 +389,8 @@ def test_fallback_raise_error_not_class_instance():
         def __init__(self):
             self.number = 1
 
-    class Net(nn.Cell):
-        def construct(self):
+    class Net(nn.Module):
+        def forward(self):
             out = InnerNet().number
             return out
 
@@ -406,8 +406,8 @@ def test_fallback_raise_error_decorate_cell():
     Expectation: No exception.
     """
     @ms_class
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def forward(self, x):
             return x
 
     with pytest.raises(TypeError):

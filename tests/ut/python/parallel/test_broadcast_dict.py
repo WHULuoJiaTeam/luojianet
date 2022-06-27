@@ -21,26 +21,26 @@ from luojianet_ms.communication.management import init
 from luojianet_ms.ops import operations as P
 from luojianet_ms.communication._comm_helper import GlobalComm
 
-class DataParallelNet(nn.Cell):
+class DataParallelNet(nn.Module):
     def __init__(self):
         super(DataParallelNet, self).__init__()
         weight_init = np.random.rand(512, 64).astype(np.float32)
         self.weight = Parameter(Tensor(weight_init), name="weight", layerwise_parallel=False)
         self.fc = P.MatMul()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.fc(x, self.weight)
         return x
 
 
-class ModelParallelNet(nn.Cell):
+class ModelParallelNet(nn.Module):
     def __init__(self):
         super(ModelParallelNet, self).__init__()
         weight_init = np.random.rand(512, 64).astype(np.float32)
         self.weight = Parameter(Tensor(weight_init), name="weight", layerwise_parallel=True)
         self.fc = P.MatMul()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.fc(x, self.weight)
         return x
 

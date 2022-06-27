@@ -26,12 +26,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, reduction="none"):
         super(Net, self).__init__()
         self.BinaryCrossEntropy = P.BinaryCrossEntropy(reduction)
 
-    def construct(self, x, y, weight=None):
+    def forward(self, x, y, weight=None):
         return self.BinaryCrossEntropy(x, y, weight)
 
 
@@ -127,13 +127,13 @@ def test_binary_cross_entropy_loss_sum_16():
     assert loss.asnumpy() == expect
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, x1, x2, sens, weight=None):
+    def forward(self, x1, x2, sens, weight=None):
         gout = self.grad(self.network)(x1, x2, sens, weight)
         return gout
 

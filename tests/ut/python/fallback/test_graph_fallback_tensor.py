@@ -274,8 +274,8 @@ def test_fallback_tensor_binop():
     Description: support binop's interpreted nodes.
     Expectation: No exception.
     """
-    class BinOpNet(nn.Cell):
-        def construct(self):
+    class BinOpNet(nn.Module):
+        def forward(self):
             np_array = np.array(9)
             res = Tensor(np_array) + Tensor(np_array)
             return res
@@ -290,8 +290,8 @@ def test_fallback_tensor_compare():
     Description: support compare op's interpreted nodes.
     Expectation: No exception.
     """
-    class CompareNet(nn.Cell):
-        def construct(self):
+    class CompareNet(nn.Module):
+        def forward(self):
             np_array_1 = np.array(1)
             np_array_2 = np.array(2)
             res = Tensor(np_array_1) < Tensor(np_array_2)
@@ -307,8 +307,8 @@ def test_fallback_tensor_not():
     Description: support bool op's interpreted nodes.
     Expectation: No exception.
     """
-    class NotNet(nn.Cell):
-        def construct(self):
+    class NotNet(nn.Module):
+        def forward(self):
             np_array_1 = np.array(True, dtype=np.bool_)
             res = not Tensor(np_array_1)
             return res
@@ -324,8 +324,8 @@ def test_fallback_tensor_and():
     Description: support bool op's interpreted nodes.
     Expectation: No exception.
     """
-    class AndNet(nn.Cell):
-        def construct(self):
+    class AndNet(nn.Module):
+        def forward(self):
             np_array_1 = np.array(True, dtype=np.bool_)
             np_array_2 = np.array(False, dtype=np.bool_)
             res = Tensor(np_array_1) and Tensor(np_array_2)
@@ -342,8 +342,8 @@ def test_fallback_tensor_or():
     Description: support bool op's interpreted nodes.
     Expectation: No exception.
     """
-    class OrNet(nn.Cell):
-        def construct(self):
+    class OrNet(nn.Module):
+        def forward(self):
             np_array_1 = np.array(True, dtype=np.bool_)
             np_array_2 = np.array(False, dtype=np.bool_)
             res = Tensor(np_array_1) or Tensor(np_array_2)
@@ -360,8 +360,8 @@ def test_fallback_tensor_augassign():
     Description: support interpreted nodes in augassign.
     Expectation: No exception.
     """
-    class OrNet(nn.Cell):
-        def construct(self):
+    class OrNet(nn.Module):
+        def forward(self):
             np_array_1 = np.array(1)
             np_array_2 = np.array(2)
             res = Tensor(np_array_1)
@@ -379,8 +379,8 @@ def test_fallback_tensor_subscript():
     Description: support interpreted nodes in subscript.
     Expectation: No exception.
     """
-    class SubScriptNet(nn.Cell):
-        def construct(self):
+    class SubScriptNet(nn.Module):
+        def forward(self):
             np_array_1 = np.array([1, 2, 3, 4, 5])
             np_array_2 = np.array(2)
             res = Tensor(np_array_1)[Tensor(np_array_2)]
@@ -397,8 +397,8 @@ def test_fallback_tensor_if():
     Description: support interpreted nodes in if statement.
     Expectation: No exception.
     """
-    class IfNet(nn.Cell):
-        def construct(self):
+    class IfNet(nn.Module):
+        def forward(self):
             np_array_1 = np.array(1)
             if Tensor(np_array_1):
                 return 1

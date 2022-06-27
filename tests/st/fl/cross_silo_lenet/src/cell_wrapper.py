@@ -30,7 +30,7 @@ class TrainOneStepCellForFLWorker(TrainOneStepCell):
         self.get_model = P.GetModel()
         self.depend = P.Depend()
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         start_fl_job = self.start_fl_job()
         inputs = self.depend(inputs, start_fl_job)
 

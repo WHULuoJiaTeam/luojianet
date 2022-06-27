@@ -25,12 +25,12 @@ from luojianet_ms import dtype as ms
 context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
 
 
-class GammaMean(nn.Cell):
+class GammaMean(nn.Module):
     def __init__(self, concentration, rate, seed=10, dtype=ms.float32, name='Gamma'):
         super().__init__()
         self.b = msd.Gamma(concentration, rate, seed, dtype, name)
 
-    def construct(self):
+    def forward(self):
         out1 = self.b.mean()
         out2 = self.b.mode()
         out3 = self.b.var()

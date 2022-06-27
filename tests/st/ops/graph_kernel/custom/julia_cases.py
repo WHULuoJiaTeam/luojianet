@@ -19,27 +19,27 @@ import numpy as np
 import pytest
 from luojianet_ms import context, Tensor
 from luojianet_ms.common import dtype as mstype
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 
 
-class JuliaTwoInputsNet(Cell):
+class JuliaTwoInputsNet(Module):
     def __init__(self, func, out_shapes, out_types, reg=None):
         super(JuliaTwoInputsNet, self).__init__()
 
         self.program = ops.Custom(func, out_shapes, out_types, "julia", reg_info=reg)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.program(x, y)
 
 
-class JuliaOneInputNet(Cell):
+class JuliaOneInputNet(Module):
     def __init__(self, func, out_shapes, out_types, reg=None):
         super(JuliaOneInputNet, self).__init__()
 
         self.program = ops.Custom(func, out_shapes, out_types, "julia", reg_info=reg)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.program(x)
 
 

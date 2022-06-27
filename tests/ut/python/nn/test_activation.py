@@ -22,12 +22,12 @@ from luojianet_ms.common.api import _cell_graph_executor
 from ..ut_filter import non_graph_engine
 
 
-class SoftmaxNet(nn.Cell):
+class SoftmaxNet(nn.Module):
     def __init__(self, dim):
         super(SoftmaxNet, self).__init__()
         self.softmax = nn.Softmax(dim)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.softmax(x)
 
 
@@ -47,12 +47,12 @@ def test_compile_axis():
     net(input_tensor)
 
 
-class LogSoftmaxNet(nn.Cell):
+class LogSoftmaxNet(nn.Module):
     def __init__(self, dim):
         super(LogSoftmaxNet, self).__init__()
         self.logsoftmax = nn.LogSoftmax(dim)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.logsoftmax(x)
 
 
@@ -63,12 +63,12 @@ def test_compile_logsoftmax():
     net(input_tensor)
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self):
         super(Net1, self).__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.relu(x)
 
 
@@ -78,12 +78,12 @@ def test_compile_relu():
     _cell_graph_executor.compile(net, input_data)
 
 
-class Net_gelu(nn.Cell):
+class Net_gelu(nn.Module):
     def __init__(self):
         super(Net_gelu, self).__init__()
         self.gelu = nn.GELU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.gelu(x)
 
 
@@ -93,12 +93,12 @@ def test_compile_gelu():
     _cell_graph_executor.compile(net, input_data)
 
 
-class NetLeakyReLU(nn.Cell):
+class NetLeakyReLU(nn.Module):
     def __init__(self, alpha):
         super(NetLeakyReLU, self).__init__()
         self.leaky_relu = nn.LeakyReLU(alpha)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.leaky_relu(x)
 
 

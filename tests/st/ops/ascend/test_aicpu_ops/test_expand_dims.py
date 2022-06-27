@@ -22,12 +22,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.expand_dims = P.ExpandDims()
 
-    def construct(self, tensor, dim):
+    def forward(self, tensor, dim):
         return self.expand_dims(tensor, dim)
 
 

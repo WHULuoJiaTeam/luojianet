@@ -66,7 +66,7 @@ def test_prob():
         msd.Geometric([1.0], dtype=dtype.int32)
 
 
-class GeometricProb(nn.Cell):
+class GeometricProb(nn.Module):
     """
     Geometric distribution: initialize with probs.
     """
@@ -75,7 +75,7 @@ class GeometricProb(nn.Cell):
         super(GeometricProb, self).__init__()
         self.g = msd.Geometric(0.5, dtype=dtype.int32)
 
-    def construct(self, value):
+    def forward(self, value):
         prob = self.g.prob(value)
         log_prob = self.g.log_prob(value)
         cdf = self.g.cdf(value)
@@ -88,7 +88,7 @@ class GeometricProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_geometric_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through forward.
     """
     net = GeometricProb()
     value = Tensor([3, 4, 5, 6, 7], dtype=dtype.float32)
@@ -96,7 +96,7 @@ def test_geometric_prob():
     assert isinstance(ans, Tensor)
 
 
-class GeometricProb1(nn.Cell):
+class GeometricProb1(nn.Module):
     """
     Geometric distribution: initialize without probs.
     """
@@ -105,7 +105,7 @@ class GeometricProb1(nn.Cell):
         super(GeometricProb1, self).__init__()
         self.g = msd.Geometric(dtype=dtype.int32)
 
-    def construct(self, value, probs):
+    def forward(self, value, probs):
         prob = self.g.prob(value, probs)
         log_prob = self.g.log_prob(value, probs)
         cdf = self.g.cdf(value, probs)
@@ -118,7 +118,7 @@ class GeometricProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_geometric_prob1():
     """
-    Test probability functions: passing value/probs through construct.
+    Test probability functions: passing value/probs through forward.
     """
     net = GeometricProb1()
     value = Tensor([3, 4, 5, 6, 7], dtype=dtype.float32)
@@ -127,7 +127,7 @@ def test_geometric_prob1():
     assert isinstance(ans, Tensor)
 
 
-class GeometricKl(nn.Cell):
+class GeometricKl(nn.Module):
     """
     Test class: kl_loss between Geometric distributions.
     """
@@ -137,7 +137,7 @@ class GeometricKl(nn.Cell):
         self.g1 = msd.Geometric(0.7, dtype=dtype.int32)
         self.g2 = msd.Geometric(dtype=dtype.int32)
 
-    def construct(self, probs_b, probs_a):
+    def forward(self, probs_b, probs_a):
         kl1 = self.g1.kl_loss('Geometric', probs_b)
         kl2 = self.g2.kl_loss('Geometric', probs_b, probs_a)
         return kl1 + kl2
@@ -155,7 +155,7 @@ def test_kl():
     assert isinstance(ans, Tensor)
 
 
-class GeometricCrossEntropy(nn.Cell):
+class GeometricCrossEntropy(nn.Module):
     """
     Test class: cross_entropy of Geometric distribution.
     """
@@ -165,7 +165,7 @@ class GeometricCrossEntropy(nn.Cell):
         self.g1 = msd.Geometric(0.3, dtype=dtype.int32)
         self.g2 = msd.Geometric(dtype=dtype.int32)
 
-    def construct(self, probs_b, probs_a):
+    def forward(self, probs_b, probs_a):
         h1 = self.g1.cross_entropy('Geometric', probs_b)
         h2 = self.g2.cross_entropy('Geometric', probs_b, probs_a)
         return h1 + h2
@@ -183,7 +183,7 @@ def test_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class GeometricBasics(nn.Cell):
+class GeometricBasics(nn.Module):
     """
     Test class: basic mean/sd/mode/entropy function.
     """
@@ -192,7 +192,7 @@ class GeometricBasics(nn.Cell):
         super(GeometricBasics, self).__init__()
         self.g = msd.Geometric([0.3, 0.5], dtype=dtype.int32)
 
-    def construct(self):
+    def forward(self):
         mean = self.g.mean()
         sd = self.g.sd()
         var = self.g.var()
@@ -211,9 +211,9 @@ def test_bascis():
     assert isinstance(ans, Tensor)
 
 
-class GeoConstruct(nn.Cell):
+class GeoConstruct(nn.Module):
     """
-    Bernoulli distribution: going through construct.
+    Bernoulli distribution: going through forward.
     """
 
     def __init__(self):
@@ -221,7 +221,7 @@ class GeoConstruct(nn.Cell):
         self.g = msd.Geometric(0.5, dtype=dtype.int32)
         self.g1 = msd.Geometric(dtype=dtype.int32)
 
-    def construct(self, value, probs):
+    def forward(self, value, probs):
         prob = self.g('prob', value)
         prob1 = self.g('prob', value, probs)
         prob2 = self.g1('prob', value, probs)
@@ -231,7 +231,7 @@ class GeoConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_geo_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through forward.
     """
     net = GeoConstruct()
     value = Tensor([0, 0, 0, 0, 0], dtype=dtype.float32)

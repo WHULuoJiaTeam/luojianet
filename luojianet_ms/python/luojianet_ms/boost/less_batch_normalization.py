@@ -15,7 +15,7 @@
 # ============================================================================
 """less Batch Normalization"""
 import numpy as np
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer import Dense
 from luojianet_ms.ops import operations as P
 from luojianet_ms.common import Tensor, Parameter
@@ -26,7 +26,7 @@ from luojianet_ms.common.initializer import initializer
 __all__ = ["CommonHeadLastFN", "LessBN"]
 
 
-class CommonHeadLastFN(Cell):
+class CommonHeadLastFN(Module):
     r"""
     The last full Normalization layer.
 
@@ -73,7 +73,7 @@ class CommonHeadLastFN(Cell):
             self.bias_add = P.BiasAdd()
             self.bias = Parameter(initializer(bias_init, bias_shape), requires_grad=True, name='bias')
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.x_norm(x)
         w = self.w_norm(self.weight)
         x = self.fc(x, w)
@@ -83,13 +83,13 @@ class CommonHeadLastFN(Cell):
         return x
 
 
-class LessBN(Cell):
+class LessBN(Module):
     """
     Reduce the number of BN automatically to improve the network performance
     and ensure the network accuracy.
 
     Args:
-        network (Cell): Network to be modified.
+        network (Module): Network to be modified.
         fn_flag (bool): Replace FC with FN. default: False.
 
     Examples:
@@ -140,5 +140,5 @@ class LessBN(Cell):
             new_subcell = self._convert_dense(dense_list[-1])
             net.insert_child_to_cell(dense_name[-1], new_subcell)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.network(*inputs)

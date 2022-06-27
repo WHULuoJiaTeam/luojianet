@@ -23,14 +23,14 @@ from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import operations as P
 
 
-class NetSoftmax(nn.Cell):
+class NetSoftmax(nn.Module):
     def __init__(self):
         super(NetSoftmax, self).__init__()
         axis = -2
         self.softmax1 = P.Softmax()
         self.softmax2 = P.Softmax(axis)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.softmax1(x), self.softmax2(x)
 
 
@@ -67,22 +67,22 @@ def test_softmax():
     assert np.all(diff2 < error2)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.softmax1 = P.Softmax()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.softmax1(x)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_data, sens):
+    def forward(self, input_data, sens):
         gout = self.grad(self.network)(input_data, sens)
         return gout
 

@@ -14,7 +14,7 @@
 # ==============================================================================
 import pytest
 import luojianet_ms as ms
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common import ParameterTuple
 from luojianet_ms import Tensor, context
@@ -28,17 +28,17 @@ context.set_context(mode=context.GRAPH_MODE)
 @pytest.mark.env_onecard
 def test_parameter_1_1():
     """
-    Feature: Check the names of parameters and the names of inputs of construct.
-    Description: If the name of the input of construct is same as the parameters, add suffix to the name of the input.
+    Feature: Check the names of parameters and the names of inputs of forward.
+    Description: If the name of the input of forward is same as the parameters, add suffix to the name of the input.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
             self.param_b = Parameter(Tensor([2], ms.float32), name="name_b")
 
-        def construct(self, name_a):
+        def forward(self, name_a):
             return self.param_a + self.param_b - name_a
 
     net = ParamNet()
@@ -52,17 +52,17 @@ def test_parameter_1_1():
 @pytest.mark.env_onecard
 def test_parameter_1_2():
     """
-    Feature: Check the names of parameters and the names of inputs of construct.
-    Description: If the name of the input of construct is same as the parameters, add suffix to the name of the input.
+    Feature: Check the names of parameters and the names of inputs of forward.
+    Description: If the name of the input of forward is same as the parameters, add suffix to the name of the input.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
             self.param_b = ParameterTuple((Parameter(Tensor([2], ms.float32), name="name_b"), self.param_a))
 
-        def construct(self, name_b):
+        def forward(self, name_b):
             return self.param_a + self.param_b[0] - name_b
 
     net = ParamNet()
@@ -80,13 +80,13 @@ def test_parameter_2_1():
     Description: If parameters in init have same name, an exception will be thrown.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
             self.param_b = Parameter(Tensor([2], ms.float32), name="name_a")
 
-        def construct(self):
+        def forward(self):
             return self.param_a + self.param_b
 
     with pytest.raises(ValueError, match="its name 'name_a' already exists."):
@@ -105,7 +105,7 @@ def test_parameter_2_2():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
@@ -113,7 +113,7 @@ def test_parameter_2_2():
             self.param_a = Parameter(Tensor([3], ms.float32), name="name_a")
             self.res2 = self.res1[0] + self.param_a
 
-        def construct(self):
+        def forward(self):
             return self.param_a + self.res1[0] + self.res2
 
     with pytest.raises(ValueError, match="its name 'name_a' already exists."):
@@ -132,13 +132,13 @@ def test_parameter_3():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32))
             self.param_b = Parameter(Tensor([2], ms.float32))
 
-        def construct(self):
+        def forward(self):
             return self.param_a + self.param_b
 
     net = ParamNet()
@@ -156,13 +156,13 @@ def test_parameter_4():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.res1 = ParameterTuple((Parameter(Tensor([2], ms.float32), name="name_a"),
                                         Parameter(Tensor([4], ms.float32), name="name_a")))
 
-        def construct(self):
+        def forward(self):
             return self.res1[0] + self.res1[1]
 
     with pytest.raises(ValueError, match="its name 'name_a' already exists."):
@@ -181,12 +181,12 @@ def test_parameter_5_1():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.res1 = ParameterTuple((Parameter(Tensor([2], ms.float32)), Parameter(Tensor([4], ms.float32))))
 
-        def construct(self):
+        def forward(self):
             return self.res1[0] + self.res1[1]
 
     with pytest.raises(ValueError, match="its name 'Parameter' already exists."):
@@ -205,7 +205,7 @@ def test_parameter_5_2():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
@@ -213,7 +213,7 @@ def test_parameter_5_2():
             self.param_a = Parameter(Tensor([3], ms.float32), name="name_b")
             self.res2 = self.res1[0] + self.param_a
 
-        def construct(self):
+        def forward(self):
             return self.param_a + self.res1[0] + self.res2
 
     net = ParamNet()
@@ -231,13 +231,13 @@ def test_parameter_list_tuple_no_name():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_tuple = (Parameter(Tensor([5], ms.float32)), Parameter(Tensor([6], ms.float32)))
             self.param_list = [Parameter(Tensor([7], ms.float32)), Parameter(Tensor([8], ms.float32))]
 
-        def construct(self):
+        def forward(self):
             return self.param_tuple[0] + self.param_tuple[1] + self.param_list[0] + self.param_list[1]
 
     net = ParamNet()
@@ -255,14 +255,14 @@ def test_parameter_in_tuple():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
             self.param_b = Parameter(Tensor([2], ms.float32), name="name_b")
             self.param_tuple = ParameterTuple((self.param_a, self.param_b))
 
-        def construct(self):
+        def forward(self):
             return self.param_a + self.param_b + self.param_tuple[0] + self.param_tuple[1]
 
     net = ParamNet()
@@ -280,14 +280,14 @@ def test_parameter_parameter_tuple_1():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
             self.param_tuple = ParameterTuple((Parameter(Tensor([5], ms.float32), name="name_a"),
                                                Parameter(Tensor([5], ms.float32), name="name_b")))
 
-        def construct(self):
+        def forward(self):
             return self.param_a + self.param_tuple[0] + self.param_tuple[1]
 
     with pytest.raises(ValueError, match="its name 'name_a' already exists."):
@@ -306,13 +306,13 @@ def test_parameter_parameter_tuple_2():
     Description: Check the name of parameter in init.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
             self.param_tuple = ParameterTuple((self.param_a, self.param_a, self.param_a))
 
-        def construct(self):
+        def forward(self):
             return self.param_a + self.param_tuple[0] + self.param_tuple[1] + self.param_tuple[2]
 
     net = ParamNet()
@@ -330,7 +330,7 @@ def test_parameter():
     Description: If parameter in list or tuple is not given a name, will give it a unique name.
     Expectation: No exception.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_a = Parameter(Tensor([1], ms.float32), name="name_a")
@@ -342,7 +342,7 @@ def test_parameter():
             self.param_list = [Parameter(Tensor([5], ms.float32)),
                                Parameter(Tensor([6], ms.float32))]
 
-        def construct(self, x):
+        def forward(self, x):
             res1 = self.param_a + self.param_b + self.param_c + self.param_d
             res1 = res1 - self.param_list[0] + self.param_list[1] + x
             res2 = self.param_list[0] + self.param_list[1]
@@ -367,7 +367,7 @@ def test_parameter_same_name_between_tuple_or_list():
     Description: If the same name exists between tuple and list, an exception will be thrown.
     Expectation: Get the expected exception report.
     """
-    class ParamNet(Cell):
+    class ParamNet(Module):
         def __init__(self):
             super(ParamNet, self).__init__()
             self.param_tuple = (Parameter(Tensor([1], ms.float32), name="name_a"),
@@ -375,7 +375,7 @@ def test_parameter_same_name_between_tuple_or_list():
             self.param_list = [Parameter(Tensor([3], ms.float32), name="name_a"),
                                Parameter(Tensor([4], ms.float32))]
 
-        def construct(self, x):
+        def forward(self, x):
             res = self.param_tuple[0] + self.param_tuple[1] + self.param_list[0] + self.param_listp[1] + x
             return res
 

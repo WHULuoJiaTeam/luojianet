@@ -24,14 +24,14 @@ from luojianet_ms.ops.functional import jet, derivative
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class MultipleInputSingleOutputNet(nn.Cell):
+class MultipleInputSingleOutputNet(nn.Module):
     def __init__(self):
         super(MultipleInputSingleOutputNet, self).__init__()
         self.sin = P.Sin()
         self.cos = P.Cos()
         self.exp = P.Exp()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out1 = self.sin(x)
         out2 = self.cos(y)
         out3 = out1 * out2 + out1 / out2
@@ -39,14 +39,14 @@ class MultipleInputSingleOutputNet(nn.Cell):
         return out
 
 
-class SingleInputSingleOutputNet(nn.Cell):
+class SingleInputSingleOutputNet(nn.Module):
     def __init__(self):
         super(SingleInputSingleOutputNet, self).__init__()
         self.sin = P.Sin()
         self.cos = P.Cos()
         self.exp = P.Exp()
 
-    def construct(self, x):
+    def forward(self, x):
         out1 = self.sin(x)
         out2 = self.cos(out1)
         out3 = self.exp(out2)

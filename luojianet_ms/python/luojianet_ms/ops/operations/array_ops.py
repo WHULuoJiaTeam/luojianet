@@ -857,12 +857,12 @@ class Unique(Primitive):
         [0 1 2 1]
         >>> # As can be seen from the above, y and idx shape
         >>> # note that for GPU, this operator must be wrapped inside a model, and executed in graph mode.
-        >>> class UniqueNet(nn.Cell):
+        >>> class UniqueNet(nn.Module):
         ...     def __init__(self):
         ...         super(UniqueNet, self).__init__()
         ...         self.unique_op = ops.Unique()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output, indices = self.unique_op(x)
         ...         return output, indices
         ...
@@ -6098,14 +6098,14 @@ class EditDistance(PrimitiveWithInfer):
         >>> from luojianet_ms import Tensor
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms.ops as ops
-        >>> class EditDistance(nn.Cell):
+        >>> class EditDistance(nn.Module):
         ...     def __init__(self, hypothesis_shape, truth_shape, normalize=True):
         ...         super(EditDistance, self).__init__()
         ...         self.edit_distance = ops.EditDistance(normalize)
         ...         self.hypothesis_shape = hypothesis_shape
         ...         self.truth_shape = truth_shape
         ...
-        ...     def construct(self, hypothesis_indices, hypothesis_values, truth_indices, truth_values):
+        ...     def forward(self, hypothesis_indices, hypothesis_values, truth_indices, truth_values):
         ...         return self.edit_distance(hypothesis_indices, hypothesis_values, self.hypothesis_shape,
         ...                                   truth_indices, truth_values, self.truth_shape)
         ...

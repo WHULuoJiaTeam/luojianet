@@ -25,7 +25,7 @@ from luojianet_ms.common import dtype as ms
 from luojianet_ms.common.api import _cell_graph_executor
 
 
-class assignment1_Net(nn.Cell):
+class assignment1_Net(nn.Module):
     """ assignment1_Net definition """
 
     def __init__(self, number):
@@ -33,14 +33,14 @@ class assignment1_Net(nn.Cell):
         self.number = number
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         y = self.number
         for _ in [1, y]:
             x = self.relu(x)
         return x
 
 
-class assignment2_Net(nn.Cell):
+class assignment2_Net(nn.Module):
     """ assignment2_Net definition """
 
     def __init__(self, number):
@@ -48,7 +48,7 @@ class assignment2_Net(nn.Cell):
         self.number = number
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         a, b = self.number
         for _ in [a, b]:
             x = self.relu(x)
@@ -77,14 +77,14 @@ def test_ME_assignment_operator_0020():
     assignment_operator_base((1, 3))
 
 
-class unsupported_method_net(nn.Cell):
+class unsupported_method_net(nn.Module):
     """ unsupported_method_net definition """
 
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         with open("a.txt") as f:
             f.read()
         return x
@@ -100,7 +100,7 @@ def test_compile_unspported():
 
 
 def test_parser_map_0002():
-    class NetMap0002(nn.Cell):
+    class NetMap0002(nn.Module):
         def __init__(self):
             super().__init__()
             self.relu = nn.ReLU()
@@ -109,7 +109,7 @@ def test_parser_map_0002():
         def mul(self, x=2, y=4):
             return x * y
 
-        def construct(self, x):
+        def forward(self, x):
             if map(self.mul) == 8:
                 x = self.relu(x)
             return x
@@ -122,12 +122,12 @@ def test_parser_map_0002():
 
 
 def test_fix_expanddims_loss_scale():
-    class ControlOneIfOneScaleOneScale(nn.Cell):
+    class ControlOneIfOneScaleOneScale(nn.Module):
         def __init__(self):
             super().__init__()
             self.op = P.ExpandDims()
 
-        def construct(self, x, y, data):
+        def forward(self, x, y, data):
             if x > y:
                 out = 1
             else:

@@ -26,34 +26,34 @@ from luojianet_ms.ops import operations as P
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = P.SoftmaxCrossEntropyWithLogits()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         predict = self.network(x, y)
         return self.loss(predict, b)[0]
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
 def test_softmax_cross_entropy_loss_auto_parallel():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True)
             self.gelu = P.GeLU()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             out = self.gelu(out)
             return out

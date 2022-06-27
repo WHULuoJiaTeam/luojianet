@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, right=False, out_int32=True):
         super(Net, self).__init__()
         self.search = P.SearchSorted(out_int32=out_int32, right=right)
 
-    def construct(self, sequence, values):
+    def forward(self, sequence, values):
         return self.search(sequence, values)
 
 

@@ -26,23 +26,23 @@ from luojianet_ms.ops.functional import jvp
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class SingleInputSingleOutputNet(nn.Cell):
-    def construct(self, x):
+class SingleInputSingleOutputNet(nn.Module):
+    def forward(self, x):
         return x**3
 
 
-class SingleInputMultipleOutputNet(nn.Cell):
-    def construct(self, x):
+class SingleInputMultipleOutputNet(nn.Module):
+    def forward(self, x):
         return x**3, 2*x
 
 
-class MultipleInputSingleOutputNet(nn.Cell):
-    def construct(self, x, y):
+class MultipleInputSingleOutputNet(nn.Module):
+    def forward(self, x, y):
         return 2*x + 3*y
 
 
-class MultipleInputMultipleOutputNet(nn.Cell):
-    def construct(self, x, y):
+class MultipleInputMultipleOutputNet(nn.Module):
+    def forward(self, x, y):
         return 2*x, y**3
 
 
@@ -289,18 +289,18 @@ def test_jvp_input_function_single_input_single_output_default_v_graph():
 def test_jvp_construct_single_input_single_output_default_v_graph():
     """
     Features: Function jvp
-    Description: Test jvp with Cell construct, single input, single output and default v in graph mode.
+    Description: Test jvp with Module forward, single input, single output and default v in graph mode.
     Expectation: No exception.
     """
     x = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
     v = Tensor(np.array([[1, 1], [1, 1]]).astype(np.float32))
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, network):
             super(Net, self).__init__()
             self.net = network
 
-        def construct(self, inputs, vectors):
+        def forward(self, inputs, vectors):
             net_out, jvp_out = jvp(self.net, inputs, vectors)
             return net_out, jvp_out
 

@@ -200,7 +200,7 @@ def server_train(args):
     sys.stdout.flush()
     start = time()
 
-    # construct model
+    # forward model
     albert_model_cls = AlbertModelCLS(server_net_cfg)
     network_with_cls_loss = NetworkWithCLSLoss(albert_model_cls)
     network_with_cls_loss.set_train(True)

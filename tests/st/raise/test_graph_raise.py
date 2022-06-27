@@ -34,8 +34,8 @@ def test_raise_1():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
-        def construct(self, x):
+    class RaiseNet(nn.Module):
+        def forward(self, x):
             if x == 1:
                 raise ValueError()
             return x
@@ -57,8 +57,8 @@ def test_raise_2():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
-        def construct(self, x):
+    class RaiseNet(nn.Module):
+        def forward(self, x):
             if x == 1:
                 raise ValueError(1)
             return x
@@ -80,8 +80,8 @@ def test_raise_3():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
-        def construct(self, x):
+    class RaiseNet(nn.Module):
+        def forward(self, x):
             if x == 1:
                 raise ValueError(f"The input should not be 1.")
             return x
@@ -103,8 +103,8 @@ def test_raise_4():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
-        def construct(self, x):
+    class RaiseNet(nn.Module):
+        def forward(self, x):
             if x == 1:
                 raise ValueError(f"The input should not be 1.")
             return x
@@ -127,11 +127,11 @@ def test_raise_5():
     Description: Test raise.
     Expectation: No exception.
     """
-    class NetWithRaise(nn.Cell):
-        def construct(self, x):
-            raise ValueError(f"exception in construct.")
+    class NetWithRaise(nn.Module):
+        def forward(self, x):
+            raise ValueError(f"exception in forward.")
 
-    with pytest.raises(ValueError, match="exception in construct."):
+    with pytest.raises(ValueError, match="exception in forward."):
         net = NetWithRaise()
         inp = Tensor(np.ones([1, 1, 32, 32]).astype(np.float32))
         _cell_graph_executor.compile(net, inp)
@@ -148,11 +148,11 @@ def test_raise_6():
     Description: Test raise.
     Expectation: No exception.
     """
-    class NetWithRaise(nn.Cell):
+    class NetWithRaise(nn.Module):
         def subfunc(self):
             raise ValueError(f"exception in subfunc.")
 
-        def construct(self, x):
+        def forward(self, x):
             y = Tensor(0)
             if x > 0:
                 y = Tensor(1)
@@ -176,8 +176,8 @@ def test_raise_7():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
-        def construct(self):
+    class RaiseNet(nn.Module):
+        def forward(self):
             x = [1, 3, 5, 7, 9]
             raise ValueError("Not expected value, x is {}".format(x))
 
@@ -195,12 +195,12 @@ def test_raise_8():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
+    class RaiseNet(nn.Module):
         def __init__(self):
             super(RaiseNet, self).__init__()
             self.x = [1, 3, 5, 7]
 
-        def construct(self):
+        def forward(self):
             if self.x == [1, 3, 5, 7, 9]:
                 return 5
             if self.x == [1, 3, 5]:
@@ -225,8 +225,8 @@ def test_raise_9():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
-        def construct(self):
+    class RaiseNet(nn.Module):
+        def forward(self):
             x = 11
             raise ValueError(f"The input can not be {x}.")
 
@@ -244,8 +244,8 @@ def test_raise_10():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
-        def construct(self, x):
+    class RaiseNet(nn.Module):
+        def forward(self, x):
             raise ValueError(f"The input can not be %s." % x)
 
     with pytest.raises(ValueError) as info:
@@ -266,8 +266,8 @@ def test_raise_11():
     Description: Test raise.
     Expectation: No exception.
     """
-    class RaiseNet(nn.Cell):
-        def construct(self, x):
+    class RaiseNet(nn.Module):
+        def forward(self, x):
             raise ValueError(f"The input can not be ", x, ".")
 
     with pytest.raises(ValueError) as info:

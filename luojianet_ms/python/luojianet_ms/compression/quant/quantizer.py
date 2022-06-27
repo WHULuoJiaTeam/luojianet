@@ -64,5 +64,5 @@ class Quantizer(ABC):
         """
         Quant API to convert input network to a quantization aware training network
         Args:
-            network (Cell): network to be quantized.
+            network (Module): network to be quantized.
         """

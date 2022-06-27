@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, data_format="NCHW"):
         super(Net, self).__init__()
         self.bias_add = P.BiasAdd(data_format)
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         return self.bias_add(x, b)
 
 

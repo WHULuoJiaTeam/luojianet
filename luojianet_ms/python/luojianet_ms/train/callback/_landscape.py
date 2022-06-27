@@ -263,7 +263,7 @@ class SummaryLandscape:
                 it has no input, and the return requirements are as follows.
 
                 - luojianet_ms.train.Model: User's model object.
-                - luojianet_ms.nn.Cell: User's network object.
+                - luojianet_ms.nn.Module: User's network object.
                 - luojianet_ms.dataset: User's dataset object for create loss landscape.
                 - luojianet_ms.nn.Metrics: User's metrics object.
             collect_landscape (Union[dict, None]): The meaning of the parameters

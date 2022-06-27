@@ -277,10 +277,10 @@ class _LuoJiaNETFunctionExecutor:
 
     def compile(self, args_list, method_name):
         """Returns pipeline for the given args."""
-        # Check whether hook function registered on Cell object.
+        # Check whether hook function registered on Module object.
         if self.obj and hasattr(self.obj, "_hook_fn_registered"):
             if self.obj._hook_fn_registered():
-                logger.warning(f"For 'Cell', it's not support hook function when using ms_function. If you want to "
+                logger.warning(f"For 'Module', it's not support hook function when using ms_function. If you want to "
                                f"use hook function, please use context.set_context to set pynative mode and remove "
                                f"`ms_function`.")
         # Verify the signature for both function and method
@@ -468,7 +468,7 @@ def ms_class(cls):
         Class with __ms_class__ attribute.
 
     Raises:
-        TypeError: If ms_class is used for non-class types or nn.Cell.
+        TypeError: If ms_class is used for non-class types or nn.Module.
         AttributeError: If the private attributes or magic methods of the class decorated by ms_class is called.
 
     Supported Platforms:
@@ -486,12 +486,12 @@ def ms_class(cls):
         ...     def func(self, x):
         ...         return 2 * x
         ...
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.net = UserDefinedNet()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         out = self.net.value + self.net.func(x)
         ...         return out
         ...
@@ -561,7 +561,7 @@ class _PynativeExecutor:
     """
     A pynative executor used to compile/manage/run single op.
 
-    The main functions include: construct op graph, compile op graph, auto grad and run op graph.
+    The main functions include: forward op graph, compile op graph, auto grad and run op graph.
 
     Args:
         obj (Object): The python network that will be run in pynative mode.
@@ -587,7 +587,7 @@ class _PynativeExecutor:
         Run broadcast for parameter.
 
         Args:
-            obj (Cell): The cell instance.
+            obj (Module): The cell instance.
             phase (str): The phase of cell instance.
             auto_parallel_mode (bool): The flag of running auto parallel.
 
@@ -602,7 +602,7 @@ class _PynativeExecutor:
         Initialize resources for building forward and backward graph.
 
         Args:
-            obj (Function/Cell): The function or cell instance.
+            obj (Function/Module): The function or cell instance.
             args (tuple): Function or cell input arguments.
             kwargs (dict): keyword arguments.
 
@@ -616,7 +616,7 @@ class _PynativeExecutor:
         Clean resources after building forward and backward graph.
 
         Args:
-            obj (Function/Cell): The function or cell instance.
+            obj (Function/Module): The function or cell instance.
             output (Tensor/tuple/list): Function or cell output object.
             args (tuple): Function or cell input arguments.
             kwargs (dict): keyword arguments.
@@ -631,7 +631,7 @@ class _PynativeExecutor:
         Determines the order of the function or cell.
 
         Args:
-            obj (Function/Cell): The function or cell instance.
+            obj (Function/Module): The function or cell instance.
             args (tuple): Function or cell input arguments.
             kwargs (dict): keyword arguments.
 
@@ -642,16 +642,16 @@ class _PynativeExecutor:
 
     def check_run(self, grad, obj, *args, **kwargs):
         """
-        Whether the forward graph need to construct.
+        Whether the forward graph need to forward.
 
         Args:
             grad (GradOperation): The gradoperation object.
-            obj (Function/Cell): The function or cell instance.
+            obj (Function/Module): The function or cell instance.
             args (tuple): Function or cell input arguments.
             kwargs (dict): keyword arguments.
 
         Return:
-            bool, specifies whether the forward graph need to construct.
+            bool, specifies whether the forward graph need to forward.
         """
         return self._executor.check_run(grad, obj, *args, *(kwargs.values()))
 
@@ -675,7 +675,7 @@ class _PynativeExecutor:
 
         Args:
             grad (GradOperation): The gradoperation object.
-            obj (Function/Cell): The function or cell instance.
+            obj (Function/Module): The function or cell instance.
             weights (ParameterTuple): The weights of cell instance.
             grad_position (Union(int, tuple[int])): If int, get the gradient with respect to single input.
               If tuple, get the gradients with respect to selected inputs. 'grad_position' begins with 0. Default: 0.
@@ -713,7 +713,7 @@ class _PynativeExecutor:
         Clean resource after building grad graph.
 
         Args:
-            obj (Function/Cell): The function or cell instance.
+            obj (Function/Module): The function or cell instance.
             args (tuple): Function or cell input arguments.
             kwargs (dict): keyword arguments.
 
@@ -827,10 +827,10 @@ class _PynativeExecutor:
 
     def set_hook_changed(self, cell):
         """
-        The flag of registering or removing a hook function on Cell instance.
+        The flag of registering or removing a hook function on Module instance.
 
         Args:
-            cell (Cell): The cell instance.
+            cell (Module): The cell instance.
 
         Return:
             None.
@@ -860,7 +860,7 @@ class _PynativeExecutor:
         PyNative executor run grad graph.
 
         Args:
-            obj (Function/Cell): The function or cell instance.
+            obj (Function/Module): The function or cell instance.
             args (tuple): Function or cell input arguments.
             kwargs (dict): keyword arguments.
 
@@ -873,12 +873,12 @@ class _PynativeExecutor:
 
 class _CellGraphExecutor:
     """
-    An executor used to compile/manage/run graph for a Cell.
+    An executor used to compile/manage/run graph for a Module.
 
     Including data_graph, train_graph, eval_graph and predict graph.
 
     Args:
-        obj (Function/Cell): The function or cell instance need compile.
+        obj (Function/Module): The function or cell instance need compile.
         args (tuple): Function or cell input arguments.
 
     Returns:
@@ -966,7 +966,7 @@ class _CellGraphExecutor:
         Compiles graph.
 
         Args:
-            obj (Function/Cell): The function or cell instance need compile.
+            obj (Function/Module): The function or cell instance need compile.
             args (tuple): Function or cell input arguments.
             phase (str): The name of compile phase. Default: 'predict'.
             do_convert (bool): When set to True, convert ME graph to GE graph after compiling graph.
@@ -976,7 +976,7 @@ class _CellGraphExecutor:
             Str, the full phase of the cell.
             Bool, if the graph has been compiled before, return False, else return True.
         """
-        obj.__parse_method__ = 'construct'
+        obj.__parse_method__ = 'forward'
         if not hasattr(obj, obj.__parse_method__):
             raise AttributeError(
                 'The class {} dose not have method {}'.format(obj.__class__.__name__, obj.__parse_method__))
@@ -1088,7 +1088,7 @@ class _CellGraphExecutor:
     @_wrap_func
     def _exec_pip(self, obj, *args, phase=''):
         """Execute the generated pipeline."""
-        fn = obj.construct
+        fn = obj.forward
         obj.__parse_method__ = fn.__name__
         return self._graph_executor(args, phase)
 

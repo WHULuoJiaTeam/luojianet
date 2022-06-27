@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms import context
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
     def __init__(self):
         super(Net, self).__init__()
@@ -40,7 +40,7 @@ class Net(nn.Cell):
         self.matmul1 = P.MatMul()
         self.matmul2 = P.MatMul()
 
-    def construct(self, x):
+    def forward(self, x):
         q = self.fc1(x)
         k = self.fc2(x)
         v = self.fc3(x)
@@ -51,7 +51,7 @@ class Net(nn.Cell):
         return s
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """Net definition"""
     def __init__(self, strategy1, strategy2):
         super(Net2, self).__init__()
@@ -60,13 +60,13 @@ class Net2(nn.Cell):
         self.p1 = Parameter(Tensor(np.ones([48, 64]).astype(np.float32)), name="weight1")
         self.p2 = Parameter(Tensor(np.ones([64, 16]).astype(np.float32)), name="weight2")
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.fc1(x, self.p1)
         x = self.fc2(x, self.p2)
         return x - y
 
 
-class Net3(nn.Cell):
+class Net3(nn.Module):
     """Net definition"""
     def __init__(self, strategy1, strategy2):
         super(Net3, self).__init__()
@@ -75,13 +75,13 @@ class Net3(nn.Cell):
         self.p1 = Parameter(Tensor(np.ones([48, 64]).astype(np.float32)), name="weight1")
         self.p2 = Parameter(Tensor(np.ones([64, 16]).astype(np.float32)), name="weight2", parallel_optimizer=False)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.fc1(x, self.p1)
         x = self.fc2(x, self.p2)
         return x - y
 
 
-class Net4(nn.Cell):
+class Net4(nn.Module):
     """Net definition"""
     def __init__(self, strategy1, strategy2):
         super(Net4, self).__init__()
@@ -90,7 +90,7 @@ class Net4(nn.Cell):
         self.p1 = Parameter(Tensor(np.ones([48, 1152]).astype(np.float32)), name="weight1")
         self.p2 = Parameter(Tensor(np.ones([1152, 16]).astype(np.float32)), name="weight2")
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.fc1(x, self.p1)
         x = self.fc2(x, self.p2)
         return x - y

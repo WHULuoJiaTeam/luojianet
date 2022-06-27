@@ -32,7 +32,7 @@ def setup_module(module):
     context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     """ GradWrap definition """
 
     def __init__(self, network):
@@ -40,7 +40,7 @@ class GradWrap(nn.Cell):
         self.network = network
         self.weights = ParameterTuple(network.get_parameters())
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         weights = self.weights
         return grad_by_list(self.network, weights)(x, label)
 
@@ -49,7 +49,7 @@ class GradWrap(nn.Cell):
 def test_softmaxloss_grad():
     """ test_softmaxloss_grad """
 
-    class NetWithLossClass(nn.Cell):
+    class NetWithLossClass(nn.Module):
         """ NetWithLossClass definition """
 
         def __init__(self, network):
@@ -57,11 +57,11 @@ def test_softmaxloss_grad():
             self.loss = nn.SoftmaxCrossEntropyWithLogits()
             self.network = network
 
-        def construct(self, x, label):
+        def forward(self, x, label):
             predict = self.network(x)
             return self.loss(predict, label)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
@@ -71,7 +71,7 @@ def test_softmaxloss_grad():
             self.fc = P.MatMul()
             self.biasAdd = P.BiasAdd()
 
-        def construct(self, x):
+        def forward(self, x):
             x = self.biasAdd(self.fc(x, self.weight), self.bias)
             return x
 
@@ -80,7 +80,7 @@ def test_softmaxloss_grad():
     predict = Tensor(np.ones([1, 64]).astype(np.float32))
     label = Tensor(np.zeros([1, 10]).astype(np.float32))
     print("pynative run")
-    out = net.construct(predict, label)
+    out = net.forward(predict, label)
     print("out:", out)
     print(out[0], (out[0]).asnumpy(), ":result")
 
@@ -89,7 +89,7 @@ def test_softmaxloss_grad():
 def test_lenet_grad():
     """ test_lenet_grad """
 
-    class NetWithLossClass(nn.Cell):
+    class NetWithLossClass(nn.Module):
         """ NetWithLossClass definition """
 
         def __init__(self, network):
@@ -97,11 +97,11 @@ def test_lenet_grad():
             self.loss = nn.SoftmaxCrossEntropyWithLogits()
             self.network = network
 
-        def construct(self, x, label):
+        def forward(self, x, label):
             predict = self.network(x)
             return self.loss(predict, label)
 
-    class LeNet5(nn.Cell):
+    class LeNet5(nn.Module):
         """ LeNet5 definition """
 
         def __init__(self):
@@ -115,7 +115,7 @@ def test_lenet_grad():
             self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
             self.flatten = P.Flatten()
 
-        def construct(self, x):
+        def forward(self, x):
             x = self.max_pool2d(self.relu(self.conv1(x)))
             x = self.max_pool2d(self.relu(self.conv2(x)))
             x = self.flatten(x)

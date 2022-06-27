@@ -28,23 +28,23 @@ from luojianet_ms import export, load
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU", save_graphs=True)
 
 
-class NLLLoss(nn.Cell):
+class NLLLoss(nn.Module):
     def __init__(self, reduction="none"):
         super(NLLLoss, self).__init__()
         self.nllloss = P.NLLLoss(reduction=reduction)
 
-    def construct(self, x, t, w):
+    def forward(self, x, t, w):
         return self.nllloss(x, t, w)
 
 
-class NLLLossGrad(nn.Cell):
+class NLLLossGrad(nn.Module):
     def __init__(self, forward, sens):
         super(NLLLossGrad, self).__init__()
         self.forward = forward
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.sens = sens
 
-    def construct(self, x, t, w):
+    def forward(self, x, t, w):
         return self.grad(self.forward)(x, t, w, self.sens)
 
 

@@ -24,14 +24,14 @@ from luojianet_ms.ops import composite as C
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, sample, replacement, seed=0):
         super(Net, self).__init__()
         self.sample = sample
         self.replacement = replacement
         self.seed = seed
 
-    def construct(self, x):
+    def forward(self, x):
         return C.multinomial(x, self.sample, self.replacement, self.seed)
 
 

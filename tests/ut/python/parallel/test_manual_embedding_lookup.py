@@ -19,7 +19,7 @@ import pytest
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, LazyAdam
+from luojianet_ms.nn import Module, TrainOneStepCell, LazyAdam
 from luojianet_ms.ops import operations as P
 from luojianet_ms.common.initializer import initializer
 
@@ -30,7 +30,7 @@ def setup_teardown():
     context.set_context(enable_sparse=False)
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self,
                  strategy1=None,
                  strategy2=None,
@@ -56,7 +56,7 @@ class Net(Cell):
         self.matmul_weight = Parameter(initializer("ones", (64, 16), ms.float32), name="matmul_weight")
         self.axis = axis
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.gatherv2(self.param, x, self.axis)
         out = self.mul(out, b)
         return out

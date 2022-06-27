@@ -585,8 +585,8 @@ def test_block_diag_graph(args):
     """
     context.set_context(mode=context.GRAPH_MODE)
 
-    class TestNet(nn.Cell):
-        def construct(self, inputs):
+    class TestNet(nn.Module):
+        def forward(self, inputs):
             return msp.linalg.block_diag(*inputs)
 
     tensor_args = tuple([Tensor(arg) for arg in args])
@@ -610,8 +610,8 @@ def test_det_graph(shape, dtype):
     """
     context.set_context(mode=context.GRAPH_MODE)
 
-    class TestNet(nn.Cell):
-        def construct(self, a):
+    class TestNet(nn.Module):
+        def forward(self, a):
             return det(a)
 
     a = onp.random.random(shape).astype(dtype)

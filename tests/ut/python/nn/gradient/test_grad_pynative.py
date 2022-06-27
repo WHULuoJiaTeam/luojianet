@@ -23,13 +23,13 @@ from luojianet_ms.ops.functional import grad
 context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class SingleInputSingleOutputNet(nn.Cell):
-    def construct(self, x):
+class SingleInputSingleOutputNet(nn.Module):
+    def forward(self, x):
         return x**3
 
 
-class MultipleInputsMultipleOutputsNet(nn.Cell):
-    def construct(self, x, y, z):
+class MultipleInputsMultipleOutputsNet(nn.Module):
+    def forward(self, x, y, z):
         return x**2 + y**2 + z**2, x*y*z
 
 

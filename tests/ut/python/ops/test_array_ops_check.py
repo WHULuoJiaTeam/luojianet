@@ -27,33 +27,33 @@ from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
 context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class ExpandDimsNet(nn.Cell):
+class ExpandDimsNet(nn.Module):
     def __init__(self, axis):
         super(ExpandDimsNet, self).__init__()
         self.axis = axis
         self.op = P.ExpandDims()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.op(x, self.axis)
 
 
-class IsInstanceNet(nn.Cell):
+class IsInstanceNet(nn.Module):
     def __init__(self, inst):
         super(IsInstanceNet, self).__init__()
         self.inst = inst
         self.op = P.IsInstance()
 
-    def construct(self, t):
+    def forward(self, t):
         return self.op(self.inst, t)
 
 
-class ReshapeNet(nn.Cell):
+class ReshapeNet(nn.Module):
     def __init__(self, shape):
         super(ReshapeNet, self).__init__()
         self.shape = shape
         self.op = P.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.op(x, self.shape)
 
 

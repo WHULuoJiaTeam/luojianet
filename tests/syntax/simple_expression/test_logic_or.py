@@ -24,23 +24,23 @@ from luojianet_ms.common.tensor import Tensor
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class LogicOr(nn.Cell):
+class LogicOr(nn.Module):
     def __init__(self):
         super(LogicOr, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         or_v = x or y
         return or_v
 
 
-class LogicOrSpec(nn.Cell):
+class LogicOrSpec(nn.Module):
     def __init__(self, x, y):
         super(LogicOrSpec, self).__init__()
         self.x = x
         self.y = y
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         or_v = self.x or self.y
         return or_v
 

@@ -28,7 +28,7 @@ from luojianet_ms import context
 from luojianet_ms.train.serialization import restore_group_info_list
 
 
-class Net3(nn.Cell):
+class Net3(nn.Module):
     """Net definition"""
     def __init__(self, strategy1, strategy2, strategy3):
         super(Net3, self).__init__()
@@ -39,7 +39,7 @@ class Net3(nn.Cell):
         self.p2 = Parameter(Tensor(np.ones([64, 16]).astype(np.float32)), name="weight2", parallel_optimizer=False)
         self.p3 = Parameter(Tensor(np.ones([16, 16]).astype(np.float32)), name="weight3")
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.fc1(x, self.p1)
         x = self.fc2(x, self.p2)
         z = x - y

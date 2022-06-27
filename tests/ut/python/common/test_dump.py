@@ -27,17 +27,17 @@ from luojianet_ms import set_dump
 def test_set_dump_on_cell():
     """
     Feature: Python API set_dump.
-    Description: Use set_dump API on Cell instance.
+    Description: Use set_dump API on Module instance.
     Expectation: Success.
     """
 
-    class MyNet(nn.Cell):
+    class MyNet(nn.Module):
         def __init__(self):
             super(MyNet, self).__init__()
             self.conv1 = nn.Conv2d(5, 6, 5, pad_mode='valid')
             self.relu1 = nn.ReLU()
 
-        def construct(self, x):
+        def forward(self, x):
             x = self.conv1(x)
             x = self.relu1(x)
             return x
@@ -90,16 +90,16 @@ def test_set_dump_warning():
 def test_set_dump_on_cell_with_false():
     """
     Feature: Python API set_dump on cell with False.
-    Description: Use set_dump API on Cell instance.
+    Description: Use set_dump API on Module instance.
     Expectation: Success.
     """
 
-    class MyNet(nn.Cell):
+    class MyNet(nn.Module):
         def __init__(self):
             super(MyNet, self).__init__()
             self.relu1 = nn.ReLU()
 
-        def construct(self, x):
+        def forward(self, x):
             x = self.relu1(x)
             return x
 
@@ -114,16 +114,16 @@ def test_set_dump_on_cell_with_false():
 def test_set_dump_on_primitive_with_false():
     """
     Feature: Python API set_dump on primitive with False.
-    Description: Use set_dump API on Cell instance.
+    Description: Use set_dump API on Module instance.
     Expectation: Success.
     """
 
-    class MyNet(nn.Cell):
+    class MyNet(nn.Module):
         def __init__(self):
             super(MyNet, self).__init__()
             self.relu1 = ops.ReLU()
 
-        def construct(self, x):
+        def forward(self, x):
             x = self.relu1(x)
             return x
 

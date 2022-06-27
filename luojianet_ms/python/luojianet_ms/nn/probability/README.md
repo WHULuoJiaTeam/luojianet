@@ -25,7 +25,7 @@ The objective of MDP is to integrate deep learning with Bayesian learning. On th
 
 ## Layer 2: Deep Probabilistic Programming (DPP) aims to provide composable BNN modules
 
-- Layers([luojianet_ms.nn.probability.bnn_layers](https://gitee.com/luojianet_ms/luojianet_ms/tree/master/luojianet_ms/python/luojianet_ms/nn/probability/bnn_layers)): BNN layers, which are used to construct BNN.
+- Layers([luojianet_ms.nn.probability.bnn_layers](https://gitee.com/luojianet_ms/luojianet_ms/tree/master/luojianet_ms/python/luojianet_ms/nn/probability/bnn_layers)): BNN layers, which are used to forward BNN.
 - Dpn([luojianet_ms.nn.probability.dpn](https://gitee.com/luojianet_ms/luojianet_ms/tree/master/luojianet_ms/python/luojianet_ms/nn/probability/dpn)): A bunch of BNN models that allow to be integrated into DNN;
 - Transform([luojianet_ms.nn.probability.transforms](https://gitee.com/luojianet_ms/luojianet_ms/tree/master/luojianet_ms/python/luojianet_ms/nn/probability/transforms)): Interfaces for the transformation between BNN and DNN;
 - Context: context managers for models and layers.
@@ -51,7 +51,7 @@ import luojianet_ms.nn as nn
 from luojianet_ms.nn.probability import bnn_layers
 import luojianet_ms.ops.operations as P
 
-class BNNLeNet5(nn.Cell):
+class BNNLeNet5(nn.Module):
     """
     bayesian Lenet network
 
@@ -77,7 +77,7 @@ class BNNLeNet5(nn.Cell):
         self.flatten = nn.Flatten()
         self.reshape = P.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)
@@ -93,7 +93,7 @@ class BNNLeNet5(nn.Cell):
         return x
 ```
 
-The way to construct Bayesian Neural Network by bnn_layers is the same as DNN. It's worth noting that bnn_layers and traditional layers of DNN can be combined with each other.
+The way to forward Bayesian Neural Network by bnn_layers is the same as DNN. It's worth noting that bnn_layers and traditional layers of DNN can be combined with each other.
 
 3. Define the Loss Function and Optimizer
 
@@ -181,7 +181,7 @@ import luojianet_ms.nn as nn
 from luojianet_ms.ops import operations as P
 from luojianet_ms.nn.probability.dpn import VAE
 
-class Encoder(nn.Cell):
+class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
         self.fc1 = nn.Dense(1024, 800)
@@ -189,7 +189,7 @@ class Encoder(nn.Cell):
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.flatten(x)
         x = self.fc1(x)
         x = self.relu(x)
@@ -198,14 +198,14 @@ class Encoder(nn.Cell):
         return x
 
 
-class Decoder(nn.Cell):
+class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
         self.fc1 = nn.Dense(400, 1024)
         self.sigmoid = nn.Sigmoid()
         self.reshape = P.Reshape()
 
-    def construct(self, z):
+    def forward(self, z):
         z = self.fc1(z)
         z = self.reshape(z, IMAGE_SHAPE)
         z = self.sigmoid(z)
@@ -217,7 +217,7 @@ decoder = Decoder()
 vae = VAE(encoder, decoder, hidden_size=400, latent_size=20)
 ```
 
-2. Use ELBO interface to define the loss function and define the optimizer, then construct the cell_net using WithLossCell.
+2. Use ELBO interface to define the loss function and define the optimizer, then forward the cell_net using WithLossCell.
 
 ```python
 from luojianet_ms.nn.probability.infer import ELBO
@@ -279,7 +279,7 @@ def weight_variable():
     return TruncatedNormal(0.02)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """
     Lenet network
 
@@ -305,7 +305,7 @@ class LeNet5(nn.Cell):
         self.flatten = nn.Flatten()
         self.reshape = P.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)
@@ -390,7 +390,7 @@ The method `transform_to_bnn_model` can transform both convolutional layer and f
             add_conv_args (dict): The new arguments added to BNN convolutional layer. Default: {}.
 
         Returns:
-            Cell, a trainable BNN model wrapped by TrainOneStepCell.
+            Module, a trainable BNN model wrapped by TrainOneStepCell.
        """
 ```
 
@@ -412,15 +412,15 @@ The method `transform_to_bnn_layer` can transform a specific type of layers (nn.
         Transform a specific type of layers in DNN model to corresponding BNN layer.
 
         Args:
-            dnn_layer_type (Cell): The type of DNN layer to be transformed to BNN layer. The optional values are
+            dnn_layer_type (Module): The type of DNN layer to be transformed to BNN layer. The optional values are
             nn.Dense, nn.Conv2d.
-            bnn_layer_type (Cell): The type of BNN layer to be transformed to. The optional values are
+            bnn_layer_type (Module): The type of BNN layer to be transformed to. The optional values are
                 DenseReparameterization, ConvReparameterization.
             get_args (dict): The arguments gotten from the DNN layer. Default: None.
             add_args (dict): The new arguments added to BNN layer. Default: None.
 
         Returns:
-            Cell, a trainable model wrapped by TrainOneStepCell, whose sprcific type of layer is transformed to the corresponding bayesian layer.
+            Module, a trainable model wrapped by TrainOneStepCell, whose sprcific type of layer is transformed to the corresponding bayesian layer.
         """
 ```
 
@@ -467,7 +467,7 @@ for eval_data in ds_eval.create_dict_iterator():
 
 Examples in [luojianet_ms/tests/st/probability](https://gitee.com/luojianet_ms/luojianet_ms/blob/master/tests/st/probability) are as follows:
 
-- [Bayesian LeNet](https://gitee.com/luojianet_ms/luojianet_ms/blob/master/tests/st/probability/bnn_layers/test_bnn_layer.py). How to construct and train a LeNet by bnn layers.
+- [Bayesian LeNet](https://gitee.com/luojianet_ms/luojianet_ms/blob/master/tests/st/probability/bnn_layers/test_bnn_layer.py). How to forward and train a LeNet by bnn layers.
 - [Transform whole DNN model to BNN](https://gitee.com/luojianet_ms/luojianet_ms/blob/master/tests/st/probability/transforms/test_transform_bnn_model.py): How to transform whole DNN model to BNN.
 - [Transform DNN layer to BNN](https://gitee.com/luojianet_ms/luojianet_ms/blob/master/tests/st/probability/transforms/test_transform_bnn_layer.py): How to transform one certainty type of layer in DNN model to corresponding Bayesian layer.
 - [Variational Auto-Encoder](https://gitee.com/luojianet_ms/luojianet_ms/blob/master/tests/st/probability/dpn/test_gpu_svi_vae.py): Variational Auto-Encoder (VAE) model trained with MNIST to generate sample images.

@@ -80,7 +80,7 @@ def compare(output, expect):
     return True
 
 
-class GradNetWrtX(nn.Cell):
+class GradNetWrtX(nn.Module):
     def __init__(self, net):
         super(GradNetWrtX, self).__init__()
         self.net = net
@@ -88,17 +88,17 @@ class GradNetWrtX(nn.Cell):
             get_all=True, get_by_list=True, sens_param=True)
         self.params = ParameterTuple(net.trainable_params())
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         gradient_function = self.grad_op(self.net, self.params)
         return gradient_function(*inputs)
 
 
-class ConcatNet(nn.Cell):
+class ConcatNet(nn.Module):
     def __init__(self, axis):
         super(ConcatNet, self).__init__()
         self.op = ops.Concat(axis)
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         return self.op((x1, x2))
 
 
@@ -152,12 +152,12 @@ def test_dynamic_concat_backward():
     dynamic_concat_run(True)
 
 
-class BatchNormNet(nn.Cell):
+class BatchNormNet(nn.Module):
     def __init__(self, c):
         super(BatchNormNet, self).__init__()
         self.bn = nn.BatchNorm1d(c)
 
-    def construct(self, input_data):
+    def forward(self, input_data):
         x = self.bn(input_data)
         return x
 
@@ -189,8 +189,8 @@ def test_dynamic_bachnorm():
     assert compare(gradients, gradients_cmp)
 
 
-class ReshapeNet(nn.Cell):
-    def construct(self, x, y):
+class ReshapeNet(nn.Module):
+    def forward(self, x, y):
         shape_of_y = ops.TensorShape()(y)
         return ops.Reshape()(x, shape_of_y)
 
@@ -222,12 +222,12 @@ def test_dynamic_reshape():
     assert compare(output, output_cmp)
 
 
-class ReduceSumInputAxisNet(nn.Cell):
+class ReduceSumInputAxisNet(nn.Module):
     def __init__(self):
         super(ReduceSumInputAxisNet, self).__init__()
         self.reduce = ops.ReduceSum()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.reduce(x, y)
 
 
@@ -260,8 +260,8 @@ def test_dynamic_reduce_sum_input_axis():
     assert np.allclose(output.asnumpy(), output_cmp, rtol=1.0e-4, atol=1.0e-4)
 
 
-class NopNet(nn.Cell):
-    def construct(self, x):
+class NopNet(nn.Module):
+    def forward(self, x):
         x1 = ops.squeeze(x)
         y1 = ops.expand_dims(x1, 1)
         return ops.sub(y1, x1)
@@ -292,13 +292,13 @@ def test_dynamic_nop():
     assert compare(output, output_cmp)
 
 
-class ReduceSumNet(nn.Cell):
+class ReduceSumNet(nn.Module):
     def __init__(self, axis=()):
         super(ReduceSumNet, self).__init__()
         self.reduce = ops.ReduceSum()
         self.axis = axis
 
-    def construct(self, x):
+    def forward(self, x):
         return self.reduce(x, self.axis)
 
 
@@ -328,8 +328,8 @@ def test_dynamic_reduce_sum():
     assert compare(output, output_cmp)
 
 
-class AddNet(nn.Cell):
-    def construct(self, x, y):
+class AddNet(nn.Module):
+    def forward(self, x, y):
         return ops.add(x, y)
 
 

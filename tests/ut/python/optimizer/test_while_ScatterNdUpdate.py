@@ -18,7 +18,7 @@ from luojianet_ms import context, nn, Tensor, Parameter
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.ops import operations as P
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, data):
         super(Net, self).__init__()
         self.start = Tensor(0, dtype=mstype.int32)
@@ -27,7 +27,7 @@ class Net(nn.Cell):
         self.upd = P.ScatterNdUpdate()
         self.zero = Tensor(np.ones([1], dtype=np.int32))
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         idx = self.start
         end = self.end
         while idx < end:

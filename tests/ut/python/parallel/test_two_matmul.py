@@ -29,23 +29,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -57,13 +57,13 @@ def compile_net(net, x, y, b):
 
 # model_parallel test
 def test_two_matmul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
             self.matmul2 = P.MatMul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul1(x, y)
             out = self.matmul2(out, b)
             return out
@@ -82,13 +82,13 @@ def test_two_matmul():
 
 
 def test_two_matmul_repeated_calculation1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
             self.matmul2 = P.MatMul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul1(x, y)
             out = self.matmul2(out, b)
             return out
@@ -106,13 +106,13 @@ def test_two_matmul_repeated_calculation1():
 
 
 def test_two_matmul_repeated_calculation2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
             self.matmul2 = P.MatMul().shard(strategy2)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul1(x, y)
             out = self.matmul2(out, b)
             return out
@@ -135,13 +135,13 @@ def test_matmul_output_strategy_reduce_scatter():
     Description: transpose_b is false, set output strategy and use reduce scatter
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul().shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -164,13 +164,13 @@ def test_matmul_output_strategy_reduce_scatter_transpose():
     Description: transpose_b is true, set output strategy and use reduce scatter
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -193,13 +193,13 @@ def test_matmul_output_strategy_all_reduce():
     Description: transpose_b is false, set output strategy and use all reduce
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul().shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -222,13 +222,13 @@ def test_matmul_output_strategy_all_reduce_transpose():
     Description: transpose_b is true, set output strategy and use all reduce
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -251,13 +251,13 @@ def test_matmul_output_strategy_reduce_scatter_repeat_calc():
     Description: transpose_b is false, set output strategy use reduce scatter and repeated calculation
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul().shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -280,13 +280,13 @@ def test_matmul_output_strategy_reduce_scatter_transpose_repeat_calc():
     Description: transpose_b is true, set output strategy use reduce scatter and repeated calculation
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -309,13 +309,13 @@ def test_matmul_output_strategy_all_reduce_repeat_calc():
     Description: transpose_b is false, set output strategy use all reduce and repeated calculation
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul().shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -338,13 +338,13 @@ def test_matmul_output_strategy_all_reduce_transpose_repeat_calc():
     Description: transpose_b is true, set output strategy use all reduce and repeated calculation
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -367,13 +367,13 @@ def test_matmul_in_strategy_not_int():
     Description:
     Expectation: rasise TypeError
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -393,13 +393,13 @@ def test_matmul_out_strategy_not_int():
     Description:
     Expectation: rasise TypeError
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out
@@ -419,13 +419,13 @@ def test_matmul_in_strategy_is_none_and_out_strategy_is_not_none():
     Description:
     Expectation: rasise ValueError
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, matmul_in_strategy, matmul_out_strategy, mul_strategy):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(matmul_in_strategy, matmul_out_strategy)
             self.mul = P.Mul().shard(mul_strategy)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mul(out, b)
             return out

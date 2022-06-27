@@ -20,14 +20,14 @@ from luojianet_ms import Tensor, context
 from luojianet_ms import nn
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.tuple_ = (Tensor([1, 2, 3]),)
         self.number1 = 5
         self.number2 = 0
 
-    def construct(self):
+    def forward(self):
         return self.number1 * self.tuple_, self.number2 * self.tuple_
 
 def test_number_mul_tuple():

@@ -18,7 +18,7 @@ import pytest
 
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
-from luojianet_ms.nn import Cell, Momentum
+from luojianet_ms.nn import Module, Momentum
 from luojianet_ms.ops import operations as P
 from luojianet_ms.train import Model
 from tests.dataset_mock import MindData
@@ -45,7 +45,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, w1, w2, strategy1=None, strategy2=None):
         super().__init__()
         self.less = P.Less().shard(strategy1)
@@ -53,7 +53,7 @@ class Net(Cell):
         self.w2 = Parameter(w2, "w2")
         self.select = P.Select().shard(strategy2)
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.less(x, b)
         out = self.select(out, self.w1, self.w2)
         return out

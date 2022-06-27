@@ -20,34 +20,34 @@ import numpy as np
 import pytest
 
 import luojianet_ms.context as context
-from luojianet_ms.nn import Cell, MSELoss
+from luojianet_ms.nn import Module, MSELoss
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.composite import GradOperation
 from luojianet_ms import Tensor
 
 
-class GradWrapWithLoss(Cell):
+class GradWrapWithLoss(Module):
     def __init__(self, network):
         super(GradWrapWithLoss, self).__init__()
         self._grad_all = GradOperation(get_all=True, sens_param=False)
         self._network = network
 
-    def construct(self, inputs, labels):
+    def forward(self, inputs, labels):
         gout = self._grad_all(self._network)(inputs, labels)
         return gout[0]
 
 
-class AddNet(Cell):
+class AddNet(Module):
     def __init__(self):
         super(AddNet, self).__init__()
         self._add = P.Add()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         out = self._add(inputs, inputs)
         return out
 
 
-class InversionLoss(Cell):
+class InversionLoss(Module):
     def __init__(self, network, weights):
         super(InversionLoss, self).__init__()
         self._network = network
@@ -57,7 +57,7 @@ class InversionLoss(Cell):
         self._zeros = P.ZerosLike()
         self._device_target = context.get_context("device_target")
 
-    def construct(self, input_data, target_features):
+    def forward(self, input_data, target_features):
         output = self._network(input_data)
         loss_1 = self._mse_loss(output, target_features) / self._mse_loss(target_features, self._zeros(target_features))
 

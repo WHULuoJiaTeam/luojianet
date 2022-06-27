@@ -25,22 +25,22 @@ from luojianet_ms.ops import functional as F
 from luojianet_ms.ops.composite import GradOperation
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
     @ms_function
-    def construct(self, input_x, grad):
+    def forward(self, input_x, grad):
         return self.grad(self.network)(input_x, grad)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, n):
         super(Net, self).__init__()
         self.ops = nn.BatchNorm2d(n, use_batch_statistics=True, gamma_init=0.5, beta_init=0.5)
 
-    def construct(self, x):
+    def forward(self, x):
         shape = F.shape(x)
         return F.reshape(self.ops(F.reshape(x, (1, -1, shape[2], shape[3]))), shape)
 

@@ -23,7 +23,7 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Prob(nn.Cell):
+class Prob(nn.Module):
     """
     Test class: probability of Uniform distribution.
     """
@@ -31,7 +31,7 @@ class Prob(nn.Cell):
         super(Prob, self).__init__()
         self.u = msd.Uniform([0.0], [[1.0], [2.0]], dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.u.prob(x_)
 
 def test_pdf():
@@ -46,7 +46,7 @@ def test_pdf():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_pdf) < tol).all()
 
-class LogProb(nn.Cell):
+class LogProb(nn.Module):
     """
     Test class: log probability of Uniform distribution.
     """
@@ -54,7 +54,7 @@ class LogProb(nn.Cell):
         super(LogProb, self).__init__()
         self.u = msd.Uniform([0.0], [[1.0], [2.0]], dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.u.log_prob(x_)
 
 def test_log_likelihood():
@@ -69,7 +69,7 @@ def test_log_likelihood():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_logpdf) < tol).all()
 
-class KL(nn.Cell):
+class KL(nn.Module):
     """
     Test class: kl_loss between Uniform distributions.
     """
@@ -77,7 +77,7 @@ class KL(nn.Cell):
         super(KL, self).__init__()
         self.u = msd.Uniform([0.0], [1.5], dtype=dtype.float32)
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         return self.u.kl_loss('Uniform', x_, y_)
 
 def test_kl_loss():
@@ -94,7 +94,7 @@ def test_kl_loss():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_kl_loss) < tol).all()
 
-class Basics(nn.Cell):
+class Basics(nn.Module):
     """
     Test class: mean/sd of Uniform distribution.
     """
@@ -102,7 +102,7 @@ class Basics(nn.Cell):
         super(Basics, self).__init__()
         self.u = msd.Uniform([0.0], [3.0], dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.u.mean(), self.u.sd()
 
 def test_basics():
@@ -117,7 +117,7 @@ def test_basics():
     assert (np.abs(mean.asnumpy() - expect_mean) < tol).all()
     assert (np.abs(sd.asnumpy() - expect_sd) < tol).all()
 
-class Sampling(nn.Cell):
+class Sampling(nn.Module):
     """
     Test class: sample of Uniform distribution.
     """
@@ -126,7 +126,7 @@ class Sampling(nn.Cell):
         self.u = msd.Uniform([0.0], [[1.0], [2.0]], seed=seed, dtype=dtype.float32)
         self.shape = shape
 
-    def construct(self, low=None, high=None):
+    def forward(self, low=None, high=None):
         return self.u.sample(self.shape, low, high)
 
 def test_sample():
@@ -141,7 +141,7 @@ def test_sample():
     output = sample(low, high)
     assert output.shape == (2, 3, 3)
 
-class CDF(nn.Cell):
+class CDF(nn.Module):
     """
     Test class: cdf of Uniform distribution.
     """
@@ -149,7 +149,7 @@ class CDF(nn.Cell):
         super(CDF, self).__init__()
         self.u = msd.Uniform([0.0], [1.0], dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.u.cdf(x_)
 
 def test_cdf():
@@ -164,7 +164,7 @@ def test_cdf():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_cdf) < tol).all()
 
-class LogCDF(nn.Cell):
+class LogCDF(nn.Module):
     """
     Test class: log_cdf of Uniform distribution.
     """
@@ -172,10 +172,10 @@ class LogCDF(nn.Cell):
         super(LogCDF, self).__init__()
         self.u = msd.Uniform([0.0], [1.0], dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.u.log_cdf(x_)
 
-class SF(nn.Cell):
+class SF(nn.Module):
     """
     Test class: survival function of Uniform distribution.
     """
@@ -183,10 +183,10 @@ class SF(nn.Cell):
         super(SF, self).__init__()
         self.u = msd.Uniform([0.0], [1.0], dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.u.survival_function(x_)
 
-class LogSF(nn.Cell):
+class LogSF(nn.Module):
     """
     Test class: log survival function of Uniform distribution.
     """
@@ -194,10 +194,10 @@ class LogSF(nn.Cell):
         super(LogSF, self).__init__()
         self.u = msd.Uniform([0.0], [1.0], dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.u.log_survival(x_)
 
-class EntropyH(nn.Cell):
+class EntropyH(nn.Module):
     """
     Test class: entropy of Uniform distribution.
     """
@@ -205,7 +205,7 @@ class EntropyH(nn.Cell):
         super(EntropyH, self).__init__()
         self.u = msd.Uniform([0.0], [1.0, 2.0], dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.u.entropy()
 
 def test_entropy():
@@ -219,7 +219,7 @@ def test_entropy():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_entropy) < tol).all()
 
-class CrossEntropy(nn.Cell):
+class CrossEntropy(nn.Module):
     """
     Test class: cross_entropy between Uniform distributions.
     """
@@ -227,7 +227,7 @@ class CrossEntropy(nn.Cell):
         super(CrossEntropy, self).__init__()
         self.u = msd.Uniform([0.0], [1.5], dtype=dtype.float32)
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         entropy = self.u.entropy()
         kl_loss = self.u.kl_loss('Uniform', x_, y_)
         h_sum_kl = entropy + kl_loss

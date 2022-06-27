@@ -17,12 +17,12 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.Add()
@@ -30,7 +30,7 @@ class Net(Cell):
         self.mul = P.Mul()
         self.sqrt_grad = G.SqrtGrad()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         sub_res = self.sub(x, y)
         mul_res = self.mul(sub_res, x)
         mul_square_res = P.Square()(mul_res)

@@ -24,12 +24,12 @@ from luojianet_ms.train.model import Model
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.tanh = P.Tanh()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.tanh(x)
 
 

@@ -25,7 +25,7 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_equal_two_const_mstype():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.type_base = mstype.float32
@@ -34,7 +34,7 @@ def test_equal_two_const_mstype():
             self.type_2 = mstype.int32
             self.type_3 = mstype.tuple_
 
-        def construct(self):
+        def forward(self):
             ret_0 = self.type_0 == self.type_base
             ret_1 = self.type_1 == self.type_base
             ret_2 = self.type_2 == self.type_base
@@ -46,11 +46,11 @@ def test_equal_two_const_mstype():
 
 
 def test_equal_two_tensor_mstype():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             ret_x = x.dtype == mstype.float32
             ret_y = y.dtype == mstype.int32
             ret_z = z.dtype == mstype.bool_

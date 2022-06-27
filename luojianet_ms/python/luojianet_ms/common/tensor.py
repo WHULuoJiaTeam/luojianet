@@ -2305,7 +2305,7 @@ class RowTensor:
          [0, 0],
          [0, 0]]
 
-    RowTensor can only be used in the `Cell`'s construct method.
+    RowTensor can only be used in the `Module`'s forward method.
 
     Note:
         RowTensor is not supported in pynative mode.
@@ -2323,11 +2323,11 @@ class RowTensor:
         >>> import luojianet_ms as ms
         >>> import luojianet_ms.nn as nn
         >>> from luojianet_ms import Tensor, RowTensor
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, dense_shape):
         ...         super(Net, self).__init__()
         ...         self.dense_shape = dense_shape
-        ...     def construct(self, indices, values):
+        ...     def forward(self, indices, values):
         ...         x = RowTensor(indices, values, self.dense_shape)
         ...         return x.values, x.indices, x.dense_shape
         >>>
@@ -2365,7 +2365,7 @@ class SparseTensor(COOTensor_):
     """
     A sparse representation of a set of nonzero elements from a tensor at given indices.
 
-    SparseTensor can only be used in the `Cell`'s construct method.
+    SparseTensor can only be used in the `Module`'s forward method.
 
     For a tensor dense, its SparseTensor(indices, values, dense_shape) has
     `dense[indices[i]] = values[i]`.

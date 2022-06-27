@@ -14,7 +14,7 @@
 # limitations under the License.
 # ==============================================================================
 import pytest
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms import context, Tensor, Parameter
 import luojianet_ms.ops.operations as P
 from luojianet_ms.ops import functional as F
@@ -25,7 +25,7 @@ import numpy as np
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class AutoMonadAddnAdamNet(Cell):
+class AutoMonadAddnAdamNet(Module):
     def __init__(self, var, m, v):
         super().__init__()
         self.apply_adam = P.Adam()
@@ -35,7 +35,7 @@ class AutoMonadAddnAdamNet(Cell):
         self.addn = P.AddN()
         self.mul = P.Mul()
 
-    def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
+    def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
         out = self.addn((self.var, self.m, self.v))
         self.apply_adam(self.var, self.m, self.v, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad)
         return out, self.var, self.m, self.v
@@ -87,7 +87,7 @@ def test_auto_monad_addn_adam():
     allclose_nparray(new_v_pyn.asnumpy(), new_v.asnumpy(), 0.001, 0.001)
 
 
-class AutoMonadTwoAssignTwoAddnDependencyNet(Cell):
+class AutoMonadTwoAssignTwoAddnDependencyNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter1 = ms.Parameter(Tensor([1.0], ms.float32), name="parameter1")
@@ -95,7 +95,7 @@ class AutoMonadTwoAssignTwoAddnDependencyNet(Cell):
         self.assign = P.Assign()
         self.addN = P.AddN()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         self.assign(self.parameter1, inputs)
         out = self.addN((inputs, self.parameter1, self.parameter2))
         self.assign(self.parameter2, inputs)
@@ -103,13 +103,13 @@ class AutoMonadTwoAssignTwoAddnDependencyNet(Cell):
         return out
 
 
-class AutoMonadTwoAssignTwoAddnDependencyBenchmarkNet(Cell):
+class AutoMonadTwoAssignTwoAddnDependencyBenchmarkNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter2 = ms.Parameter(Tensor([3.0], ms.float32), name="parameter2")
         self.addN = P.AddN()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         out = self.addN((inputs, inputs, self.parameter2))
         out = self.addN((out, inputs, inputs))
         return out
@@ -127,12 +127,12 @@ def test_auto_monad_read_dependency_two_assign_two_addn():
     allclose_nparray(out1.asnumpy(), out2.asnumpy(), 0.001, 0.001)
 
 
-class ForwardNet(Cell):
+class ForwardNet(Module):
     def __init__(self):
         super(ForwardNet, self).__init__()
         self.weight = Parameter(Tensor(np.array(0), ms.int32), name="param")
 
-    def construct(self, x):
+    def forward(self, x):
         out = 0
         i = 0
         while i < 3:
@@ -142,13 +142,13 @@ class ForwardNet(Cell):
         return out
 
 
-class BackwardNet(Cell):
+class BackwardNet(Module):
     def __init__(self, net):
         super(BackwardNet, self).__init__(auto_prefix=False)
         self.forward_net = net
         self.grad = C.GradOperation(get_all=True)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         grads = self.grad(self.forward_net)(*inputs)
         return grads
 
@@ -171,12 +171,12 @@ def test_load_convert_tensormove():
     assert np.all(graph_mode_grads == output_except)
 
 
-class ForwardNet2(Cell):
+class ForwardNet2(Module):
     def __init__(self):
         super(ForwardNet2, self).__init__()
         self.weight = Parameter(Tensor(np.array(0), ms.int32), name="param")
 
-    def construct(self):
+    def forward(self):
         out = 0
         i = 0
         while i < 3:
@@ -211,13 +211,13 @@ def test_load_eliminate():
     Description: test load eliminate.
     Expectation: No exception.
     """
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.assign = P.Assign()
             self.variable = Parameter(Tensor(0, ms.float32), name="global")
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.variable
             self.assign(self.variable, 0)
             out = x ** 2 + self.variable + out

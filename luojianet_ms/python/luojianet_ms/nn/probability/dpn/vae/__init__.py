@@ -16,7 +16,7 @@
 """
 Variational auto-encoder (VAE).
 
-The interface of VAE, which allows to construct probablity model like DNN model.
+The interface of VAE, which allows to forward probablity model like DNN model.
 """
 
 from .vae import VAE

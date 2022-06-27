@@ -33,14 +33,14 @@ LUOJIANET_MS_HCCL_CONFIG_PATH = "/home/workspace/luojianet_ms_config/hccl/rank_t
 np.random.seed(1)
 os.environ['GLOG_v'] = str(2)
 
-class AllReduceNet(nn.Cell):
+class AllReduceNet(nn.Module):
     def __init__(self):
         super(AllReduceNet, self).__init__()
         self.mul = P.Mul()
         self.all_reduce = P.AllReduce()
         self.add = P.Add()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.mul(x, 2)
         y1 = Tensor(np.array([[2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]])).astype(np.float32)
         z = self.add(x, y1)

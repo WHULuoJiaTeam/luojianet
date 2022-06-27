@@ -30,7 +30,7 @@ def setup_teardown():
     yield
     context.set_context(enable_sparse=False)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -40,22 +40,22 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         return x
 
 
-class NetWithoutWeight(nn.Cell):
+class NetWithoutWeight(nn.Module):
     def __init__(self):
         super(NetWithoutWeight, self).__init__()
         self.matmul = P.MatMul()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.matmul(x, x)
         return x
 
 
-class NetWithSparseGatherV2(nn.Cell):
+class NetWithSparseGatherV2(nn.Module):
     """ NetWithSparseGatherV2 definition """
     def __init__(self):
         super(NetWithSparseGatherV2, self).__init__()
@@ -64,7 +64,7 @@ class NetWithSparseGatherV2(nn.Cell):
         self.axis = 0
         self.gather = P.SparseGatherV2()
 
-    def construct(self, indices, label):
+    def forward(self, indices, label):
         return self.gather(self.weight1, indices, self.axis) + self.weight2
 
 

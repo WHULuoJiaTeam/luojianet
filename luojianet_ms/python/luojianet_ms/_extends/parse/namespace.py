@@ -52,7 +52,7 @@ class Namespace:
 
 class CellNamespace(Namespace):
     """
-    Namespace for Cell object.
+    Namespace for Module object.
 
     Args:
         name (str): Valid module name, it can be imported.

@@ -25,7 +25,7 @@ from luojianet_ms import dtype
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Prob(nn.Cell):
+class Prob(nn.Module):
     """
     Test class: probability of categorical distribution.
     """
@@ -34,7 +34,7 @@ class Prob(nn.Cell):
         super(Prob, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.c.prob(x_)
 
 
@@ -51,7 +51,7 @@ def test_pmf():
     assert (np.abs(output.asnumpy() - expect_pmf) < tol).all()
 
 
-class LogProb(nn.Cell):
+class LogProb(nn.Module):
     """
     Test class: log probability of categorical distribution.
     """
@@ -60,7 +60,7 @@ class LogProb(nn.Cell):
         super(LogProb, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.c.log_prob(x_)
 
 
@@ -77,7 +77,7 @@ def test_log_likelihood():
     assert (np.abs(output.asnumpy() - expect_logpmf) < tol).all()
 
 
-class KL(nn.Cell):
+class KL(nn.Module):
     """
     Test class: kl_loss between categorical distributions.
     """
@@ -86,7 +86,7 @@ class KL(nn.Cell):
         super(KL, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.c.kl_loss('Categorical', x_)
 
 
@@ -100,7 +100,7 @@ def test_kl_loss():
     assert (np.abs(output.asnumpy()) < tol).all()
 
 
-class Sampling(nn.Cell):
+class Sampling(nn.Module):
     """
     Test class: sampling of categorical distribution.
     """
@@ -110,7 +110,7 @@ class Sampling(nn.Cell):
         self.c = msd.Categorical([0.2, 0.1, 0.7], dtype=dtype.int32)
         self.shape = (2, 3)
 
-    def construct(self):
+    def forward(self):
         return self.c.sample(self.shape)
 
 
@@ -123,7 +123,7 @@ def test_sample():
         sample()
 
 
-class Basics(nn.Cell):
+class Basics(nn.Module):
     """
     Test class: mean/var/mode of categorical distribution.
     """
@@ -132,7 +132,7 @@ class Basics(nn.Cell):
         super(Basics, self).__init__()
         self.c = msd.Categorical([0.2, 0.1, 0.7], dtype=dtype.int32)
 
-    def construct(self):
+    def forward(self):
         return self.c.mean(), self.c.var(), self.c.mode()
 
 
@@ -151,7 +151,7 @@ def test_basics():
     assert (np.abs(mode.asnumpy() - expect_mode) < tol).all()
 
 
-class CDF(nn.Cell):
+class CDF(nn.Module):
     """
     Test class: cdf of categorical distributions.
     """
@@ -160,7 +160,7 @@ class CDF(nn.Cell):
         super(CDF, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.c.cdf(x_)
 
 
@@ -177,7 +177,7 @@ def test_cdf():
     assert (np.abs(output.asnumpy() - expect_cdf) < tol).all()
 
 
-class LogCDF(nn.Cell):
+class LogCDF(nn.Module):
     """
     Test class: log cdf of categorical distributions.
     """
@@ -186,7 +186,7 @@ class LogCDF(nn.Cell):
         super(LogCDF, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.c.log_cdf(x_)
 
 
@@ -203,7 +203,7 @@ def test_logcdf():
     assert (np.abs(output.asnumpy() - expect_logcdf) < tol).all()
 
 
-class SF(nn.Cell):
+class SF(nn.Module):
     """
     Test class: survival function of categorical distributions.
     """
@@ -212,7 +212,7 @@ class SF(nn.Cell):
         super(SF, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.c.survival_function(x_)
 
 
@@ -229,7 +229,7 @@ def test_survival():
     assert (np.abs(output.asnumpy() - expect_survival) < tol).all()
 
 
-class LogSF(nn.Cell):
+class LogSF(nn.Module):
     """
     Test class: log survival function of categorical distributions.
     """
@@ -238,7 +238,7 @@ class LogSF(nn.Cell):
         super(LogSF, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.c.log_survival(x_)
 
 
@@ -255,7 +255,7 @@ def test_log_survival():
     assert (np.abs(output.asnumpy() - expect_logsurvival) < tol).all()
 
 
-class EntropyH(nn.Cell):
+class EntropyH(nn.Module):
     """
     Test class: entropy of categorical distributions.
     """
@@ -264,7 +264,7 @@ class EntropyH(nn.Cell):
         super(EntropyH, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self):
+    def forward(self):
         return self.c.entropy()
 
 
@@ -280,7 +280,7 @@ def test_entropy():
     assert (np.abs(output.asnumpy() - expect_entropy) < tol).all()
 
 
-class CrossEntropy(nn.Cell):
+class CrossEntropy(nn.Module):
     """
     Test class: cross entropy between categorical distributions.
     """
@@ -289,7 +289,7 @@ class CrossEntropy(nn.Cell):
         super(CrossEntropy, self).__init__()
         self.c = msd.Categorical([0.7, 0.3], dtype=dtype.int32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         entropy = self.c.entropy()
         kl_loss = self.c.kl_loss('Categorical', x_)
         h_sum_kl = entropy + kl_loss

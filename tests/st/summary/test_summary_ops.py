@@ -32,7 +32,7 @@ from tests.st.summary.dataset import create_mnist_dataset
 from tests.security_utils import security_off_wrap
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """LeNet network"""
 
     def __init__(self, num_class=10, num_channel=1, include_top=True):
@@ -53,8 +53,8 @@ class LeNet5(nn.Cell):
         self.tensor_summary = P.TensorSummary()
         self.channel = Tensor(num_channel)
 
-    def construct(self, x):
-        """construct"""
+    def forward(self, x):
+        """forward"""
         self.image_summary('x', x)
         self.tensor_summary('x', x)
         x = self.conv1(x)

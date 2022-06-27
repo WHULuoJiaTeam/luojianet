@@ -296,8 +296,8 @@ class MyMSCallback(Callback):
         self.events.append(event)
 
 
-class Net(nn.Cell):
-    def construct(self, x, y):
+class Net(nn.Module):
+    def forward(self, x, y):
         return x
 
 

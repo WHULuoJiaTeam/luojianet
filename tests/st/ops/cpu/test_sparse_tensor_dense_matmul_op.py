@@ -24,22 +24,22 @@ from luojianet_ms.ops import composite as C
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class SparseDenseMatmulNet(nn.Cell):
+class SparseDenseMatmulNet(nn.Module):
     def __init__(self, adjoint_st=False, adjoint_dt=False):
         super(SparseDenseMatmulNet, self).__init__()
         self.matmul = nn.SparseTensorDenseMatmul(adjoint_st, adjoint_dt)
 
-    def construct(self, indices, values, dens_shape, dense):
+    def forward(self, indices, values, dens_shape, dense):
         return self.matmul(indices, values, dens_shape, dense)
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, network):
         super(GradNet, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=False)
         self.network = network
 
-    def construct(self, indices, values, dens_shape, dense):
+    def forward(self, indices, values, dens_shape, dense):
         return self.grad(self.network)(indices, values, dens_shape, dense)
 
 

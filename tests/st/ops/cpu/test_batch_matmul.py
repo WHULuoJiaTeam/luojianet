@@ -24,12 +24,12 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.ops import operations as P
 
 
-class BatchMatMulNet(nn.Cell):
+class BatchMatMulNet(nn.Module):
     def __init__(self, transpose_a=False, transpose_b=False):
         super(BatchMatMulNet, self).__init__()
         self.batch_matmul = P.BatchMatMul(transpose_a, transpose_b)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.batch_matmul(x, y)
 
 

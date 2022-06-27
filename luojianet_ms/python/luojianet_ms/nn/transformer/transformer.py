@@ -27,7 +27,7 @@ from luojianet_ms import context
 import luojianet_ms.common.dtype as mstype
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import functional as F
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms._checkparam import Validator
 from luojianet_ms import log as logger
 from luojianet_ms.parallel._utils import _get_parallel_mode, _is_sharding_propagation
@@ -333,7 +333,7 @@ default_transformer_config = TransformerOpParallelConfig()
 default_embedding_parallel_config = EmbeddingOpParallelConfig()
 
 
-class FeedForward(Cell):
+class FeedForward(Module):
     r"""
         The multilayer perceptron with two linear layers with dropout applied at final output. The first linear
         will project the input dimension from hidden_size to ffn_hidden_size, the second linear will project the
@@ -516,7 +516,7 @@ class FeedForward(Cell):
             self.dropout_4d.shard(((dp, ep, 1, 1),))
             self.cast = P.Cast()
 
-    def construct(self, x):
+    def forward(self, x):
         _check_input_shape(F.shape(x), "x", self.cls_name, [2, 3])
         _check_input_dtype(F.dtype(x), "x", [mstype.float32, mstype.float16], self.cls_name)
         x = self.cast(x, mstype.float16)
@@ -533,7 +533,7 @@ class FeedForward(Cell):
         return output
 
 
-class AttentionMask(Cell):
+class AttentionMask(Module):
     r"""
         Get the Lower triangular matrix from the input mask. The input mask is a 2D tensor (batch_size, seq_length)
         with 1 and 0, where 1 indicates the current position is a valid token, otherwise not.
@@ -588,7 +588,7 @@ class AttentionMask(Cell):
         self.lower_triangle_mask = Tensor(np.tril(ones), mstype.float32)
         self.multiply = P.Mul().shard(((parallel_config.data_parallel, 1, 1), (1, 1, 1)))
 
-    def construct(self, input_mask):
+    def forward(self, input_mask):
         _check_input_shape(F.shape(input_mask), "input_mask", self.cls_name, 2)
         _check_input_dtype(F.dtype(input_mask), "input_mask", [mstype.float32, mstype.float16], self.cls_name)
         _check_input_shape_value(F.shape(input_mask), 1, "input_mask", self.cls_name, self.seq_length)
@@ -607,7 +607,7 @@ class AttentionMask(Cell):
         return attention_mask
 
 
-class VocabEmbedding(Cell):
+class VocabEmbedding(Module):
     """
         The embedding lookup table from the 0-th dim of the parameter table. When the parallel_config.vocab_emb_dp is
         True and in the `AUTO_PARALLEL` mode, the embedding lookup will be trained by the data parallel way, as the
@@ -683,14 +683,14 @@ class VocabEmbedding(Cell):
             self.gather = P.GatherV2().shard(((parallel_config.model_parallel, 1), (1, 1)))
             logger.info(f"Using {parallel_config.data_parallel} model parallel for the embedding lookup.")
 
-    def construct(self, input_ids):
+    def forward(self, input_ids):
         _check_input_shape(F.shape(input_ids), "input_ids", self.cls_name, 2)
         _check_input_dtype(F.dtype(input_ids), "input_ids", [mstype.int32], self.cls_name)
         output = self.gather(self.embedding_table, input_ids, 0)
         return output, self.embedding_table
 
 
-class MultiHeadAttention(Cell):
+class MultiHeadAttention(Module):
     r"""
         This is an implementation of multihead attention in the paper `Attention is all you need
         <https://arxiv.org/pdf/1706.03762v5.pdf>`_. Given the query vector with source length, and the
@@ -1055,7 +1055,7 @@ class MultiHeadAttention(Cell):
                 self.less = P.Less().shard(((1, 1, 1), (1, 1, 1)))
                 self.mul1 = P.Mul().shard(((1, 1, 1, 1), (1, 1, 1, 1)))
 
-    def construct(self, query_tensor, key_tensor, value_tensor, attention_mask, key_past=None,
+    def forward(self, query_tensor, key_tensor, value_tensor, attention_mask, key_past=None,
                   value_past=None, batch_valid_length=None):
         self._check_inputs(query_tensor, key_tensor, value_tensor, attention_mask, key_past,
                            value_past, batch_valid_length)
@@ -1277,7 +1277,7 @@ class MultiHeadAttention(Cell):
         return attention_merge
 
 
-class TransformerEncoderLayer(Cell):
+class TransformerEncoderLayer(Module):
     r"""
         Transformer Encoder Layer. This is an implementation of the single layer of the transformer
         encoder layer, including multihead attention and feedward layer.
@@ -1577,7 +1577,7 @@ class TransformerEncoderLayer(Cell):
             raise RuntimeError(f"The {self.cls_name} only support sharding propagation or "
                                f"semi-auto parallel mode now.")
 
-    def construct(self, x, input_mask, init_reset=True, batch_valid_length=None):
+    def forward(self, x, input_mask, init_reset=True, batch_valid_length=None):
         self._check_input(x, input_mask, init_reset, batch_valid_length)
         x_shape = F.shape(x)
         x = F.reshape(x, (-1, x_shape[-1]))
@@ -1682,7 +1682,7 @@ class TransformerEncoderLayer(Cell):
         return True
 
 
-class TransformerDecoderLayer(Cell):
+class TransformerDecoderLayer(Module):
     r"""
         Transformer Decoder Layer. This is an implementation of the single layer of the transformer
         decoder layer, including self-attention, cross attention and feedward layer. When the encoder_output is None,
@@ -2007,7 +2007,7 @@ class TransformerDecoderLayer(Cell):
             raise RuntimeError(f"The {self.cls_name} only support sharding propagation or "
                                f"semi-auto parallel mode now.")
 
-    def construct(self, hidden_stats,
+    def forward(self, hidden_stats,
                   decoder_mask,
                   encoder_output=None,
                   memory_mask=None,
@@ -2157,7 +2157,7 @@ def _get_lambda_func(total_layer=None):
         Default setting for the pipeline is: `(layer_id + offset) // (layers / pipeline_stage)`.
 
         Args:
-            network(Cell) - Represents the transformer block
+            network(Module) - Represents the transformer block
             layer_id(int) - Means the layer index for the current module, counts from zero.
             offset(int) - Means the layer_index needs an offset, if there are other modules in the net.
             layers(int) - The total layers used for the model.
@@ -2192,7 +2192,7 @@ def _get_lambda_func(total_layer=None):
     return _set_parallel_configure_for_layer
 
 
-class TransformerEncoder(Cell):
+class TransformerEncoder(Module):
     r"""
         Transformer Encoder module with multi-layer stacked of `TransformerEncoderLayer`, including multihead self
         attention and feedforward layer.
@@ -2218,7 +2218,7 @@ class TransformerEncoder(Cell):
                 Should be dtype.float32 or dtype.float16. Default dtype.float32.
             lambda_func: A function can determine the fusion index, pipeline stages and recompute attribute. If the
                 user wants to determine the pipeline stage and gradient aggregation fusion, the user can pass a
-                function that accepts `network`, `layer_id`, `offset`, `parallel_config`, `layers`. The `network(Cell)`
+                function that accepts `network`, `layer_id`, `offset`, `parallel_config`, `layers`. The `network(Module)`
                 represents the transformer block, `layer_id(int)` means the layer index for the current module, counts
                 from zero, `offset(int)` means the layer_index needs an offset, if there are other modules in the net.
                 The default setting for the pipeline is: `(layer_id + offset) // (layers / pipeline_stage)`.
@@ -2420,7 +2420,7 @@ class TransformerEncoder(Cell):
             raise RuntimeError(f"The {self.cls_name} only support sharding propagation or "
                                f"semi-auto parallel mode now.")
 
-    def construct(self, hidden_states, attention_mask, init_reset=True, batch_valid_length=None):
+    def forward(self, hidden_states, attention_mask, init_reset=True, batch_valid_length=None):
         present_layer = ()
         if self.use_moe:
             accum_loss = self.aux_loss
@@ -2443,7 +2443,7 @@ class TransformerEncoder(Cell):
         return hidden_states, present_layer
 
 
-class TransformerDecoder(Cell):
+class TransformerDecoder(Module):
     r"""
         Transformer Decoder module with multi-layer stacked of `TransformerDecoderLayer`, including multihead self
         attention, cross attention and feedforward layer.
@@ -2470,7 +2470,7 @@ class TransformerDecoder(Cell):
                 'hsigmoid', 'logsigmoid' and so on. Default: gelu.
             lambda_func: A function can determine the fusion index, pipeline stages and recompute attribute. If the
                 user wants to determine the pipeline stage and gradient aggregation fusion, the user can pass a
-                function that accepts `network`, `layer_id`, `offset`, `parallel_config`, `layers`. The `network(Cell)`
+                function that accepts `network`, `layer_id`, `offset`, `parallel_config`, `layers`. The `network(Module)`
                 represents the transformer block, `layer_id(int)` means the layer index for the current module, counts
                 from zero, `offset(int)` means the layer_index needs an offset, if there are other modules in the net.
                 The default setting for the pipeline is: `(layer_id + offset) // (layers / pipeline_stage)`.
@@ -2659,7 +2659,7 @@ class TransformerDecoder(Cell):
             raise RuntimeError(f"The {self.cls_name} only support sharding propagation or "
                                f"semi-auto parallel mode now.")
 
-    def construct(self, hidden_states, attention_mask, encoder_output=None, memory_mask=None,
+    def forward(self, hidden_states, attention_mask, encoder_output=None, memory_mask=None,
                   init_reset=True, batch_valid_length=None):
         present_layer = ()
         if self.use_moe:
@@ -2688,7 +2688,7 @@ class TransformerDecoder(Cell):
         return hidden_states, present_layer
 
 
-class Transformer(Cell):
+class Transformer(Module):
     r"""
         Transformer module including encoder and decoder. The difference with the original implements is the module use
         the residual addition before the layer normalization. And the default hidden act is `gelu`.
@@ -2720,7 +2720,7 @@ class Transformer(Cell):
                 Should be dtype.float32 or dtype.float16. Default dtype.float32.
             lambda_func: A function can determine the fusion index, pipeline stages and recompute attribute. If the user
                 wants to determine the pipeline stage and gradient aggregation fusion, the user can pass a function
-                that accepts `network`, `layer_id`, `offset`, `parallel_config`, `layers`. The `network(Cell)`
+                that accepts `network`, `layer_id`, `offset`, `parallel_config`, `layers`. The `network(Module)`
                 represents the transformer block, `layer_id(int)` means the layer index for the current module, counts
                 from zero, `offset(int)` means the layer_index needs an offset, if there are other modules in the net.
                 The default setting for the pipeline is: `(layer_id + offset) // ((encoder_layers + decoder_layers)
@@ -2980,7 +2980,7 @@ class Transformer(Cell):
             raise RuntimeError(f"The {self.cls_name} only support sharding propagation or "
                                f"semi-auto parallel mode now.")
 
-    def construct(self, encoder_inputs,
+    def forward(self, encoder_inputs,
                   encoder_masks,
                   decoder_inputs=None,
                   decoder_masks=None,

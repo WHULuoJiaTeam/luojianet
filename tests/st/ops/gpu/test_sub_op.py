@@ -22,21 +22,21 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.sub(x, y)
 
-class NetDynamic(nn.Cell):
+class NetDynamic(nn.Module):
     def __init__(self):
         super(NetDynamic, self).__init__()
         self.d = inner.GpuConvertToDynamicShape()
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.d(x)
         y = self.d(y)
         out = self.sub(x, y)

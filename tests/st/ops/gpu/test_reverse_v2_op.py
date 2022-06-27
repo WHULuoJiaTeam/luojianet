@@ -21,12 +21,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class ReverseV2Net(nn.Cell):
+class ReverseV2Net(nn.Module):
     def __init__(self, axis):
         super(ReverseV2Net, self).__init__()
         self.reverse_v2 = P.ReverseV2(axis)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.reverse_v2(x)
 
 

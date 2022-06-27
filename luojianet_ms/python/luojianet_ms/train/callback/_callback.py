@@ -30,7 +30,7 @@ def set_cur_net(net):
     Set current net for which we are using to save checkpoint.
 
     Args:
-        net (Cell): train network
+        net (Module): train network
     """
     global _cur_net
     _cur_net = net

@@ -23,7 +23,7 @@ from luojianet_ms.common.api import ms_function
 from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 
-class BatchToSpaceNet(nn.Cell):
+class BatchToSpaceNet(nn.Module):
     def __init__(self, nptype, block_size=2, input_shape=(4, 1, 2, 2)):
         super(BatchToSpaceNet, self).__init__()
         self.BatchToSpace = P.BatchToSpace(block_size=block_size, crops=[[0, 0], [0, 0]])
@@ -35,7 +35,7 @@ class BatchToSpaceNet(nn.Cell):
 
 
     @ms_function
-    def construct(self):
+    def forward(self):
         y1 = self.BatchToSpace(self.x1)
         return y1
 

@@ -41,7 +41,7 @@ axis3 = 1
 keep_dims3 = False
 
 
-class ReduceAll(nn.Cell):
+class ReduceAll(nn.Module):
     def __init__(self):
         super(ReduceAll, self).__init__()
 
@@ -63,7 +63,7 @@ class ReduceAll(nn.Cell):
 
 
     @ms_function
-    def construct(self):
+    def forward(self):
         return (P.ReduceAll(self.keep_dims0)(self.x0, self.axis0),
                 P.ReduceAll(self.keep_dims1)(self.x1, self.axis1),
                 P.ReduceAll(self.keep_dims2)(self.x2, self.axis2),
@@ -101,7 +101,7 @@ x_2 = np.array([[True, True], [True, True], [True, False], [False, False]])
 axis_2 = 0
 
 
-class ReduceAllDynamic(nn.Cell):
+class ReduceAllDynamic(nn.Module):
     def __init__(self, x, axis):
         super(ReduceAllDynamic, self).__init__()
         self.reduceall = P.ReduceAll(False)
@@ -109,7 +109,7 @@ class ReduceAllDynamic(nn.Cell):
         self.x = x
         self.axis = axis
 
-    def construct(self):
+    def forward(self):
         dynamic_x = self.test_dynamic(self.x)
         return self.reduceall(dynamic_x, self.axis)
 

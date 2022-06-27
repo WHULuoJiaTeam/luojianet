@@ -22,7 +22,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
 
@@ -34,7 +34,7 @@ class Net(nn.Cell):
         self.add = P.Add()
 
     @ms_function
-    def construct(self):
+    def forward(self):
         output = self.maxpool(self.x)
         return output[0]
 

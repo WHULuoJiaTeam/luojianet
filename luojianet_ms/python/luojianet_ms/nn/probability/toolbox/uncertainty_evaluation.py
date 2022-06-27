@@ -24,7 +24,7 @@ from luojianet_ms.train import Model
 from luojianet_ms.train.callback import LossMonitor, ModelCheckpoint, CheckpointConfig
 from luojianet_ms.train.serialization import load_checkpoint, load_param_into_net
 
-from ...cell import Cell
+from ...cell import Module
 from ...layer.basic import Dense, Flatten, Dropout
 from ...layer.container import SequentialCell
 from ...layer.conv import Conv2d
@@ -38,7 +38,7 @@ class UncertaintyEvaluation:
     Toolbox for Uncertainty Evaluation.
 
     Args:
-        model (Cell): The model for uncertainty evaluation.
+        model (Module): The model for uncertainty evaluation.
         train_dataset (Dataset): A dataset iterator to train model.
         task_type (str): Option for the task types of model
 
@@ -99,8 +99,8 @@ class UncertaintyEvaluation:
         self.concat = P.Concat(axis=0)
         self.sum = P.ReduceSum()
         self.pow = P.Pow()
-        if not isinstance(model, Cell):
-            raise TypeError('The model should be Cell type.')
+        if not isinstance(model, Module):
+            raise TypeError('The model should be Module type.')
         if task_type not in ('regression', 'classification'):
             raise ValueError(
                 'The task should be regression or classification.')
@@ -235,7 +235,7 @@ class UncertaintyEvaluation:
         return uncertainty
 
 
-class EpistemicUncertaintyModel(Cell):
+class EpistemicUncertaintyModel(Module):
     """
     Using dropout during training and eval time which is approximate bayesian inference. In this way,
     we can obtain the epistemic uncertainty (also called model uncertainty).
@@ -255,7 +255,7 @@ class EpistemicUncertaintyModel(Cell):
                              "it can not evaluate epistemic uncertainty so far.")
         self.epi_model = self._make_epistemic(epi_model)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.epi_model(x)
         return x
 
@@ -279,7 +279,7 @@ class EpistemicUncertaintyModel(Cell):
         return None
 
 
-class AleatoricUncertaintyModel(Cell):
+class AleatoricUncertaintyModel(Module):
     """
     The aleatoric uncertainty (also called data uncertainty) is caused by input data, to obtain this
     uncertainty, the loss function must be modified in order to add variance into loss.
@@ -298,7 +298,7 @@ class AleatoricUncertaintyModel(Cell):
             self.ale_model, self.var_layer, self.pred_layer = self._make_aleatoric(
                 ale_model)
 
-    def construct(self, x):
+    def forward(self, x):
         if self.task == 'classification':
             pred = self.ale_model(x)
             var = self.var_layer(pred)
@@ -325,7 +325,7 @@ class AleatoricUncertaintyModel(Cell):
         return ale_model, var_layer, dense_layer
 
 
-class AleatoricLoss(Cell):
+class AleatoricLoss(Module):
     """
     The loss function of aleatoric model, different modification methods are adopted for
     classification and regression.
@@ -346,7 +346,7 @@ class AleatoricLoss(Cell):
             self.exp = P.Exp()
             self.pow = P.Pow()
 
-    def construct(self, data_pred, y):
+    def forward(self, data_pred, y):
         y_pred, var = data_pred
         if self.task == 'classification':
             sample_times = 10

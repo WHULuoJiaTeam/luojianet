@@ -22,7 +22,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, input_scale, input_bias, input_mean, input_variance, is_training):
         super(Net, self).__init__()
         self.fused_bn_ex = P.BatchNorm(is_training=is_training, epsilon=1e-5, momentum=0.9)
@@ -30,7 +30,7 @@ class Net(nn.Cell):
         self.bias = Parameter(input_bias, name='b')
         self.mean = Parameter(input_mean, name='mean')
         self.variance = Parameter(input_variance, name='variance')
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.fused_bn_ex(input_x, self.scale, self.bias, self.mean, self.variance)
 
 

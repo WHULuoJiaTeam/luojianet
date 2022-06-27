@@ -31,7 +31,7 @@ from luojianet_ms.ops import composite as C
 from luojianet_ms import context
 
 
-class OneParameterNet(nn.Cell):
+class OneParameterNet(nn.Module):
     """Net definition"""
     def __init__(self, param_type, strategy1, strategy2):
         super(OneParameterNet, self).__init__()
@@ -39,13 +39,13 @@ class OneParameterNet(nn.Cell):
         self.p1 = Parameter(Tensor(np.ones([48, 16]).astype(param_type)), name="weight1")
         self.sub = P.Sub().shard(strategy2)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = P.Cast()(x, ms.float16)
         p1 = P.Cast()(self.p1, ms.float16)
         x = self.fc1(x, p1)
         return self.sub(x, 0)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
     def __init__(self, param_type, strategy1, strategy2):
         super(Net, self).__init__()
@@ -55,7 +55,7 @@ class Net(nn.Cell):
         self.p2 = Parameter(Tensor(np.ones([64, 16]).astype(param_type)), name="weight2", parallel_optimizer=False)
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = P.Cast()(x, ms.float16)
         p1 = P.Cast()(self.p1, ms.float16)
         p2 = P.Cast()(self.p2, ms.float16)
@@ -64,7 +64,7 @@ class Net(nn.Cell):
         return self.sub(x, y)
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """Net definition"""
     def __init__(self, param_type, strategy1, strategy2):
         super(Net2, self).__init__()
@@ -74,7 +74,7 @@ class Net2(nn.Cell):
         self.net2.pipeline_stage = 1
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out1 = self.net1(x, y)
         out2 = self.net2(x, y)
         return self.sub(out1, out2)
@@ -96,9 +96,9 @@ def get_dataset():
 class CustomOptimizer(AdamWeightDecay):
     def __init__(self, params):
         super(CustomOptimizer, self).__init__(params)
-        self.optimizer = super(CustomOptimizer, self).construct
+        self.optimizer = super(CustomOptimizer, self).forward
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         grads = C.clip_by_global_norm(gradients)
         return self.optimizer(grads)
 

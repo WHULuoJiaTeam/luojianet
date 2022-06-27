@@ -65,7 +65,7 @@ class ASGD(Optimizer):
 
             - weight_decay: Optional. If "weight_decay" in the keys, the value of corresponding weight decay
               will be used. If not, the `weight_decay` in the optimizer will be used. It should be noted that weight
-              decay can be a constant value or a Cell. It is a Cell only when dynamic weight decay is applied. Dynamic
+              decay can be a constant value or a Module. It is a Module only when dynamic weight decay is applied. Dynamic
               weight decay is similar to dynamic learning rate, users need to customize a weight decay schedule only
               with global step as input, and during training, the optimizer calls the instance of WeightDecaySchedule
               to get the weight decay value of current step.
@@ -97,14 +97,14 @@ class ASGD(Optimizer):
         lambd (float): The decay term. Default: 1e-4.
         alpha (float): The power for eta update. Default: 0.75.
         t0 (float): The point of starting averaging. Default: 1e6.
-        weight_decay (Union[float, int, Cell]): Weight decay (L2 penalty). Default: 0.0.
+        weight_decay (Union[float, int, Module]): Weight decay (L2 penalty). Default: 0.0.
 
             - float: The fixed weight decay value. Must be equal to or greater than 0.
 
             - int: The fixed weight decay value. Must be equal to or greater than 0. It will be converted to float.
 
-            - Cell: Weight decay is dynamic. During training, the optimizer calls the instance of
-              the Cell with step as the input to get the weight decay value of current step.
+            - Module: Weight decay is dynamic. During training, the optimizer calls the instance of
+              the Module with step as the input to get the weight decay value of current step.
 
     Inputs:
         - **gradients** (tuple[Tensor]) - The gradients of `params`, the shape is the same as `params`.
@@ -174,7 +174,7 @@ class ASGD(Optimizer):
         self.cast = P.Cast()
         self.squeeze = P.Squeeze()
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         gradients = self.decay_weight(gradients)
         gradients = self.gradients_centralization(gradients)
         gradients = self.scale_grad(gradients)

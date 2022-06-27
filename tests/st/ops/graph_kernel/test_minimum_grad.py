@@ -17,16 +17,16 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations._grad_ops as G
 
 
-class MinmumGradNet(Cell):
+class MinmumGradNet(Module):
     def __init__(self):
         super(MinmumGradNet, self).__init__()
         self.minimum_grad = G.MinimumGrad()
 
-    def construct(self, x, y, dy):
+    def forward(self, x, y, dy):
         return self.minimum_grad(x, y, dy)
 
 

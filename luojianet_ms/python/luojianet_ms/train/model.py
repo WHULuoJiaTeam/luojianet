@@ -101,14 +101,14 @@ class Model:
         When uses mixed precision functions, `global_step` in optimizer may be different from `cur_step_num` in Model.
 
     Args:
-        network (Cell): A training or testing network.
-        loss_fn (Cell): Objective function. If `loss_fn` is None, the `network` should contain the calculation of loss
+        network (Module): A training or testing network.
+        loss_fn (Module): Objective function. If `loss_fn` is None, the `network` should contain the calculation of loss
                         and parallel if needed. Default: None.
-        optimizer (Cell): Optimizer for updating the weights. If `optimizer` is None, the `network` needs to
+        optimizer (Module): Optimizer for updating the weights. If `optimizer` is None, the `network` needs to
                           do backpropagation and update weights. Default value: None.
         metrics (Union[dict, set]): A Dictionary or a set of metrics for model evaluation.
                                     eg: {'accuracy', 'recall'}. Default: None.
-        eval_network (Cell): Network for evaluation. If not defined, `network` and `loss_fn` would be wrapped as
+        eval_network (Module): Network for evaluation. If not defined, `network` and `loss_fn` would be wrapped as
                              `eval_network` . Default: None.
         eval_indexes (list): It is used when eval_network is defined. If `eval_indexes` is None by default, all outputs
                              of the `eval_network` would be passed to metrics. If `eval_indexes` is set, it must contain
@@ -147,7 +147,7 @@ class Model:
     Examples:
         >>> from luojianet_ms import Model, nn
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, num_class=10, num_channel=1):
         ...         super(Net, self).__init__()
         ...         self.conv1 = nn.Conv2d(num_channel, 6, 5, pad_mode='valid')
@@ -159,7 +159,7 @@ class Model:
         ...         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         ...         self.flatten = nn.Flatten()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         x = self.max_pool2d(self.relu(self.conv1(x)))
         ...         x = self.max_pool2d(self.relu(self.conv2(x)))
         ...         x = self.flatten(x)

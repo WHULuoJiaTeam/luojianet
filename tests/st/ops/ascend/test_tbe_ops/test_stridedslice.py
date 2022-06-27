@@ -18,13 +18,13 @@ import numpy as np
 import luojianet_ms.context as context
 import luojianet_ms.ops.operations as P
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.train.model import Model
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, begin, end, stride):
         super(Net, self).__init__()
         self.stridedslice = P.StridedSlice()
@@ -32,7 +32,7 @@ class Net(Cell):
         self.end = end
         self.stride = stride
 
-    def construct(self, input_):
+    def forward(self, input_):
         x = self.stridedslice(input_, self.begin, self.end, self.stride)
         return x
 

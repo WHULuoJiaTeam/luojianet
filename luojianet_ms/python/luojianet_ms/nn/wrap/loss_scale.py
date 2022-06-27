@@ -18,7 +18,7 @@ import luojianet_ms.context as context
 from luojianet_ms.context import ParallelMode
 from luojianet_ms.parallel._utils import _get_enable_parallel_optimizer
 from .cell_wrapper import TrainOneStepCell
-from ..cell import Cell
+from ..cell import Module
 from ...common import Tensor, RowTensor
 from ...common.parameter import Parameter
 from ...ops import functional as F
@@ -55,7 +55,7 @@ def _tensor_grad_overflow_row_tensor(grad):
     return grad_overflow(grad.values)
 
 
-class DynamicLossScaleUpdateCell(Cell):
+class DynamicLossScaleUpdateCell(Module):
     r"""
     Dynamic Loss scale update cell.
 
@@ -87,14 +87,14 @@ class DynamicLossScaleUpdateCell(Cell):
         >>> from luojianet_ms import Tensor, Parameter, nn
         >>> import luojianet_ms.ops as ops
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, in_features, out_features):
         ...         super(Net, self).__init__()
         ...         self.weight = Parameter(Tensor(np.ones([in_features, out_features]).astype(np.float32)),
         ...                                 name='weight')
         ...         self.matmul = ops.MatMul()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output = self.matmul(x, self.weight)
         ...         return output
         ...
@@ -141,7 +141,7 @@ class DynamicLossScaleUpdateCell(Cell):
         """
         return self.loss_scale_value
 
-    def construct(self, loss_scale, overflow):
+    def forward(self, loss_scale, overflow):
         overflow_cond = overflow
         loss_scale_on_overflow = self.select(overflow_cond, self.max(loss_scale * self.reciprocal(self.scale_factor),
                                                                      self.minimum_loss_scale), loss_scale)
@@ -159,7 +159,7 @@ class DynamicLossScaleUpdateCell(Cell):
         return overflow
 
 
-class FixedLossScaleUpdateCell(Cell):
+class FixedLossScaleUpdateCell(Module):
     """
     Update cell with fixed loss scaling value.
 
@@ -184,14 +184,14 @@ class FixedLossScaleUpdateCell(Cell):
         >>> import numpy as np
         >>> from luojianet_ms import Tensor, Parameter, nn, ops
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, in_features, out_features):
         ...         super(Net, self).__init__()
         ...         self.weight = Parameter(Tensor(np.ones([in_features, out_features]).astype(np.float32)),
         ...                                 name='weight')
         ...         self.matmul = ops.MatMul()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output = self.matmul(x, self.weight)
         ...         return output
         ...
@@ -220,7 +220,7 @@ class FixedLossScaleUpdateCell(Cell):
         """
         return self.loss_scale_value
 
-    def construct(self, _, overflow):
+    def forward(self, _, overflow):
         return overflow
 
 
@@ -228,15 +228,15 @@ class TrainOneStepWithLossScaleCell(TrainOneStepCell):
     r"""
     Network training with loss scaling.
 
-    This is a training step with loss scaling. It takes a network, an optimizer and a scale update Cell(or a Tensor) as
+    This is a training step with loss scaling. It takes a network, an optimizer and a scale update Module(or a Tensor) as
     args. The loss scale value can be updated in both host side or device side. If you want to update it on
-    host side, using a value of Tensor type as `scale_sense`, otherwise, using a Cell instance for updating loss
+    host side, using a value of Tensor type as `scale_sense`, otherwise, using a Module instance for updating loss
     scale as `scale_sense`.
 
     Args:
-        network (Cell): The training network. The network only supports single output.
-        optimizer (Cell): Optimizer for updating the network parameters.
-        scale_sense (Union[Tensor, Cell]): If this value is a Cell, it will be called by `TrainOneStepWithLossScaleCell`
+        network (Module): The training network. The network only supports single output.
+        optimizer (Module): Optimizer for updating the network parameters.
+        scale_sense (Union[Tensor, Module]): If this value is a Module, it will be called by `TrainOneStepWithLossScaleCell`
             to update loss scale. If this value is a Tensor, the loss scale can be modified by `set_sense_scale`,
             the shape should be :math:`()` or :math:`(1,)`.
 
@@ -251,7 +251,7 @@ class TrainOneStepWithLossScaleCell(TrainOneStepCell):
         - **loss scale** (Tensor) -  The loss scale value, the shape is :math:`()` or :math:`(1,)`.
 
     Raises:
-        TypeError: If `scale_sense` is neither Cell nor Tensor.
+        TypeError: If `scale_sense` is neither Module nor Tensor.
         ValueError: If shape of `scale_sense` is neither (1,) nor ().
 
     Supported Platforms:
@@ -263,19 +263,19 @@ class TrainOneStepWithLossScaleCell(TrainOneStepCell):
         >>> from luojianet_ms import Tensor, Parameter, nn, ops
         >>> from luojianet_ms import dtype as mstype
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, in_features, out_features):
         ...         super(Net, self).__init__()
         ...         self.weight = Parameter(Tensor(np.ones([in_features, out_features]).astype(np.float32)),
         ...                                 name='weight')
         ...         self.matmul = ops.MatMul()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output = self.matmul(x, self.weight)
         ...         return output
         ...
         >>> size, in_features, out_features = 16, 16, 10
-        >>> #1) when the type of scale_sense is Cell:
+        >>> #1) when the type of scale_sense is Module:
         >>> net = Net(in_features, out_features)
         >>> loss = nn.MSELoss()
         >>> optimizer = nn.Momentum(net.trainable_params(), learning_rate=0.1, momentum=0.9)
@@ -312,7 +312,7 @@ class TrainOneStepWithLossScaleCell(TrainOneStepCell):
         self.is_distributed = (self.parallel_mode != ParallelMode.STAND_ALONE)
         self.gpu_target = (context.get_context("device_target") == "GPU")
         self.loss_scaling_manager = None
-        if isinstance(scale_sense, Cell):
+        if isinstance(scale_sense, Module):
             self.loss_scaling_manager = scale_sense
             self.scale_sense = Parameter(Tensor(scale_sense.get_loss_scale(), dtype=mstype.float32),
                                          name="scale_sense")
@@ -325,10 +325,10 @@ class TrainOneStepWithLossScaleCell(TrainOneStepCell):
                                  .format(scale_sense.shape))
         else:
             raise TypeError("For 'TrainOneStepWithLossScaleCell', "
-                            "the 'scale_sense' must be Cell or Tensor, but got 'scale_sense' type: {}."
+                            "the 'scale_sense' must be Module or Tensor, but got 'scale_sense' type: {}."
                             .format(type(scale_sense)))
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         weights = self.weights
         loss = self.network(*inputs)
         scaling_sens = self.scale_sense
@@ -474,13 +474,13 @@ def tensor_shard_grad_scale_pipeline(scale, grad, accu_grad):
 
 class _TrainPipelineWithLossScaleCell(TrainOneStepCell):
     """
-    Append an optimizer to the training network after that the construct
+    Append an optimizer to the training network after that the forward
     function can be called to create the backward graph.
 
     Args:
-        network (Cell): The training network. Note that loss function should have been added.
+        network (Module): The training network. Note that loss function should have been added.
         optimizer (Optimizer): Optimizer for updating the weights.
-        scale_sense (Cell): Cell to do the loss scale.
+        scale_sense (Module): Module to do the loss scale.
     """
     def __init__(self, network, optimizer, scale_sense):
         super(_TrainPipelineWithLossScaleCell, self).__init__(network, optimizer, sens=None)
@@ -507,7 +507,7 @@ class _TrainPipelineWithLossScaleCell(TrainOneStepCell):
         self.hyper_map = C.HyperMap()
         self.reshape = P.Reshape()
         self.loss_scaling_manager = None
-        if isinstance(scale_sense, Cell):
+        if isinstance(scale_sense, Module):
             self.loss_scaling_manager = scale_sense
             self.scale_sense = Parameter(Tensor(scale_sense.get_loss_scale(), dtype=mstype.float32),
                                          name="scale_sense")
@@ -518,10 +518,10 @@ class _TrainPipelineWithLossScaleCell(TrainOneStepCell):
                 raise ValueError("The shape of 'scale_sense' must be (1,) or (), but got {}"
                                  .format(scale_sense.shape))
         else:
-            raise TypeError("The 'scale_sense' must be Cell or Tensor, but got {}".format(type(scale_sense)))
+            raise TypeError("The 'scale_sense' must be Module or Tensor, but got {}".format(type(scale_sense)))
         self.opt_shard = _get_enable_parallel_optimizer()
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         loss = self.network(*inputs)
         scaling_sens = self.scale_sense
         init = self.alloc_status()

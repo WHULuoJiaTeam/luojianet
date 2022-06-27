@@ -158,7 +158,7 @@ class ConstructMaskAndReplaceTensor:
         self.mask_tensor = np.ones((self.batch_size, self.max_seq_length))
         self.replace_tensor = np.zeros((self.batch_size, self.max_seq_length))
 
-    def construct(self, seq_lengths):
+    def forward(self, seq_lengths):
         for i in range(self.batch_size):
             for j in range(seq_lengths[i]):
                 rand1 = np.random.random()

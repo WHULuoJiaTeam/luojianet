@@ -121,7 +121,7 @@ class CMUArcticDataset(MappableDataset, AudioBaseDataset):
     voices that may be used as is. The entire package is distributed as free software, without restriction
     on commercial or non-commercial use.
 
-    You can construct the following directory structure from CMUArctic dataset and read by LuoJiaNET's API.
+    You can forward the following directory structure from CMUArctic dataset and read by LuoJiaNET's API.
 
     .. code-block::
 
@@ -255,7 +255,7 @@ class GTZANDataset(MappableDataset, AudioBaseDataset):
     classical, country, disco, hiphop, jazz, metal, pop, reggae and reggae), each of which is
     represented by 100 tracks. The tracks are all 22050Hz Mono 16-bit audio files in .wav format.
 
-    You can construct the following directory structure from GTZAN dataset and read by LuoJiaNET's API.
+    You can forward the following directory structure from GTZAN dataset and read by LuoJiaNET's API.
 
     .. code-block::
 
@@ -389,7 +389,7 @@ class LibriTTSDataset(MappableDataset, AudioBaseDataset):
     The LibriTTS corpus is designed for TTS research. It is derived from the original materials (mp3 audio
     files from LibriVox and text files from Project Gutenberg) of the LibriSpeech corpus.
 
-    You can construct the following directory structure from LibriTTS dataset and read by LuoJiaNET's API.
+    You can forward the following directory structure from LibriTTS dataset and read by LuoJiaNET's API.
 
     .. code-block::
 

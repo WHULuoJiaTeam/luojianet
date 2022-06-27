@@ -26,7 +26,7 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 
 
-class PackNet(nn.Cell):
+class PackNet(nn.Module):
     def __init__(self, nptype):
         super(PackNet, self).__init__()
         self.stack = P.Stack(axis=2)
@@ -38,7 +38,7 @@ class PackNet(nn.Cell):
             Tensor(np.arange(16).reshape(2, 2, 2, 2).astype(nptype)), [2, 2, 2, 2]), name='x2')
 
     @ms_function
-    def construct(self):
+    def forward(self):
         return self.stack((self.x1, self.x2))
 
 

@@ -27,26 +27,26 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_tuple_index_by_negative_number():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.index = -1
             self.split = P.Split(axis=0, output_num=4)
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.split(x)
             ret = [out[-1], out[-2], out[-3], out[-4]]
             ret[-1] = 100
             return ret
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net, get_all):
             super(GradNet, self).__init__()
             self.forward_net = net
             self.sens = Tensor(np.ones((2, 2), np.float32) * 5)
             self.grad_all = C.GradOperation(get_all=get_all)
 
-        def construct(self, x):
+        def forward(self, x):
             return self.grad_all(self.forward_net)(x)
 
     net = Net()
@@ -57,13 +57,13 @@ def test_tuple_index_by_negative_number():
 
 
 def test_tuple_index_by_negative_number_out_bound():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.index = -1
             self.split = P.Split(axis=0, output_num=2)
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.split(x)
             return out[-1], out[-2], out[-3]
 

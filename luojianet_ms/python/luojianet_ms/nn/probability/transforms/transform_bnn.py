@@ -31,7 +31,7 @@ class TransformToBNN:
     Transform Deep Neural Network (DNN) model to Bayesian Neural Network (BNN) model.
 
     Args:
-        trainable_dnn (Cell): A trainable DNN model (backbone) wrapped by TrainOneStepCell.
+        trainable_dnn (Module): A trainable DNN model (backbone) wrapped by TrainOneStepCell.
         dnn_factor ((int, float): The coefficient of backbone's loss, which is computed by loss function. Default: 1.
         bnn_factor (int, float): The coefficient of KL loss, which is KL divergence of Bayesian layer. Default: 1.
 
@@ -41,7 +41,7 @@ class TransformToBNN:
     Examples:
         >>> from luojianet_ms.nn.probability import bnn_layers
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.conv = nn.Conv2d(3, 64, 3, has_bias=False, weight_init='normal')
@@ -50,7 +50,7 @@ class TransformToBNN:
         ...         self.flatten = nn.Flatten()
         ...         self.fc = nn.Dense(64*224*224, 12) # padding=0
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         x = self.conv(x)
         ...         x = self.bn(x)
         ...         x = self.relu(x)
@@ -111,7 +111,7 @@ class TransformToBNN:
                 `add_conv_args` must not duplicate arguments in `get_conv_args`. Default: None.
 
         Returns:
-            Cell, a trainable BNN model wrapped by TrainOneStepCell.
+            Module, a trainable BNN model wrapped by TrainOneStepCell.
 
         Supported Platforms:
             ``Ascend`` ``GPU``
@@ -146,16 +146,16 @@ class TransformToBNN:
         Transform a specific type of layers in DNN model to corresponding BNN layer.
 
         Args:
-            dnn_layer_type (Cell): The type of DNN layer to be transformed to BNN layer. The optional values are
+            dnn_layer_type (Module): The type of DNN layer to be transformed to BNN layer. The optional values are
                 nn.Dense and nn.Conv2d.
-            bnn_layer_type (Cell): The type of BNN layer to be transformed to. The optional values are
+            bnn_layer_type (Module): The type of BNN layer to be transformed to. The optional values are
                 DenseReparam and ConvReparam.
             get_args: The arguments gotten from the DNN layer. Default: None.
             add_args (dict): The new arguments added to BNN layer. Note that the arguments in `add_args` must not
                 duplicate arguments in `get_args`. Default: None.
 
         Returns:
-            Cell, a trainable model wrapped by TrainOneStepCell, whose specific type of layer is transformed to the
+            Module, a trainable model wrapped by TrainOneStepCell, whose specific type of layer is transformed to the
             corresponding bayesian layer.
 
         Supported Platforms:

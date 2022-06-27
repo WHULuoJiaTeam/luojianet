@@ -25,14 +25,14 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class UpdateCacheNet(nn.Cell):
+class UpdateCacheNet(nn.Module):
     def __init__(self, x):
         super().__init__()
         self.ops = P.UpdateCache()
         self.max_num = 9999
         self.x = Parameter(Tensor(x), name='x')
 
-    def construct(self, indices, update):
+    def forward(self, indices, update):
         return self.ops(self.x, indices, update, self.max_num)
 
 

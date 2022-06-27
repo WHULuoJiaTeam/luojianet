@@ -172,7 +172,7 @@ def _incremental_gmres(A, b, x0, tol, restart, maxiter, M, atol):
     return x0, F.select(r_norm > atol, iters, _INT_ZERO)
 
 
-class GMRES(nn.Cell):
+class GMRES(nn.Module):
     """
     Given given A and b, GMRES solves the linear system:
 
@@ -186,7 +186,7 @@ class GMRES(nn.Cell):
         self.M = M
         self.solve_method = solve_method
 
-    def construct(self, b, x0, tol, restart, maxiter, atol):
+    def forward(self, b, x0, tol, restart, maxiter, atol):
         # Constant tensor which avoids loop unrolling
         A = _normalize_matvec(self.A)
         M = _normalize_matvec(self.M)
@@ -202,7 +202,7 @@ class GMRES(nn.Cell):
         return x, info
 
 
-class GMRESV2(nn.Cell):
+class GMRESV2(nn.Module):
     """
     This is a new version of GMRES, which contains all parameters in a graph.
     """
@@ -222,7 +222,7 @@ class GMRESV2(nn.Cell):
             return a_t_csr
         return a.T
 
-    def construct(self, A, b, x0, tol, restart, maxiter, M, atol):
+    def forward(self, A, b, x0, tol, restart, maxiter, M, atol):
         A = _normalize_matvec(A)
         M = _normalize_matvec(M)
         x = x0
@@ -246,7 +246,7 @@ class GMRESV2(nn.Cell):
         if not isinstance(M, (Tensor, CSRTensor)):
             M = F.eye(n, n, b.dtype)
         A_T = self.transpose(A)
-        grad_b, _ = self.construct(A_T, dout[0], x0, tol, restart, maxiter, M, atol)
+        grad_b, _ = self.forward(A_T, dout[0], x0, tol, restart, maxiter, M, atol)
         if isinstance(A, CSRTensor):
             grad_a_dense = -1 * F.reshape(grad_b, (n, 1)) * F.reshape(out[0], (1, n))
             values = F.csr_gather(A.indptr, A.indices, grad_a_dense, A.shape)
@@ -390,7 +390,7 @@ def _cg(A, b, x0, tol, atol, maxiter, M):
     return x, F.select(_norm(r) > atol_, k, _INT_ZERO)
 
 
-class CG(nn.Cell):
+class CG(nn.Module):
     """Use Conjugate Gradient iteration to solve the linear system:
 
     .. math::
@@ -402,13 +402,13 @@ class CG(nn.Cell):
         self.A = A
         self.M = M
 
-    def construct(self, b, x0, tol, atol, maxiter):
+    def forward(self, b, x0, tol, atol, maxiter):
         A = _normalize_matvec(self.A)
         M = _normalize_matvec(self.M)
         return _cg(A, b, x0, tol, atol, maxiter, M)
 
 
-class CGv2(nn.Cell):
+class CGv2(nn.Module):
     """
     This is a new version of CG, which contains all parameters in a graph.
     """
@@ -416,7 +416,7 @@ class CGv2(nn.Cell):
     def __init__(self):
         super(CGv2, self).__init__()
 
-    def construct(self, A, b, x0, tol, atol, maxiter, M):
+    def forward(self, A, b, x0, tol, atol, maxiter, M):
         A = _normalize_matvec(A)
         M = _normalize_matvec(M)
         return _cg(A, b, x0, tol, atol, maxiter, M)
@@ -430,7 +430,7 @@ class CGv2(nn.Cell):
         n = b.shape[0]
         if not isinstance(M, (Tensor, CSRTensor)):
             M = F.eye(n, n, b.dtype)
-        grad_b, _ = self.construct(A, dout[0], x0, tol, atol, maxiter, M)
+        grad_b, _ = self.forward(A, dout[0], x0, tol, atol, maxiter, M)
         if isinstance(A, CSRTensor):
             grad_a_dense = -1 * F.reshape(grad_b, (n, 1)) * F.reshape(out[0], (1, n))
             values = F.csr_gather(A.indptr, A.indices, grad_a_dense, A.shape)
@@ -530,7 +530,7 @@ def cg(A, b, x0=None, *, tol=1e-5, atol=0.0, maxiter=None, M=None, callback=None
     return x, info
 
 
-class BiCGStab(nn.Cell):
+class BiCGStab(nn.Module):
     """Figure 2.10 from Barrett R, et al. 'Templates for the sulution of linear systems:
     building blocks for iterative methods', 1994, pg. 24-25
     """
@@ -540,7 +540,7 @@ class BiCGStab(nn.Cell):
         self.A = A
         self.M = M
 
-    def construct(self, b, x0, tol, atol, maxiter):
+    def forward(self, b, x0, tol, atol, maxiter):
         # Constant tensors which avoid loop unrolling
         _INT_ZERO = _to_tensor(0)
         _INT_NEG_ONE = _to_tensor(-1)

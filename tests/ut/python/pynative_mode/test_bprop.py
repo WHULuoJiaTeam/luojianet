@@ -29,7 +29,7 @@ def setup_module():
     context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -38,7 +38,7 @@ class Net(nn.Cell):
         self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
 
     @ms_function
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = x * self.z
         out = self.matmul(x, y)
         return x, out

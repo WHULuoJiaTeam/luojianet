@@ -23,7 +23,7 @@ import numpy as np
 import pytest
 
 
-class MAPPOCriticNet(nn.Cell):
+class MAPPOCriticNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.linear1_actor = nn.Dense(54,  # input local obs shape
@@ -33,27 +33,27 @@ class MAPPOCriticNet(nn.Cell):
                                       has_bias=False,
                                       activation=nn.Tanh())
 
-    def construct(self, x):
+    def forward(self, x):
         # Feature Extraction
         x = self.linear1_actor(x)
 
         return x
 
 
-class MAPPOActor(nn.Cell):
+class MAPPOActor(nn.Module):
 
     def __init__(self, actor_net):
         super().__init__()
         self.actor_net = actor_net
 
-    def construct(self, inputs_data):
+    def forward(self, inputs_data):
         _, global_obs = inputs_data
         out = self.actor_net(global_obs)
 
         return out
 
 
-class TestClass(nn.Cell):
+class TestClass(nn.Module):
     def __init__(self, actor_list):
         super().__init__()
         self.zero = Tensor(0, ms.int32)

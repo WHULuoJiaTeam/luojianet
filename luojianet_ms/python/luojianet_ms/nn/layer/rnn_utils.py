@@ -18,7 +18,7 @@ import numpy as np
 import luojianet_ms.common.dtype as mstype
 import luojianet_ms.ops as P
 from luojianet_ms.ops.primitive import constexpr
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.common.tensor import Tensor
 
 
@@ -27,27 +27,27 @@ def arange(start, stop, step):
     return Tensor(np.arange(start, stop, step), mstype.int32)
 
 
-class _Reverse(Cell):
+class _Reverse(Module):
     """Reverse operator, like Reverse in luojianet_ms"""
     def __init__(self, dim):
         super().__init__()
         self.dim = dim
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         dim_size = input_x.shape[self.dim]
         reversed_indexes = arange(dim_size-1, -1, -1)
         output = P.Gather()(input_x, reversed_indexes, self.dim)
         return output
 
 
-class _ReverseSequence(Cell):
+class _ReverseSequence(Module):
     """Reverse sequence operator, like ReverseSequenceV2 in luojianet_ms"""
     def __init__(self, seq_dim, batch_dim=0):
         super().__init__()
         self.seq_dim = seq_dim
         self.batch_dim = batch_dim
 
-    def construct(self, x, seq_lengths):
+    def forward(self, x, seq_lengths):
         """Defines the ReverseSequence operator computation performed."""
         batch_size = x.shape[self.batch_dim]
         max_seq_len = x.shape[self.seq_dim]

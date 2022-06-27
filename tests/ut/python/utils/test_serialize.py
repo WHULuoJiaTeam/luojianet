@@ -38,7 +38,7 @@ from luojianet_ms.train.serialization import save_checkpoint, load_checkpoint, l
 from tests.security_utils import security_off_wrap
 from ..ut_filter import non_graph_engine
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition."""
 
     def __init__(self, num_classes=10):
@@ -50,7 +50,7 @@ class Net(nn.Cell):
         self.flatten = nn.Flatten()
         self.fc = nn.Dense(int(224 * 224 * 64 / 16), num_classes)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -73,12 +73,12 @@ def setup_module():
 def test_save_graph():
     """ test_exec_save_graph """
     context.set_context(mode=context.GRAPH_MODE, print_file_path="print/print.pb")
-    class Net1(nn.Cell):
+    class Net1(nn.Module):
         def __init__(self):
             super(Net1, self).__init__()
             self.add = P.Add()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             z = self.add(x, y)
             return z
 
@@ -368,7 +368,7 @@ def test_save_and_load_checkpoint_for_network_with_encryption():
         os.remove(ckpt_path)
 
 
-class MYNET(nn.Cell):
+class MYNET(nn.Module):
     """ NET definition """
 
     def __init__(self):
@@ -379,7 +379,7 @@ class MYNET(nn.Cell):
         self.flatten = nn.Flatten()
         self.fc = nn.Dense(64 * 222 * 222, 3)  # padding=0
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)
@@ -416,12 +416,12 @@ def test_mindir_export_and_load_with_encryption():
 
 
 
-class PrintNet(nn.Cell):
+class PrintNet(nn.Module):
     def __init__(self):
         super(PrintNet, self).__init__()
         self.print = P.Print()
 
-    def construct(self, int8, uint8, int16, uint16, int32, uint32, int64, uint64, flt16, flt32, flt64, bool_,
+    def forward(self, int8, uint8, int16, uint16, int32, uint32, int64, uint64, flt16, flt32, flt64, bool_,
                   scale1, scale2):
         self.print('============tensor int8:==============', int8)
         self.print('============tensor int8:==============', int8)

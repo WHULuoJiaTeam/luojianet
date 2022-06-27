@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class ResizeBilinearGradNet(nn.Cell):
+class ResizeBilinearGradNet(nn.Module):
     def __init__(self, align_corners=False):
         super(ResizeBilinearGradNet, self).__init__()
         self.rb1 = G.ResizeBilinearGrad(align_corners=align_corners)
 
-    def construct(self, dy, size):
+    def forward(self, dy, size):
         return self.rb1(dy, size)
 
 

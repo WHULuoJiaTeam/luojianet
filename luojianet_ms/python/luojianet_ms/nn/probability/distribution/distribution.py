@@ -16,7 +16,7 @@
 """basic"""
 from luojianet_ms import context
 from luojianet_ms.ops import operations as P
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms._checkparam import Validator as validator
 from ._utils.utils import raise_none_error, cast_to_tensor, set_param_type, cast_type_for_device,\
     raise_not_implemented_util
@@ -24,7 +24,7 @@ from ._utils.utils import CheckTuple, CheckTensor
 from ._utils.custom_ops import broadcast_to, exp_generic, log_generic
 
 
-class Distribution(Cell):
+class Distribution(Module):
     """
     Base class for all mathematical distributions.
 
@@ -752,9 +752,9 @@ class Distribution(Cell):
         """
         return self._sample(*args, **kwargs)
 
-    def construct(self, name, *args, **kwargs):
+    def forward(self, name, *args, **kwargs):
         """
-        Override `construct` in Cell.
+        Override `forward` in Module.
 
         Note:
             Names of supported functions include:

@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetSigmoidCrossEntropyWithLogits(nn.Cell):
+class NetSigmoidCrossEntropyWithLogits(nn.Module):
     def __init__(self):
         super(NetSigmoidCrossEntropyWithLogits, self).__init__()
         self.loss = P.SigmoidCrossEntropyWithLogits()
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         return self.loss(logits, labels)
 
 

@@ -18,42 +18,42 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 
 
-class SumOutNet(Cell):
+class SumOutNet(Module):
     def __init__(self):
         super(SumOutNet, self).__init__()
         self.square = P.Square()
         self.sum = P.ReduceSum()
 
-    def construct(self, x):
+    def forward(self, x):
         mul_res = self.square(x)
         return self.sum(mul_res, (0,))
 
 
-class SingleOutNet(Cell):
+class SingleOutNet(Module):
     def __init__(self):
         super(SingleOutNet, self).__init__()
         self.add = P.Add()
         self.mul = P.Mul()
         self.sum = P.ReduceSum()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         mul_res = self.mul(x, y)
         sum_res = self.sum(mul_res, ())
         return self.add(sum_res, x)
 
 
-class MultiOutNet(Cell):
+class MultiOutNet(Module):
     def __init__(self):
         super(MultiOutNet, self).__init__()
         self.add = P.Add()
         self.mul = P.Mul()
         self.sum = P.ReduceSum()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         add_res = self.add(x, y)
         mul_res = self.mul(add_res, add_res)
         sum_res = self.sum(mul_res, ())

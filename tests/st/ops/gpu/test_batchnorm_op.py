@@ -20,29 +20,29 @@ import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.common.parameter import ParameterTuple
 from luojianet_ms.nn import BatchNorm2d, BatchNorm1d, SGD
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import composite as C
 
 
-class Batchnorm_Net(Cell):
+class Batchnorm_Net(Module):
     def __init__(self, c, weight, bias, moving_mean, moving_var_init, use_batch_statistics=None):
         super(Batchnorm_Net, self).__init__()
         self.bn = BatchNorm2d(c, eps=0.00001, momentum=0.1, beta_init=bias, gamma_init=weight,
                               moving_mean_init=moving_mean, moving_var_init=moving_var_init,
                               use_batch_statistics=use_batch_statistics)
 
-    def construct(self, input_data):
+    def forward(self, input_data):
         x = self.bn(input_data)
         return x
 
 
-class Grad(Cell):
+class Grad(Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_data, sens):
+    def forward(self, input_data, sens):
         gout = self.grad(self.network)(input_data, sens)
         return gout
 
@@ -204,7 +204,7 @@ def test_infer_backward():
     assert np.allclose(ms_out_grad_np[0].asnumpy(), expect_output)
 
 
-class BatchNorm1d_Net(Cell):
+class BatchNorm1d_Net(Module):
     def __init__(self, affine=True, gamma_init='ones', beta_init='zeros', moving_mean_init='zeros',
                  moving_var_init='ones', use_batch_statistics=None):
         super(BatchNorm1d_Net, self).__init__()
@@ -212,18 +212,18 @@ class BatchNorm1d_Net(Cell):
                                moving_mean_init=moving_mean_init, moving_var_init=moving_var_init,
                                use_batch_statistics=use_batch_statistics)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.bn1(x)
         return x
 
-class GradByListNet(Cell):
+class GradByListNet(Module):
     def __init__(self, network):
         super(GradByListNet, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True, get_by_list=True)
         self.network = network
         self.params = ParameterTuple(network.trainable_params())
 
-    def construct(self, x, dy):
+    def forward(self, x, dy):
         grad_op = self.grad(self.network, self.params)
         output = grad_op(x, dy)
         return output

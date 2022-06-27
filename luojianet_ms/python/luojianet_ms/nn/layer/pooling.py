@@ -19,12 +19,12 @@ from luojianet_ms.ops import functional as F
 from luojianet_ms._checkparam import Rel, Validator as validator
 from luojianet_ms.ops.primitive import constexpr
 import luojianet_ms.context as context
-from ..cell import Cell
+from ..cell import Module
 
 __all__ = ['AvgPool2d', 'MaxPool2d', 'AvgPool1d', 'MaxPool1d']
 
 
-class _PoolNd(Cell):
+class _PoolNd(Module):
     """N-D  AvgPool"""
 
     def __init__(self, kernel_size, stride, pad_mode, data_format="NCHW"):
@@ -56,7 +56,7 @@ class _PoolNd(Cell):
         self.kernel_size = _check_int_or_tuple('kernel_size', kernel_size)
         self.stride = _check_int_or_tuple('stride', stride)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         pass
 
     def extend_repr(self):
@@ -140,7 +140,7 @@ class MaxPool2d(_PoolNd):
                                   pad_mode=self.pad_mode,
                                   data_format=self.format)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.max_pool(x)
         return out
 
@@ -220,7 +220,7 @@ class MaxPool1d(_PoolNd):
         self.expand = P.ExpandDims()
         self.squeeze = P.Squeeze(2)
 
-    def construct(self, x):
+    def forward(self, x):
         _shape_check(self.shape(x), self.cls_name)
         x = self.expand(x, 2)
         output = self.max_pool(x)
@@ -303,7 +303,7 @@ class AvgPool2d(_PoolNd):
                                   pad_mode=self.pad_mode,
                                   data_format=self.format)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.avg_pool(x)
 
 
@@ -387,7 +387,7 @@ class AvgPool1d(_PoolNd):
         self.expand = P.ExpandDims()
         self.squeeze = P.Squeeze(2)
 
-    def construct(self, x):
+    def forward(self, x):
         x = F.depend(x, _shape_check(self.shape(x), self.cls_name))
         batch, channel, width = self.shape(x)
         if width == self.kernel_size[1]:

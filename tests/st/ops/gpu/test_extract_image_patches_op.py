@@ -23,12 +23,12 @@ import luojianet_ms.nn as nn
 import luojianet_ms.context as context
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, ksizes, strides, rates, padding="valid"):
         super(Net, self).__init__()
         self.extractimagepatches = inner.ExtractImagePatches(ksizes, strides, rates, padding)
 
-    def construct(self, input_tensor):
+    def forward(self, input_tensor):
         return self.extractimagepatches(input_tensor)
 
 

@@ -33,12 +33,12 @@ LUOJIANET_MS_HCCL_CONFIG_PATH = "/home/workspace/luojianet_ms_config/hccl/rank_t
 np.random.seed(1)
 os.environ['GLOG_v'] = str(2)
 
-class AllReduceNet(nn.Cell):
+class AllReduceNet(nn.Module):
     def __init__(self):
         super(AllReduceNet, self).__init__()
         self.all_reduce = P.AllReduce()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.all_reduce(x)
 
 def train_allreduce_8p(q, device_id, device_num):

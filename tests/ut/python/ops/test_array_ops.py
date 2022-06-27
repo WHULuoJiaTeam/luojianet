@@ -21,7 +21,7 @@ import luojianet_ms as ms
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
 from luojianet_ms.common import dtype as mstype
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms import ops
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import prim_attr_register
@@ -170,7 +170,7 @@ class CustomOP2(PrimitiveWithInfer):
         raise NotImplementedError
 
 
-class CustNet1(Cell):
+class CustNet1(Module):
     def __init__(self):
         super(CustNet1, self).__init__()
         self.op = CustomOP()
@@ -179,14 +179,14 @@ class CustNet1(Cell):
         self.int1 = 3
         self.float1 = 5.1
 
-    def construct(self):
+    def forward(self):
         x = self.op(self.t1, self.t1, self.int1,
                     self.float1, self.int1, self.float1,
                     self.t2, self.t1, self.int1)
         return x
 
 
-class CustNet2(Cell):
+class CustNet2(Module):
     def __init__(self):
         super(CustNet2, self).__init__()
         self.op = CustomOP2()
@@ -194,11 +194,11 @@ class CustNet2(Cell):
         self.t2 = Tensor(np.ones([1, 5]), dtype=ms.float16)
         self.int1 = 3
 
-    def construct(self):
+    def forward(self):
         return self.op(self.t1, self.t2, self.int1)
 
 
-class CustNet3(Cell):
+class CustNet3(Module):
     def __init__(self):
         super(CustNet3, self).__init__()
         self.op = P.ReduceSum()
@@ -206,11 +206,11 @@ class CustNet3(Cell):
         self.t2 = Tensor(np.ones([1, 5]), dtype=ms.float16)
         self.t2 = 1
 
-    def construct(self):
+    def forward(self):
         return self.op(self.t1, self.t2)
 
 
-class MathBinaryNet1(Cell):
+class MathBinaryNet1(Module):
     def __init__(self):
         super(MathBinaryNet1, self).__init__()
         self.add = P.Add()
@@ -218,11 +218,11 @@ class MathBinaryNet1(Cell):
         self.max = P.Maximum()
         self.number = 3
 
-    def construct(self, x):
+    def forward(self, x):
         return self.add(x, self.number) + self.mul(x, self.number) + self.max(x, self.number)
 
 
-class MathBinaryNet2(Cell):
+class MathBinaryNet2(Module):
     def __init__(self):
         super(MathBinaryNet2, self).__init__()
         self.less_equal = P.LessEqual()
@@ -232,131 +232,131 @@ class MathBinaryNet2(Cell):
         self.number = 3
         self.flag = True
 
-    def construct(self, x):
+    def forward(self, x):
         ret_less_equal = self.logic_and(self.less_equal(x, self.number), self.flag)
         ret_greater = self.logic_or(self.greater(x, self.number), self.flag)
         return self.logic_or(ret_less_equal, ret_greater)
 
 
-class BatchToSpaceNet(Cell):
+class BatchToSpaceNet(Module):
     def __init__(self):
         super(BatchToSpaceNet, self).__init__()
         block_size = 2
         crops = [[0, 0], [0, 0]]
         self.batch_to_space = P.BatchToSpace(block_size, crops)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.batch_to_space(x)
 
 
-class SpaceToBatchNet(Cell):
+class SpaceToBatchNet(Module):
     def __init__(self):
         super(SpaceToBatchNet, self).__init__()
         block_size = 2
         paddings = [[0, 0], [0, 0]]
         self.space_to_batch = P.SpaceToBatch(block_size, paddings)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.space_to_batch(x)
 
 
-class PackNet(Cell):
+class PackNet(Module):
     def __init__(self):
         super(PackNet, self).__init__()
         self.stack = P.Stack()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.stack((x, x))
 
 
-class UnpackNet(Cell):
+class UnpackNet(Module):
     def __init__(self):
         super(UnpackNet, self).__init__()
         self.unstack = P.Unstack()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.unstack(x)
 
 
-class SpaceToDepthNet(Cell):
+class SpaceToDepthNet(Module):
     def __init__(self):
         super(SpaceToDepthNet, self).__init__()
         block_size = 2
         self.space_to_depth = P.SpaceToDepth(block_size)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.space_to_depth(x)
 
 
-class DepthToSpaceNet(Cell):
+class DepthToSpaceNet(Module):
     def __init__(self):
         super(DepthToSpaceNet, self).__init__()
         block_size = 2
         self.depth_to_space = P.DepthToSpace(block_size)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.depth_to_space(x)
 
 
-class BatchToSpaceNDNet(Cell):
+class BatchToSpaceNDNet(Module):
     def __init__(self):
         super(BatchToSpaceNDNet, self).__init__()
         block_shape = [2, 2]
         crops = [[0, 0], [0, 0]]
         self.batch_to_space_nd = P.BatchToSpaceND(block_shape, crops)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.batch_to_space_nd(x)
 
 
-class SpaceToBatchNDNet(Cell):
+class SpaceToBatchNDNet(Module):
     def __init__(self):
         super(SpaceToBatchNDNet, self).__init__()
         block_shape = [2, 2]
         paddings = [[0, 0], [0, 0]]
         self.space_to_batch_nd = P.SpaceToBatchND(block_shape, paddings)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.space_to_batch_nd(x)
 
 
-class TensorShapeNet(Cell):
+class TensorShapeNet(Module):
     def __init__(self):
         super(TensorShapeNet, self).__init__()
         self.shape = P.TensorShape()
         self.unique = P.Unique()
 
-    def construct(self, x):
+    def forward(self, x):
         x, _ = self.unique(x)
         return self.shape(x)
 
 
-class UniqueFunc1(Cell):
+class UniqueFunc1(Module):
     def __init__(self):
         super(UniqueFunc1, self).__init__()
         self.unique = ops.unique
 
-    def construct(self, x):
+    def forward(self, x):
         y, idx = self.unique(x)
         return y, idx
 
 
-class UniqueFunc2(Cell):
+class UniqueFunc2(Module):
     def __init__(self):
         super(UniqueFunc2, self).__init__()
         self.unique = ops.unique
 
-    def construct(self, x):
+    def forward(self, x):
         y, idx = self.unique(x)
         return y, idx
 
 
-class RangeNet(Cell):
+class RangeNet(Module):
     def __init__(self):
         super(RangeNet, self).__init__()
         self.range_ops = inner.Range(1.0, 8.0, 2.0)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.range_ops(x)
 
 

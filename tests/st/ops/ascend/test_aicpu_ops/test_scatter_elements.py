@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.scatter_elements = P.ScatterElements(1)
 
-    def construct(self, data, indices, updates):
+    def forward(self, data, indices, updates):
         return self.scatter_elements(data, indices, updates)
 
 

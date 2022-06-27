@@ -25,22 +25,22 @@ from luojianet_ms.ops import composite as C
 from luojianet_ms.common import dtype as mstype
 
 
-class PReLUOpNet(nn.Cell):
+class PReLUOpNet(nn.Module):
     def __init__(self):
         super(PReLUOpNet, self).__init__()
         self.prelu = P.PReLU()
 
-    def construct(self, x, weight):
+    def forward(self, x, weight):
         return self.prelu(x, weight)
 
 
-class PReLUOpGradNet(nn.Cell):
+class PReLUOpGradNet(nn.Module):
     def __init__(self, net):
         super(PReLUOpGradNet, self).__init__()
         self.forward = net
         self.grad = C.GradOperation(get_all=True, sens_param=False)
 
-    def construct(self, x, weight):
+    def forward(self, x, weight):
         return self.grad(self.forward)(x, weight)
 
 

@@ -16,7 +16,7 @@
 """container"""
 from collections import OrderedDict
 from abc import abstractmethod
-from ..cell import Cell
+from ..cell import Module
 
 __all__ = ['SequentialCell', 'CellList']
 
@@ -33,11 +33,11 @@ def _valid_index(cell_num, index, op_name=None):
 
 
 def _valid_cell(cell, op_name=None):
-    """Internal function, used to check whether the input cell is a subclass of Cell."""
-    if issubclass(cell.__class__, Cell):
+    """Internal function, used to check whether the input cell is a subclass of Module."""
+    if issubclass(cell.__class__, Module):
         return True
     msg_prefix = f"For '{op_name}'," if op_name else ""
-    raise TypeError(f'{msg_prefix} each cell should be subclass of Cell, but got {type(cell).__name__}.')
+    raise TypeError(f'{msg_prefix} each cell should be subclass of Module, but got {type(cell).__name__}.')
 
 
 def _get_prefix_and_index(cells):
@@ -79,13 +79,13 @@ def _get_prefix_and_index(cells):
 
 class _CellListBase:
     """
-    An interface for base the Cell as list.
+    An interface for base the Module as list.
 
-    The sequential Cell may be iterated using the construct method using for-in statement.
-    But there are some scenarios that the construct method built-in does not fit.
+    The sequential Module may be iterated using the forward method using for-in statement.
+    But there are some scenarios that the forward method built-in does not fit.
     For convenience, we provide an interface that indicates the sequential
-    Cell may be interpreted as list of Cells, so it can be accessed using
-    iterator or subscript when a sequential Cell instantiate is accessed
+    Module may be interpreted as list of Cells, so it can be accessed using
+    iterator or subscript when a sequential Module instantiate is accessed
     by iterator or subscript, it will be interpreted as a list of Cells.
     """
     def __init__(self):
@@ -100,14 +100,14 @@ class _CellListBase:
     def __getitem__(self, index):
         pass
 
-    def construct(self):
+    def forward(self):
         raise NotImplementedError
 
 
-class SequentialCell(Cell):
+class SequentialCell(Module):
     """
-    Sequential Cell container. For more details about Cell, please refer to
-    `Cell <https://www.luojianet_ms.cn/docs/en/r1.7/api_python/nn/luojianet_ms.nn.Cell.html#luojianet_ms.nn.Cell>`_.
+    Sequential Module container. For more details about Module, please refer to
+    `Module <https://www.luojianet_ms.cn/docs/en/r1.7/api_python/nn/luojianet_ms.nn.Module.html#luojianet_ms.nn.Module>`_.
 
     A list of Cells will be added to it in the order they are passed in the constructor.
     Alternatively, an ordered dict of cells can also be passed in.
@@ -117,10 +117,10 @@ class SequentialCell(Cell):
         the layers in a Sequential are connected in a cascading way.
 
     Args:
-        args (list, OrderedDict): List or OrderedDict of subclass of Cell.
+        args (list, OrderedDict): List or OrderedDict of subclass of Module.
 
     Inputs:
-        - **x** (Tensor) - Tensor with shape according to the first Cell in the sequence.
+        - **x** (Tensor) - Tensor with shape according to the first Module in the sequence.
 
     Outputs:
         Tensor, the output Tensor with shape depending on the input `x` and defined sequence of Cells.
@@ -241,10 +241,10 @@ class SequentialCell(Cell):
 
     def append(self, cell):
         """
-        Appends a given Cell to the end of the list.
+        Appends a given Module to the end of the list.
 
         Args:
-            cell(Cell): The Cell to be appended.
+            cell(Module): The Module to be appended.
 
         Examples:
             >>> from luojianet_ms import Tensor
@@ -272,21 +272,21 @@ class SequentialCell(Cell):
             self._cells[str(len(self))] = cell
         self.cell_list = list(self._cells.values())
 
-    def construct(self, input_data):
+    def forward(self, input_data):
         for cell in self.cell_list:
             input_data = cell(input_data)
         return input_data
 
 
-class CellList(_CellListBase, Cell):
+class CellList(_CellListBase, Module):
     """
-    Holds Cells in a list. For more details about Cell, please refer to
-    `Cell <https://www.luojianet_ms.cn/docs/en/r1.7/api_python/nn/luojianet_ms.nn.Cell.html#luojianet_ms.nn.Cell>`_.
+    Holds Cells in a list. For more details about Module, please refer to
+    `Module <https://www.luojianet_ms.cn/docs/en/r1.7/api_python/nn/luojianet_ms.nn.Module.html#luojianet_ms.nn.Module>`_.
 
     CellList can be used like a regular Python list, the Cells it contains have been initialized.
 
     Args:
-        args (list, optional): List of subclass of Cell.
+        args (list, optional): List of subclass of Module.
 
     Supported Platforms:
         ``Ascend`` ``GPU`` ``CPU``
@@ -306,7 +306,7 @@ class CellList(_CellListBase, Cell):
         """Initialize CellList."""
         auto_prefix = kwargs["auto_prefix"] if "auto_prefix" in kwargs.keys() else True
         _CellListBase.__init__(self)
-        Cell.__init__(self, auto_prefix)
+        Module.__init__(self, auto_prefix)
         if len(args) == 1:
             self.extend(args[0])
 
@@ -365,11 +365,11 @@ class CellList(_CellListBase, Cell):
 
     def insert(self, index, cell):
         """
-        Inserts a given Cell before a given index in the list.
+        Inserts a given Module before a given index in the list.
 
         Args:
             index(int): The Insert index in the CellList.
-            cell(Cell): The Cell to be inserted.
+            cell(Module): The Module to be inserted.
         """
         cls_name = self.__class__.__name__
         idx = _valid_index(len(self), index, cls_name)
@@ -411,10 +411,10 @@ class CellList(_CellListBase, Cell):
 
     def append(self, cell):
         """
-        Appends a given Cell to the end of the list.
+        Appends a given Module to the end of the list.
 
         Args:
-            cell(Cell): The subcell to be appended.
+            cell(Module): The subcell to be appended.
         """
         if _valid_cell(cell, self.__class__.__name__):
             if self._auto_prefix:
@@ -427,5 +427,5 @@ class CellList(_CellListBase, Cell):
         for cell in self._cells.values():
             cell.set_grad(flag)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         raise NotImplementedError

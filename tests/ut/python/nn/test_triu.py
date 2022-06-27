@@ -25,12 +25,12 @@ from luojianet_ms import context
 
 context.set_context(mode=context.GRAPH_MODE)
 
-class TriuNet(nn.Cell):
+class TriuNet(nn.Module):
     def __init__(self):
         super(TriuNet, self).__init__()
         self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-    def construct(self):
+    def forward(self):
         triu = nn.Triu()
         return triu(self.value, 0)
 
@@ -59,12 +59,12 @@ def test_triu_ge():
     assert np.sum(out.asnumpy()) == 26
 
 def test_triu_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        def construct(self):
+        def forward(self):
             triu = nn.Triu()
             return triu(self.value, 1)
 
@@ -74,12 +74,12 @@ def test_triu_1():
 
 
 def test_triu_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        def construct(self):
+        def forward(self):
             triu = nn.Triu()
             return triu(self.value, -1)
 
@@ -89,8 +89,8 @@ def test_triu_2():
 
 
 def test_triu_parameter():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def forward(self, x):
             triu = nn.Triu()
             return triu(x, 0)
 
@@ -99,8 +99,8 @@ def test_triu_parameter():
 
 
 def test_triu_parameter_1():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def forward(self, x):
             triu = nn.Triu()
             return triu(x, 1)
 
@@ -109,8 +109,8 @@ def test_triu_parameter_1():
 
 
 def test_triu_parameter_2():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def forward(self, x):
             triu = nn.Triu()
             return triu(x, -1)
 

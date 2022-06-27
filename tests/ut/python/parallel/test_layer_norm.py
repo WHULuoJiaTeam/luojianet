@@ -20,11 +20,11 @@ import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
 from luojianet_ms.common.initializer import initializer
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, mul_weight, strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
         self.begin_norm_axis = 2
@@ -37,7 +37,7 @@ class Net(Cell):
         self.gamma = Parameter(initializer('ones', self.normalized_shape), name="gamma")
         self.beta = Parameter(initializer('zeros', self.normalized_shape), name="beta")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.mul(x, self.mul_weight)
         out, _, _ = self.layer_norm(out, self.gamma, self.beta)
         out = self.mul2(out, b)

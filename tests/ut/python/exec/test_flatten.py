@@ -22,13 +22,13 @@ from luojianet_ms.ops import operations as P
 from ..ut_filter import non_graph_engine
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self,
                  ):
         super(Net, self).__init__()
         self.flatten = P.Flatten()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.flatten(input_x)
 
 

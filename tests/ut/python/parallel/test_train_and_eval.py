@@ -18,30 +18,30 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, mul_weight, strategy1=None, strategy2=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
         self.neg = P.Neg().shard(strategy2)
         self.mul_weight = Parameter(mul_weight, "w1")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.mul(x, self.mul_weight)
         out = self.neg(out)
         return out
 
 
-class EvalNet(Cell):
+class EvalNet(Module):
     def __init__(self, network, strategy2=None):
         super().__init__()
         self.network = network
         self.relu = P.ReLU().shard(strategy2)
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.network(x, b)
         out = self.relu(out)
         return out

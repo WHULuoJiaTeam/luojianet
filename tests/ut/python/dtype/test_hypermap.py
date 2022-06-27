@@ -16,14 +16,14 @@
 import numpy as np
 
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_hypermap_if():
-    class Net(Cell):
+    class Net(Module):
         """DictNet1 definition"""
 
         def __init__(self):
@@ -32,7 +32,7 @@ def test_hypermap_if():
             self.min = P.Minimum()
             self._list = [1, 2, 3]
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             if map(lambda a: a + 1, self._list):
                 ret = self.max(x, y)
             else:
@@ -46,7 +46,7 @@ def test_hypermap_if():
 
 
 def test_hypermap_value():
-    class Net(Cell):
+    class Net(Module):
         """DictNet1 definition"""
 
         def __init__(self):
@@ -55,7 +55,7 @@ def test_hypermap_value():
             self.min = P.Minimum()
             self._list = [22, 66, 88, 111]
 
-        def construct(self):
+        def forward(self):
             return map(lambda a: a + 1, self._list)
 
     net = Net()
@@ -63,7 +63,7 @@ def test_hypermap_value():
 
 
 def test_hypermap_func_const():
-    class NetMap(Cell):
+    class NetMap(Module):
         def __init__(self):
             super(NetMap, self).__init__()
 
@@ -76,7 +76,7 @@ def test_hypermap_func_const():
         def square(self, x):
             return x * x
 
-        def construct(self):
+        def forward(self):
             _list = [self.double, self.triple, self.square]
             return map(lambda f: f(4), _list)
 

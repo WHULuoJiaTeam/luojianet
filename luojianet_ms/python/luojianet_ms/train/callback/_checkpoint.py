@@ -90,7 +90,7 @@ class CheckpointConfig:
             Integrated save function is only supported in automatic parallel scene, not supported
             in manual parallel. Default: True.
         async_save (bool): Whether asynchronous execution saves the checkpoint to a file. Default: False.
-        saved_network (Cell): Network to be saved in checkpoint file. If the saved_network has no relation
+        saved_network (Module): Network to be saved in checkpoint file. If the saved_network has no relation
             with the network in training, the initial value of saved_network will be saved. Default: None.
         append_info (list): The information save to checkpoint file. Support "epoch_num", "step_num" and dict.
             The key of dict must be str, the value of dict must be one of int float and bool. Default: None.
@@ -108,7 +108,7 @@ class CheckpointConfig:
         >>> from luojianet_ms.train.callback import ModelCheckpoint, CheckpointConfig
         >>> from luojianet_ms.common.initializer import Normal
         >>>
-        >>> class LeNet5(nn.Cell):
+        >>> class LeNet5(nn.Module):
         ...     def __init__(self, num_class=10, num_channel=1):
         ...         super(LeNet5, self).__init__()
         ...         self.conv1 = nn.Conv2d(num_channel, 6, 5, pad_mode='valid')
@@ -120,7 +120,7 @@ class CheckpointConfig:
         ...         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         ...         self.flatten = nn.Flatten()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         x = self.max_pool2d(self.relu(self.conv1(x)))
         ...         x = self.max_pool2d(self.relu(self.conv2(x)))
         ...         x = self.flatten(x)
@@ -162,8 +162,8 @@ class CheckpointConfig:
         if keep_checkpoint_per_n_minutes is not None:
             keep_checkpoint_per_n_minutes = Validator.check_non_negative_int(keep_checkpoint_per_n_minutes)
 
-        if saved_network is not None and not isinstance(saved_network, nn.Cell):
-            raise TypeError(f"For 'CheckpointConfig', the type of 'saved_network' must be None or Cell, "
+        if saved_network is not None and not isinstance(saved_network, nn.Module):
+            raise TypeError(f"For 'CheckpointConfig', the type of 'saved_network' must be None or Module, "
                             f"but got {str(type(saved_network))}.")
 
         if not save_checkpoint_steps and not save_checkpoint_seconds and \
@@ -255,7 +255,7 @@ class CheckpointConfig:
         Get the value of network to be saved in checkpoint file.
 
         Returns:
-            Cell, network to be saved in checkpoint file.
+            Module, network to be saved in checkpoint file.
         """
         return self._saved_network
 

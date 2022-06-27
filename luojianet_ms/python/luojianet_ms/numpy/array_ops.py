@@ -21,7 +21,7 @@ from ..common import Tensor
 from ..ops import operations as P
 from ..ops import functional as F
 from ..ops.primitive import constexpr
-from ..nn import Cell
+from ..nn import Module
 
 from .utils import _convert_list_tensor_to_tuple_tensor, _expand, _broadcast_to_shape, \
     _check_input_tensor, _broadcast_to, _to_tensor, _callable
@@ -937,14 +937,14 @@ def stack(arrays, axis=0):
     return _raise_value_error('input arrays must be Tensor, tuple, or list')
 
 
-class UniqueNet(Cell):
+class UniqueNet(Module):
     """The operation is wrapped inside a model. """
 
     def __init__(self):
         super(UniqueNet, self).__init__()
         self.unique = P.Unique()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.unique(x)
 
 

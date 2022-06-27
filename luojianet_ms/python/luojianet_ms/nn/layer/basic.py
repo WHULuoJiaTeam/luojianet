@@ -30,14 +30,14 @@ from luojianet_ms.ops.primitive import constexpr, Primitive
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms._extends import cell_attr_register
 from luojianet_ms._checkparam import Rel, Validator
-from ..cell import Cell
+from ..cell import Module
 from .activation import get_activation
 
 __all__ = ['Dropout', 'Flatten', 'Dense', 'ClipByNorm', 'Norm', 'OneHot', 'Pad', 'Unfold', 'Tril', 'Triu',
            'ResizeBilinear', 'MatrixDiag', 'MatrixDiagPart', 'MatrixSetDiag', 'L1Regularizer', 'Roll']
 
 
-class L1Regularizer(Cell):
+class L1Regularizer(Module):
     r"""
     Applies l1 regularization to weights.
 
@@ -91,13 +91,13 @@ class L1Regularizer(Cell):
         self.reduce_sum = P.ReduceSum()
         self.scale = Tensor(scale, dtype=mstype.float32)
 
-    def construct(self, weights):
+    def forward(self, weights):
         const_utils.check_type_valid(F.dtype(weights), mstype.number_type, 'weights')
         l1_regularization = self.scale * self.reduce_sum(self.abs(weights))
         return l1_regularization
 
 
-class Dropout(Cell):
+class Dropout(Module):
     r"""
     Dropout layer for the input.
 
@@ -115,7 +115,7 @@ class Dropout(Cell):
     <https://arxiv.org/pdf/1207.0580.pdf>`_.
 
     Note:
-        Each channel will be zeroed out independently on every construct call.
+        Each channel will be zeroed out independently on every forward call.
 
     Args:
         keep_prob (float): The keep rate, greater than 0 and less equal than 1. E.g. rate=0.9,
@@ -162,7 +162,7 @@ class Dropout(Cell):
         self.seed1 = seed1
         self.dropout = P.Dropout(keep_prob, seed0, seed1)
 
-    def construct(self, x):
+    def forward(self, x):
         if not self.training:
             return x
 
@@ -176,7 +176,7 @@ class Dropout(Cell):
         return 'keep_prob={}'.format(self.keep_prob)
 
 
-class Flatten(Cell):
+class Flatten(Module):
     r"""
     Flatten the dimensions other than the 0th dimension of the input Tensor.
 
@@ -213,7 +213,7 @@ class Flatten(Cell):
         """Initialize Flatten."""
         super(Flatten, self).__init__()
 
-    def construct(self, x):
+    def forward(self, x):
         return F.reshape(x, (F.shape(x)[0], -1))
 
 
@@ -224,7 +224,7 @@ def check_dense_input_shape(x, prim_name=None):
         raise ValueError(f"{msg_prefix} dimension of 'x' should not be less than 2, but got {len(x)}.")
 
 
-class Dense(Cell):
+class Dense(Module):
     r"""
     The dense connected layer.
 
@@ -246,7 +246,7 @@ class Dense(Cell):
         bias_init (Union[Tensor, str, Initializer, numbers.Number]): The trainable bias_init parameter. The dtype is
             same as `x`. The values of str refer to the function `initializer`. Default: 'zeros'.
         has_bias (bool): Specifies whether the layer uses a bias vector. Default: True.
-        activation (Union[str, Cell, Primitive, None]): activate function applied to the output of the fully connected
+        activation (Union[str, Module, Primitive, None]): activate function applied to the output of the fully connected
             layer, eg. 'ReLU'.Default: None.
 
     Inputs:
@@ -259,7 +259,7 @@ class Dense(Cell):
     Raises:
         TypeError: If `in_channels` or `out_channels` is not an int.
         TypeError: If `has_bias` is not a bool.
-        TypeError: If `activation` is not one of str, Cell, Primitive, None.
+        TypeError: If `activation` is not one of str, Module, Primitive, None.
         ValueError: If length of shape of `weight_init` is not equal to 2 or shape[0] of `weight_init`
                     is not equal to `out_channels` or shape[1] of `weight_init` is not equal to `in_channels`.
         ValueError: If length of shape of `bias_init` is not equal to 1
@@ -313,12 +313,12 @@ class Dense(Cell):
 
         self.matmul = P.MatMul(transpose_b=True)
         self.activation = get_activation(activation) if isinstance(activation, str) else activation
-        if activation is not None and not isinstance(self.activation, (Cell, Primitive)):
-            raise TypeError(f"For '{self.cls_name}', the 'activation' must be str or Cell or Primitive, but got "
+        if activation is not None and not isinstance(self.activation, (Module, Primitive)):
+            raise TypeError(f"For '{self.cls_name}', the 'activation' must be str or Module or Primitive, but got "
                             f"{type(activation).__name__}.")
         self.activation_flag = self.activation is not None
 
-    def construct(self, x):
+    def forward(self, x):
         x_shape = self.shape_op(x)
         check_dense_input_shape(x_shape, self.cls_name)
         if len(x_shape) != 2:
@@ -370,7 +370,7 @@ def _need_reduce_all(axis):
     return False
 
 
-class ClipByNorm(Cell):
+class ClipByNorm(Module):
     r"""
     Clips tensor values to a maximum :math:`L_2`-norm.
 
@@ -432,7 +432,7 @@ class ClipByNorm(Cell):
         self.expand_dims = P.ExpandDims()
         self.dtype = P.DType()
 
-    def construct(self, x, clip_norm):
+    def forward(self, x, clip_norm):
         mul_x = F.square(x)
         l2sum = self.cast(self.reduce_sum(mul_x, self.axis), mstype.float32)
         cond = self.greater_(l2sum, 0)
@@ -455,7 +455,7 @@ class ClipByNorm(Cell):
         return values_clip
 
 
-class Norm(Cell):
+class Norm(Module):
     r"""
     Computes the norm of vectors, currently including Euclidean norm, i.e., :math:`L_2`-norm.
 
@@ -523,7 +523,7 @@ class Norm(Cell):
         self.sqrt = P.Sqrt()
         self.squeeze = P.Squeeze(self.axis)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.sqrt(self.reduce_sum(F.square(x), self.axis))
 
         if not self.keep_dims:
@@ -534,7 +534,7 @@ class Norm(Cell):
         return 'axis={}, keep_dims={}'.format(self.axis, self.keep_dims)
 
 
-class OneHot(Cell):
+class OneHot(Module):
     """
     Returns a one-hot tensor.
 
@@ -658,11 +658,11 @@ class OneHot(Cell):
         self.on_value = on_value
         self.off_value = off_value
 
-    def construct(self, indices):
+    def forward(self, indices):
         return self.onehot(indices, self.depth, F.cast(self.on_value, self.dtype), F.cast(self.off_value, self.dtype))
 
 
-class Pad(Cell):
+class Pad(Module):
     r"""
     Pads the input tensor according to the paddings and mode.
 
@@ -718,11 +718,11 @@ class Pad(Cell):
         >>> import luojianet_ms.nn as nn
         >>> import numpy as np
         >>> # If `mode` is "CONSTANT"
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.pad = nn.Pad(paddings=((1, 1), (2, 2)), mode="CONSTANT")
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.pad(x)
         >>> x = Tensor(np.array([[1, 2, 3], [4, 5, 6]]), luojianet_ms.float32)
         >>> pad = Net()
@@ -766,11 +766,11 @@ class Pad(Cell):
          [0. 0. 4. 5. 6. 0. 0.]
          [0. 0. 0. 0. 0. 0. 0.]]
         >>> # if mode is "REFLECT"
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.pad = nn.Pad(paddings=((1, 1), (2, 2)), mode="REFLECT")
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.pad(x)
         >>> x = Tensor(np.array([[1, 2, 3], [4, 5, 6]]), luojianet_ms.float32)
         >>> pad = Net()
@@ -781,11 +781,11 @@ class Pad(Cell):
          [6. 5. 4. 5. 6. 5. 4.]
          [3. 2. 1. 2. 3. 2. 1.]]
         >>> # if mode is "SYMMETRIC"
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.pad = nn.Pad(paddings=((1, 1), (2, 2)), mode="SYMMETRIC")
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.pad(x)
         >>> x = Tensor(np.array([[1, 2, 3], [4, 5, 6]]), luojianet_ms.float32)
         >>> pad = Net()
@@ -819,7 +819,7 @@ class Pad(Cell):
             self.paddings = Tensor(np.array(self.paddings), dtype=mstype.int64)
             self.pad = P.MirrorPad(mode=mode)
 
-    def construct(self, x):
+    def forward(self, x):
         if self.mode == "CONSTANT":
             x = self.pad(x)
         else:
@@ -850,7 +850,7 @@ def bilinear(shape, size, scale, align_corners, prim_name=None):
     return ret
 
 
-class ResizeBilinear(Cell):
+class ResizeBilinear(Module):
     r"""
     Samples the input tensor to the given size or scale_factor by using bilinear interpolate.
 
@@ -915,13 +915,13 @@ class ResizeBilinear(Cell):
         super(ResizeBilinear, self).__init__()
         self.half_pixel_centers = half_pixel_centers
 
-    def construct(self, x, size=None, scale_factor=None, align_corners=False):
+    def forward(self, x, size=None, scale_factor=None, align_corners=False):
         shape = bilinear(x.shape, size, scale_factor, align_corners, self.cls_name)
         resize_bilinear = P.ResizeBilinear(shape, align_corners, self.half_pixel_centers)
         return resize_bilinear(x)
 
 
-class Unfold(Cell):
+class Unfold(Module):
     r"""
     Extracts patches from images.
     The input tensor must be a 4-D tensor and the data format is NCHW.
@@ -1000,7 +1000,7 @@ class Unfold(Cell):
         rates = rates[0], rates[3], rates[1], rates[2]
         self.extract_image_patches = inner.ExtractImagePatches(ksizes, strides, rates, padding)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         result = self.extract_image_patches(input_x)
         return result
 
@@ -1013,7 +1013,7 @@ def tril(x_shape, x_dtype, k):
     return Tensor(mask, x_dtype)
 
 
-class Tril(Cell):
+class Tril(Module):
     """
     Returns a tensor, the elements above the specified main diagonal are set to zero.
 
@@ -1101,7 +1101,7 @@ class Tril(Cell):
         self.mul = P.Mul()
         self.cast = P.Cast()
 
-    def construct(self, x, k=0):
+    def forward(self, x, k=0):
         assist = tril(x.shape, self.dtype(x), k)
         result = self.mul(self.cast(x, mstype.float32), self.cast(assist, mstype.float32))
         return self.cast(result, self.dtype(x))
@@ -1115,7 +1115,7 @@ def triu(x_shape, x_dtype, k):
     return Tensor(mask, x_dtype)
 
 
-class Triu(Cell):
+class Triu(Module):
     """
     Returns a tensor with elements below the kth diagonal zeroed.
 
@@ -1194,7 +1194,7 @@ class Triu(Cell):
         self.mul = P.Mul()
         self.cast = P.Cast()
 
-    def construct(self, x, k=0):
+    def forward(self, x, k=0):
         assist = triu(x.shape, self.dtype(x), k)
         result = self.mul(self.cast(x, mstype.float32), self.cast(assist, mstype.float32))
         return self.cast(result, self.dtype(x))
@@ -1216,7 +1216,7 @@ def _get_matrix_diag_part_assist(x_shape, x_dtype):
     return Tensor(assist, x_dtype)
 
 
-class MatrixDiag(Cell):
+class MatrixDiag(Module):
     r"""
     Returns a batched diagonal tensor with a given batched diagonal values.
 
@@ -1283,7 +1283,7 @@ class MatrixDiag(Cell):
         self.matrix_diag = inner.MatrixDiag()
         self.dtype = P.DType()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         x_shape = F.shape(input_x)
         x_dtype = self.dtype(input_x)
         assist = _get_matrix_diag_assist(x_shape, x_dtype)
@@ -1291,7 +1291,7 @@ class MatrixDiag(Cell):
         return out_matrix_diag
 
 
-class MatrixDiagPart(Cell):
+class MatrixDiagPart(Module):
     r"""
     Returns the batched diagonal part of a batched tensor.
 
@@ -1340,7 +1340,7 @@ class MatrixDiagPart(Cell):
         self.matrix_diag_part = inner.MatrixDiagPart()
         self.dtype = P.DType()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         x_shape = F.shape(input_x)
         x_dtype = self.dtype(input_x)
         assist = _get_matrix_diag_part_assist(x_shape, x_dtype)
@@ -1348,7 +1348,7 @@ class MatrixDiagPart(Cell):
         return out_matrix_diag_part
 
 
-class MatrixSetDiag(Cell):
+class MatrixSetDiag(Module):
     r"""
     Modifies the batched diagonal part of a batched tensor.
 
@@ -1399,7 +1399,7 @@ class MatrixSetDiag(Cell):
         self.matrix_set_diag = inner.MatrixSetDiag()
         self.dtype = P.DType()
 
-    def construct(self, input_x, diagonal):
+    def forward(self, input_x, diagonal):
         x_shape = F.shape(input_x)
         x_dtype = self.dtype(input_x)
         assist = _get_matrix_diag_part_assist(x_shape, x_dtype)
@@ -1412,7 +1412,7 @@ def _check_input_dim(axis, dim, cls_name):
     Validator.check_int_range(axis, -dim, dim, Rel.INC_LEFT, 'axis', cls_name)
 
 
-class Roll(Cell):
+class Roll(Module):
     """
     Rolls the elements of a tensor along an axis.
 
@@ -1477,7 +1477,7 @@ class Roll(Cell):
             for idx, _ in enumerate(self.axis):
                 self.op_list.append((inner.Roll(shift=self.shift[idx], axis=0), self.axis[idx]))
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         dim = len(self.shape_op(input_x))
         for single_op_roll, single_axis in self.op_list:
             _check_input_dim(single_axis, dim, self.cls_name)

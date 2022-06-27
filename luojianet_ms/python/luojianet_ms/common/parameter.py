@@ -69,7 +69,7 @@ def init_to_value(init):
 
 class Parameter(Tensor_):
     """
-    `Parameter` is a `Tensor` subclass, when they are assigned as Cell attributes they are automatically added to
+    `Parameter` is a `Tensor` subclass, when they are assigned as Module attributes they are automatically added to
     the list of its parameters, and will appear e.g. in `cell.get_parameters()` iterator.
 
     Note:
@@ -135,13 +135,13 @@ class Parameter(Tensor_):
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.matmul = ops.MatMul()
         ...         self.weight = Parameter(Tensor(np.ones((1, 2)), luojianet_ms.float32), name="w", requires_grad=True)
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         out = self.matmul(self.weight, x)
         ...         return out
         >>> net = Net()

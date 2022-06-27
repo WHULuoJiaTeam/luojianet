@@ -18,23 +18,23 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.matmul = P.MatMul(transpose_a=False, transpose_b=False)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.matmul(x, y)
 
-class Net1(Cell):
+class Net1(Module):
     def __init__(self):
         super(Net1, self).__init__()
         self.bmm = P.BatchMatMul(transpose_a=False, transpose_b=False)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.bmm(x, y)
 
 def get_output(i0, i1, net_cls, enable_graph_kernel=False):

@@ -19,16 +19,16 @@ import math
 
 from ..common import dtype as mstype
 from ..ops import operations as P
-from .cell import Cell
+from .cell import Module
 from .._checkparam import Validator as validator
 
 
-class LearningRateSchedule(Cell):
+class LearningRateSchedule(Module):
     """Basic class of learning rate schedule."""
     def __init__(self):
         super(LearningRateSchedule, self).__init__()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         """
         Defines the computation to get the current learning rate.
 
@@ -118,7 +118,7 @@ class ExponentialDecayLR(LearningRateSchedule):
         self.pow = P.Pow()
         self.cast = P.Cast()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         p = self.cast(global_step, mstype.float32) / self.decay_steps
         if self.is_stair:
             p = P.Floor()(p)
@@ -189,7 +189,7 @@ class NaturalExpDecayLR(LearningRateSchedule):
         self.pow = P.Pow()
         self.cast = P.Cast()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         p = self.cast(global_step, mstype.float32)
         if self.is_stair:
             p = P.FloorDiv()(p, self.decay_steps) * self.decay_steps
@@ -258,7 +258,7 @@ class InverseDecayLR(LearningRateSchedule):
         self.is_stair = is_stair
         self.cast = P.Cast()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         p = self.cast(global_step, mstype.float32) / self.decay_steps
         if self.is_stair:
             p = P.Floor()(p)
@@ -330,7 +330,7 @@ class CosineDecayLR(LearningRateSchedule):
         self.min = P.Minimum()
         self.cast = P.Cast()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         p = self.cast(self.min(global_step, self.decay_steps), mstype.float32)
         return self.min_lr + self.delta * (1.0 + self.cos(self.math_pi * p / self.decay_steps))
 
@@ -417,7 +417,7 @@ class PolynomialDecayLR(LearningRateSchedule):
         self.min = P.Minimum()
         self.max = P.Maximum()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         tmp_global_step = P.Cast()(global_step, mstype.float32)
         tmp_decay_step = self.decay_steps
         if self.update_decay_steps:
@@ -486,7 +486,7 @@ class WarmUpLR(LearningRateSchedule):
         self.min = P.Minimum()
         self.cast = P.Cast()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         warmup_percent = self.cast(self.min(global_step, self.warmup_steps), mstype.float32) / self.warmup_steps
         return self.learning_rate * warmup_percent
 

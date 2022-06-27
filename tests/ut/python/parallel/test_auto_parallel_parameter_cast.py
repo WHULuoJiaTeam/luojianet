@@ -27,19 +27,19 @@ from luojianet_ms.parallel._utils import _reset_op_id as reset_op_id
 from tests.ut.python.ops.test_math_ops import VirtualLoss
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
 
 def test_common_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -49,7 +49,7 @@ def test_common_parameter():
             self.cast1 = P.Cast()
             self.cast2 = P.Cast()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             m1_result = self.matmul1(x, self.cast1(self.weight1, mstype.float32))
             m2_result = self.matmul2(y, self.cast2(self.weight1, mstype.float32))
             m3_result = self.matmul3(m2_result, m1_result)

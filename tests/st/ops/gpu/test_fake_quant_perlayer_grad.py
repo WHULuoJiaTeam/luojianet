@@ -24,12 +24,12 @@ from luojianet_ms.ops.operations import _quant_ops as Q
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, num_bits=8, narrow_range=False):
         super(Net, self).__init__()
         self.op = Q.FakeQuantPerLayerGrad(num_bits=num_bits, narrow_range=narrow_range)
 
-    def construct(self, dout, x, minq, maxq):
+    def forward(self, dout, x, minq, maxq):
         return self.op(dout, x, minq, maxq)
 
 

@@ -22,7 +22,7 @@ from luojianet_ms.ops.operations import _inner_ops as P
 context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, index=0, shapes_and_types=None):
         super(Net, self).__init__()
         shapes_and_types.reverse()
@@ -31,7 +31,7 @@ class Net(nn.Cell):
         self.pop = [P.StackPop(index, shape, dtype) for (shape, dtype) in shapes_and_types]
         self.destroy = P.StackDestroy(index)
 
-    def construct(self, x1, x2, x3):
+    def forward(self, x1, x2, x3):
         self.init()
         self.push(x1)
         self.push(x2)
@@ -43,7 +43,7 @@ class Net(nn.Cell):
         return y1, y2, y3
 
 
-class NetTwoStack(nn.Cell):
+class NetTwoStack(nn.Module):
     def __init__(self, index=0, shapes_and_types=None):
         super(NetTwoStack, self).__init__()
         self.init_0 = P.StackInit(index)
@@ -57,7 +57,7 @@ class NetTwoStack(nn.Cell):
         self.pop_1 = [P.StackPop(index, shape, dtype) for (shape, dtype) in shapes_and_types]
         self.destroy_1 = P.StackDestroy(index)
 
-    def construct(self, x1, x2, x3):
+    def forward(self, x1, x2, x3):
         self.init_0()
         self.init_1()
 

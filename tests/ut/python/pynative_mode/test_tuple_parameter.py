@@ -11,49 +11,49 @@ def setup_module(module):
     context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class Block1(nn.Cell):
-    """ Define Cell with tuple input as parameter."""
+class Block1(nn.Module):
+    """ Define Module with tuple input as parameter."""
 
     def __init__(self):
         super(Block1, self).__init__()
         self.mul = P.Mul()
 
-    def construct(self, tuple_xy):
+    def forward(self, tuple_xy):
         x, y = tuple_xy
         z = self.mul(x, y)
         return z
 
-class Block2(nn.Cell):
-    """ definition with tuple in tuple output in Cell."""
+class Block2(nn.Module):
+    """ definition with tuple in tuple output in Module."""
 
     def __init__(self):
         super(Block2, self).__init__()
         self.mul = P.Mul()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         z1 = self.mul(x, y)
         z2 = self.add(z1, x)
         z3 = self.add(z1, y)
         return (z1, (z2, z3))
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self):
         super(Net1, self).__init__()
         self.block = Block1()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         res = self.block((x, y))
         return res
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self):
         super(Net2, self).__init__()
         self.add = P.Add()
         self.block = Block2()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         z1, (z2, z3) = self.block(x, y)
         res = self.add(z1, z2)
         res = self.add(res, z3)

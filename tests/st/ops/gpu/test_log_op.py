@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetLog(nn.Cell):
+class NetLog(nn.Module):
     def __init__(self):
         super(NetLog, self).__init__()
         self.log = P.Log()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.log(x)
 
 

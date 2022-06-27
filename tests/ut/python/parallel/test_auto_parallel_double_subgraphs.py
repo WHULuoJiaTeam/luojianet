@@ -29,7 +29,7 @@ from luojianet_ms.parallel._cost_model_context import _set_multi_subgraphs
 from luojianet_ms.parallel._utils import _reset_op_id as reset_op_id
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.mul = P.Mul()
@@ -37,39 +37,39 @@ class Net(nn.Cell):
         self.wd = Parameter(Tensor(np.ones([8, 8, 8, 8]).astype(np.float32)), name="wide")
         self.wt = Parameter(Tensor(np.ones([8, 8, 8, 8]).astype(np.float32)), name="l")
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.mul(x, self.wd)
         out = self.mul(out, self.wt)
         out = self.relu(out)
         return out
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.sum = P.ReduceSum()
         self.mean = P.ReduceMean()
         self.net = network
 
-    def construct(self, x):
+    def forward(self, x):
         predict = self.net(x)
         loss1 = self.sum(predict, -1)
         loss2 = self.mean(predict, -1)
         return loss1, loss2
 
 
-class IthOutputCell(nn.Cell):
+class IthOutputCell(nn.Module):
     def __init__(self, network, output_index):
         super(IthOutputCell, self).__init__()
         self.network = network
         self.output_index = output_index
 
-    def construct(self, x):
+    def forward(self, x):
         predict = self.network(x)[self.output_index]
         return predict
 
 
-class TrainStepWarp(nn.Cell):
+class TrainStepWarp(nn.Module):
     def __init__(self, network, sens=1000.0):
         super(TrainStepWarp, self).__init__()
         self.network = network
@@ -93,7 +93,7 @@ class TrainStepWarp(nn.Cell):
         self.loss_net_w = IthOutputCell(network, output_index=0)
         self.loss_net_d = IthOutputCell(network, output_index=1)
 
-    def construct(self, x):
+    def forward(self, x):
         weights_w = self.weights_w
         weights_d = self.weights_d
         loss_w, loss_d = self.network(x)

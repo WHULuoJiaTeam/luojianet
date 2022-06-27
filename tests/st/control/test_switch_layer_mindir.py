@@ -23,7 +23,7 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.train.serialization import export, load
 
 
-class CaseNet(nn.Cell):
+class CaseNet(nn.Module):
     def __init__(self):
         super(CaseNet, self).__init__()
         self.conv = nn.Conv2d(1, 1, 3)
@@ -33,7 +33,7 @@ class CaseNet(nn.Cell):
         self.layers1 = (self.relu, self.softmax)
         self.layers2 = (self.conv, self.relu1)
 
-    def construct(self, x, index1, index2):
+    def forward(self, x, index1, index2):
         x = self.layers1[index1](x)
         x = self.layers2[index2](x)
         return x

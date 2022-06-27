@@ -22,16 +22,16 @@ from luojianet_ms.nn import Dense, ReLU
 from luojianet_ms.ops import operations as P
 
 
-class WeightDecaySchdule(nn.Cell):
+class WeightDecaySchdule(nn.Module):
     def __init__(self):
         super(WeightDecaySchdule, self).__init__()
         self.weight_decay_list = Tensor([0.001, 0.001, 0.1], mstype.float32)
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         return self.weight_decay_list[global_step]
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.batch_size = 1
@@ -47,7 +47,7 @@ class Net(nn.Cell):
         self.fc2 = Dense(10, 10, weight_init=weight2, bias_init=bias2)
         self.fc3 = Dense(10, 10, weight_init=weight3, bias_init=bias3)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         output = self.reshape(input_x, (self.batch_size, -1))
         output = self.fc1(output)
         output = self.relu(output)

@@ -54,7 +54,7 @@ class CrossEntropySmooth(LossBase):
         if is_auto_parallel:
             self.ce.reduce_mean.add_prim_attr("cross_batch", True)
 
-    def construct(self, logit, label):
+    def forward(self, logit, label):
         loss = None
         idx = 0
         for o in logit:
@@ -63,19 +63,19 @@ class CrossEntropySmooth(LossBase):
             idx = idx + 1
         return loss
 
-class NetWithLossCell(nn.Cell):
+class NetWithLossCell(nn.Module):
     """Metwithlosscell"""
     def __init__(self, backbone, loss_fn):
         super(NetWithLossCell, self).__init__(auto_prefix=False)
         self._backbone = backbone
         self._loss_fn = loss_fn
 
-    def construct(self, data, label):
+    def forward(self, data, label):
         output = self._backbone(data)
         loss = self._loss_fn(output, label)
         return loss
 
-class DropPath(nn.Cell):
+class DropPath(nn.Module):
     """Drop paths (Stochastic Depth) per sample  (when applied in main path of residual blocks).
     """
     def __init__(self, drop_prob=None, num_dimension=4, dp=1):
@@ -107,10 +107,10 @@ class DropPath(nn.Cell):
         output = self.mul(self.div(x, keep_prob), random_tensor)
         return output # fp32
 
-    def construct(self, x):
+    def forward(self, x):
         return self.drop_path(x, self.drop_prob, self.training)
 
-class Norm(nn.Cell):
+class Norm(nn.Module):
     r"""
         A self-defined layer norm operation using reduce sum and reduce mean
 
@@ -164,7 +164,7 @@ class Norm(nn.Cell):
         else:
             self.view_shape = (-1, 1, 1)
 
-    def construct(self, x):
+    def forward(self, x):
         r"""
           x : batch x seq_length x hidden_size
         """
@@ -182,7 +182,7 @@ class Norm(nn.Cell):
         return output
 
 
-class Mlp(nn.Cell):
+class Mlp(nn.Module):
     r"""
         MPL block
     """
@@ -207,7 +207,7 @@ class Mlp(nn.Cell):
         self.drop2 = nn.Dropout(1.0-drop)
         self.drop2.dropout.shard(((dp, mp),))
 
-    def construct(self, x):
+    def forward(self, x):
         r"""
           x : fp32
         """
@@ -221,7 +221,7 @@ class Mlp(nn.Cell):
         x = x.view(origin_shape[:-1]+(-1,))
         return x
 
-class Attention(nn.Cell):
+class Attention(nn.Module):
     """Multi-head Attention"""
 
     def __init__(self, dim, hidden_dim=None,
@@ -273,7 +273,7 @@ class Attention(nn.Cell):
         self.transpose2 = P.Transpose().shard(((dp, 1, 1, 1),))
         self.reshape = P.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         """Multi-head Attention"""
         b_size, n_channel, _ = x.shape # fp32
         x = F.cast(x, luojianet_ms.float16)
@@ -303,7 +303,7 @@ class Attention(nn.Cell):
         x = self.proj_drop(x) # fp16
         return x.view(b_size, n_channel, -1)
 
-class Block(nn.Cell):
+class Block(nn.Module):
     """Block."""
     def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
                  drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm,
@@ -323,14 +323,14 @@ class Block(nn.Cell):
                        dp=dp, mp=mp)
         self.add = P.Add().shard(((dp, 1, 1), (dp, 1, 1)))
 
-    def construct(self, x):
+    def forward(self, x):
         # x fp32
         x = self.add(x, self.drop_path(self.attn(self.norm1(x)))) # output x fp32
         x = self.add(x, self.drop_path(self.mlp(self.norm2(x)))) # output x fp32
         return x
 
 
-class ConvBlock(nn.Cell):
+class ConvBlock(nn.Module):
     """ConvBlock"""
     def __init__(self, inplanes, outplanes, stride=1,
                  res_conv=False, act_layer=nn.ReLU, groups=1,
@@ -398,8 +398,8 @@ class ConvBlock(nn.Cell):
         self.act3 = act_layer()
         self.act3.relu.shard(((dp, 1, 1, 1),))
 
-    def construct(self, x, x_t=None):
-        """ConvBlock construct"""
+    def forward(self, x, x_t=None):
+        """ConvBlock forward"""
         residual = x
 
         x = self.conv1(x) # fp16
@@ -446,7 +446,7 @@ class ConvBlock(nn.Cell):
         return x
 
 
-class FCUDown(nn.Cell):
+class FCUDown(nn.Module):
     """ CNN feature maps -> Transformer patch embeddings
     """
 
@@ -476,8 +476,8 @@ class FCUDown(nn.Cell):
         self.transpose = P.Transpose().shard(((dp, 1, 1),))
         self.slice = P.StridedSlice().shard(((dp, 1, 1),))
 
-    def construct(self, x, x_t):
-        """FCUDown construct"""
+    def forward(self, x, x_t):
+        """FCUDown forward"""
         # x fp16, x_t fp32
         x = self.conv_project(x)  # [N, C, H, W]
         tmp = self.sample_pooling(x)
@@ -491,7 +491,7 @@ class FCUDown(nn.Cell):
             x = self.concat([tmp2, x])
         return x
 
-class FCUUp(nn.Cell):
+class FCUUp(nn.Module):
     """ Transformer patch embeddings -> CNN feature maps
     """
 
@@ -523,8 +523,8 @@ class FCUUp(nn.Cell):
         self.transpose = P.Transpose().shard(((dp, 1, 1),))
         self.slice = P.StridedSlice().shard(((dp, 1, 1),))
 
-    def construct(self, x, height, weight):
-        """FCUUp construct"""
+    def forward(self, x, height, weight):
+        """FCUUp forward"""
         # x fp32
         b_size, t_num, channel = F.shape(x)
         x = self.ln(x)
@@ -543,7 +543,7 @@ class FCUUp(nn.Cell):
         return self.resize_neighbor(x_r)
 
 
-class ConvTransBlock(nn.Cell):
+class ConvTransBlock(nn.Module):
     """
     Basic module for ConvTransformer, keep feature maps for CNN block and patch embeddings for transformer encoder block
     """
@@ -594,8 +594,8 @@ class ConvTransBlock(nn.Cell):
         self.sub = P.Sub().shard(((), (1,)))
         self.neg = P.Neg().shard(((1,),))
 
-    def construct(self, x, x_t):
-        """ConvTransBlock construct"""
+    def forward(self, x, x_t):
+        """ConvTransBlock forward"""
         # x fp16, x_t fp32
         x, x2 = self.cnn_block(x) # both fp16
 
@@ -612,7 +612,7 @@ class ConvTransBlock(nn.Cell):
         return x, x_t
 
 
-class ConformerOverflow(nn.Cell):
+class ConformerOverflow(nn.Module):
     """Conformeroverflow"""
     def __init__(self, patch_size=16, in_chans=3, num_classes=1000,
                  base_channel=64, channel_ratio=4, embed_dim=768,
@@ -758,8 +758,8 @@ class ConformerOverflow(nn.Cell):
             )
         self.conv_trans_blks = nn.CellList(self.conv_trans_list)
 
-    def construct(self, x):
-        """conformer construct"""
+    def forward(self, x):
+        """conformer forward"""
         # x fp32
         cls_tokens = None
         if self.cls_token_flag:

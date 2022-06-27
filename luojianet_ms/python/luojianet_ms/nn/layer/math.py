@@ -20,7 +20,7 @@ from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.common._decorator import deprecated
 from luojianet_ms.ops.primitive import constexpr
 from luojianet_ms.ops import functional as F
-from ..cell import Cell
+from ..cell import Module
 from ...common import dtype as mstype
 from ..._checkparam import Validator as validator
 
@@ -52,7 +52,7 @@ def _check_input_dtype(param_name, input_dtype, allow_dtypes, cls_name):
     validator.check_type_name(param_name, input_dtype, allow_dtypes, cls_name)
 
 
-class ReduceLogSumExp(Cell):
+class ReduceLogSumExp(Module):
     r"""
     Reduces a dimension of a tensor by calculating exponential for all elements in the dimension,
     then calculate logarithm of the sum.
@@ -107,14 +107,14 @@ class ReduceLogSumExp(Cell):
         self.sum = P.ReduceSum(keep_dims)
         self.log = P.Log()
 
-    def construct(self, x):
+    def forward(self, x):
         exp = self.exp(x)
         sumexp = self.sum(exp, self.axis)
         logsumexp = self.log(sumexp)
         return logsumexp
 
 
-class Range(Cell):
+class Range(Module):
     r"""
     Creates a sequence of numbers in range [start, limit) with step size delta.
 
@@ -157,11 +157,11 @@ class Range(Cell):
             self.ms_dtype = mstype.int32
         self.result_tensor = Tensor(data, dtype=self.ms_dtype)
 
-    def construct(self):
+    def forward(self):
         return self.result_tensor
 
 
-class LGamma(Cell):
+class LGamma(Module):
     r"""
     Calculates LGamma using Lanczos' approximation referring to "A Precision Approximation of the Gamma Function".
     The algorithm is:
@@ -246,7 +246,7 @@ class LGamma(Cell):
         self.sin = P.Sin()
         self.isfinite = P.IsFinite()
 
-    def construct(self, x):
+    def forward(self, x):
         input_dtype = self.dtype(x)
         _check_input_dtype("x", input_dtype, [mstype.float16, mstype.float32], self.cls_name)
         infinity = self.fill(input_dtype, self.shape(x), self.inf)
@@ -285,7 +285,7 @@ class LGamma(Cell):
         return self.select(self.isfinite(x), result, infinity)
 
 
-class DiGamma(Cell):
+class DiGamma(Module):
     r"""
     Calculates Digamma using Lanczos' approximation referring to "A Precision Approximation of the Gamma Function".
     The algorithm is:
@@ -350,7 +350,7 @@ class DiGamma(Cell):
         self.cos = P.Cos()
         self.logicaland = P.LogicalAnd()
 
-    def construct(self, x):
+    def forward(self, x):
         input_dtype = self.dtype(x)
         _check_input_dtype("x", input_dtype, [mstype.float16, mstype.float32], self.cls_name)
         need_to_reflect = self.less(x, 0.5)
@@ -547,7 +547,7 @@ def _igammac_continued_fraction(ax, x, a, enabled):
     return ans * ax
 
 
-class IGamma(Cell):
+class IGamma(Module):
     r"""
     Calculates lower regularized incomplete Gamma function.
     The lower regularized incomplete Gamma function is defined as:
@@ -615,7 +615,7 @@ class IGamma(Cell):
         self.const = P.ScalarToArray()
         self.cast = P.Cast()
 
-    def construct(self, a, x):
+    def forward(self, a, x):
         a_dtype = self.dtype(a)
         x_dtype = self.dtype(x)
         _check_input_dtype("a", a_dtype, [mstype.float32], self.cls_name)
@@ -641,7 +641,7 @@ class IGamma(Cell):
         return output
 
 
-class LBeta(Cell):
+class LBeta(Module):
     r"""
     This method avoids the numeric cancellation by explicitly
     decomposing lgamma into the Stirling approximation and an explicit log_gamma_correction, and cancelling
@@ -702,7 +702,7 @@ class LBeta(Cell):
         self.lgamma = LGamma()
         self.const = P.ScalarToTensor()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x_dtype = self.dtype(x)
         y_dtype = self.dtype(y)
         _check_input_dtype("x", x_dtype, [mstype.float16, mstype.float32], self.cls_name)
@@ -821,7 +821,7 @@ def matmul_op_select(x1_shape, x2_shape, transpose_x1, transpose_x2):
     return matmul_op
 
 
-class MatMul(Cell):
+class MatMul(Module):
     r"""
     The nn.MatMul interface is deprecated, please use the :class:`luojianet_ms.ops.matmul` instead.
 
@@ -844,7 +844,7 @@ class MatMul(Cell):
         self.squeeze_right_op = P.Squeeze(-1)
         self.reduce_sum_op = P.ReduceSum(keep_dims=False)
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         x1_shape = self.shape_op(x1)
         x2_shape = self.shape_op(x2)
         check_col_row_equal(x1_shape, x2_shape, self.transpose_x1, self.transpose_x2, self.cls_name)
@@ -878,7 +878,7 @@ class MatMul(Cell):
         return matmul_broadcast
 
 
-class Moments(Cell):
+class Moments(Module):
     """
     Calculate the mean and variance of the input `x` along the specified `axis`.
 
@@ -958,7 +958,7 @@ class Moments(Cell):
         self.square_diff = P.SquaredDifference()
         self.squeeze = P.Squeeze(self.axis)
 
-    def construct(self, x):
+    def forward(self, x):
         tensor_dtype = F.dtype(x)
         _check_input_dtype("input x", tensor_dtype, [mstype.float16, mstype.float32], self.cls_name)
         if tensor_dtype == mstype.float16:
@@ -975,7 +975,7 @@ class Moments(Cell):
         return mean, variance
 
 
-class MatInverse(Cell):
+class MatInverse(Module):
     """
     Calculates the inverse of Positive-Definite Hermitian matrix using Cholesky decomposition.
 
@@ -1008,7 +1008,7 @@ class MatInverse(Cell):
         self.choleskytrsm = P.CholeskyTrsm()
         self.matmul = MatMul(transpose_x1=True)
 
-    def construct(self, a):
+    def forward(self, a):
         input_dtype = self.dtype(a)
         _check_input_dtype("input_a", input_dtype, [mstype.float16, mstype.float32], self.cls_name)
         l_inverse = self.choleskytrsm(a)
@@ -1016,7 +1016,7 @@ class MatInverse(Cell):
         return a_inverse
 
 
-class MatDet(Cell):
+class MatDet(Module):
     """
     Calculates the determinant of Positive-Definite Hermitian matrix using Cholesky decomposition.
 
@@ -1048,7 +1048,7 @@ class MatDet(Cell):
         self.det_triangle = P.DetTriangle()
         self.square = P.Square()
 
-    def construct(self, a):
+    def forward(self, a):
         input_dtype = self.dtype(a)
         _check_input_dtype("input_a", input_dtype, [mstype.float16, mstype.float32], self.cls_name)
         l = self.cholesky(a)

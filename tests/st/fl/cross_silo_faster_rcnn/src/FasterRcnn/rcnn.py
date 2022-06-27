@@ -24,7 +24,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms import context
 
 
-class DenseNoTranpose(nn.Cell):
+class DenseNoTranpose(nn.Module):
     """Dense method"""
     def __init__(self, input_channels, output_channels, weight_init):
         super(DenseNoTranpose, self).__init__()
@@ -36,7 +36,7 @@ class DenseNoTranpose(nn.Cell):
         self.cast = P.Cast()
         self.device_type = "Ascend" if context.get_context("device_target") == "Ascend" else "Others"
 
-    def construct(self, x):
+    def forward(self, x):
         if self.device_type == "Ascend":
             x = self.cast(x, mstype.float16)
             weight = self.cast(self.weight, mstype.float16)
@@ -46,7 +46,7 @@ class DenseNoTranpose(nn.Cell):
         return output
 
 
-class Rcnn(nn.Cell):
+class Rcnn(nn.Module):
     """
     Rcnn subnet.
 
@@ -132,7 +132,7 @@ class Rcnn(nn.Cell):
         range_max = np.arange(self.num_bboxes_test).astype(np.int32)
         self.range_max = Tensor(range_max)
 
-    def construct(self, featuremap, bbox_targets, labels, mask):
+    def forward(self, featuremap, bbox_targets, labels, mask):
         x = self.flatten(featuremap)
 
         x = self.relu(self.shared_fc_0(x))

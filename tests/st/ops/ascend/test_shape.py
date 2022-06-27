@@ -28,7 +28,7 @@ def dataset_generator():
     for i in range(1, 10):
         yield(np.ones((32, 2*i), dtype=np.float32), np.ones((32, 2*i), dtype=np.float32))
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.unique = P.Unique()
@@ -36,7 +36,7 @@ class Net(nn.Cell):
         self.reshape = P.Reshape()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         val = self.add(x, y)
         size = self.shape(val)
         res = self.reshape(val, size)

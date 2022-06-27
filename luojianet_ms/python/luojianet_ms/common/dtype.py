@@ -206,8 +206,8 @@ def get_py_obj_dtype(obj):
     # Tensor
     if hasattr(obj, 'shape') and hasattr(obj, 'dtype') and isinstance(obj.dtype, typing.Type):
         return tensor_type(obj.dtype)
-    # Primitive or Cell
-    if hasattr(obj, '__primitive_flag__') or hasattr(obj, 'construct'):
+    # Primitive or Module
+    if hasattr(obj, '__primitive_flag__') or hasattr(obj, 'forward'):
         return function
     # luojianet_ms type
     if isinstance(obj, typing.Type):

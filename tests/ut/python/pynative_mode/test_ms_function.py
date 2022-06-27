@@ -24,11 +24,11 @@ from luojianet_ms.common.api import ms_function
 grad_all = C.GradOperation(get_all=True)
 
 
-class CellBprop(nn.Cell):
+class CellBprop(nn.Module):
     def __init__(self):
         super(CellBprop, self).__init__()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return 2 * x * x + y * y
 
     @ms_function
@@ -45,24 +45,24 @@ def test_cell_bprop_grad():
         grad_all(net)(input_x, input_y)
 
 
-class ConvNet(nn.Cell):
+class ConvNet(nn.Module):
     def __init__(self):
         super(ConvNet, self).__init__()
         self.conv = nn.Conv2d(1, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.conv(x)
         return out
 
 
-class MomentumWithMsFunc(nn.Cell):
+class MomentumWithMsFunc(nn.Module):
     def __init__(self, net):
         super(MomentumWithMsFunc, self).__init__()
         self.net = net
         self.optimizer = Momentum(filter(lambda x: x.requires_grad, self.net.get_parameters()), 0.1, 0.9)
 
     @ms_function
-    def construct(self, grads):
+    def forward(self, grads):
         ret = self.optimizer(grads)
         return ret
 

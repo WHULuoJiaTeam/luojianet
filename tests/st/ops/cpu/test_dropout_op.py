@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.dropout = P.Dropout()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.dropout(x)
 
 
@@ -46,12 +46,12 @@ def test_net():
     print(mask)
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self):
         super(Net1, self).__init__()
         self.dropout = P.Dropout(keep_prob=0.1)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.dropout(x)
 
 
@@ -67,12 +67,12 @@ def test_net1():
     print(mask)
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self):
         super(Net2, self).__init__()
         self.dropout = P.Dropout(keep_prob=1.0)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.dropout(x)
 
 

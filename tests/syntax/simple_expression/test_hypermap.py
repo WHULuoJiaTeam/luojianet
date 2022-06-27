@@ -21,7 +21,7 @@ from luojianet_ms import Tensor
 from luojianet_ms.common.api import ms_function
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import operations as P
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 add = P.Add()
 hyper_map = C.HyperMap()
@@ -85,13 +85,13 @@ def test_tuple_slice_stop_index():
     Description: The type of stop index of slice must be scalar, None or Tensor.
     Expectation: The type of stop index of slice must be scalar, None or Tensor.
     """
-    class TupleSliceNet(Cell):
+    class TupleSliceNet(Module):
         def __init__(self):
             super(TupleSliceNet, self).__init__()
             self.addn = P.AddN()
             self.index_0 = Tensor(3)
 
-        def construct(self, tensor_tuple):
+        def forward(self, tensor_tuple):
             tensor_tuple_slice0 = tensor_tuple[:]
             tensor_tuple_slice1 = tensor_tuple[self.index_0:"str"]  # slice should be Scalar or None, rather than string
             sum0 = self.addn(tensor_tuple_slice0)
@@ -118,7 +118,7 @@ def test_tuple_slice_start_index():
     Description: The type of start index of slice must be scalar, None or Tensor.
     Expectation: The type of start index of slice must be scalar, None or Tensor.
     """
-    class TupleSliceNet(Cell):
+    class TupleSliceNet(Module):
         def __init__(self):
             super(TupleSliceNet, self).__init__()
             self.addn = P.AddN()
@@ -126,7 +126,7 @@ def test_tuple_slice_start_index():
             self.index_1 = Tensor([5])
             self.index_3 = Tensor([True])
 
-        def construct(self, tensor_tuple):
+        def forward(self, tensor_tuple):
             tensor_tuple_slice0 = tensor_tuple[:]
             tensor_tuple_slice1 = tensor_tuple["str":self.index_0]
             tensor_tuple_slice2 = tensor_tuple[self.index_3:]
@@ -157,7 +157,7 @@ def test_tuple_slice_step():
     Description: The type of step of slice must not be 0.
     Expectation: The type of step of slice must be scalar, None or Tensor.
     """
-    class TupleSliceNet(Cell):
+    class TupleSliceNet(Module):
         def __init__(self):
             super(TupleSliceNet, self).__init__()
             self.addn = P.AddN()
@@ -165,7 +165,7 @@ def test_tuple_slice_step():
             self.index_1 = Tensor([5])
             self.index_3 = Tensor([True])
 
-        def construct(self, tensor_tuple):
+        def forward(self, tensor_tuple):
             tensor_tuple_slice0 = tensor_tuple[:]
             tensor_tuple_slice1 = tensor_tuple[:self.index_0]
             tensor_tuple_slice2 = tensor_tuple[self.index_3:]

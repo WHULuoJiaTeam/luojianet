@@ -22,7 +22,7 @@ import numpy as np
 import luojianet_ms
 from luojianet_ms.ops import functional as F, composite as C, operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer.container import CellList
 from luojianet_ms.common.parameter import Parameter, ParameterTuple
 from luojianet_ms.common.initializer import initializer
@@ -54,7 +54,7 @@ def opt_init_args_register(fn):
         if 'learning_rate' in arguments.keys():
             if isinstance(arguments['learning_rate'], Tensor):
                 arguments['learning_rate'] = arguments['learning_rate'].asnumpy().tolist()
-            if isinstance(arguments['learning_rate'], Cell):
+            if isinstance(arguments['learning_rate'], Module):
                 setattr(self, 'init_learning_rate', None)
             else:
                 setattr(self, 'init_learning_rate', arguments['learning_rate'])
@@ -64,7 +64,7 @@ def opt_init_args_register(fn):
     return deco
 
 
-class Optimizer(Cell):
+class Optimizer(Module):
     """
     Base class for updating parameters. Never use this class directly, but instantiate one of its subclasses instead.
 
@@ -185,8 +185,8 @@ class Optimizer(Cell):
 
         if self.is_group:
             self.parameters = ParameterTuple(self.group_params)
-            decay_filter = lambda x: isinstance(x, Cell) or x > 0
-            dynamic_decay_filter = lambda x: isinstance(x, Cell)
+            decay_filter = lambda x: isinstance(x, Module) or x > 0
+            dynamic_decay_filter = lambda x: isinstance(x, Module)
             self.decay_flags = tuple(decay_filter(x) for x in self.group_weight_decay)
             self.dynamic_decay_flags = tuple(dynamic_decay_filter(x) for x in self.group_weight_decay)
             self.weight_decay = tuple(x if flag else Tensor(x, mstype.float32)
@@ -197,8 +197,8 @@ class Optimizer(Cell):
             self.parameters = ParameterTuple(parameters)
             decay_filter = lambda x: 'beta' not in x.name and 'gamma' not in x.name
             self.decay_flags = tuple(decay_filter(x) for x in self.parameters)
-            self.dynamic_decay_flags = isinstance(weight_decay, Cell)
-            self.exec_weight_decay = isinstance(weight_decay, Cell) or weight_decay > 0
+            self.dynamic_decay_flags = isinstance(weight_decay, Module)
+            self.exec_weight_decay = isinstance(weight_decay, Module) or weight_decay > 0
             self.weight_decay = Tensor(weight_decay, mstype.float32) if not self.dynamic_decay_flags else weight_decay
         # when a parameter has been unique, there is no need do another unique in optimizer.
         for param in self.parameters:
@@ -411,12 +411,12 @@ class Optimizer(Cell):
             weight_decay = float(weight_decay)
             validator.check_non_negative_float(weight_decay, "weight_decay", self.cls_name)
             weight_decay = weight_decay * self.loss_scale
-        elif isinstance(weight_decay, Cell):
+        elif isinstance(weight_decay, Module):
             self.dynamic_weight_decay = True
             weight_decay = _WrappedWeightDecay(weight_decay, self.loss_scale)
         else:
             raise TypeError("For 'Optimizer', the argument 'Weight_decay' should be int, "
-                            "float or Cell, but got {}".format(type(weight_decay)))
+                            "float or Module, but got {}".format(type(weight_decay)))
         return weight_decay
 
     def _preprocess_single_lr(self, learning_rate):
@@ -741,7 +741,7 @@ class Optimizer(Cell):
                 F.assign(key_group[root][i], next_params[i])
         return new_param_group
 
-    def construct(self, *hyper_params):
+    def forward(self, *hyper_params):
         raise NotImplementedError
 
 
@@ -857,7 +857,7 @@ class _ConvertToCell(LearningRateSchedule):
                             "but got {}.".format(type(learning_rate)))
         self.learning_rate = learning_rate
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         return self.learning_rate + 1.0 - 1.0
 
 
@@ -876,16 +876,16 @@ class _IteratorLearningRate(LearningRateSchedule):
         self.learning_rate = Parameter(learning_rate, name)
         self.gather = P.Gather()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         return self.gather(self.learning_rate, global_step, 0)
 
 
-class _WrappedWeightDecay(Cell):
+class _WrappedWeightDecay(Module):
     """Inner api, a combination of dynamic or non-dynamic weight decay"""
     def __init__(self, weight_decay, loss_scale=1.0):
         super(_WrappedWeightDecay, self).__init__()
         self.weight_decay = weight_decay
         self.loss_scale = Tensor(loss_scale, mstype.float32)
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         return self.weight_decay(global_step) * self.loss_scale

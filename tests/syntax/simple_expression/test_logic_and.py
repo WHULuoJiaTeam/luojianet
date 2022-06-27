@@ -24,23 +24,23 @@ from luojianet_ms.common.tensor import Tensor
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class LogicAnd(nn.Cell):
+class LogicAnd(nn.Module):
     def __init__(self):
         super(LogicAnd, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         and_v = x and y
         return and_v
 
 
-class LogicAndSpec(nn.Cell):
+class LogicAndSpec(nn.Module):
     def __init__(self, x, y):
         super(LogicAndSpec, self).__init__()
         self.x = x
         self.y = y
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         and_v = self.x and self.y
         return and_v
 

@@ -17,7 +17,7 @@
 
 import numpy as np
 
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.optim import Optimizer
 from luojianet_ms.common import Tensor
 from luojianet_ms.common import dtype as mstype
@@ -35,12 +35,12 @@ CONTINUOUS_STRATEGY = 0
 INTERVAL_STRATEGY = 1
 
 
-class FreezeOpt(Cell):
+class FreezeOpt(Module):
     """
     Optimizer that supports gradients freezing training.
 
     Args:
-        opt (Cell): non-freezing optimizer instance, such as 'Momentum', 'SGD'.
+        opt (Module): non-freezing optimizer instance, such as 'Momentum', 'SGD'.
         train_parameter_groups (Union[tuple, list]): Groups of parameters for gradients freezing training.
         train_strategy (Union[tuple(int), list(int), Tensor]): Strategy for gradients freezing training.
 
@@ -145,18 +145,18 @@ class FreezeOpt(Cell):
         return opt
 
 
-class _TrainFreezeCell(Cell):
+class _TrainFreezeCell(Module):
     r"""
     Gradient freezing training network.
 
     Args:
-        net (Cell): The training network.
+        net (Module): The training network.
         sens (numbers.Number): The scaling number to be filled as the input of backpropagation. Default value is 1.0.
         grad (tuple(Tensor)): The gradients of network parameters and inputs.
-        grad_reducer (Cell): Constructs a gradient reducer Cell, which applies communication and average operations on
+        grad_reducer (Module): Constructs a gradient reducer Module, which applies communication and average operations on
     single-process gradient values.
         use_grad_accumulation (bool): Whether use grad accumulation.
-        optimizer (Union[Cell]): Optimizer for updating the weights.
+        optimizer (Union[Module]): Optimizer for updating the weights.
         max_accumulation_step (numbers.Number): Max grad accumulation steps. Default: 1.0
 
     Supported Platforms:
@@ -176,7 +176,7 @@ class _TrainFreezeCell(Cell):
             self.grad_accumulation = GradientAccumulation(
                 self.max_accumulation_step, self.optimizer)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         loss = self.net(*inputs)
         sens = F.fill(loss.dtype, loss.shape, self.sens)
         grads = self.grad(self.net, self.parameters)(*inputs, sens)
@@ -216,7 +216,7 @@ class GradientFreeze:
         Split parameter groups for gradients freezing training.
 
         Args:
-            net (Cell): The training network.
+            net (Module): The training network.
             freeze_para_groups_number (int): The number of gradient freeze groups.
         """
         grouped_params = []
@@ -285,8 +285,8 @@ class GradientFreeze:
         Generate freeze network and optimizer.
 
         Args:
-            network (Cell): The training network.
-            optimizer (Cell): Optimizer for updating the weights.
+            network (Module): The training network.
+            optimizer (Module): Optimizer for updating the weights.
         """
         train_para_groups = self.split_parameters_groups(
             network, self._param_groups)
@@ -307,8 +307,8 @@ def freeze_cell(reducer_flag, network, optimizer, sens, grad, use_grad_accumulat
 
     Args:
         reducer_flag (bool): Reducer flag.
-        network (Cell): The training network.
-        optimizer (Cell): Optimizer for updating the weights.
+        network (Module): The training network.
+        optimizer (Module): Optimizer for updating the weights.
         sens (numbers.Number):  The scaling number.
         grad (tuple(Tensor)): Tuple of gradient tensors.
         use_grad_accumulation (bool): Use gradient accumulation flag.
@@ -322,14 +322,14 @@ def freeze_cell(reducer_flag, network, optimizer, sens, grad, use_grad_accumulat
         >>> import luojianet_ms.ops as ops
         >>> from luojianet_ms.boost.grad_freeze import freeze_cell
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, in_features, out_features):
         ...         super(Net, self).__init__()
         ...         self.weight = Parameter(Tensor(np.ones([in_features, out_features]).astype(np.float32)),
         ...                                 name='weight')
         ...         self.matmul = ops.MatMul()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output = self.matmul(x, self.weight)
         ...         return output
         ...

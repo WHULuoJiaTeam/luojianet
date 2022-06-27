@@ -82,9 +82,9 @@ if __name__ == '__main__':
     tadd = P.ReLU()
 
 
-    class dataiter(nn.Cell):
+    class dataiter(nn.Module):
 
-        def construct(self):
+        def forward(self):
             input_, _ = get_next()
             return tadd(input_)
 

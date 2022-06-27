@@ -20,7 +20,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import functional as F
 
 
-class OhemLoss(nn.Cell):
+class OhemLoss(nn.Module):
     """Ohem loss cell."""
     def __init__(self, num, ignore_label):
         super(OhemLoss, self).__init__()
@@ -42,7 +42,7 @@ class OhemLoss(nn.Cell):
         self.ignore_label = ignore_label
         self.loss_weight = 1.0
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         logits = self.transpose(logits, (0, 2, 3, 1))
         logits = self.reshape(logits, (-1, self.num))
         labels = F.cast(labels, mstype.int32)

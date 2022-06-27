@@ -25,12 +25,12 @@ from luojianet_ms import Tensor
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class TestTimeDistributed(nn.Cell):
+class TestTimeDistributed(nn.Module):
     def __init__(self, cell, time_axis, reshape_with_axis=None):
         super(TestTimeDistributed, self).__init__()
         self.time_distributed = nn.TimeDistributed(cell, time_axis, reshape_with_axis)
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         return self.time_distributed(inputs)
 
 

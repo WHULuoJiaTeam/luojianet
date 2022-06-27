@@ -23,20 +23,20 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms.context import _Context
 from ....train_step_wrap import train_step_with_loss_warp
 
-class MatMulCell(nn.Cell):
+class MatMulCell(nn.Module):
     def __init__(self):
         super(MatMulCell, self).__init__()
         self.reshape = P.Reshape()
         self.matmul0 = P.MatMul(transpose_b=True)
         self.weight = Parameter(initializer("ones", [64, 128], ms.float32), name="weight")
         self.relu = P.ReLU().shard(((1, 8),))
-    def construct(self, x):
+    def forward(self, x):
         x = self.matmul0(x, self.weight)
         x = self.reshape(x, (32, 128))
         x = self.relu(x)
         return x
 
-class DenseMutMulNet(nn.Cell):
+class DenseMutMulNet(nn.Module):
     def __init__(self, mp_comm_recompute=True, recompute_slice_activation=False):
         super(DenseMutMulNet, self).__init__()
         self.fc1 = nn.Dense(128, 768, activation='relu')
@@ -58,7 +58,7 @@ class DenseMutMulNet(nn.Cell):
         self.matmul_cell.recompute(mp_comm_recompute=mp_comm_recompute,
                                    recompute_slice_activation=recompute_slice_activation)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.matmul_cell(x)
         q = self.fc1(x)
         k = self.fc2(x)

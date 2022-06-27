@@ -21,12 +21,12 @@ from luojianet_ms import context
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.m = 1
 
-    def construct(self, x):
+    def forward(self, x):
         return ~x
 
 def test_invert():

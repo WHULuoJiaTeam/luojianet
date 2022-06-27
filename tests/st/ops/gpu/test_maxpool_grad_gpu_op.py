@@ -23,24 +23,24 @@ from luojianet_ms.ops.operations import _grad_ops as G
 from luojianet_ms.ops.composite import GradOperation
 
 
-class Net_Pool_Grad(nn.Cell):
+class Net_Pool_Grad(nn.Module):
     def __init__(self):
         super(Net_Pool_Grad, self).__init__()
         self.maxpool_grad_fun = G.MaxPoolGrad(pad_mode="VALID",
                                               kernel_size=2,
                                               strides=2)
 
-    def construct(self, x, a, d):
+    def forward(self, x, a, d):
         return self.maxpool_grad_fun(x, a, d)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, x1, out, dout, grad):
+    def forward(self, x1, out, dout, grad):
         return self.grad(self.network)(x1, out, dout, grad)
 
 

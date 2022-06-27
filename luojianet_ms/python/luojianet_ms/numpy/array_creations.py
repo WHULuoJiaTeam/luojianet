@@ -1671,7 +1671,7 @@ ogrid = OGridClass()
 
 def diag(v, k=0):
     """
-    Extracts a diagonal or construct a diagonal array.
+    Extracts a diagonal or forward a diagonal array.
 
     Args:
         v (Tensor): If `v` is a 2-D array, return a copy of its `k-th` diagonal.
@@ -1837,7 +1837,7 @@ def ix_(*args):
     dimensions each, such that the shape is 1 in all but one dimension
     and the dimension with the non-unit shape value cycles through all
     N dimensions.
-    Using ix\_ one can quickly construct index arrays that will index
+    Using ix\_ one can quickly forward index arrays that will index
     the cross product. ``a[np.ix_([1,3],[2,5])]`` returns the array
     ``[[a[1,2] a[1,5]], [a[3,2] a[3,5]]]``.
 

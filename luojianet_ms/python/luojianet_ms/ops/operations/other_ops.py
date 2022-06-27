@@ -244,11 +244,11 @@ class CheckValid(PrimitiveWithInfer):
         >>> import luojianet_ms.nn as nn
         >>> import numpy as np
         >>> from luojianet_ms import Tensor, ops
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.check_valid = ops.CheckValid()
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         valid_result = self.check_valid(x, y)
         ...         return valid_result
         ...
@@ -407,13 +407,13 @@ class Depend(Primitive):
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms.ops as ops
         >>> from luojianet_ms import Tensor
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.softmax = ops.Softmax()
         ...         self.depend = ops.Depend()
         ...
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         mul = x * y
         ...         y = self.depend(y, mul)
         ...         ret = self.softmax(y)
@@ -484,11 +484,11 @@ class CheckBprop(PrimitiveWithInfer):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.op = ops.CheckBprop()
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         return self.op(x, y)
         ...
         >>> net = Net()

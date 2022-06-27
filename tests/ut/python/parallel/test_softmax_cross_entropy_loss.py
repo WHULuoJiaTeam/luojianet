@@ -26,23 +26,23 @@ from luojianet_ms.ops import operations as P
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network, strategy3=None):
         super(NetWithLoss, self).__init__()
         self.loss = P.SoftmaxCrossEntropyWithLogits().shard(strategy3)
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         predict = self.network(x, y)
         return self.loss(predict, b)[0]
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -53,13 +53,13 @@ def compile_net(net, x, y, b):
 
 
 def test_softmax_cross_entropy_loss():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(strategy1)
             self.gelu = P.GeLU().shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             out = self.gelu(out)
             return out
@@ -78,13 +78,13 @@ def test_softmax_cross_entropy_loss():
 
 
 def test_softmax_cross_entropy_loss_repeated_calculation():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True).shard(strategy1)
             self.gelu = P.GeLU().shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             out = self.gelu(out)
             return out
@@ -103,13 +103,13 @@ def test_softmax_cross_entropy_loss_repeated_calculation():
 
 
 def test_softmax_cross_entropy_loss_auto_batch_parallel():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul(transpose_b=True)
             self.gelu = P.GeLU()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             out = self.gelu(out)
             return out

@@ -131,7 +131,7 @@ class BertLearningRate(lr_schedules.LearningRateSchedule):
         self.one = Tensor(np.array([1.0]).astype(np.float32))
         self.cast = P.Cast()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         decay_lr = self.decay_lr(global_step)
         if self.warmup_flag:
             is_warmup = self.cast(self.greater(self.warmup_steps, global_step), mstype.float32)

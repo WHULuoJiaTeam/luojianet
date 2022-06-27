@@ -20,7 +20,7 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class ClipByNormNoDivSum(nn.Cell):
+class ClipByNormNoDivSum(nn.Module):
     def __init__(self):
         super(ClipByNormNoDivSum, self).__init__()
         self.greater = P.Greater()
@@ -28,7 +28,7 @@ class ClipByNormNoDivSum(nn.Cell):
         self.sqrt = P.Sqrt()
         self.maximum = P.Maximum()
 
-    def construct(self, i0, i1, i2, i3):
+    def forward(self, i0, i1, i2, i3):
         greater_res = self.greater(i0, i1)
         select_res0 = self.select(greater_res, i0, i2)
         sqrt_res = self.sqrt(select_res0)

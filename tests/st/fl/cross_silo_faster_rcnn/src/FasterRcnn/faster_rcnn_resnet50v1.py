@@ -32,7 +32,7 @@ from .roi_align import SingleRoIExtractor
 from .anchor_generator import AnchorGenerator
 
 
-class Faster_Rcnn_Resnet(nn.Cell):
+class Faster_Rcnn_Resnet(nn.Module):
     """
     FasterRcnn Network.
 
@@ -231,9 +231,9 @@ class Faster_Rcnn_Resnet(nn.Cell):
         self.roi_align_index_tensor = Tensor(np.concatenate(roi_align_index))
         self.roi_align_index_test_tensor = Tensor(np.concatenate(roi_align_index_test))
 
-    def construct(self, img_data, img_metas, gt_bboxes, gt_labels, gt_valids):
+    def forward(self, img_data, img_metas, gt_bboxes, gt_labels, gt_valids):
         """
-        construct the FasterRcnn Network.
+        forward the FasterRcnn Network.
 
         Args:
             img_data: input image data.
@@ -477,12 +477,12 @@ class Faster_Rcnn_Resnet(nn.Cell):
 
         return multi_level_anchors
 
-class FasterRcnn_Infer(nn.Cell):
+class FasterRcnn_Infer(nn.Module):
     def __init__(self, config):
         super(FasterRcnn_Infer, self).__init__()
         self.network = Faster_Rcnn_Resnet(config)
         self.network.set_train(False)
 
-    def construct(self, img_data, img_metas):
+    def forward(self, img_data, img_metas):
         output = self.network(img_data, img_metas, None, None, None)
         return output

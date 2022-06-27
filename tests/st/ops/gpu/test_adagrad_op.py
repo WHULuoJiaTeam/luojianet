@@ -29,14 +29,14 @@ var_np = np.random.rand(3, 3).astype(np.float32)
 accum_np = np.random.rand(3, 3).astype(np.float32)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.apply_adagrad = P.ApplyAdagrad()
         self.var = Parameter(Tensor(var_np), name="var")
         self.accum = Parameter(Tensor(accum_np), name="accum")
 
-    def construct(self, lr, grad):
+    def forward(self, lr, grad):
         z = self.apply_adagrad(self.var, self.accum, lr, grad)
         return z
 

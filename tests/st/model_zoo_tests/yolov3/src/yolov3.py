@@ -34,14 +34,14 @@ def weight_variable():
     return TruncatedNormal(0.02)
 
 
-class _conv2d(nn.Cell):
+class _conv2d(nn.Module):
     """Create Conv2D with padding."""
     def __init__(self, in_channels, out_channels, kernel_size, stride=1):
         super(_conv2d, self).__init__()
         self.conv = nn.Conv2d(in_channels, out_channels,
                               kernel_size=kernel_size, stride=stride, padding=0, pad_mode='same',
                               weight_init=weight_variable())
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         return x
 
@@ -74,7 +74,7 @@ def _conv_bn_relu(in_channel,
     )
 
 
-class BasicBlock(nn.Cell):
+class BasicBlock(nn.Module):
     """
     ResNet basic block.
 
@@ -110,7 +110,7 @@ class BasicBlock(nn.Cell):
             self.down_sample_layer = _conv2d(in_channels, out_channels, 1, stride=stride)
         self.add = P.Add()
 
-    def construct(self, x):
+    def forward(self, x):
         identity = x
 
         x = self.conv1(x)
@@ -129,12 +129,12 @@ class BasicBlock(nn.Cell):
         return out
 
 
-class ResNet(nn.Cell):
+class ResNet(nn.Module):
     """
     ResNet network.
 
     Args:
-        block (Cell): Block for network.
+        block (Module): Block for network.
         layer_nums (list): Numbers of different layers.
         in_channels (int): Input channel.
         out_channels (int): Output channel.
@@ -203,7 +203,7 @@ class ResNet(nn.Cell):
         Make Layer for ResNet.
 
         Args:
-            block (Cell): Resnet block.
+            block (Module): Resnet block.
             layer_num (int): Layer number.
             in_channel (int): Input channel.
             out_channel (int): Output channel.
@@ -229,7 +229,7 @@ class ResNet(nn.Cell):
 
         return nn.SequentialCell(layers)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -257,7 +257,7 @@ def resnet18(class_num=10):
         class_num (int): Class number.
 
     Returns:
-        Cell, cell instance of ResNet18 neural network.
+        Module, cell instance of ResNet18 neural network.
 
     Examples:
         resnet18(100).
@@ -270,7 +270,7 @@ def resnet18(class_num=10):
                   num_classes=class_num)
 
 
-class YoloBlock(nn.Cell):
+class YoloBlock(nn.Module):
     """
     YoloBlock for YOLOv3.
 
@@ -301,7 +301,7 @@ class YoloBlock(nn.Cell):
 
         self.conv6 = nn.Conv2d(out_chls_2, out_channels, kernel_size=1, stride=1, has_bias=True)
 
-    def construct(self, x):
+    def forward(self, x):
         c1 = self.conv0(x)
         c2 = self.conv1(c1)
 
@@ -315,7 +315,7 @@ class YoloBlock(nn.Cell):
         return c5, out
 
 
-class YOLOv3(nn.Cell):
+class YOLOv3(nn.Module):
     """
      YOLOv3 Network.
 
@@ -325,7 +325,7 @@ class YOLOv3(nn.Cell):
      Args:
          feature_shape (list): Input image shape, [N,C,H,W].
          backbone_shape (list): resnet18 output channels shape.
-         backbone (Cell): Backbone Network.
+         backbone (Module): Backbone Network.
          out_channel (int): Output channel.
 
      Returns:
@@ -356,7 +356,7 @@ class YOLOv3(nn.Cell):
                                     out_channels=out_channel)
         self.concat = P.Concat(axis=1)
 
-    def construct(self, x):
+    def forward(self, x):
         # input_shape of x is (batch_size, 3, h, w)
         # feature_map1 is (batch_size, backbone_shape[2], h/8, w/8)
         # feature_map2 is (batch_size, backbone_shape[3], h/16, w/16)
@@ -377,7 +377,7 @@ class YOLOv3(nn.Cell):
         return big_object_output, medium_object_output, small_object_output
 
 
-class DetectionBlock(nn.Cell):
+class DetectionBlock(nn.Module):
     """
      YOLOv3 detection Network. It will finally output the detection result.
 
@@ -416,7 +416,7 @@ class DetectionBlock(nn.Cell):
         self.concat = P.Concat(axis=-1)
         self.input_shape = Tensor(tuple(config.img_shape[::-1]), ms.float32)
 
-    def construct(self, x):
+    def forward(self, x):
         num_batch = P.Shape()(x)[0]
         grid_size = P.Shape()(x)[2:4]
 
@@ -453,14 +453,14 @@ class DetectionBlock(nn.Cell):
         return box_xy, box_wh, box_confidence, box_probs
 
 
-class Iou(nn.Cell):
+class Iou(nn.Module):
     """Calculate the iou of boxes."""
     def __init__(self):
         super(Iou, self).__init__()
         self.min = P.Minimum()
         self.max = P.Maximum()
 
-    def construct(self, box1, box2):
+    def forward(self, box1, box2):
         box1_xy = box1[:, :, :, :, :, :2]
         box1_wh = box1[:, :, :, :, :, 2:4]
         box1_mins = box1_xy - box1_wh / F.scalar_to_array(2.0)
@@ -484,7 +484,7 @@ class Iou(nn.Cell):
         return iou
 
 
-class YoloLossBlock(nn.Cell):
+class YoloLossBlock(nn.Module):
     """
      YOLOv3 Loss block cell. It will finally output loss of the scale.
 
@@ -519,7 +519,7 @@ class YoloLossBlock(nn.Cell):
         self.reduce_max = P.ReduceMax(keep_dims=False)
         self.input_shape = Tensor(tuple(config.img_shape[::-1]), ms.float32)
 
-    def construct(self, grid, prediction, pred_xy, pred_wh, y_true, gt_box):
+    def forward(self, grid, prediction, pred_xy, pred_wh, y_true, gt_box):
 
         object_mask = y_true[:, :, :, :, 4:5]
         class_probs = y_true[:, :, :, :, 5:]
@@ -562,7 +562,7 @@ class YoloLossBlock(nn.Cell):
         return loss / P.Shape()(prediction)[0]
 
 
-class yolov3_resnet18(nn.Cell):
+class yolov3_resnet18(nn.Module):
     """
     ResNet based YOLOv3 network.
 
@@ -570,7 +570,7 @@ class yolov3_resnet18(nn.Cell):
         config (Class): YOLOv3 config.
 
     Returns:
-        Cell, cell instance of ResNet based YOLOv3 neural network.
+        Module, cell instance of ResNet based YOLOv3 neural network.
 
     Examples:
         yolov3_resnet18(80, [1,3,416,416]).
@@ -596,7 +596,7 @@ class yolov3_resnet18(nn.Cell):
         self.detect_2 = DetectionBlock('m', self.config)
         self.detect_3 = DetectionBlock('s', self.config)
 
-    def construct(self, x):
+    def forward(self, x):
         big_object_output, medium_object_output, small_object_output = self.feature_map(x)
         output_big = self.detect_1(big_object_output)
         output_me = self.detect_2(medium_object_output)
@@ -605,12 +605,12 @@ class yolov3_resnet18(nn.Cell):
         return output_big, output_me, output_small
 
 
-class YoloWithLossCell(nn.Cell):
+class YoloWithLossCell(nn.Module):
     """"
     Provide YOLOv3 training loss through network.
 
     Args:
-        network (Cell): The training network.
+        network (Module): The training network.
         config (Class): YOLOv3 config.
 
     Returns:
@@ -624,7 +624,7 @@ class YoloWithLossCell(nn.Cell):
         self.loss_me = YoloLossBlock('m', self.config)
         self.loss_small = YoloLossBlock('s', self.config)
 
-    def construct(self, x, y_true_0, y_true_1, y_true_2, gt_0, gt_1, gt_2):
+    def forward(self, x, y_true_0, y_true_1, y_true_2, gt_0, gt_1, gt_2):
         yolo_out = self.yolo_network(x)
         loss_l = self.loss_big(yolo_out[0][0], yolo_out[0][1], yolo_out[0][2], yolo_out[0][3], y_true_0, gt_0)
         loss_m = self.loss_me(yolo_out[1][0], yolo_out[1][1], yolo_out[1][2], yolo_out[1][3], y_true_1, gt_1)
@@ -632,15 +632,15 @@ class YoloWithLossCell(nn.Cell):
         return loss_l + loss_m + loss_s
 
 
-class TrainingWrapper(nn.Cell):
+class TrainingWrapper(nn.Module):
     """
     Encapsulation class of YOLOv3 network training.
 
-    Append an optimizer to the training network after that the construct
+    Append an optimizer to the training network after that the forward
     function can be called to create the backward graph.
 
     Args:
-        network (Cell): The training network. Note that loss function should have been added.
+        network (Module): The training network. Note that loss function should have been added.
         optimizer (Optimizer): Optimizer for updating the weights.
         sens (Number): The adjust parameter. Default: 1.0.
     """
@@ -664,7 +664,7 @@ class TrainingWrapper(nn.Cell):
                 degree = get_group_size()
             self.grad_reducer = nn.DistributedGradReducer(optimizer.parameters, mean, degree)
 
-    def construct(self, *args):
+    def forward(self, *args):
         weights = self.weights
         loss = self.network(*args)
         sens = P.Fill()(P.DType()(loss), P.Shape()(loss), self.sens)
@@ -675,7 +675,7 @@ class TrainingWrapper(nn.Cell):
         return F.depend(loss, self.optimizer(grads))
 
 
-class YoloBoxScores(nn.Cell):
+class YoloBoxScores(nn.Module):
     """
     Calculate the boxes of the original picture size and the score of each box.
 
@@ -691,7 +691,7 @@ class YoloBoxScores(nn.Cell):
         self.input_shape = Tensor(np.array(config.img_shape), ms.float32)
         self.num_classes = config.num_classes
 
-    def construct(self, box_xy, box_wh, box_confidence, box_probs, image_shape):
+    def forward(self, box_xy, box_wh, box_confidence, box_probs, image_shape):
         batch_size = F.shape(box_xy)[0]
         x = box_xy[:, :, :, :, 0:1]
         y = box_xy[:, :, :, :, 1:2]
@@ -720,12 +720,12 @@ class YoloBoxScores(nn.Cell):
         return boxes, boxes_scores
 
 
-class YoloWithEval(nn.Cell):
+class YoloWithEval(nn.Module):
     """
     Encapsulation class of YOLOv3 evaluation.
 
     Args:
-        network (Cell): The training network. Note that loss function and optimizer must not be added.
+        network (Module): The training network. Note that loss function and optimizer must not be added.
         config (Class): YOLOv3 config.
 
     Returns:
@@ -740,7 +740,7 @@ class YoloWithEval(nn.Cell):
         self.box_score_1 = YoloBoxScores(config)
         self.box_score_2 = YoloBoxScores(config)
 
-    def construct(self, x, image_shape):
+    def forward(self, x, image_shape):
         yolo_output = self.yolo_network(x)
         boxes_0, boxes_scores_0 = self.box_score_0(*yolo_output[0], image_shape)
         boxes_1, boxes_scores_1 = self.box_score_1(*yolo_output[1], image_shape)

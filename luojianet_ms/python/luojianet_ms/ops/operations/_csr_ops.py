@@ -40,12 +40,12 @@ class CSRReduceSum(PrimitiveWithInfer):
         >>> from luojianet_ms import Tensor, CSRTensor
         >>> from luojianet_ms.ops.operations import _csr_ops
         >>> from luojianet_ms import dtype as mstype
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.op = _csr_ops.CSRReduceSum()
         ...
-        ...     def construct(self, indptr, indices, values, dense_shape, axis):
+        ...     def forward(self, indptr, indices, values, dense_shape, axis):
         ...         csr_tensor = CSRTensor(indptr, indices, values, dense_shape)
         ...         return self.op(csr_tensor, axis)
         >>> indptr = Tensor([0, 1, 2])
@@ -88,12 +88,12 @@ class CSRMV(PrimitiveWithInfer):
         >>> from luojianet_ms import Tensor, CSRTensor
         >>> from luojianet_ms.ops.operations import _csr_ops
         >>> from luojianet_ms import dtype as mstype
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.op = _csr_ops.CSRMV()
         ...
-        ...     def construct(self, indptr, indices, values, dense_shape, dense):
+        ...     def forward(self, indptr, indices, values, dense_shape, dense):
         ...         csr_tensor = CSRTensor(indptr, indices, values, dense_shape)
         ...         return self.op(csr_tensor, dense)
         >>> indptr = Tensor([0, 1, 2])
@@ -141,12 +141,12 @@ class CSRMul(PrimitiveWithInfer):
         >>> from luojianet_ms import Tensor, CSRTensor
         >>> from luojianet_ms.ops.operations import _csr_ops
         >>> from luojianet_ms import dtype as mstype
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.op = _csr_ops.CSRMul()
         ...
-        ...     def construct(self, indptr, indices, values, dense_shape, dense):
+        ...     def forward(self, indptr, indices, values, dense_shape, dense):
         ...         csr_tensor = CSRTensor(indptr, indices, values, dense_shape)
         ...         return self.op(csr_tensor, dense)
         >>> indptr = Tensor([0, 1, 2])
@@ -191,12 +191,12 @@ class CSRGather(PrimitiveWithInfer):
         >>> from luojianet_ms import Tensor
         >>> from luojianet_ms.ops.operations import _csr_ops
         >>> from luojianet_ms import dtype as mstype
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.op = _csr_ops.CSRGather()
         ...
-        ...     def construct(self, indptr, indices, dense, sparse_shape):
+        ...     def forward(self, indptr, indices, dense, sparse_shape):
         ...         return self.op(indptr, indices, dense, sparse_shape)
         >>> indptr = Tensor([0, 1, 2])
         >>> indices = Tensor([0, 1])
@@ -235,12 +235,12 @@ class CSR2COO(PrimitiveWithInfer):
         >>> import luojianet_ms.nn as nn
         >>> from luojianet_ms import Tensor
         >>> from luojianet_ms.ops.operations import _csr_ops
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.op = _csr_ops.CSR2COO()
         ...
-        ...     def construct(self, indptr, nnz):
+        ...     def forward(self, indptr, nnz):
         ...         return self.op(indptr, nnz)
         >>> indptr = Tensor([0, 1, 2])
         >>> out = Net()(indptr, 2)
@@ -276,12 +276,12 @@ class COO2CSR(PrimitiveWithInfer):
         >>> from luojianet_ms import Tensor
         >>> from luojianet_ms.ops.operations import _csr_ops
         >>> from luojianet_ms import dtype as mstype
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.op = _csr_ops.COO2CSR()
         ...
-        ...     def construct(self, row_indices, height):
+        ...     def forward(self, row_indices, height):
         ...         return self.op(row_indices, height)
         >>> row_indices = Tensor([0, 1])
         >>> out = Net()(row_indices, 2)
@@ -319,12 +319,12 @@ class CSRDiv(PrimitiveWithInfer):
         >>> from luojianet_ms import Tensor, CSRTensor
         >>> from luojianet_ms.ops.operations import _csr_ops
         >>> from luojianet_ms import dtype as mstype
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.op = _csr_ops.CSRDiv()
         ...
-        ...     def construct(self, indptr, indices, values, dense_shape, dense):
+        ...     def forward(self, indptr, indices, values, dense_shape, dense):
         ...         csr_tensor = CSRTensor(indptr, indices, values, dense_shape)
         ...         return self.op(csr_tensor, dense)
         >>> indptr = Tensor([0, 1, 2])

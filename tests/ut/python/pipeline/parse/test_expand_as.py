@@ -24,13 +24,13 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_expand_as():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.t1 = Tensor([1, 2, 3])
             self.t2 = Tensor([[1, 1, 1], [1, 1, 1]])
 
-        def construct(self):
+        def forward(self):
             return self.t1.expand_as(self.t2)
 
     net = Net()
@@ -38,13 +38,13 @@ def test_expand_as():
 
 
 def test_initializer_expand_as():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.t1 = init.initializer('one', [1, 3], ms.float32)
             self.t2 = init.initializer('one', [2, 3], ms.float32)
 
-        def construct(self):
+        def forward(self):
             return self.t1.expand_as(self.t2)
 
     net = Net()
@@ -52,12 +52,12 @@ def test_initializer_expand_as():
 
 
 def test_expand_as_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.t1 = Tensor([1, 2, 3])
 
-        def construct(self, x):
+        def forward(self, x):
             return self.t1.expand_as(x)
 
     net = Net()
@@ -65,12 +65,12 @@ def test_expand_as_parameter():
 
 
 def test_expand_tensor_as_parameter_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.t2 = Tensor([[1, 1, 1], [1, 1, 1]])
 
-        def construct(self, x):
+        def forward(self, x):
             return x.expand_as(self.t2)
 
     net = Net()

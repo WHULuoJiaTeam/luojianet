@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetReciprocal(nn.Cell):
+class NetReciprocal(nn.Module):
     def __init__(self):
         super(NetReciprocal, self).__init__()
         self.reciprocal = P.Reciprocal()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.reciprocal(x)
 
 

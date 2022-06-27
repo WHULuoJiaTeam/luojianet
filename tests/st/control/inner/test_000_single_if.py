@@ -21,8 +21,8 @@ from luojianet_ms.common import dtype as mstype
 grad_all = C.GradOperation(get_all=True)
 
 
-class SingleIfNet(nn.Cell):
-    def construct(self, x, y):
+class SingleIfNet(nn.Module):
+    def forward(self, x, y):
         x += 1
         if x < y:
             y += x
@@ -32,8 +32,8 @@ class SingleIfNet(nn.Cell):
         return y
 
 
-class SingleIfNet1(nn.Cell):
-    def construct(self, x, y):
+class SingleIfNet1(nn.Module):
+    def forward(self, x, y):
         x += 1
         out = self.func(x, y)
         out *= 2
@@ -48,12 +48,12 @@ class SingleIfNet1(nn.Cell):
         return y
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super(GradNet, self).__init__()
         self.net = net
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return grad_all(self.net)(*inputs)
 
 
@@ -103,7 +103,7 @@ def test_single_if_01():
 def test_single_if_any():
     """
     Feature: compile and run control flow with if statement
-    Description: true-branch func graph refer a CNode in construct as free variable.
+    Description: true-branch func graph refer a CNode in forward as free variable.
                   That CNode and the inputs will be specialized before ProcessCNode
                   of true-branch func graph, so it's no need to specialize the inputs
                   of that CNode again if it's a specialized func graph.
@@ -112,13 +112,13 @@ def test_single_if_any():
     x = Tensor([True, True, False])
     y = Tensor([False])
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, input1, input2):
             super().__init__()
             self.input1 = input1
             self.input2 = input2
 
-        def construct(self):
+        def forward(self):
             if self.input1.all() == self.input2:
                 return self.input1.any()
             return self.input2

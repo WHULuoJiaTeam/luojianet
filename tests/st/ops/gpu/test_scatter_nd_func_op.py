@@ -32,7 +32,7 @@ func_map = {
 }
 
 
-class TestScatterNdFuncNet(nn.Cell):
+class TestScatterNdFuncNet(nn.Module):
     def __init__(self, func, lock, inputx, indices, updates):
         super(TestScatterNdFuncNet, self).__init__()
 
@@ -41,7 +41,7 @@ class TestScatterNdFuncNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def forward(self):
         out = self.scatter_func(self.inputx, self.indices, self.updates)
         return out
 

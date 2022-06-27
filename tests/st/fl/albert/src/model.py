@@ -125,7 +125,7 @@ class AlbertConfig:
         self.use_word_embeddings = use_word_embeddings
 
 
-class EmbeddingLookup(nn.Cell):
+class EmbeddingLookup(nn.Module):
     """
     A embeddings lookup table with a fixed dictionary and size.
 
@@ -151,7 +151,7 @@ class EmbeddingLookup(nn.Cell):
         self.reshape = P.Reshape()
         self.shape = (-1, config.seq_length, config.embedding_size)
 
-    def construct(self, input_ids):
+    def forward(self, input_ids):
         """embedding lookup"""
         flat_ids = self.reshape(input_ids, self.shape_flat)
         if self.use_one_hot_embeddings:
@@ -164,7 +164,7 @@ class EmbeddingLookup(nn.Cell):
         return output, self.embedding_table
 
 
-class EmbeddingPostprocessor(nn.Cell):
+class EmbeddingPostprocessor(nn.Module):
     """
     Postprocessors apply positional and token type embeddings to word embeddings.
 
@@ -199,7 +199,7 @@ class EmbeddingPostprocessor(nn.Cell):
                                                    [config.max_position_embeddings,
                                                     config.embedding_size]))
 
-    def construct(self, token_type_ids, word_embeddings):
+    def forward(self, token_type_ids, word_embeddings):
         """embedding postprocessor"""
         output = word_embeddings
         if self.use_token_type:
@@ -223,7 +223,7 @@ class EmbeddingPostprocessor(nn.Cell):
         return output
 
 
-class AlbertOutput(nn.Cell):
+class AlbertOutput(nn.Module):
     """
     Apply a linear computation to hidden status and a residual computation to input.
 
@@ -246,7 +246,7 @@ class AlbertOutput(nn.Cell):
 
         self.cast = P.Cast()
 
-    def construct(self, hidden_status, input_tensor):
+    def forward(self, hidden_status, input_tensor):
         """bert output"""
         output = self.dense(hidden_status)
         output = self.dropout(output)
@@ -257,7 +257,7 @@ class AlbertOutput(nn.Cell):
         return output
 
 
-class RelaPosMatrixGenerator(nn.Cell):
+class RelaPosMatrixGenerator(nn.Module):
     """
     Generates matrix of relative positions between inputs.
 
@@ -278,7 +278,7 @@ class RelaPosMatrixGenerator(nn.Cell):
         self.expanddims = P.ExpandDims()
         self.cast = P.Cast()
 
-    def construct(self):
+    def forward(self):
         """position matrix generator"""
         range_vec_row_out = self.cast(F.tuple_to_array(F.make_range(self._length)), mstype.int32)
         range_vec_col_out = self.range_mat(range_vec_row_out, (self._length, -1))
@@ -296,7 +296,7 @@ class RelaPosMatrixGenerator(nn.Cell):
         return final_mat
 
 
-class RelaPosEmbeddingsGenerator(nn.Cell):
+class RelaPosEmbeddingsGenerator(nn.Module):
     """
     Generates tensor of size [length, length, depth].
 
@@ -332,7 +332,7 @@ class RelaPosEmbeddingsGenerator(nn.Cell):
         self.gather = P.Gather()  # index_select
         self.matmul = P.BatchMatMul()
 
-    def construct(self):
+    def forward(self):
         """position embedding generation"""
         relative_positions_matrix_out = self.relative_positions_matrix()
         # Generate embedding for each relative position of dimension depth.
@@ -349,7 +349,7 @@ class RelaPosEmbeddingsGenerator(nn.Cell):
         return embeddings
 
 
-class SaturateCast(nn.Cell):
+class SaturateCast(nn.Module):
     """
     Performs a safe saturating cast. This operation applies proper clamping before casting to prevent
     the danger that the value will overflow or underflow.
@@ -371,14 +371,14 @@ class SaturateCast(nn.Cell):
         self.cast = P.Cast()
         self.dst_type = dst_type
 
-    def construct(self, x):
+    def forward(self, x):
         """saturate cast"""
         out = self.max_op(x, self.tensor_min_type)
         out = self.min_op(out, self.tensor_max_type)
         return self.cast(out, self.dst_type)
 
 
-class AlbertAttention(nn.Cell):
+class AlbertAttention(nn.Module):
     """
     Apply multi-headed attention from "from_tensor" to "to_tensor".
 
@@ -443,7 +443,7 @@ class AlbertAttention(nn.Cell):
                                            initializer_range=config.initializer_range,
                                            use_one_hot_embeddings=config.use_one_hot_embeddings)
 
-    def construct(self, from_tensor, to_tensor, attention_mask):
+    def forward(self, from_tensor, to_tensor, attention_mask):
         """bert attention"""
         # reshape 2d/3d input tensors to 2d
         from_tensor_2d = self.reshape(from_tensor, self.shape_from_2d)
@@ -524,7 +524,7 @@ class AlbertAttention(nn.Cell):
         return context_layer, attention_scores
 
 
-class AlbertSelfAttention(nn.Cell):
+class AlbertSelfAttention(nn.Module):
     """
     Apply self-attention.
 
@@ -542,7 +542,7 @@ class AlbertSelfAttention(nn.Cell):
         self.reshape = P.Reshape()
         self.shape = (-1, config.hidden_size)
 
-    def construct(self, input_tensor, attention_mask):
+    def forward(self, input_tensor, attention_mask):
         """bert self attention"""
         input_tensor = self.reshape(input_tensor, self.shape)
         attention_output, attention_scores = self.attention(input_tensor, input_tensor, attention_mask)
@@ -550,7 +550,7 @@ class AlbertSelfAttention(nn.Cell):
         return output, attention_scores
 
 
-class AlbertEncoderCell(nn.Cell):
+class AlbertEncoderCell(nn.Module):
     """
     Encoder cells used in BertTransformer.
 
@@ -568,18 +568,18 @@ class AlbertEncoderCell(nn.Cell):
                                      ).to_float(config.compute_type)
         self.output = AlbertOutput(config)
 
-    def construct(self, hidden_states, attention_mask):
+    def forward(self, hidden_states, attention_mask):
         """bert encoder cell"""
         # self-attention
         attention_output, attention_scores = self.attention(hidden_states, attention_mask)
-        # feed construct
+        # feed forward
         intermediate_output = self.intermediate(attention_output)
         # add and normalize
         output = self.output(intermediate_output, attention_output)
         return output, attention_scores
 
 
-class AlbertLayer(nn.Cell):
+class AlbertLayer(nn.Module):
     """
     Args:
         config (AlbertConfig): Albert Config.
@@ -597,7 +597,7 @@ class AlbertLayer(nn.Cell):
         self.shape = (-1, config.seq_length, config.hidden_size)
         self.reshape = P.Reshape()
 
-    def construct(self, hidden_states, attention_mask):
+    def forward(self, hidden_states, attention_mask):
         attention_output, attention_scores = self.attention(hidden_states, attention_mask)
 
         ffn_output = self.ffn(attention_output)
@@ -608,7 +608,7 @@ class AlbertLayer(nn.Cell):
         return hidden_states, attention_scores
 
 
-class AlbertLayerGroup(nn.Cell):
+class AlbertLayerGroup(nn.Module):
     """
     Args:
         config (AlbertConfig): Albert Config.
@@ -622,7 +622,7 @@ class AlbertLayerGroup(nn.Cell):
 
         self.albert_layers = nn.CellList([AlbertLayer(config) for _ in range(config.inner_group_num)])
 
-    def construct(self, hidden_states, attention_mask):
+    def forward(self, hidden_states, attention_mask):
         layer_hidden_states = ()
         layer_attentions = ()
 
@@ -642,7 +642,7 @@ class AlbertLayerGroup(nn.Cell):
         return outputs
 
 
-class AlbertTransformer(nn.Cell):
+class AlbertTransformer(nn.Module):
     """
     Multi-layer bert transformer.
 
@@ -668,7 +668,7 @@ class AlbertTransformer(nn.Cell):
         self.shape = (-1, config.embedding_size)
         self.out_shape = (-1, config.seq_length, config.hidden_size)
 
-    def construct(self, input_tensor, attention_mask):
+    def forward(self, input_tensor, attention_mask):
         """bert transformer"""
         prev_output = self.reshape(input_tensor, self.shape)
         prev_output = self.embedding_hidden_mapping_in(prev_output)
@@ -693,7 +693,7 @@ class AlbertTransformer(nn.Cell):
         return prev_output
 
 
-class CreateAttentionMaskFromInputMask(nn.Cell):
+class CreateAttentionMaskFromInputMask(nn.Module):
     """
     Create attention mask according to input mask.
 
@@ -707,12 +707,12 @@ class CreateAttentionMaskFromInputMask(nn.Cell):
         self.reshape = P.Reshape()
         self.shape = (-1, 1, config.seq_length)
 
-    def construct(self, input_mask):
+    def forward(self, input_mask):
         attention_mask = self.cast(self.reshape(input_mask, self.shape), mstype.float32)
         return attention_mask
 
 
-class AlbertModel(nn.Cell):
+class AlbertModel(nn.Module):
     """
     Bidirectional Encoder Representations from Transformers.
 
@@ -747,7 +747,7 @@ class AlbertModel(nn.Cell):
                                weight_init=TruncatedNormal(config.initializer_range)).to_float(config.compute_type)
         self._create_attention_mask_from_input_mask = CreateAttentionMaskFromInputMask(config)
 
-    def construct(self, input_ids, token_type_ids, input_mask):
+    def forward(self, input_ids, token_type_ids, input_mask):
         """bert model"""
         # embedding
         if self.use_word_embeddings:
@@ -772,7 +772,7 @@ class AlbertModel(nn.Cell):
         return sequence_output, pooled_output
 
 
-class AlbertMLMHead(nn.Cell):
+class AlbertMLMHead(nn.Module):
     """
     Get masked lm output.
 
@@ -798,14 +798,14 @@ class AlbertMLMHead(nn.Cell):
             weight_init=TruncatedNormal(config.initializer_range),
         ).to_float(config.compute_type)
 
-    def construct(self, hidden_states):
+    def forward(self, hidden_states):
         hidden_states = self.dense(hidden_states)
         hidden_states = self.layernorm(hidden_states)
         hidden_states = self.decoder(hidden_states)
         return hidden_states
 
 
-class AlbertModelCLS(nn.Cell):
+class AlbertModelCLS(nn.Module):
     """
     This class is responsible for classification task evaluation,
     i.e. mnli(num_labels=3), qnli(num_labels=2), qqp(num_labels=2).
@@ -826,7 +826,7 @@ class AlbertModelCLS(nn.Cell):
         if self.is_training:
             self.dropout = nn.Dropout(1 - config.classifier_dropout_prob)
 
-    def construct(self, input_ids, input_mask, token_type_id):
+    def forward(self, input_ids, input_mask, token_type_id):
         """classification albert model"""
         _, pooled_output = self.albert(input_ids, token_type_id, input_mask)
         # pooled_output = self.relu(pooled_output)
@@ -837,7 +837,7 @@ class AlbertModelCLS(nn.Cell):
         return logits
 
 
-class AlbertModelForAD(nn.Cell):
+class AlbertModelForAD(nn.Module):
     """albert model for ad"""
 
     def __init__(self, config):
@@ -859,7 +859,7 @@ class AlbertModelForAD(nn.Cell):
         # masked language model head
         self.predictions = AlbertMLMHead(config)
 
-    def construct(self, input_ids, input_mask, token_type_id):
+    def forward(self, input_ids, input_mask, token_type_id):
         """albert model for ad"""
         sequence_output, pooled_output = self.albert(input_ids, token_type_id, input_mask)
         if self.is_training:
@@ -871,7 +871,7 @@ class AlbertModelForAD(nn.Cell):
         return prediction_scores, logits
 
 
-class AlbertModelMLM(nn.Cell):
+class AlbertModelMLM(nn.Module):
     """albert model for mlm"""
 
     def __init__(self, config):
@@ -885,7 +885,7 @@ class AlbertModelMLM(nn.Cell):
         # masked language model head
         self.predictions = AlbertMLMHead(config)
 
-    def construct(self, input_ids, input_mask, token_type_id):
+    def forward(self, input_ids, input_mask, token_type_id):
         """albert model for mlm"""
         sequence_output, _ = self.albert(input_ids, token_type_id, input_mask)
         prediction_scores = self.predictions(sequence_output)

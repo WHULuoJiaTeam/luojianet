@@ -47,7 +47,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self,
                  param_init='normal',
                  height=40000,
@@ -65,7 +65,7 @@ class Net(nn.Cell):
         self.dtype = compute_type
         self.width = width
 
-    def construct(self, input_ids):
+    def forward(self, input_ids):
         input_ids = self.add(input_ids, input_ids)
         output_g = self.gather(self.param, input_ids, 0)
         output_r = P.Reshape()(output_g, (-1, self.width))

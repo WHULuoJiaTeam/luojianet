@@ -29,7 +29,7 @@ from ..ut_filter import non_graph_engine
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
 
     def __init__(self):
@@ -38,7 +38,7 @@ class Net(nn.Cell):
         self.inputdata = Parameter(initializer(1, [1], ms.int64), name="global_step")
         print("inputdata: ", self.inputdata)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.AssignAdd(self.inputdata, x)
         return out
 
@@ -81,7 +81,7 @@ def test_AssignAdd_2():
     assert np.all(diff < error)
 
 
-class AssignAddNet(nn.Cell):
+class AssignAddNet(nn.Module):
     """Net definition"""
 
     def __init__(self):
@@ -90,7 +90,7 @@ class AssignAddNet(nn.Cell):
         self.inputdata = Parameter(initializer(1, [1], ms.float16), name="KIND_AUTOCAST_SCALAR_TO_TENSOR")
         self.one = 1
 
-    def construct(self, ixt):
+    def forward(self, ixt):
         z1 = self.AssignAdd(self.inputdata, self.one)
         return z1
 

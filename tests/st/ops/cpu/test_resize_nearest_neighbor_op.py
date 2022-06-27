@@ -22,12 +22,12 @@ from luojianet_ms import nn
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetResizeNearestNeighbor(nn.Cell):
+class NetResizeNearestNeighbor(nn.Module):
     def __init__(self, size=None, align_corners=False):
         super(NetResizeNearestNeighbor, self).__init__()
         self.op = P.ResizeNearestNeighbor(size=size, align_corners=align_corners)
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         return self.op(inputs)
 
 

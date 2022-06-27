@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetTan(nn.Cell):
+class NetTan(nn.Module):
     def __init__(self):
         super(NetTan, self).__init__()
         self.tan = P.Tan()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.tan(x)
 
 

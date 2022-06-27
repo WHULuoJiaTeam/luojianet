@@ -40,7 +40,7 @@ class GeSwitch(PrimitiveWithInfer):
         TypeError: If `pred` is not a Tensor.
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.square = ops.Square()
@@ -50,7 +50,7 @@ class GeSwitch(PrimitiveWithInfer):
         ...         self.merge = ops.Merge()
         ...         self.less = ops.Less()
         ...
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         cond = self.less(x, y)
         ...         st1, sf1 = self.switch(x, cond)
         ...         st2, sf2 = self.switch(y, cond)

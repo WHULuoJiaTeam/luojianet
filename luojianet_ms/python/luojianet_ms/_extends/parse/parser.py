@@ -53,7 +53,7 @@ RESOLVE_TYPE_INVALID = 0xFF
 
 # define the class instance detail type
 # When the type is RESOLVE_TYPE_CLASS_INSTANCE
-CLASS_INSTANCE_TYPE_CELL = 0            # class instance type is Cell
+CLASS_INSTANCE_TYPE_CELL = 0            # class instance type is Module
 CLASS_INSTANCE_TYPE_PRIMITIVE = 1       # class instance type is Primitive
 CLASS_INSTANCE_TYPE_INVALID = 0xFF
 
@@ -117,7 +117,7 @@ def get_parse_method_of_class(obj, parse_method=None):
 
     Args:
         obj(Object): Instance of class.
-        parse_method(str): Save the method name. Cell object has default method named 'construct'.
+        parse_method(str): Save the method name. Module object has default method named 'forward'.
 
     Returns:
         Function, obj's method.
@@ -126,11 +126,11 @@ def get_parse_method_of_class(obj, parse_method=None):
     method_name = None
     if parse_method is not None:
         method_name = parse_method
-    elif isinstance(obj, nn.Cell):
+    elif isinstance(obj, nn.Module):
         if obj._enable_backward_hook:
             method_name = "_backward_hook_construct"
         else:
-            method_name = "construct"
+            method_name = "forward"
     if method_name is not None:
         if hasattr(obj, method_name):
             method = getattr(obj, method_name)
@@ -143,13 +143,13 @@ def get_bprop_method_of_class(obj, parse_method=None):
 
     Args:
         obj (Object): Instance of class.
-        parse_method(str): Save the method name. Cell object has default method named 'bprop'.
+        parse_method(str): Save the method name. Module object has default method named 'bprop'.
 
     Returns:
         Function, obj's method.
     """
     method = None
-    if isinstance(obj, nn.Cell):
+    if isinstance(obj, nn.Module):
         method_name = "bprop"
         if hasattr(obj, method_name):
             method = getattr(obj, method_name)
@@ -218,7 +218,7 @@ def resolve_symbol(namespace, symbol):
             if namespace.name == "numpy" and \
                 isinstance(resolve_, (types.FunctionType, types.MethodType, types.ModuleType)):
                 raise NotImplementedError("LuoJiaNET does not support to use the numpy methods " \
-                                          "within the construct() or @ms_function decorated function in graph mode.")
+                                          "within the forward() or @ms_function decorated function in graph mode.")
 
         # If need trope the obj
         if resolve_ in convert_object_map:
@@ -243,13 +243,13 @@ def resolve_symbol(namespace, symbol):
 
 def generate_scope(obj):
     """Generate the scope for every cell object in the network."""
-    if isinstance(obj, nn.Cell):
+    if isinstance(obj, nn.Module):
         obj.generate_scope()
 
 
 def get_scope_name(obj):
     """Returns the scope of a cell object in one network."""
-    if isinstance(obj, nn.Cell):
+    if isinstance(obj, nn.Module):
         return obj.get_scope()
     return None
 
@@ -327,7 +327,7 @@ def get_class_instance_type(obj):
     logger.debug("Get the class type(%r)", obj)
     class_type = CLASS_INSTANCE_TYPE_INVALID
     if _is_class_instance(obj):
-        if isinstance(obj, nn.Cell):
+        if isinstance(obj, nn.Module):
             class_type = CLASS_INSTANCE_TYPE_CELL
         elif isinstance(obj, ops.Primitive):
             class_type = CLASS_INSTANCE_TYPE_PRIMITIVE
@@ -337,7 +337,7 @@ def get_class_instance_type(obj):
 
 def _is_class_instance(obj):
     """Confirm the obj is class instance."""
-    return isinstance(obj, (nn.Cell, ops.Primitive)) or _is_dataclass_instance(obj)
+    return isinstance(obj, (nn.Module, ops.Primitive)) or _is_dataclass_instance(obj)
 
 
 def _is_dataclass_instance(obj):
@@ -359,7 +359,7 @@ def _convert_tuple_to_args_kwargs(params):
 
 def is_supported_create_instance_type(cls_type):
     """Check if cls_type is a supported instance type."""
-    return issubclass(cls_type, (nn.Cell, ops.Primitive))
+    return issubclass(cls_type, (nn.Module, ops.Primitive))
 
 
 def create_instance(cls_type, params=None):
@@ -368,7 +368,7 @@ def create_instance(cls_type, params=None):
         logger.warning(f"create_instance(), cls_type is not a type, cls_type: {cls_type}")
         return None
 
-    # Check the type, now only support nn.Cell and Primitive.
+    # Check the type, now only support nn.Module and Primitive.
     obj = None
     if is_supported_create_instance_type(cls_type):
         # Check arguments, only support *args or **kwargs.
@@ -443,9 +443,9 @@ def get_dataclass_methods(cls):
 
 def get_ms_class_name(cls):
     """Get the name of the class instance decorated by ms_class."""
-    # Check if cls is nn.Cell.
-    if isinstance(cls, nn.Cell):
-        raise TypeError(f"ms_class is used for user-defined classes and cannot be used for nn.Cell: {cls}.")
+    # Check if cls is nn.Module.
+    if isinstance(cls, nn.Module):
+        raise TypeError(f"ms_class is used for user-defined classes and cannot be used for nn.Module: {cls}.")
     if isinstance(cls, type):
         name = cls.__name__
     else:

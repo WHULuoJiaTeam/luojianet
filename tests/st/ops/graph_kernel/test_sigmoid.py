@@ -24,21 +24,21 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class NetSigmoid(nn.Cell):
+class NetSigmoid(nn.Module):
     def __init__(self):
         super(NetSigmoid, self).__init__()
         self.sigmoid = P.Sigmoid()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.sigmoid(x)
 
 
-class NetSigmoidGrad(nn.Cell):
+class NetSigmoidGrad(nn.Module):
     def __init__(self):
         super(NetSigmoidGrad, self).__init__()
         self.sigmoid_grad = G.SigmoidGrad()
 
-    def construct(self, y, dy):
+    def forward(self, y, dy):
         return self.sigmoid_grad(y, dy)
 
 

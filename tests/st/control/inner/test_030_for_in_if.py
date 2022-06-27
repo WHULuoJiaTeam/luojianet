@@ -31,7 +31,7 @@ grad_all = C.GradOperation(get_all=True)
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_for_in_if_01():
-    class ForInIfNet(nn.Cell):
+    class ForInIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -41,7 +41,7 @@ def test_for_in_if_01():
             param_b = np.full((1,), 4, dtype=np.float32)
             self.param_b = Parameter(Tensor(param_b), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             if self.param_a > self.param_b:
                 x = self.mul(x, 2)
                 for _ in range(0, 5):
@@ -49,12 +49,12 @@ def test_for_in_if_01():
                     self.param_b += 1
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([10], mstype.int32)
@@ -78,7 +78,7 @@ def test_for_in_if_01():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_for_in_if_02():
-    class ForInIfNet(nn.Cell):
+    class ForInIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -94,18 +94,18 @@ def test_for_in_if_02():
                 self.param_b += 1
             return x
 
-        def construct(self, x):
+        def forward(self, x):
             if self.param_a > self.func(x):
                 x = self.mul(x, 2)
                 return x
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([10], mstype.float32)
@@ -129,7 +129,7 @@ def test_for_in_if_02():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_for_in_if_03():
-    class ForInIfNet(nn.Cell):
+    class ForInIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -139,7 +139,7 @@ def test_for_in_if_03():
             param_b = np.full((1,), 4, dtype=np.float32)
             self.param_b = Parameter(Tensor(param_b), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             y = x + self.param_b
             if self.param_a > self.param_b:
                 x = self.mul(x, 2)
@@ -152,12 +152,12 @@ def test_for_in_if_03():
                 x = self.param_b * x
             return x, y
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([10], mstype.float32)
@@ -181,13 +181,13 @@ def test_for_in_if_03():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_for_in_if_04():
-    class ForInIfNet(nn.Cell):
+    class ForInIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.param_a
             x = self.func(x)
             out *= x
@@ -201,12 +201,12 @@ def test_for_in_if_04():
             self.param_b += 10
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor(5, mstype.int32)
@@ -230,14 +230,14 @@ def test_for_in_if_04():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_for_in_if_05():
-    class ForInIfNet(nn.Cell):
+    class ForInIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
             self.assign = P.Assign()
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.param_a
             x = self.func(x)
             out *= x
@@ -252,12 +252,12 @@ def test_for_in_if_05():
             x += self.param_b
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor(5, mstype.int32)

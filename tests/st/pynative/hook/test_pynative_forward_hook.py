@@ -78,7 +78,7 @@ def backward_hook_fn_inner(cell_id, grad_inp, grad_outp):
     return grad_outp
 
 
-class SingleNet(nn.Cell):
+class SingleNet(nn.Module):
     def __init__(self):
         super(SingleNet, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
@@ -92,19 +92,19 @@ class SingleNet(nn.Cell):
         self.handle2.remove()
         self.handle2.remove()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.relu(x)
         return x
 
 
-class SingleNetInConstruct(nn.Cell):
+class SingleNetInConstruct(nn.Module):
     def __init__(self):
         super(SingleNetInConstruct, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         self.handle1 = self.conv.register_forward_hook(forward_hook_fn_add)
         self.handle2 = self.conv.register_forward_pre_hook(forward_pre_hook_fn_add)
         self.handle3 = self.relu.register_forward_hook(forward_hook_fn_add)
@@ -118,7 +118,7 @@ class SingleNetInConstruct(nn.Cell):
         return x
 
 
-class SingleNetMsFuncInner(nn.Cell):
+class SingleNetMsFuncInner(nn.Module):
     def __init__(self):
         super(SingleNetMsFuncInner, self).__init__()
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
@@ -131,13 +131,13 @@ class SingleNetMsFuncInner(nn.Cell):
         self.relu = nn.ReLU()
 
     @ms_function
-    def construct(self, x):
+    def forward(self, x):
         x = self.bn(x)
         x = self.relu(x)
         return x
 
 
-class SingleNetMsFunc(nn.Cell):
+class SingleNetMsFunc(nn.Module):
     def __init__(self):
         super(SingleNetMsFunc, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
@@ -148,21 +148,21 @@ class SingleNetMsFunc(nn.Cell):
         self.inner.register_backward_hook(backward_hook_fn)
         self.inner.register_backward_hook(backward_hook_fn)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.inner(x)
         x = x + x
         return x
 
 
-class CompareSingleNet1(nn.Cell):
+class CompareSingleNet1(nn.Module):
     def __init__(self):
         super(CompareSingleNet1, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)
@@ -170,14 +170,14 @@ class CompareSingleNet1(nn.Cell):
         return x
 
 
-class CompareSingleNet2(nn.Cell):
+class CompareSingleNet2(nn.Module):
     def __init__(self):
         super(CompareSingleNet2, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = x + x
         x = x * x
         x = self.conv(x)
@@ -190,14 +190,14 @@ class CompareSingleNet2(nn.Cell):
         return x
 
 
-class CompareSingleNet3(nn.Cell):
+class CompareSingleNet3(nn.Module):
     def __init__(self):
         super(CompareSingleNet3, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = x * x
         x = self.conv(x)
         x = x + x
@@ -207,26 +207,26 @@ class CompareSingleNet3(nn.Cell):
         return x
 
 
-class CompareSingleNet4(nn.Cell):
+class CompareSingleNet4(nn.Module):
     def __init__(self):
         super(CompareSingleNet4, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.relu(x)
         return x
 
 
-class CompareSingleNet5(nn.Cell):
+class CompareSingleNet5(nn.Module):
     def __init__(self):
         super(CompareSingleNet5, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = x + x
         x = self.bn(x)
@@ -237,7 +237,7 @@ class CompareSingleNet5(nn.Cell):
         return x
 
 
-class MultiNet(nn.Cell):
+class MultiNet(nn.Module):
     def __init__(self):
         super(MultiNet, self).__init__()
         self.mul1 = nn.MatMul()
@@ -248,14 +248,14 @@ class MultiNet(nn.Cell):
         self.handle3 = self.mul2.register_forward_pre_hook(forward_pre_hook_fn_multi_relu)
         self.handle4 = self.mul2.register_forward_hook(forward_hook_fn_add)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.mul1(x, y)
         x = self.bn(x)
         x = self.mul2(x, x)
         return x
 
 
-class CompareMultiNet1(nn.Cell):
+class CompareMultiNet1(nn.Module):
     def __init__(self):
         super(CompareMultiNet1, self).__init__()
         self.mul = nn.MatMul()
@@ -263,7 +263,7 @@ class CompareMultiNet1(nn.Cell):
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
         self.relu = nn.ReLU()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.mul(x + x, x * y)
         x = self.conv(x)
         x = self.bn(x)
@@ -273,7 +273,7 @@ class CompareMultiNet1(nn.Cell):
         return x
 
 
-class CompareMultiNet2(nn.Cell):
+class CompareMultiNet2(nn.Module):
     def __init__(self):
         super(CompareMultiNet2, self).__init__()
         self.mul = nn.MatMul()
@@ -281,7 +281,7 @@ class CompareMultiNet2(nn.Cell):
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
         self.relu = nn.ReLU()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.mul(x, y)
         x = self.conv(x)
         x = self.bn(x)
@@ -390,7 +390,7 @@ def test_pynative_forward_hook_multi_inp():
     assert np.allclose(grad[0][1].asnumpy(), expect_grad[0][1].asnumpy(), 0.000001, 0.000001)
     assert np.allclose(grad[1][0].asnumpy(), expect_grad[1][1].asnumpy(), 0.000001, 0.000001)
     assert np.allclose(grad[1][1].asnumpy(), expect_grad[1][2].asnumpy(), 0.000001, 0.000001)
-    # case 4: register hook function in construct.
+    # case 4: register hook function in forward.
     net = SingleNetInConstruct()
     compare_net = CompareSingleNet1()
     grad = grad_op(net, ParameterTuple(net.trainable_params()))(inputs)

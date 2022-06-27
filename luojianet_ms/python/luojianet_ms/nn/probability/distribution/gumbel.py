@@ -73,12 +73,12 @@ class Gumbel(TransformedDistribution):
         >>> import luojianet_ms.nn.probability.distribution as msd
         >>> import luojianet_ms.nn as nn
         >>> from luojianet_ms import Tensor
-        >>> class Prob(nn.Cell):
+        >>> class Prob(nn.Module):
         ...     def __init__(self):
         ...         super(Prob, self).__init__()
         ...         self.gum = msd.Gumbel(np.array([0.0]), np.array([[1.0], [2.0]]), dtype=luojianet_ms.float32)
         ...
-        ...     def construct(self, x_):
+        ...     def forward(self, x_):
         ...         return self.gum.prob(x_)
         >>> value = np.array([1.0, 2.0]).astype(np.float32)
         >>> pdf = Prob()

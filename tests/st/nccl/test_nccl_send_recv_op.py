@@ -35,24 +35,24 @@ if size % 2 != 0:
 x = np.ones([3, 3, 3, 3]).astype(np.float32) * 0.01 * (rank + 1)
 
 
-class SendNet(nn.Cell):
+class SendNet(nn.Module):
     def __init__(self):
         super(SendNet, self).__init__()
         self.x = Parameter(initializer(Tensor(x), x.shape), name='x')
         self.depend = P.Depend()
         self.send = Send(sr_tag=0, dest_rank=rank+size//2, group=NCCL_WORLD_COMM_GROUP)
 
-    def construct(self):
+    def forward(self):
         out = self.depend(self.x, self.send(self.x))
         return out
 
-class RecvNet(nn.Cell):
+class RecvNet(nn.Module):
     def __init__(self):
         super(RecvNet, self).__init__()
         self.recv = Receive(sr_tag=0, src_rank=rank-size//2, shape=[3, 3, 3, 3], dtype=mstype.float32,
                             group=NCCL_WORLD_COMM_GROUP)
 
-    def construct(self):
+    def forward(self):
         out = self.recv()
         return out
 

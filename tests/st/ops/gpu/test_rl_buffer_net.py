@@ -33,7 +33,7 @@ def create_tensor(capcity, shapes, dtypes):
     return buffer
 
 
-class RLBuffer(nn.Cell):
+class RLBuffer(nn.Module):
     def __init__(self, batch_size, capcity, shapes, types):
         super(RLBuffer, self).__init__()
         self.buffer = create_tensor(capcity, shapes, types)

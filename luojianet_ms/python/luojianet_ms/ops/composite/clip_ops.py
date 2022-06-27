@@ -16,7 +16,7 @@
 
 """Operations for clipping tensors to min/max values."""
 import numpy as np
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
@@ -151,7 +151,7 @@ def _apply_global_norm(clip_norm, global_norm, x):
     return x
 
 
-class _ClipByGlobalNorm(Cell):
+class _ClipByGlobalNorm(Module):
     r"""
     Clips tensor values by the ratio of the sum of their norms.
 
@@ -178,7 +178,7 @@ class _ClipByGlobalNorm(Cell):
         self.hyper_map = C.HyperMap()
         self.greater_equal = P.GreaterEqual()
 
-    def construct(self, x):
+    def forward(self, x):
         square_sum = self.hyper_map(get_square_sum, x)
         global_norm = F.sqrt(F.addn(square_sum))
         cond = self.greater_equal(global_norm, self.clip_norm)

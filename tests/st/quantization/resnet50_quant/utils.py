@@ -98,7 +98,7 @@ class CrossEntropy(LossBase):
         self.ce = nn.SoftmaxCrossEntropyWithLogits()
         self.mean = P.ReduceMean(False)
 
-    def construct(self, logit, label):
+    def forward(self, logit, label):
         one_hot_label = self.onehot(label, F.shape(
             logit)[1], self.on_value, self.off_value)
         loss = self.ce(logit, one_hot_label)

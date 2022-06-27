@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class SquaredDifference(nn.Cell):
+class SquaredDifference(nn.Module):
     def __init__(self):
         super(SquaredDifference, self).__init__()
         self.squaredDiff = P.SquaredDifference()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.squaredDiff(x, y)
 
 

@@ -23,13 +23,13 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.common import dtype as mstype
 
 
-class UniqueIf(nn.Cell):
+class UniqueIf(nn.Module):
     def __init__(self):
         super(UniqueIf, self).__init__()
         self.unique = P.Unique()
         self.shape = P.DynamicShape()
 
-    def construct(self, x, index):
+    def forward(self, x, index):
         x_unique = self.unique(x)[0]
         if index > 3:
             x_unique = x_unique + 2
@@ -38,14 +38,14 @@ class UniqueIf(nn.Cell):
         return self.shape(x_unique)
 
 
-class UniqueWhile(nn.Cell):
+class UniqueWhile(nn.Module):
     def __init__(self):
         super(UniqueWhile, self).__init__()
         self.unique = P.Unique()
         self.shape = P.DynamicShape()
         self.mod = P.Mod()
 
-    def construct(self, x, y, index):
+    def forward(self, x, y, index):
         while index < 3:
             x = self.mod(x, y[index])
             x = self.unique(x)[0]

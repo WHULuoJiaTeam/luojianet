@@ -25,31 +25,31 @@ def set_context():
     context.reset_auto_parallel_context()
     context.set_auto_parallel_context(device_num=8, parallel_mode="auto_parallel", search_mode="sharding_propagation")
 
-class NetMul(nn.Cell):
+class NetMul(nn.Module):
     def __init__(self):
         super().__init__()
         self.mul = ops.Mul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.mul(x, y)
 
 
-class NetMatMul(nn.Cell):
+class NetMatMul(nn.Module):
     def __init__(self):
         super().__init__()
         self.matmul = ops.MatMul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.matmul(x, y)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, in_strategy, out_strategy):
         super().__init__()
         self.mul_net = NetMul()
         self.matmul_net = NetMatMul()
         self.mul_net.shard(in_strategy=in_strategy, out_strategy=out_strategy)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out1 = self.matmul_net(x, y)
         out2 = self.matmul_net(x, y)
         return self.mul_net(out1, out2)

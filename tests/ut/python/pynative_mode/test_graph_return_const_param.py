@@ -29,23 +29,23 @@ def setup_module(module):
     context.set_context(mode=context.PYNATIVE_MODE)
 
 
-class ChooseInitParameter(nn.Cell):
+class ChooseInitParameter(nn.Module):
     def __init__(self):
         super(ChooseInitParameter, self).__init__()
         self.x = Parameter(Tensor(np.ones(2), dtype=mstype.int32), name='x')
 
     @ms_function
-    def construct(self):
+    def forward(self):
         return self.x
 
 
-class ChooseInitParameterWithInput(nn.Cell):
+class ChooseInitParameterWithInput(nn.Module):
     def __init__(self):
         super(ChooseInitParameterWithInput, self).__init__()
         self.x = Parameter(Tensor(np.ones(2), dtype=mstype.int32), name='x')
 
     @ms_function
-    def construct(self, input_data):
+    def forward(self, input_data):
         return self.x
 
 

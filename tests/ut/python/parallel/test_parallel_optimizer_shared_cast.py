@@ -28,7 +28,7 @@ from luojianet_ms.nn.optim import Momentum
 from luojianet_ms.ops import operations as P
 from luojianet_ms import context
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
     def __init__(self, strategy1, strategy2):
         super(Net, self).__init__()
@@ -38,7 +38,7 @@ class Net(nn.Cell):
         self.p2 = Parameter(Tensor(np.ones([64, 16]).astype(np.float32)), name="weight2", parallel_optimizer=False)
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = P.Cast()(x, ms.float16)
         p1 = P.Cast()(self.p1, ms.float16)
         p2 = P.Cast()(self.p2, ms.float16)
@@ -47,7 +47,7 @@ class Net(nn.Cell):
         return self.sub(x, y)
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """Net definition"""
     def __init__(self, strategy1, strategy2):
         super(Net2, self).__init__()
@@ -57,7 +57,7 @@ class Net2(nn.Cell):
         self.net2.pipeline_stage = 1
         self.sub = P.Sub()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out1 = self.net1(x, y)
         out2 = self.net2(x, y)
         return self.sub(out1, out2)

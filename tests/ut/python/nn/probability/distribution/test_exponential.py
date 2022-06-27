@@ -62,7 +62,7 @@ def test_rate():
         msd.Exponential([0.0], dtype=dtype.float32)
 
 
-class ExponentialProb(nn.Cell):
+class ExponentialProb(nn.Module):
     """
     Exponential distribution: initialize with rate.
     """
@@ -71,7 +71,7 @@ class ExponentialProb(nn.Cell):
         super(ExponentialProb, self).__init__()
         self.e = msd.Exponential(0.5, dtype=dtype.float32)
 
-    def construct(self, value):
+    def forward(self, value):
         prob = self.e.prob(value)
         log_prob = self.e.log_prob(value)
         cdf = self.e.cdf(value)
@@ -84,7 +84,7 @@ class ExponentialProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_exponential_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through forward.
     """
     net = ExponentialProb()
     value = Tensor([0.2, 0.3, 5.0, 2, 3.9], dtype=dtype.float32)
@@ -92,7 +92,7 @@ def test_exponential_prob():
     assert isinstance(ans, Tensor)
 
 
-class ExponentialProb1(nn.Cell):
+class ExponentialProb1(nn.Module):
     """
     Exponential distribution: initialize without rate.
     """
@@ -101,7 +101,7 @@ class ExponentialProb1(nn.Cell):
         super(ExponentialProb1, self).__init__()
         self.e = msd.Exponential(dtype=dtype.float32)
 
-    def construct(self, value, rate):
+    def forward(self, value, rate):
         prob = self.e.prob(value, rate)
         log_prob = self.e.log_prob(value, rate)
         cdf = self.e.cdf(value, rate)
@@ -114,7 +114,7 @@ class ExponentialProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_exponential_prob1():
     """
-    Test probability functions: passing value/rate through construct.
+    Test probability functions: passing value/rate through forward.
     """
     net = ExponentialProb1()
     value = Tensor([0.2, 0.9, 1, 2, 3], dtype=dtype.float32)
@@ -123,7 +123,7 @@ def test_exponential_prob1():
     assert isinstance(ans, Tensor)
 
 
-class ExponentialKl(nn.Cell):
+class ExponentialKl(nn.Module):
     """
     Test class: kl_loss between Exponential distributions.
     """
@@ -133,7 +133,7 @@ class ExponentialKl(nn.Cell):
         self.e1 = msd.Exponential(0.7, dtype=dtype.float32)
         self.e2 = msd.Exponential(dtype=dtype.float32)
 
-    def construct(self, rate_b, rate_a):
+    def forward(self, rate_b, rate_a):
         kl1 = self.e1.kl_loss('Exponential', rate_b)
         kl2 = self.e2.kl_loss('Exponential', rate_b, rate_a)
         return kl1 + kl2
@@ -151,7 +151,7 @@ def test_kl():
     assert isinstance(ans, Tensor)
 
 
-class ExponentialCrossEntropy(nn.Cell):
+class ExponentialCrossEntropy(nn.Module):
     """
     Test class: cross_entropy of Exponential distribution.
     """
@@ -161,7 +161,7 @@ class ExponentialCrossEntropy(nn.Cell):
         self.e1 = msd.Exponential(0.3, dtype=dtype.float32)
         self.e2 = msd.Exponential(dtype=dtype.float32)
 
-    def construct(self, rate_b, rate_a):
+    def forward(self, rate_b, rate_a):
         h1 = self.e1.cross_entropy('Exponential', rate_b)
         h2 = self.e2.cross_entropy('Exponential', rate_b, rate_a)
         return h1 + h2
@@ -179,7 +179,7 @@ def test_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class ExponentialBasics(nn.Cell):
+class ExponentialBasics(nn.Module):
     """
     Test class: basic mean/sd/mode/entropy function.
     """
@@ -188,7 +188,7 @@ class ExponentialBasics(nn.Cell):
         super(ExponentialBasics, self).__init__()
         self.e = msd.Exponential([0.3, 0.5], dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         mean = self.e.mean()
         sd = self.e.sd()
         var = self.e.var()
@@ -207,9 +207,9 @@ def test_bascis():
     assert isinstance(ans, Tensor)
 
 
-class ExpConstruct(nn.Cell):
+class ExpConstruct(nn.Module):
     """
-    Exponential distribution: going through construct.
+    Exponential distribution: going through forward.
     """
 
     def __init__(self):
@@ -217,7 +217,7 @@ class ExpConstruct(nn.Cell):
         self.e = msd.Exponential(0.5, dtype=dtype.float32)
         self.e1 = msd.Exponential(dtype=dtype.float32)
 
-    def construct(self, value, rate):
+    def forward(self, value, rate):
         prob = self.e('prob', value)
         prob1 = self.e('prob', value, rate)
         prob2 = self.e1('prob', value, rate)
@@ -227,7 +227,7 @@ class ExpConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_exp_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through forward.
     """
     net = ExpConstruct()
     value = Tensor([0, 0, 0, 0, 0], dtype=dtype.float32)

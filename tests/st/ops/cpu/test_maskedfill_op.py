@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class MaskedFillNet(nn.Cell):
+class MaskedFillNet(nn.Module):
     def __init__(self):
         super(MaskedFillNet, self).__init__()
         self.maskedfill = P.MaskedFill()
 
-    def construct(self, inputs, mask, value):
+    def forward(self, inputs, mask, value):
         return self.maskedfill(inputs, mask, value)
 
 

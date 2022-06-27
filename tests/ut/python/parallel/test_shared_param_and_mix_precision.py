@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P, functional as F
 from luojianet_ms import context
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     """Net definition"""
     def __init__(self, strategy1, strategy2):
         super(Net1, self).__init__()
@@ -35,14 +35,14 @@ class Net1(nn.Cell):
         self.p1 = Parameter(Tensor(np.ones([48, 64]).astype(np.float32)), name="weight1")
         self.p2 = Parameter(Tensor(np.ones([64, 48]).astype(np.float32)), name="weight2")
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.fc1(x, self.p1)
         x = self.fc2(x, self.p2)
         x = self.fc1(x, self.p1)
         return x - y
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """Net definition"""
     def __init__(self, strategy1, strategy2):
         super(Net2, self).__init__()
@@ -51,7 +51,7 @@ class Net2(nn.Cell):
         self.p1 = Parameter(Tensor(np.ones([48, 64]).astype(np.float32)), name="weight1")
         self.p2 = Parameter(Tensor(np.ones([64, 48]).astype(np.float32)), name="weight2")
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.fc1(F.cast(x, mstype.float16), F.cast(self.p1, mstype.float16))
         x = self.fc2(x, F.cast(self.p2, mstype.float16))
         x = self.fc1(F.cast(x, mstype.float32), self.p1)

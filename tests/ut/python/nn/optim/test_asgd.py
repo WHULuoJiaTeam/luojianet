@@ -22,7 +22,7 @@ from luojianet_ms import Tensor, Parameter
 from luojianet_ms.nn.optim import ASGD
 from luojianet_ms.ops import operations as P
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -32,17 +32,17 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         return x
 
 
-class NetWithoutWeight(nn.Cell):
+class NetWithoutWeight(nn.Module):
     def __init__(self):
         super(NetWithoutWeight, self).__init__()
         self.matmul = P.MatMul()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.matmul(x, x)
         return x
 

@@ -25,7 +25,7 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_isinstance():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.int_member = 1
@@ -40,7 +40,7 @@ def test_isinstance():
             self.dict_member = {"x": Tensor(np.arange(4)), "y": Tensor(np.arange(5))}
             self.empty_dict = {}
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             is_int = isinstance(self.int_member, int)
             is_float = isinstance(self.float_member, float)
             is_bool = isinstance(self.bool_member, bool)
@@ -78,12 +78,12 @@ def test_isinstance():
 
 
 def test_isinstance_not_supported():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = (11, 22, 33, 44)
 
-        def construct(self):
+        def forward(self):
             return isinstance(self.value, None)
 
     net = Net()
@@ -93,12 +93,12 @@ def test_isinstance_not_supported():
 
 
 def test_isinstance_second_arg_is_list():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = (11, 22, 33, 44)
 
-        def construct(self):
+        def forward(self):
             return isinstance(self.value, [tuple, int, float])
 
     net = Net()

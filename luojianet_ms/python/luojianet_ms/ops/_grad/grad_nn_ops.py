@@ -819,7 +819,7 @@ def get_bprop_sparse_softmax_cross_entropy_with_logits(self):
     def bprop(logits, labels, out, dout):
         grad = out[0]
         if not is_grad:
-            # if construct use loss
+            # if forward use loss
             grad = grad_op(logits, labels)
             grad = F.depend(grad, out)
             grad = grad * dout

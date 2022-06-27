@@ -26,12 +26,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class ArgumentNum(nn.Cell):
+class ArgumentNum(nn.Module):
     def __init__(self):
         super().__init__()
         self.matmul = P.MatMul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         super(ArgumentNum, 2, 3).aa()
         out = self.matmul(x, y)
         return out
@@ -45,12 +45,12 @@ def test_super_argument_num():
     print(ret)
 
 
-class ArgumentNotSelf(nn.Cell):
+class ArgumentNotSelf(nn.Module):
     def __init__(self):
         super().__init__()
         self.matmul = P.MatMul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         super(ArgumentNotSelf, 2).aa()
         out = self.matmul(x, y)
         return out
@@ -64,12 +64,12 @@ def test_super_argument_not_self():
     print(ret)
 
 
-class ArgumentType(nn.Cell):
+class ArgumentType(nn.Module):
     def __init__(self):
         super().__init__()
         self.matmul = P.MatMul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         super(ArgumentType, self).aa()
         out = self.matmul(x, y)
         return out

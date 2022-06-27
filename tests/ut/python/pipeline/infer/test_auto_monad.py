@@ -33,12 +33,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_load_grad():
-    class LoadNet(nn.Cell):
+    class LoadNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             x = x * y * self.z
             return x
 
@@ -51,23 +51,23 @@ def test_load_grad():
 
 
 def test_assign_only_grad():
-    class AssignOnlyNet(nn.Cell):
+    class AssignOnlyNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.z = x
             x = x * y
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.parameter_tuple = ParameterTuple(self.trainable_params())
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return grad_all_list(self.net, self.parameter_tuple)(x, y)
 
     assign_net = AssignOnlyNet()
@@ -78,25 +78,25 @@ def test_assign_only_grad():
 
 
 def test_load_assign_grad():
-    class AssignNet(nn.Cell):
+    class AssignNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
             self.assign = P.Assign()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             x = x * self.z
             self.assign(self.z, x)
             out = y * self.z
             return out
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.parameter_tuple = ParameterTuple(net.trainable_params())
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return grad_all_list(self.net, self.parameter_tuple)(x, y)
 
     assign_net = AssignNet()
@@ -107,7 +107,7 @@ def test_load_assign_grad():
 
 
 def test_insert_gradient_of():
-    class InsertGradientNet(nn.Cell):
+    class InsertGradientNet(nn.Module):
         def __init__(self):
             super(InsertGradientNet, self).__init__()
             self.gather = P.GatherV2()
@@ -120,7 +120,7 @@ def test_insert_gradient_of():
             self.cov_step = self.cov_step + self.freq
             return dout
 
-        def construct(self, x):
+        def forward(self, x):
             self.gather(self.damping, self.cov_step, 0)
             out = P.ReLU()(x)
             out = self.getG(out)
@@ -135,12 +135,12 @@ def test_insert_gradient_of():
 
 @security_off_wrap
 def test_user_defined_bprop():
-    class UserDefinedNet(nn.Cell):
+    class UserDefinedNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = x * y
             return out
 
@@ -151,13 +151,13 @@ def test_user_defined_bprop():
             self.print(dout)
             return y, x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.parameter_tuple = ParameterTuple(net.trainable_params())
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return grad_all_list(self.net, self.parameter_tuple)(x, y)
 
     user_defined_net = UserDefinedNet()
@@ -170,12 +170,12 @@ def test_user_defined_bprop():
 # user defined bprop don't have the same size of parameters with primal's
 @security_off_wrap
 def test_user_defined_bad_bprop():
-    class UserDefinedNet(nn.Cell):
+    class UserDefinedNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = x * y
             return out
 
@@ -186,13 +186,13 @@ def test_user_defined_bad_bprop():
             self.print(dout)
             return x, x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.parameter_tuple = ParameterTuple(net.trainable_params())
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return grad_all_list(self.net, self.parameter_tuple)(x, y)
 
     user_defined_net = UserDefinedNet()
@@ -207,12 +207,12 @@ def test_user_defined_bad_bprop():
 @security_off_wrap
 @pytest.mark.skip(reason="isolated nodes exception")
 def test_unused_var():
-    class UnusedVar(nn.Cell):
+    class UnusedVar(nn.Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             shape1 = self.get_shape(x)
             out = x
             for _ in range(shape1):
@@ -234,12 +234,12 @@ def test_unused_var():
 @security_off_wrap
 @pytest.mark.skip(reason="isolated nodes exception")
 def test_hof_unused_var():
-    class UnusedVar(nn.Cell):
+    class UnusedVar(nn.Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             shape1 = self.hof_get_shape(self.get_shape, x)
             out = x
             for _ in range(shape1):
@@ -264,12 +264,12 @@ def test_hof_unused_var():
 @security_off_wrap
 @pytest.mark.skip(reason="isolated nodes exception")
 def test_partial_hof_unused_var():
-    class UnusedVar(nn.Cell):
+    class UnusedVar(nn.Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             shape1 = self.hof_get_shape(x)()
             out = x
             for _ in range(shape1):
@@ -292,13 +292,13 @@ def test_partial_hof_unused_var():
 
 # should compile success without endless loop.
 def test_while_if():
-    class WhileIfNet(nn.Cell):
+    class WhileIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.zero = Tensor(np.zeros([1]).astype(np.float32))
             self.param = Parameter(Tensor(np.zeros([1]).astype(np.float32)))
 
-        def construct(self, idx, end, x):
+        def forward(self, idx, end, x):
             out = self.zero
             while idx < end:
                 if x < end:
@@ -321,7 +321,7 @@ def test_while_if():
 # so all graph it used will be checked if any side effect it has, so the hyper_map_zeros_like
 # will have U as parameter, but the call site zeros_like(fv) don't have U argument.
 def test_grad_fv_and_insert_gradient_of():
-    class FvAndInsertGradientNet(nn.Cell):
+    class FvAndInsertGradientNet(nn.Module):
         def __init__(self):
             super(FvAndInsertGradientNet, self).__init__()
             self.gather = P.GatherV2()
@@ -336,7 +336,7 @@ def test_grad_fv_and_insert_gradient_of():
             self.cov_step = self.cov_step + self.freq
             return dout
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             # fv self.z from construct_wrapper
             x, = inputs
             self.z = x
@@ -358,12 +358,12 @@ def test_grad_fv_and_insert_gradient_of():
 def test_partial_parameter():
     z = Parameter(Tensor(np.array([True], np.bool_)), name='z')
 
-    class PartialNet(nn.Cell):
+    class PartialNet(nn.Module):
         def __init__(self, input_z):
             super().__init__()
             self.input = input_z
 
-        def construct(self):
+        def forward(self):
             # getattr of all will be convert to Partial
             out = self.input.all(axis=())
             return out

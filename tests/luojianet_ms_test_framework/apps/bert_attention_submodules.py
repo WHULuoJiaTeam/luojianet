@@ -30,7 +30,7 @@ from luojianet_ms.tests.models.Bert_NEZHA.bert_model import SaturateCast, RelaPo
 from luojianet_ms.ops import operations as P
 
 
-class BertAttentionQueryKeyMul(nn.Cell):
+class BertAttentionQueryKeyMul(nn.Module):
     def __init__(self,
                  batch_size,
                  from_tensor_width,
@@ -69,7 +69,7 @@ class BertAttentionQueryKeyMul(nn.Cell):
         self.matmul_trans_b = P.BatchMatMul(transpose_b=True)
         self.cast = P.Cast()
 
-    def construct(self, from_tensor, to_tensor):
+    def forward(self, from_tensor, to_tensor):
         from_tensor_2d = self.reshape(from_tensor, self.shp_from_2d)
         to_tensor_2d = self.reshape(to_tensor, self.shp_to_2d)
         from_tensor_2d = self.cast(from_tensor_2d, mstype.float32)
@@ -87,7 +87,7 @@ class BertAttentionQueryKeyMul(nn.Cell):
         return query_layer, key_layer, attention_scores
 
 
-class BertAttentionRelativePositionKeys(nn.Cell):
+class BertAttentionRelativePositionKeys(nn.Module):
     def __init__(self,
                  batch_size,
                  from_seq_length,
@@ -126,7 +126,7 @@ class BertAttentionRelativePositionKeys(nn.Cell):
                                        initializer_range=initializer_range,
                                        use_one_hot_embeddings=use_one_hot_embeddings)
 
-    def construct(self, input_tensor, query_layer):
+    def forward(self, input_tensor, query_layer):
         # use_relative_position, supplementary logic
         relations_keys_embeddings = self._generate_relative_positions_embeddings()
         if self.use_relative_positions:
@@ -161,7 +161,7 @@ class BertAttentionRelativePositionKeys(nn.Cell):
         return relations_keys_embeddings, attention_scores
 
 
-class BertAttentionMask(nn.Cell):
+class BertAttentionMask(nn.Module):
     def __init__(self,
                  has_attention_mask=False,
                  dtype=mstype.float32):
@@ -178,7 +178,7 @@ class BertAttentionMask(nn.Cell):
             self.cast = P.Cast()
             self.get_dtype = P.DType()
 
-    def construct(self, input_tensor, attention_mask):
+    def forward(self, input_tensor, attention_mask):
         attention_scores = input_tensor
         attention_scores = self.cast(attention_scores, mstype.float32)
         if self.has_attention_mask:
@@ -192,7 +192,7 @@ class BertAttentionMask(nn.Cell):
         return attention_scores
 
 
-class BertAttentionMaskBackward(nn.Cell):
+class BertAttentionMaskBackward(nn.Module):
     def __init__(self,
                  attention_mask_shape,
                  has_attention_mask=False,
@@ -209,7 +209,7 @@ class BertAttentionMaskBackward(nn.Cell):
             self.cast = P.Cast()
             self.get_dtype = P.DType()
 
-    def construct(self, input_tensor):
+    def forward(self, input_tensor):
         attention_scores = input_tensor
         attention_scores = self.cast(attention_scores, mstype.float32)
         if self.has_attention_mask:
@@ -222,7 +222,7 @@ class BertAttentionMaskBackward(nn.Cell):
         return attention_scores
 
 
-class BertAttentionSoftmax(nn.Cell):
+class BertAttentionSoftmax(nn.Module):
     def __init__(self,
                  batch_size,
                  to_tensor_width,
@@ -261,7 +261,7 @@ class BertAttentionSoftmax(nn.Cell):
                                     weight_init=self.weight)
         self.cast = P.Cast()
 
-    def construct(self, to_tensor, attention_scores):
+    def forward(self, to_tensor, attention_scores):
         to_tensor = self.transpose(to_tensor, self.trans_shape_start)
         to_tensor_2d = self.reshape(to_tensor, self.shp_to_2d)
         to_tensor_2d = self.cast(to_tensor_2d, mstype.float32)
@@ -278,7 +278,7 @@ class BertAttentionSoftmax(nn.Cell):
         return value_layer, context_layer
 
 
-class BertAttentionRelativePositionValues(nn.Cell):
+class BertAttentionRelativePositionValues(nn.Module):
     def __init__(self,
                  batch_size,
                  from_seq_length,
@@ -328,7 +328,7 @@ class BertAttentionRelativePositionValues(nn.Cell):
         self.type = P.DType()
         self.cast = P.Cast()
 
-    def construct(self, input_tensor, attention_probs):
+    def forward(self, input_tensor, attention_probs):
         # use_relative_position, supplementary logic
         relations_values_embedding = self._generate_relative_positions_embeddings()  # (128, 128, 64)
         if self.use_relative_positions:
@@ -364,7 +364,7 @@ class BertAttentionRelativePositionValues(nn.Cell):
         return relations_values_embedding, context_layer
 
 
-class BertDense(nn.Cell):
+class BertDense(nn.Module):
     def __init__(self,
                  hidden_size=768,
                  intermediate_size=3072,
@@ -378,7 +378,7 @@ class BertDense(nn.Cell):
                                      )
         self.cast = P.Cast()
 
-    def construct(self, attention_output):
+    def forward(self, attention_output):
         attention_output = self.cast(attention_output, mstype.float32)
         intermediate_output = self.intermediate(attention_output)
         return intermediate_output

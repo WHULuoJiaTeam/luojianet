@@ -24,12 +24,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class L2LossNet(nn.Cell):
+class L2LossNet(nn.Module):
     def __init__(self):
         super(L2LossNet, self).__init__()
         self.l2_loss = P.L2Loss()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.l2_loss(x)
 
 @pytest.mark.level0

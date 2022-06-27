@@ -61,7 +61,7 @@ class DatasetLenet():
         return self
 
 
-class MatMulCell(nn.Cell):
+class MatMulCell(nn.Module):
     def __init__(self, strategy1, strategy2, param=None, dtype=ms.float32):
         super().__init__()
         self.param = Parameter(initializer("zeros", [64, 64]), name="param")
@@ -73,13 +73,13 @@ class MatMulCell(nn.Cell):
         self.cast = P.Cast()
         self.dtype = dtype
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.matmul(self.cast(x, self.dtype), self.cast(self.param, self.dtype))
         out = self.matmul1(out, self.cast(self.param1, self.dtype))
         return out
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy1, strategy2, param=None, dtype=ms.float32):
         super().__init__()
         self.block = nn.CellList()
@@ -88,31 +88,31 @@ class Net(nn.Cell):
             cell.pipeline_stage = i
             self.block.append(cell)
 
-    def construct(self, x):
+    def forward(self, x):
         for i in range(2):
             x = self.block[i](x)
         return x
 
 
-class PipelineSplit(nn.Cell):
+class PipelineSplit(nn.Module):
     def __init__(self, strategy1, strategy2, dtype=ms.float32):
         super().__init__()
         self.cell = Net(strategy1, strategy2, dtype=dtype)
         self.cell.block[0].matmul.add_prim_attr("parameter_start", 0)
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         x = self.cell(x)
         return x
 
 
-class PipelineSplit2(nn.Cell):
+class PipelineSplit2(nn.Module):
     def __init__(self, strategy1, strategy2, dtype=ms.float32):
         super().__init__()
         self.param = Parameter(initializer("zeros", [64, 64]), name="param")
         self.cell = Net(strategy1, strategy2, self.param, dtype)
         self.cell.block[0].matmul.add_prim_attr("parameter_start", 0)
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         x = self.cell(x)
         return x
 

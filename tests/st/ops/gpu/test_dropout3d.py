@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 import luojianet_ms.context as context
 from luojianet_ms.ops import operations as P
 
-class Dropout3DNet(nn.Cell):
+class Dropout3DNet(nn.Module):
     def __init__(self, keep_prob):
         super(Dropout3DNet, self).__init__()
         self.drop = P.Dropout3D(keep_prob)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.drop(x)
 
 

@@ -2263,7 +2263,7 @@ class ImageFolderDataset(MappableDataset, VisionBaseDataset):
 
     About ImageFolderDataset:
 
-    You can construct the following directory structure from your dataset files and read by LuoJiaNET's API.
+    You can forward the following directory structure from your dataset files and read by LuoJiaNET's API.
 
     .. code-block::
 

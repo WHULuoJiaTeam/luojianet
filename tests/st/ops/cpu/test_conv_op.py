@@ -28,7 +28,7 @@ from luojianet_ms.ops import composite as C
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class NetConv2d(nn.Cell):
+class NetConv2d(nn.Module):
     def __init__(self):
         super(NetConv2d, self).__init__()
         out_channel = 2
@@ -46,7 +46,7 @@ class NetConv2d(nn.Cell):
         self.x = Parameter(initializer(
             Tensor(np.arange(1 * 3 * 3 * 3).reshape(1, 3, 3, 3).astype(np.float32)), [1, 3, 3, 3]), name='x')
 
-    def construct(self):
+    def forward(self):
         return self.conv(self.x, self.w)
 
 
@@ -65,7 +65,7 @@ def test_conv2d():
     assert (output.asnumpy() == expect).all()
 
 
-class NetConv(nn.Cell):
+class NetConv(nn.Module):
     def __init__(self, weight, x):
         super(NetConv, self).__init__()
         self.conv = nn.Conv2d(in_channels=3,
@@ -81,7 +81,7 @@ class NetConv(nn.Cell):
                               )
         self.x = Parameter(initializer(Tensor(x), [1, 3, 4, 2]), name="x")
 
-    def construct(self):
+    def forward(self):
         return self.conv(self.x)
 
 
@@ -159,7 +159,7 @@ def test_conv():
     assert (loss < error).all()
 
 
-class NetConv3d(nn.Cell):
+class NetConv3d(nn.Module):
     def __init__(self, mode, pad_mode, pad):
         super(NetConv3d, self).__init__()
         out_channel = 4
@@ -173,7 +173,7 @@ class NetConv3d(nn.Cell):
                              dilation=1,
                              group=1)
 
-    def construct(self, x, w):
+    def forward(self, x, w):
         return self.conv(x, w)
 
 
@@ -285,7 +285,7 @@ def test_conv3d_2():
     assert (output.asnumpy() == expect).all()
 
 
-class Conv3dNet(nn.Cell):
+class Conv3dNet(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, pad_mode='pad', padding=0, stride=1, dilation=1,
                  has_bias=False, weight_init='normal'):
         super(Conv3dNet, self).__init__()
@@ -301,19 +301,19 @@ class Conv3dNet(nn.Cell):
                              weight_init=weight_init,
                              data_format='NCDHW')
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.cv1(x)
         return x
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, network):
         super(GradNet, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True, get_by_list=True)
         self.network = network
         self.params = ParameterTuple(network.trainable_params())
 
-    def construct(self, x, dy):
+    def forward(self, x, dy):
         grad_op = self.grad(self.network, self.params)
         output = grad_op(x, dy)
         return output

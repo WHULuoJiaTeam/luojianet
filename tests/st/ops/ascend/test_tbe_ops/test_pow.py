@@ -18,19 +18,19 @@ import numpy as np
 import luojianet_ms as ms
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 from luojianet_ms.train.model import Model
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class PowMe(Cell):
+class PowMe(Module):
     def __init__(self):
         super(PowMe, self).__init__()
         self.pow = P.Pow()
 
-    def construct(self, input_, exp):
+    def forward(self, input_, exp):
         return self.pow(input_, exp)
 
 

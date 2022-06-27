@@ -27,8 +27,8 @@ ZERO = Tensor([0], mstype.int32)
 ONE = Tensor([1], mstype.int32)
 
 
-class RecrusiveNet(nn.Cell):
-    def construct(self, x, z):
+class RecrusiveNet(nn.Module):
+    def forward(self, x, z):
         def f(x, z):
             y = ZERO
             if x < 0:

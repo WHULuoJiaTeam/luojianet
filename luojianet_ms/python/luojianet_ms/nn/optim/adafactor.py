@@ -398,7 +398,7 @@ class AdaFactor(Optimizer):
         """
         return False
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         lr = self.get_lr()
         step = F.assign_add(self.step, 1)
         if self.scale_lr and self.relative_step:

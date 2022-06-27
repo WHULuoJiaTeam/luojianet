@@ -20,11 +20,11 @@ import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
 from luojianet_ms.common.initializer import initializer
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, begin_norm_axis, begin_params_axis, mul_weight, normalized_shape,
                  strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
@@ -41,14 +41,14 @@ class Net(Cell):
         self.beta = Parameter(initializer(
             'zeros', self.normalized_shape), name="beta")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.mul(x, self.mul_weight)
         out, _, _ = self.layer_norm(out, self.gamma, self.beta)
         out = self.relu(out)
         return out
 
 
-class Net2(Cell):
+class Net2(Module):
     def __init__(self, begin_norm_axis, begin_params_axis, mul_weight, normalized_shape,
                  strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
@@ -65,14 +65,14 @@ class Net2(Cell):
         self.beta = Parameter(initializer(
             'zeros', self.normalized_shape), name="beta")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.mul(x, self.mul_weight)
         _, out, _ = self.layer_norm(out, self.gamma, self.beta)
         out = self.relu(out)
         return out
 
 
-class Net3(Cell):
+class Net3(Module):
     def __init__(self, begin_norm_axis, begin_params_axis, mul_weight, normalized_shape,
                  strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
@@ -89,14 +89,14 @@ class Net3(Cell):
         self.beta = Parameter(initializer(
             'zeros', self.normalized_shape), name="beta")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.mul(x, self.mul_weight)
         _, _, out = self.layer_norm(out, self.gamma, self.beta)
         out = self.relu(out)
         return out
 
 
-class Net4(Cell):
+class Net4(Module):
     def __init__(self, begin_norm_axis, begin_params_axis, mul_weight, normalized_shape,
                  strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
@@ -112,13 +112,13 @@ class Net4(Cell):
         self.beta = Parameter(initializer(
             'zeros', self.normalized_shape), name="beta")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.mul(x, self.mul_weight)
         _, _, out = self.layer_norm(out, self.gamma, self.beta)
         return out
 
 
-class Net5(Cell):
+class Net5(Module):
     def __init__(self, begin_norm_axis, begin_params_axis, mul_weight, normalized_shape,
                  strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
@@ -135,7 +135,7 @@ class Net5(Cell):
         self.beta = Parameter(initializer(
             'zeros', self.normalized_shape), name="beta")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out, _, _ = self.layer_norm(x, self.gamma, self.beta)
         out = self.relu(out)
         return out

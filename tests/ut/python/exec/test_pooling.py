@@ -19,7 +19,7 @@ test pooling api
 import luojianet_ms.nn as nn
 
 
-class MaxNet(nn.Cell):
+class MaxNet(nn.Module):
     """MaxNet definition"""
 
     def __init__(self,
@@ -29,11 +29,11 @@ class MaxNet(nn.Cell):
         self.maxpool = nn.MaxPool2d(kernel_size,
                                     stride)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.maxpool(input_x)
 
 
-class AvgNet(nn.Cell):
+class AvgNet(nn.Module):
     def __init__(self,
                  kernel_size,
                  stride=None):
@@ -41,5 +41,5 @@ class AvgNet(nn.Cell):
         self.avgpool = nn.AvgPool2d(kernel_size,
                                     stride)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.avgpool(input_x)

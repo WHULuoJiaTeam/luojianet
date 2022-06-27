@@ -64,7 +64,7 @@ class DatasetLenet():
         return self
 
 
-class MatMulCell(nn.Cell):
+class MatMulCell(nn.Module):
     def __init__(self, strategy1, strategy2, param=None):
         super().__init__()
         self.param = Parameter(initializer("zeros", [64, 64]), name="param")
@@ -74,13 +74,13 @@ class MatMulCell(nn.Cell):
         self.matmul = P.MatMul().shard(strategy1)
         self.matmul1 = P.MatMul().shard(strategy2)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.matmul(x, self.param)
         out = self.matmul1(out, self.param1)
         return out
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy1, strategy2, param=None):
         super().__init__()
         self.block = nn.CellList()
@@ -89,19 +89,19 @@ class Net(nn.Cell):
             cell.pipeline_stage = i
             self.block.append(cell)
 
-    def construct(self, x):
+    def forward(self, x):
         for i in range(2):
             x = self.block[i](x)
         return x
 
 
-class PipelineSplit(nn.Cell):
+class PipelineSplit(nn.Module):
     def __init__(self, strategy1, strategy2):
         super().__init__()
         self.cell = Net(strategy1, strategy2)
         self.cell.block[0].matmul.add_prim_attr("parameter_start", 0)
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         x = self.cell(x)
         return x
 

@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetEqualCount(nn.Cell):
+class NetEqualCount(nn.Module):
     def __init__(self):
         super(NetEqualCount, self).__init__()
         self.equalcount = P.EqualCount()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.equalcount(x, y)
 
 

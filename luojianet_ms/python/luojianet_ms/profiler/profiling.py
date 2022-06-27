@@ -85,11 +85,11 @@ class Profiler:
         >>> from luojianet_ms.profiler import Profiler
         >>>
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.fc = nn.Dense(2,2)
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.fc(x)
         >>>
         >>> def generator():
@@ -790,7 +790,7 @@ class Profiler:
             is_training_mode_flag (bool): Whether in training mode or not.
         """
         logger.info("Begin to parse step trace.")
-        # construct output path
+        # forward output path
         dev_id = self._rank_id if self._device_target == DeviceTarget.ASCEND.value else self._dev_id
         step_trace_intermediate_file_path = os.path.join(
             self._output_path,

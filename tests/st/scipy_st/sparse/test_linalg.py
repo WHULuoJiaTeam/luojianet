@@ -133,14 +133,14 @@ def test_cg_against_numpy(dtype, shape):
 def test_cg_against_scipy_graph(tensor_type, dtype, tol, shape, preconditioner, maxiter):
     """
     Feature: ALL TO ALL
-    Description: test cases for cg within Cell object in pynative/graph mode
+    Description: test cases for cg within Module object in pynative/graph mode
     Expectation: the result match scipy
     """
     if tensor_type == "CSRTensor" and get_platform() != "linux":
         return
 
-    class Net(nn.Cell):
-        def construct(self, a, b, m, maxiter, tol):
+    class Net(nn.Module):
+        def forward(self, a, b, m, maxiter, tol):
             return msp.sparse.linalg.cg(a, b, M=m, maxiter=maxiter, atol=tol, tol=tol)
 
     onp.random.seed(0)
@@ -223,14 +223,14 @@ def test_cg_grad(flatten, tensor_type, dtype, tol, a, b, grad_a, grad_b):
     onp.testing.assert_allclose(expect_grad_a, to_ndarray(grad_a), rtol=tol, atol=tol)
     onp.testing.assert_allclose(expect_grad_b, to_ndarray(grad_b), rtol=tol, atol=tol)
 
-    # Cell
-    class Net(nn.Cell):
+    # Module
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.sum = ops.ReduceSum()
             self.cg = msp.sparse.linalg.cg
 
-        def construct(self, a, b):
+        def forward(self, a, b):
             x, _ = self.cg(a, b)
             return self.sum(x)
 
@@ -292,14 +292,14 @@ def test_cg_grad_pynative(tensor_type, dtype, tol, a, b, grad_a, grad_b):
     onp.testing.assert_allclose(expect_grad_a, to_ndarray(grad_a), rtol=tol, atol=tol)
     onp.testing.assert_allclose(expect_grad_b, to_ndarray(grad_b), rtol=tol, atol=tol)
 
-    # Cell
-    class Net(nn.Cell):
+    # Module
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.sum = ops.ReduceSum()
             self.cg = msp.sparse.linalg.cg
 
-        def construct(self, a, b):
+        def forward(self, a, b):
             x, _ = self.cg(a, b)
             return self.sum(x)
 
@@ -404,12 +404,12 @@ def test_gmres_against_graph_scipy(n, tensor_type, dtype, error, preconditioner,
     if tensor_type == "CSRTensor":
         return
 
-    class TestNet(nn.Cell):
+    class TestNet(nn.Module):
         def __init__(self, solve_method):
             super(TestNet, self).__init__()
             self.solve_method = solve_method
 
-        def construct(self, a, b, x0, tol, restart, maxiter, m, atol):
+        def forward(self, a, b, x0, tol, restart, maxiter, m, atol):
             return msp.sparse.linalg.gmres(a, b, x0, tol=tol, restart=restart, maxiter=maxiter, M=m,
                                            atol=atol, solve_method=self.solve_method)
 
@@ -429,11 +429,11 @@ def test_gmres_against_graph_scipy(n, tensor_type, dtype, error, preconditioner,
     b = Tensor(b)
     x0 = Tensor(x0)
     m = to_tensor((m, tensor_type)) if m is not None else m
-    # Not in graph's construct
+    # Not in graph's forward
     ms_output, _ = msp.sparse.linalg.gmres(a, b, x0, tol=tol, restart=restart, maxiter=maxiter,
                                            M=m, atol=atol)
     assert onp.allclose(scipy_output, ms_output.asnumpy(), rtol=error, atol=error)
-    # With in graph's construct
+    # With in graph's forward
     ms_net_output, _ = TestNet(solve_method)(a, b, x0, tol, restart, maxiter, m, atol)
     assert onp.allclose(scipy_output, ms_net_output.asnumpy(), rtol=error, atol=error)
 
@@ -488,15 +488,15 @@ def test_gmres_grad(tensor_type, dtype, error, preconditioner, solve_method, a, 
     if tensor_type == "CSRTensor":
         return
 
-    # Gmres grad in construct
-    class GmresGradNet(nn.Cell):
+    # Gmres grad in forward
+    class GmresGradNet(nn.Module):
         def __init__(self, solve_method):
             super(GmresGradNet, self).__init__()
             self.sum = ops.ReduceSum()
             self.gmres = msp.sparse.linalg.gmres
             self.solve_method = solve_method
 
-        def construct(self, a, b, x0, tol, m, atol):
+        def forward(self, a, b, x0, tol, m, atol):
             # For restart && maxiter args, we maintain default values to ensure gmres can coverage.
             x, _ = self.gmres(a, b, x0, tol=tol, M=m, atol=atol,
                               solve_method=self.solve_method)

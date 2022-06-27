@@ -116,7 +116,7 @@ def init_var_dict(init_args, var_list):
     return var_map
 
 
-class DenseLayer(nn.Cell):
+class DenseLayer(nn.Module):
     """
     Dense Layer for Deep Layer of DeepFM Model;
     Containing: activation, matmul, bias_add;
@@ -157,7 +157,7 @@ class DenseLayer(nn.Cell):
             act_func = P.Tanh()
         return act_func
 
-    def construct(self, x):
+    def forward(self, x):
         """Construct function"""
         x = self.dropout(x)
         if self.convert_dtype:
@@ -177,7 +177,7 @@ class DenseLayer(nn.Cell):
         return wx
 
 
-class DeepFMModel(nn.Cell):
+class DeepFMModel(nn.Module):
     """
     From paper: "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction"
 
@@ -234,7 +234,7 @@ class DeepFMModel(nn.Cell):
         self.Concat = P.Concat(axis=1)
         self.Cast = P.Cast()
 
-    def construct(self, id_hldr, wt_hldr):
+    def forward(self, id_hldr, wt_hldr):
         """
         Args:
             id_hldr: batch ids;   [bs, field_size]
@@ -266,7 +266,7 @@ class DeepFMModel(nn.Cell):
         return out, self.fm_w, self.embedding_table
 
 
-class NetWithLossClass(nn.Cell):
+class NetWithLossClass(nn.Module):
     """
     NetWithLossClass definition.
     """
@@ -279,7 +279,7 @@ class NetWithLossClass(nn.Cell):
         self.ReduceMean_false = P.ReduceMean(keep_dims=False)
         self.ReduceSum_false = P.ReduceSum(keep_dims=False)
 
-    def construct(self, batch_ids, batch_wts, label):
+    def forward(self, batch_ids, batch_wts, label):
         predict, fm_id_weight, fm_id_embs = self.network(batch_ids, batch_wts)
         log_loss = self.loss(predict, label)
         mean_log_loss = self.ReduceMean_false(log_loss)
@@ -290,7 +290,7 @@ class NetWithLossClass(nn.Cell):
         return loss
 
 
-class TrainStepWrap(nn.Cell):
+class TrainStepWrap(nn.Module):
     """
     TrainStepWrap definition
     """
@@ -314,7 +314,7 @@ class TrainStepWrap(nn.Cell):
             degree = _get_device_num()
             self.grad_reducer = DistributedGradReducer(self.optimizer.parameters, mean, degree)
 
-    def construct(self, batch_ids, batch_wts, label):
+    def forward(self, batch_ids, batch_wts, label):
         weights = self.weights
         loss = self.network(batch_ids, batch_wts, label)
         sens = P.Fill()(P.DType()(loss), P.Shape()(loss), self.sens)  #
@@ -325,7 +325,7 @@ class TrainStepWrap(nn.Cell):
         return F.depend(loss, self.optimizer(grads))
 
 
-class PredictWithSigmoid(nn.Cell):
+class PredictWithSigmoid(nn.Module):
     """
     Eval model with sigmoid.
     """
@@ -334,7 +334,7 @@ class PredictWithSigmoid(nn.Cell):
         self.network = network
         self.sigmoid = P.Sigmoid()
 
-    def construct(self, batch_ids, batch_wts, labels):
+    def forward(self, batch_ids, batch_wts, labels):
         logits, _, _, = self.network(batch_ids, batch_wts)
         pred_probs = self.sigmoid(logits)
 
@@ -358,7 +358,7 @@ class ModelBuilder:
         Get callbacks which contains checkpoint callback, eval callback and loss callback.
 
         Args:
-            model (Cell): The network is added callback (default=None).
+            model (Module): The network is added callback (default=None).
             eval_dataset (Dataset): Dataset for eval (default=None).
         """
         callback_list = []

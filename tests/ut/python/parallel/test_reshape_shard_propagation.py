@@ -29,41 +29,41 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         predict = self.network(x)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         return grad_all(self.network)(x)
 
-class NetWithLossTwoInput(nn.Cell):
+class NetWithLossTwoInput(nn.Module):
     def __init__(self, network):
         super(NetWithLossTwoInput, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
-class GradWrapTwoInput(nn.Cell):
+class GradWrapTwoInput(nn.Module):
     def __init__(self, network):
         super(GradWrapTwoInput, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return grad_all(self.network)(x, y)
 
 
@@ -90,13 +90,13 @@ def test_reshape_reshape():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.relu = P.ReLU().shard(((1, 1, 1, 1),))
 
-        def construct(self, x):
+        def forward(self, x):
             x = self.relu(x)
             out = self.reshape(x, (64, 28))
             out = self.reshape(out, (64, 28, 1))
@@ -114,7 +114,7 @@ def test_reshape_auto_1():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU().shard(((1, 1, 1, 1),))
@@ -122,7 +122,7 @@ def test_reshape_auto_1():
             self.matmul = P.MatMul().shard(((2, 1), (1, 4)))
             self.matmul_weight = Parameter(Tensor(np.ones([28, 64]), dtype=ms.float32), name="weight")
 
-        def construct(self, x):
+        def forward(self, x):
             x = self.relu(x)
             out = self.reshape(x, (64, 28))
             out = self.matmul(out, self.matmul_weight)
@@ -140,7 +140,7 @@ def test_reshape_auto_2():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU()
@@ -151,7 +151,7 @@ def test_reshape_auto_2():
             self.add = P.Add().shard(((2, 4), (2, 4)))
             self.add_weight = Parameter(Tensor(np.ones([128, 32]), dtype=ms.float32), name="weight1")
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.relu(x)
             out = self.relu2(out)
             out = self.reshape(out, (64, 28))
@@ -172,7 +172,7 @@ def test_reshape_auto_3():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.gamma = Parameter(Tensor(np.ones([1024]), dtype=ms.float32), name="gamma")
@@ -184,7 +184,7 @@ def test_reshape_auto_3():
             self.dtype1 = mstype.float16
             self.dtype2 = mstype.float32
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.add(self.mul(x, self.gamma), self.beta)
             out = F.cast(out, self.dtype1)
             out = self.reshape(out, (-1, 1024))
@@ -204,7 +204,7 @@ def test_reshape_auto_4():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.gamma = Parameter(Tensor(np.ones([1024]), dtype=ms.float32), name="gamma")
@@ -216,7 +216,7 @@ def test_reshape_auto_4():
             self.dtype1 = mstype.float16
             self.dtype2 = mstype.float32
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.add(self.mul(x, self.gamma), self.beta)
             out = F.cast(out, self.dtype1)
             out = self.reshape(out, (-1, 1024))
@@ -236,7 +236,7 @@ def test_reshape_auto_5():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.gamma = Parameter(Tensor(np.ones([1024]), dtype=ms.float32), name="gamma")
@@ -248,7 +248,7 @@ def test_reshape_auto_5():
             self.dtype1 = mstype.float16
             self.dtype2 = mstype.float32
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.add(self.mul(x, self.gamma), self.beta)
             out = self.reshape(out, (-1, 1024))
             out = self.mean(out, -1)
@@ -266,7 +266,7 @@ def test_reshape_auto_6():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU()
@@ -275,7 +275,7 @@ def test_reshape_auto_6():
             self.reduce_sum = P.ReduceSum()
             self.wide_w = Parameter(Tensor(np.ones([8, 1024*8, 64]), dtype=ms.float32), name="weight")
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             mask = self.reshape(y, (8, 1024*8, 1))
             w_id = self.relu(x)
             wx = self.mul(w_id, mask)
@@ -299,7 +299,7 @@ def test_reshape_depend_reshape():
     Expectation: compile with error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape1 = P.Reshape()
@@ -310,7 +310,7 @@ def test_reshape_depend_reshape():
             self.mul_weight = Parameter(Tensor(np.ones([128, 96]), dtype=ms.float32), name="weight")
             self.add = P.Add().shard(((4, 2), (4, 2)))
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out1 = self.mul(x, self.mul_weight)
             y = self.relu(y)
             out2 = self.reshape1(y, (96, 32, 4))
@@ -319,13 +319,13 @@ def test_reshape_depend_reshape():
             out = out1 + out3
             return out
 
-    class NetWithLoss1(nn.Cell):
+    class NetWithLoss1(nn.Module):
         def __init__(self, network):
             super(NetWithLoss1, self).__init__()
             self.mean = P.ReduceMean(keep_dims=False)
             self.network = network
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             predict = self.network(x, y)
             return self.mean(predict, ())
 
@@ -342,7 +342,7 @@ def test_reshape_auto_8():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.gamma = Parameter(Tensor(np.ones([2048, 2048]), dtype=ms.float32), name="gamma")
@@ -351,7 +351,7 @@ def test_reshape_auto_8():
             self.mul2 = P.MatMul().shard(((1, 1), (1, 8)))
             self.mean = P.ReduceMean(keep_dims=True)
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.add(x, self.relu(self.gamma))
             out = self.mul2(out, self.gamma)
             out = self.mean(out, -1)
@@ -369,7 +369,7 @@ def test_reshape_auto_9():
     Expectation: compile done without error.
     """
     device_num = 8
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.gamma = Parameter(Tensor(np.ones([2048, 2048]), dtype=ms.float32), name="gamma")
@@ -378,7 +378,7 @@ def test_reshape_auto_9():
             self.mul2 = P.MatMul().shard(((8, 1), (1, 1)))
             self.mean = P.ReduceMean(keep_dims=True)
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.add(x, self.relu(self.gamma))
             out = self.mul2(out, self.gamma)
             out = self.mean(out, -1)

@@ -22,13 +22,13 @@ from luojianet_ms.common.api import ms_function
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.sigmoid = nn.Sigmoid()
 
     @ms_function
-    def construct(self, x):
+    def forward(self, x):
         return self.sigmoid(x)
 
 

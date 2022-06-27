@@ -24,7 +24,7 @@ from luojianet_ms import Tensor
 def test_relu_default():
     relu = nn.ReLU()
     input_data = Tensor(np.random.rand(1, 3, 4, 4).astype(np.float32) - 0.5)
-    output = relu.construct(input_data)
+    output = relu.forward(input_data)
     output_np = output.asnumpy()
     assert isinstance(output_np[0][0][0][0], (np.float32, np.float64))
 
@@ -33,7 +33,7 @@ def test_activation_str():
     relu = nn.get_activation('relu')
 
     input_data = Tensor(np.random.rand(1, 3, 4, 4).astype(np.float32) - 0.5)
-    output = relu.construct(input_data)
+    output = relu.forward(input_data)
     output_np = output.asnumpy()
     assert isinstance(output_np[0][0][0][0], (np.float32, np.float64))
 
@@ -42,7 +42,7 @@ def test_activation_param():
     relu = nn.get_activation('relu')
 
     input_data = Tensor(np.random.rand(1, 3, 4, 4).astype(np.float32) - 0.5)
-    output = relu.construct(input_data)
+    output = relu.forward(input_data)
     output_np = output.asnumpy()
     assert isinstance(output_np[0][0][0][0], (np.float32, np.float64))
 
@@ -52,7 +52,7 @@ def test_softmax_axis():
     layer = nn.Softmax(1)
     x = Tensor(np.ones([3, 3]).astype(np.float32))
     assert layer.softmax.axis == (1,)
-    output = layer.construct(x)
+    output = layer.forward(x)
     output_np = output.asnumpy()
     assert isinstance(output_np[0][0], (np.float32, np.float64))
 
@@ -61,6 +61,6 @@ def test_softmax_axis_none():
     layer = nn.Softmax()
     x = Tensor(np.ones([3, 2]).astype(np.float32))
     assert layer.softmax.axis == (-1,)
-    output = layer.construct(x)
+    output = layer.forward(x)
     output_np = output.asnumpy()
     assert isinstance(output_np[0][0], (np.float32, np.float64))

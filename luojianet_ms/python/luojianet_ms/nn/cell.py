@@ -41,18 +41,18 @@ from ..ops.operations import _inner_ops as inner
 from ..parallel._tensor import _load_tensor_by_layout
 
 
-class Cell(Cell_):
+class Module(Cell_):
     """
     The basic building block of neural networks in LuoJiaNET. The model or neural network layer should inherit this
     base class.
 
-    Layers in `luojianet_ms.nn` are also the subclass of Cell, such as :class:`luojianet_ms.nn.Conv2d`,
-    :class:`luojianet_ms.nn.ReLU`, :class:`luojianet_ms.nn.BatchNorm`, etc. Cell will be compiled into a calculation
+    Layers in `luojianet_ms.nn` are also the subclass of Module, such as :class:`luojianet_ms.nn.Conv2d`,
+    :class:`luojianet_ms.nn.ReLU`, :class:`luojianet_ms.nn.BatchNorm`, etc. Module will be compiled into a calculation
     graph in GRAPH_MODE (static graph mode) and used as the basic module of neural networks in
     PYNATIVE_MODE (dynamic graph mode).
 
     Args:
-        auto_prefix (bool): Whether to automatically generate NameSpace for Cell and its subcells. It will affect the
+        auto_prefix (bool): Whether to automatically generate NameSpace for Module and its subcells. It will affect the
                       name of the parameter in the network. If set to True, the network parameter
                       name will be prefixed, otherwise it will not. Default: True.
         flags (dict): Network configuration information, currently it is used for the binding of network and dataset.
@@ -64,13 +64,13 @@ class Cell(Cell_):
     Examples:
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms.ops as ops
-        >>> class MyCell(nn.Cell):
+        >>> class MyCell(nn.Module):
         ...     def __init__(self, forward_net):
         ...         super(MyCell, self).__init__(auto_prefix=False)
         ...         self.net = forward_net
         ...         self.relu = ops.ReLU()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         y = self.net(x)
         ...         return self.relu(y)
         >>>
@@ -206,7 +206,7 @@ class Cell(Cell_):
             value (bool): Specifies whether to enable bprop debug. Default: False.
         """
         if not isinstance(value, bool):
-            raise TypeError(f"For 'Cell', the property 'bprop_debug' must be bool type, but got type {type(value)}.")
+            raise TypeError(f"For 'Module', the property 'bprop_debug' must be bool type, but got type {type(value)}.")
         self._bprop_debug = value
 
     def update_cell_prefix(self):
@@ -234,7 +234,7 @@ class Cell(Cell_):
     @cell_init_args.setter
     def cell_init_args(self, value):
         if not isinstance(value, str):
-            raise TypeError(f"For 'Cell', the property 'cell_init_args' must be string type, "
+            raise TypeError(f"For 'Module', the property 'cell_init_args' must be string type, "
                             f"but got type {type(value)}.")
         self._cell_init_args = value
 
@@ -245,7 +245,7 @@ class Cell(Cell_):
     @phase.setter
     def phase(self, value):
         if not isinstance(value, str):
-            raise TypeError(f"For 'Cell', the property 'phase' must be string type, but got type {type(value)}.")
+            raise TypeError(f"For 'Module', the property 'phase' must be string type, but got type {type(value)}.")
         self._phase = value
 
     @property
@@ -263,7 +263,7 @@ class Cell(Cell_):
     @parameter_layout_dict.setter
     def parameter_layout_dict(self, value):
         if not isinstance(value, dict):
-            raise TypeError(f"For 'Cell', the property 'parameter_layout_dict' must be dict type, "
+            raise TypeError(f"For 'Module', the property 'parameter_layout_dict' must be dict type, "
                             f"but got type {type(value)}.")
         self._parameter_layout_dict = value
 
@@ -274,7 +274,7 @@ class Cell(Cell_):
     @parallel_parameter_name_list.setter
     def parallel_parameter_name_list(self, value):
         if not isinstance(value, list):
-            raise TypeError(f"For 'Cell', the property 'parallel_parameter_name_list' must be list type, "
+            raise TypeError(f"For 'Module', the property 'parallel_parameter_name_list' must be list type, "
                             f"but got type {type(value)}.")
         self._parallel_parameter_name_list = value
 
@@ -285,11 +285,11 @@ class Cell(Cell_):
     @pipeline_stage.setter
     def pipeline_stage(self, value):
         if not isinstance(value, int) or isinstance(value, bool):
-            raise TypeError("For 'Cell', the property 'pipeline_stage' "
+            raise TypeError("For 'Module', the property 'pipeline_stage' "
                             "must be int type, but got type : {}".format(type(value)))
 
         if value < 0:
-            raise ValueError("For 'Cell', the property 'pipeline_stage' "
+            raise ValueError("For 'Module', the property 'pipeline_stage' "
                              "can not be less than 0, but got {}".format(value))
         self._pipeline_stage = value
         for item in self.trainable_params():
@@ -302,7 +302,7 @@ class Cell(Cell_):
     @parallel_parameter_merge_net_dict.setter
     def parallel_parameter_merge_net_dict(self, value):
         if not isinstance(value, dict):
-            raise TypeError(f"For 'Cell', the property 'parallel_parameter_merge_net_dict' must be dict type, "
+            raise TypeError(f"For 'Module', the property 'parallel_parameter_merge_net_dict' must be dict type, "
                             f"but got type {type(value)}.")
         self._parallel_parameter_merge_net_dict = value
 
@@ -401,17 +401,17 @@ class Cell(Cell_):
 
     def run_construct(self, cast_inputs, kwargs):
         """
-        Run the construct function.
+        Run the forward function.
 
         Note:
             This function will be removed in a future version. It is not recommended to call this function.
 
         Args:
-            cast_inputs (tuple): The input objects of Cell.
+            cast_inputs (tuple): The input objects of Module.
             kwargs (dict): Provide keyword arguments.
 
         Returns:
-            output, the output object of Cell.
+            output, the output object of Module.
         """
         logger.warning(f"The 'run_construct' function of '{self.cls_name}' will be removed in a future version. "
                        f"Calling this function is not recommended.")
@@ -419,7 +419,7 @@ class Cell(Cell_):
         return output
 
     def _run_construct(self, cast_inputs, kwargs):
-        """Run the construct function"""
+        """Run the forward function"""
         if self._enable_forward_pre_hook:
             cast_inputs = self._run_forward_pre_hook(cast_inputs)
         if self._enable_backward_hook:
@@ -427,19 +427,19 @@ class Cell(Cell_):
         elif hasattr(self, "_shard_fn"):
             output = self._shard_fn(*cast_inputs, **kwargs)
         else:
-            output = self.construct(*cast_inputs, **kwargs)
+            output = self.forward(*cast_inputs, **kwargs)
         if self._enable_forward_hook:
             output = self._run_forward_hook(cast_inputs, output)
         return output
 
     def _check_construct_args(self, *inputs, **kwargs):
-        """Check the args needed by the function construct"""
+        """Check the args needed by the function forward"""
         if kwargs:
-            raise ValueError(f"For 'Cell', expect no kwargs here, "
+            raise ValueError(f"For 'Module', expect no kwargs here, "
                              "maybe you pass wrong arguments, args: {inputs}, kwargs: {kwargs}")
         positional_args = 0
         default_args = 0
-        for value in inspect.signature(self.construct).parameters.values():
+        for value in inspect.signature(self.forward).parameters.values():
             if value.kind is inspect.Parameter.VAR_POSITIONAL or value.kind is inspect.Parameter.VAR_KEYWORD:
                 return
             if value.kind is inspect.Parameter.POSITIONAL_OR_KEYWORD:
@@ -449,11 +449,11 @@ class Cell(Cell_):
                     default_args += 1
 
         if len(inputs) < positional_args:
-            raise TypeError(f"For 'Cell', the function construct need {positional_args} positional argument, "
+            raise TypeError(f"For 'Module', the function forward need {positional_args} positional argument, "
                             f"but got {len(inputs)}.")
 
         if len(inputs) > positional_args + default_args:
-            raise TypeError(f"For 'Cell', the function construct need {positional_args} positional argument and "
+            raise TypeError(f"For 'Module', the function forward need {positional_args} positional argument and "
                             f"{default_args} default argument, total {positional_args + default_args}, "
                             f"but got {len(inputs)}.")
 
@@ -519,26 +519,26 @@ class Cell(Cell_):
                          use right now. Support ["0", "1", "2"]. Default: "0".
 
         Returns:
-            Cell, the cell itself.
+            Module, the cell itself.
 
         Examples:
             >>> import luojianet_ms.nn as nn
             >>>
-            >>> class Block(nn.Cell):
+            >>> class Block(nn.Module):
             ...   def __init__(self):
             ...     self.dense1 = nn.Dense(10, 10)
             ...     self.relu = nn.ReLU()
             ...     self.dense2 = nn.Dense2(10, 10)
-            ...   def construct(self, x):
+            ...   def forward(self, x):
             ...     x = self.relu(self.dense2(self.relu(self.dense1(x))))
             ...     return x
             >>>
-            >>> class example(nn.Cell):
+            >>> class example(nn.Module):
             ...   def __init__(self):
             ...     self.block1 = Block()
             ...     self.block2 = Block()
             ...     self.block2.shard(in_strategy=((2, 1),), out_strategy=(None,))
-            ...   def construct(self, x):
+            ...   def forward(self, x):
             ...     x = self.block1(x)
             ...     x = self.block2(x)
             ...     return x
@@ -553,7 +553,7 @@ class Cell(Cell_):
         Auto cast inputs in mixed precision scenarios.
 
         Args:
-            inputs (tuple): the inputs of construct.
+            inputs (tuple): the inputs of forward.
 
         Returns:
             Tuple, the inputs after date type cast.
@@ -569,11 +569,11 @@ class Cell(Cell_):
         return cast_inputs
 
     def __call__(self, *args, **kwargs):
-        if self.__class__.construct is Cell.construct:
-            logger.warning(f"The '{self.__class__}' does not override the method 'construct', "
-                           f"it will call the super class(Cell) 'construct'.")
+        if self.__class__.forward is Module.forward:
+            logger.warning(f"The '{self.__class__}' does not override the method 'forward', "
+                           f"it will call the super class(Module) 'forward'.")
         if kwargs:
-            bound_arguments = inspect.signature(self.construct).bind(*args, **kwargs)
+            bound_arguments = inspect.signature(self.forward).bind(*args, **kwargs)
             bound_arguments.apply_defaults()
             args = bound_arguments.args
             kwargs = bound_arguments.kwargs
@@ -582,7 +582,7 @@ class Cell(Cell_):
         if context._get_mode() == context.GRAPH_MODE:
             self._check_construct_args(*args, **kwargs)
             if self._hook_fn_registered():
-                logger.warning(f"For 'Cell', it's not support hook function in graph mode. If you want to use hook "
+                logger.warning(f"For 'Module', it's not support hook function in graph mode. If you want to use hook "
                                f"function, please use context.set_context to set pynative mode.")
             out = self.compile_and_run(*args)
             return out
@@ -599,7 +599,7 @@ class Cell(Cell_):
             if isinstance(item, Tensor) and item.has_init:
                 item.init_data()
             elif isinstance(item, numpy.ndarray):
-                raise TypeError("For 'Cell', inputs should not be numpy array.")
+                raise TypeError("For 'Module', inputs should not be numpy array.")
         if self.requires_grad:
             _pynative_executor.set_grad_flag(True)
         _pynative_executor.new_graph(self, *args, **kwargs)
@@ -621,8 +621,8 @@ class Cell(Cell_):
         return output
 
     def _add_attr(self, name, value):
-        if name and name[:2] != '__' and name not in Cell.IGNORE_LIST:
-            super(Cell, self)._add_attr(name, value)
+        if name and name[:2] != '__' and name not in Module.IGNORE_LIST:
+            super(Module, self)._add_attr(name, value)
 
     def _sync_attr_for_compile(self):
         """Sync the attr to c++ object."""
@@ -653,13 +653,13 @@ class Cell(Cell_):
         cells = self.__dict__.get('_cells')
         params = self.__dict__.get('_params')
         if params is None:
-            raise AttributeError("For 'Cell', can not assign params before Cell.__init__() is called.")
+            raise AttributeError("For 'Module', can not assign params before Module.__init__() is called.")
         if name in self.__dict__:
             if self.__dict__[name] is not None:
-                raise TypeError(f"For 'Cell', the {name} should not be Parameter.")
+                raise TypeError(f"For 'Module', the {name} should not be Parameter.")
             del self.__dict__[name]
         if cells and name in cells:
-            raise TypeError(f"For 'Cell', the {name} should be Cell, but got Parameter.")
+            raise TypeError(f"For 'Module', the {name} should be Module, but got Parameter.")
         self.insert_param_to_cell(name, value)
 
     def _set_attr_for_parameter_tuple(self, name, value):
@@ -667,7 +667,7 @@ class Cell(Cell_):
         params = self.__dict__.get('_params')
         params_list = self.__dict__.get('_params_list')
         if params is None:
-            raise AttributeError("For 'Cell', can not assign params before Cell.__init__() is called.")
+            raise AttributeError("For 'Module', can not assign params before Module.__init__() is called.")
         exist_names = set("")
         exist_objs = set()
         for item in value:
@@ -676,7 +676,7 @@ class Cell(Cell_):
                 continue
             exist_objs.add(item)
             if item.name == PARAMETER_NAME_DEFAULT:
-                logger.warning("For 'Cell', the parameter definition is deprecated.\n"
+                logger.warning("For 'Module', the parameter definition is deprecated.\n"
                                "Please set a unique name for the parameter in ParameterTuple '{}'.".format(value))
                 item.name = item.name + "$" + str(self._id)
                 self._id += 1
@@ -716,11 +716,11 @@ class Cell(Cell_):
         cells = self.__dict__.get('_cells')
         params = self.__dict__.get('_params')
         if cells is None:
-            raise AttributeError("For 'Cell', can not assign cells before Cell.__init__() is called.")
+            raise AttributeError("For 'Module', can not assign cells before Module.__init__() is called.")
         if name in self.__dict__:
             del self.__dict__[name]
         if params and name in params:
-            raise TypeError(f"For 'Cell', the {name} should be Parameter, but got Cell.")
+            raise TypeError(f"For 'Module', the {name} should be Parameter, but got Module.")
         if self._auto_prefix:
             value.update_parameters_name(name + '.')
         cells[name] = value
@@ -731,7 +731,7 @@ class Cell(Cell_):
         if isinstance(value, Tensor) and self._params[name] is not None:
             self._params[name].set_data(value)
         elif value is not None:
-            raise TypeError(f"For 'Cell', the type of {name} should be Parameter or ParameterTuple, "
+            raise TypeError(f"For 'Module', the type of {name} should be Parameter or ParameterTuple, "
                             f"but got {type(value).__name__}.")
         else:
             self.insert_param_to_cell(name, None)
@@ -754,13 +754,13 @@ class Cell(Cell_):
             self._set_attr_for_parameter_tuple(name, value)
         elif isinstance(value, (list, tuple)) and value and _check_param_list_tuple(value):
             self._set_attr_for_parameter_in_list_or_tuple(name, value)
-        elif isinstance(value, Cell):
+        elif isinstance(value, Module):
             self._set_attr_for_cell(name, value)
         elif params and name in params:
             self._set_attr_for_params(name, value)
         elif cells and name in cells:
             if value is not None:
-                raise TypeError(f"For 'Cell', the type of {name} should be cell, but got {type(value).__name__}.")
+                raise TypeError(f"For 'Module', the type of {name} should be cell, but got {type(value).__name__}.")
             self._cells[name] = None
         elif isinstance(value, Tensor):
             self._set_attr_for_tensor(name, value)
@@ -769,12 +769,12 @@ class Cell(Cell_):
                 value.set_prim_instance_name(name)
                 self._primitives[name] = value
             object.__setattr__(self, name, value)
-        if name not in Cell.IGNORE_LIST:
+        if name not in Module.IGNORE_LIST:
             self._attr_synced = False
 
     def extend_repr(self):
         """
-        Expand the description of Cell.
+        Expand the description of Module.
 
         To print customized extended information, re-implement this method in your own cells.
         """
@@ -830,7 +830,7 @@ class Cell(Cell_):
         Slice inputs tensors by parallel strategies.
 
         Args:
-            inputs (Function or Cell): inputs of construct method.
+            inputs (Function or Module): inputs of forward method.
         """
         parallel_inputs_run = []
         # judge if *args exists in input
@@ -857,7 +857,7 @@ class Cell(Cell_):
         Slice inputs tensors by parallel strategies.
 
         Args:
-            inputs (tuple): inputs of construct method.
+            inputs (tuple): inputs of forward method.
         """
         self._parallel_inputs_run = self._load_inputs(*inputs)
 
@@ -886,7 +886,7 @@ class Cell(Cell_):
         Save set inputs for computation graph.
 
         Args:
-            inputs (tuple): Inputs of the Cell object.
+            inputs (tuple): Inputs of the Module object.
 
         Examples:
             >>> import numpy as np
@@ -894,11 +894,11 @@ class Cell(Cell_):
             >>> from luojianet_ms import nn, Tensor, context
             >>>
             >>> context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
-            >>> class reluNet(nn.Cell):
+            >>> class reluNet(nn.Module):
             ...     def __init__(self):
             ...         super(reluNet, self).__init__()
             ...         self.relu = nn.ReLU()
-            ...     def construct(self, x):
+            ...     def forward(self, x):
             ...         return self.relu(x)
             >>>
             >>> net = reluNet()
@@ -920,7 +920,7 @@ class Cell(Cell_):
         Returns the dynamic_inputs of a cell object in one network.
 
         Returns:
-            inputs (tuple): Inputs of the Cell object.
+            inputs (tuple): Inputs of the Module object.
         NOTE:
             This is an experimental interface that is subject to change or deletion.
         """
@@ -929,10 +929,10 @@ class Cell(Cell_):
 
     def compile(self, *inputs):
         """
-        Compile Cell as a computation graph, the input must be consistent with the input defined in construct.
+        Compile Module as a computation graph, the input must be consistent with the input defined in forward.
 
         Args:
-            inputs (tuple): Inputs of the Cell object.
+            inputs (tuple): Inputs of the Module object.
         """
         if self._dynamic_shape_inputs is None or self._dynamic_shape_inputs[0] is None:
             _cell_graph_executor.compile(self, *inputs, phase=self.phase, auto_parallel_mode=self._auto_parallel_mode)
@@ -951,12 +951,12 @@ class Cell(Cell_):
 
     def compile_and_run(self, *inputs):
         """
-        Compile and run Cell, the input must be consistent with the input defined in construct.
+        Compile and run Module, the input must be consistent with the input defined in forward.
 
         Note: It is not recommended to call directly.
 
         Args:
-            inputs (tuple): Inputs of the Cell object.
+            inputs (tuple): Inputs of the Module object.
 
         Returns:
             Object, the result of executing.
@@ -1007,7 +1007,7 @@ class Cell(Cell_):
         Adds a parameter to the current cell.
 
         Inserts a parameter with given name to the cell. The method is currently used in
-        `luojianet_ms.nn.Cell.__setattr__`.
+        `luojianet_ms.nn.Module.__setattr__`.
 
         Args:
             param_name (str): Name of the parameter.
@@ -1023,7 +1023,7 @@ class Cell(Cell_):
         if check_name_contain_dot and '.' in param_name:
             raise KeyError("For 'insert_param_to_cell', the argument 'param_name' should not contain \".\"")
         if '_params' not in self.__dict__:
-            raise AttributeError("For 'insert_param_to_cell', please call Cell.__init__() firstly.")
+            raise AttributeError("For 'insert_param_to_cell', please call Module.__init__() firstly.")
         if hasattr(self, param_name) and param_name not in self._params:
             raise KeyError("For 'insert_param_to_cell', the {} parameter already exists in the network. Cannot "
                            "insert another parameter with the same name.".format(param_name))
@@ -1063,11 +1063,11 @@ class Cell(Cell_):
 
         Args:
             child_name (str): Name of the child cell.
-            child_cell (Cell): The child cell to be inserted.
+            child_cell (Module): The child cell to be inserted.
 
         Raises:
-            KeyError: Child Cell's name is incorrect or duplicated with the other child name.
-            TypeError: Child Cell's type is incorrect.
+            KeyError: Child Module's name is incorrect or duplicated with the other child name.
+            TypeError: Child Module's type is incorrect.
         """
         if not child_name or '.' in child_name:
             raise KeyError("For 'insert_child_to_cell', the argument 'child_name' should not be None and "
@@ -1075,12 +1075,12 @@ class Cell(Cell_):
         if hasattr(self, child_name) and child_name not in self._cells:
             raise KeyError("For 'insert_child_to_cell', the {} child cell already exists in the network. Cannot "
                            "insert another child cell with the same name.".format(child_name))
-        if not isinstance(child_cell, Cell) and child_cell is not None:
-            raise TypeError(f"For 'insert_child_to_cell', the argument 'child_cell' should be 'Cell' if not None, "
+        if not isinstance(child_cell, Module) and child_cell is not None:
+            raise TypeError(f"For 'insert_child_to_cell', the argument 'child_cell' should be 'Module' if not None, "
                             f"but got type {type(child_cell)}.")
         self._cells[child_name] = child_cell
 
-    def construct(self, *inputs, **kwargs):
+    def forward(self, *inputs, **kwargs):
         """
         Defines the computation to be performed. This method must be overridden by all subclasses.
 
@@ -1370,11 +1370,11 @@ class Cell(Cell_):
 
         Examples:
             >>> from luojianet_ms import nn
-            >>> class Net(nn.Cell):
+            >>> class Net(nn.Module):
             ...     def __init__(self):
             ...         super(Net, self).__init__()
             ...         self.conv = nn.Conv2d(3, 64, 3)
-            ...     def construct(self, x):
+            ...     def forward(self, x):
             ...         out = self.conv(x)
             ...         return out
             >>> names = []
@@ -1526,7 +1526,7 @@ class Cell(Cell_):
         """
         Add cast on all inputs of cell and child cells to run with certain float type.
 
-        If `dst_type` is `luojianet_ms.dtype.float16`, all the inputs of Cell, including input, Parameter and Tensor, will
+        If `dst_type` is `luojianet_ms.dtype.float16`, all the inputs of Module, including input, Parameter and Tensor, will
         be cast to float16. Please refer to the usage in source code of :func:`luojianet_ms.build_train_network`.
 
         Note:
@@ -1537,7 +1537,7 @@ class Cell(Cell_):
                 dst_type can be `mstype.float16` or `mstype.float32`.
 
         Returns:
-            Cell, the cell itself.
+            Module, the cell itself.
 
         Raises:
             ValueError: If dst_type is not mstype.float32 or mstype.float16.
@@ -1575,7 +1575,7 @@ class Cell(Cell_):
             boost_type (str): accelerate algorithm.
 
         Returns:
-            Cell, the cell itself.
+            Module, the cell itself.
 
         Raises:
             ValueError: If boost_type is not in the algorithm library.
@@ -1595,10 +1595,10 @@ class Cell(Cell_):
 
         Args:
             requires_grad (bool): Specifies if the net need to grad, if it is
-                true, the cell will construct backward network in pynative mode. Default: True.
+                true, the cell will forward backward network in pynative mode. Default: True.
 
         Returns:
-            Cell, the cell itself.
+            Module, the cell itself.
         """
         self.requires_grad = requires_grad
         return self
@@ -1615,7 +1615,7 @@ class Cell(Cell_):
             mode (bool): Specifies whether the model is training. Default: True.
 
         Returns:
-            Cell, the cell itself.
+            Module, the cell itself.
         """
         if mode is False:
             self._phase = 'predict'
@@ -1648,7 +1648,7 @@ class Cell(Cell_):
 
     def _run_forward_pre_hook(self, inputs):
         """
-        Running forward pre hook function registered on Cell object.
+        Running forward pre hook function registered on Module object.
 
         Args:
             inputs: The input objects of cell object.
@@ -1671,20 +1671,20 @@ class Cell(Cell_):
 
     def register_forward_pre_hook(self, hook_fn):
         """
-        Register forward pre hook function for Cell object.
+        Register forward pre hook function for Module object.
 
         Note:
             - The `register_forward_pre_hook(hook_fn)` does not work in graph mode or ms_function.
             - 'hook_fn' must be defined as the following code.
-              `cell_id` is the information of registered Cell object, including name and ID. `inputs` is the forward
-              input objects passed to the Cell. The 'hook_fn' can modify the forward input objects by returning new
+              `cell_id` is the information of registered Module object, including name and ID. `inputs` is the forward
+              input objects passed to the Module. The 'hook_fn' can modify the forward input objects by returning new
               forward input objects.
             - It should have the following signature:
               hook_fn(cell_id, inputs) -> new input objects or none.
             - In order to prevent running failed when switching to graph mode, it is not recommended to write it in the
-              `construct` function of Cell object. In the pynative mode, if the `register_forward_pre_hook` function is
-              called in the `construct` function of the Cell object, a hook function will be added at each run time of
-              Cell object.
+              `forward` function of Module object. In the pynative mode, if the `register_forward_pre_hook` function is
+              called in the `forward` function of the Module object, a hook function will be added at each run time of
+              Module object.
 
         Args:
             hook_fn (function): Python function. Forward pre hook function.
@@ -1710,13 +1710,13 @@ class Cell(Cell_):
             >>> def forward_pre_hook_fn(cell_id, inputs):
             ...     print("forward inputs: ", inputs)
             ...
-            >>> class Net(nn.Cell):
+            >>> class Net(nn.Module):
             ...     def __init__(self):
             ...         super(Net, self).__init__()
             ...         self.mul = nn.MatMul()
             ...         self.handle = self.mul.register_forward_pre_hook(forward_pre_hook_fn)
             ...
-            ...     def construct(self, x, y):
+            ...     def forward(self, x, y):
             ...         x = x + x
             ...         x = self.mul(x, y)
             ...         return x
@@ -1751,11 +1751,11 @@ class Cell(Cell_):
 
     def _run_forward_hook(self, inputs, output):
         """
-        Running forward hook function registered on Cell object.
+        Running forward hook function registered on Module object.
 
         Args:
-            inputs: The input objects of Cell object.
-            output: The output object of Cell object.
+            inputs: The input objects of Module object.
+            output: The output object of Module object.
 
         Returns:
             - **output** - New output object or none.
@@ -1772,20 +1772,20 @@ class Cell(Cell_):
 
     def register_forward_hook(self, hook_fn):
         """
-        Set the Cell forward hook function.
+        Set the Module forward hook function.
 
         Note:
             - The `register_forward_hook(hook_fn)` does not work in graph mode or ms_function.
             - 'hook_fn' must be defined as the following code.
-              `cell_id` is the information of registered Cell object, including name and ID. `inputs` is the forward
-              input objects passed to the Cell. `output` is the forward output object of the Cell. The 'hook_fn' can
+              `cell_id` is the information of registered Module object, including name and ID. `inputs` is the forward
+              input objects passed to the Module. `output` is the forward output object of the Module. The 'hook_fn' can
               modify the forward output object by returning new forward output object.
             - It should have the following signature:
               hook_fn(cell_id, inputs, output) -> new output object or none.
             - In order to prevent running failed when switching to graph mode, it is not recommended to write it in the
-              `construct` function of Cell object. In the pynative mode, if the `register_forward_hook` function is
-              called in the `construct` function of the Cell object, a hook function will be added at each run time of
-              Cell object.
+              `forward` function of Module object. In the pynative mode, if the `register_forward_hook` function is
+              called in the `forward` function of the Module object, a hook function will be added at each run time of
+              Module object.
 
         Args:
             hook_fn (function): Python function. Forward hook function.
@@ -1812,13 +1812,13 @@ class Cell(Cell_):
             ...     print("forward inputs: ", inputs)
             ...     print("forward output: ", output)
             ...
-            >>> class Net(nn.Cell):
+            >>> class Net(nn.Module):
             ...     def __init__(self):
             ...         super(Net, self).__init__()
             ...         self.mul = nn.MatMul()
             ...         self.handle = self.mul.register_forward_hook(forward_hook_fn)
             ...
-            ...     def construct(self, x, y):
+            ...     def forward(self, x, y):
             ...         x = x + x
             ...         x = self.mul(x, y)
             ...         return x
@@ -1854,13 +1854,13 @@ class Cell(Cell_):
 
     def _backward_hook_construct(self, *inputs):
         """
-        Backward hook construct method to replace original construct method.
+        Backward hook forward method to replace original forward method.
 
         Args:
-            inputs: The input objects of Cell object.
+            inputs: The input objects of Module object.
 
         Returns:
-            - **outputs** - The output objects of Cell object.
+            - **outputs** - The output objects of Module object.
 
         Supported Platforms:
         ``Ascend`` ``GPU`` ``CPU``
@@ -1870,9 +1870,9 @@ class Cell(Cell_):
         else:
             inputs = self._cell_backward_hook(*inputs)
         if isinstance(inputs, tuple):
-            outputs = self.construct(*inputs)
+            outputs = self.forward(*inputs)
         else:
-            outputs = self.construct(inputs)
+            outputs = self.forward(inputs)
         outputs = self._cell_backward_hook(outputs)
         return outputs
 
@@ -1883,15 +1883,15 @@ class Cell(Cell_):
         Note:
             - The `register_backward_hook(hook_fn)` does not work in graph mode or ms_function.
             - The 'hook_fn' must be defined as the following code.
-              `cell_id` is the information of registered Cell object, including name and ID. `grad_input` is the
-              gradient passed to the Cell. `grad_output` is the gradient computed and passed to the next Cell or
+              `cell_id` is the information of registered Module object, including name and ID. `grad_input` is the
+              gradient passed to the Module. `grad_output` is the gradient computed and passed to the next Module or
               primitive, which may be modified by returning a new output gradient.
             - The 'hook_fn' should have the following signature:
               hook_fn(cell_id, grad_input, grad_output) -> New output gradient or none.
             - The 'hook_fn' is executed in the python environment. In order to prevent running failed when switching to
-              graph mode, it is not recommended to write it in the `construct` function of Cell object. In the pynative
-              mode, if the `register_backward_hook` function is called in the `construct` function of the Cell object,
-              a hook function will be added at each run time of Cell object.
+              graph mode, it is not recommended to write it in the `forward` function of Module object. In the pynative
+              mode, if the `register_backward_hook` function is called in the `forward` function of the Module object,
+              a hook function will be added at each run time of Module object.
 
         Args:
             hook_fn (function): Python function. Backward hook function.
@@ -1918,13 +1918,13 @@ class Cell(Cell_):
             ...     print("backward input: ", grad_input)
             ...     print("backward output: ", grad_output)
             ...
-            >>> class Net(nn.Cell):
+            >>> class Net(nn.Module):
             ...     def __init__(self):
             ...         super(Net, self).__init__()
             ...         self.relu = nn.ReLU()
             ...         self.handle = self.relu.register_backward_hook(backward_hook_fn)
             ...
-            ...     def construct(self, x):
+            ...     def forward(self, x):
             ...         x = x + x
             ...         x = self.relu(x)
             ...         return x
@@ -2148,7 +2148,7 @@ class Cell(Cell_):
         Check if graph has been compiled with dynamic shape.
 
         Args:
-            inputs (tuple): Inputs of the Cell object.
+            inputs (tuple): Inputs of the Module object.
         """
         len_inputs = len(inputs)
         len_dynamic_shape_inputs = len(self._dynamic_shape_inputs)
@@ -2181,7 +2181,7 @@ class Cell(Cell_):
                         )
 
 
-class GraphCell(Cell):
+class GraphCell(Module):
     """
     Base class for running the graph loaded from a MindIR.
 
@@ -2239,7 +2239,7 @@ class GraphCell(Cell):
         for name, param in params_dict.items():
             self._params[name] = param
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.graph(*inputs)
 
     def __call__(self, *inputs):

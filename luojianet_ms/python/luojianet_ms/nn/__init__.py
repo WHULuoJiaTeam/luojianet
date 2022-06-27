@@ -16,13 +16,13 @@
 """
 Neural Networks Cells.
 
-Pre-defined building blocks or computing units to construct neural networks.
+Pre-defined building blocks or computing units to forward neural networks.
 """
 from . import layer, loss, optim, metrics, wrap, grad, probability, sparse, dynamic_lr,\
               reinforcement
 from .learning_rate_schedule import *
 from .dynamic_lr import *
-from .cell import Cell, GraphCell
+from .cell import Module, GraphCell
 from .layer import *
 from .loss import *
 from .optim import *
@@ -35,7 +35,7 @@ from .transformer import AttentionMask, VocabEmbedding, MultiHeadAttention, Feed
     TransformerDecoder, TransformerEncoderLayer, TransformerDecoderLayer, Transformer, TransformerOpParallelConfig, \
     EmbeddingOpParallelConfig, TransformerRecomputeConfig, MoEConfig, OpParallelConfig
 
-__all__ = ["Cell", "GraphCell"]
+__all__ = ["Module", "GraphCell"]
 __all__.extend(layer.__all__)
 __all__.extend(loss.__all__)
 __all__.extend(optim.__all__)

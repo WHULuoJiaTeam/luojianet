@@ -29,13 +29,13 @@ grad_all = C.GradOperation(get_all=True)
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_for_after_if_in_if():
-    class ForAfterIfInIfNet(nn.Cell):
+    class ForAfterIfInIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.param_a
             if self.param_a > self.param_b:
                 x += 3
@@ -48,12 +48,12 @@ def test_for_after_if_in_if():
             out *= x
             return out
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor(5, mstype.int32)
@@ -76,13 +76,13 @@ def test_for_after_if_in_if():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_for_after_if_in_if_in_vm():
-    class ForAfterIfInIfNet(nn.Cell):
+    class ForAfterIfInIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.param_a
             while x < 0:
                 x += 1
@@ -97,12 +97,12 @@ def test_for_after_if_in_if_in_vm():
             out *= x
             return out
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor(5, mstype.int32)

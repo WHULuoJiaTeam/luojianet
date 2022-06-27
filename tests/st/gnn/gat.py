@@ -20,7 +20,7 @@ from luojianet_ms._checkparam import Validator
 from aggregator import AttentionAggregator
 
 
-class GAT(nn.Cell):
+class GAT(nn.Module):
     """
     Graph Attention Network
 
@@ -33,7 +33,7 @@ class GAT(nn.Cell):
         attn_drop (float): Drop out ratio of attention coefficient,
             default 0.0.
         ftr_drop (float): Drop out ratio of feature, default 0.0.
-        activation (Cell): Activation Function for output layer, default
+        activation (Module): Activation Function for output layer, default
             nn.Elu().
         residual (bool): Whether to use residual connection between
             intermediate layers, default False.
@@ -113,7 +113,7 @@ class GAT(nn.Cell):
             output_transform='sum'))
         self.layers = nn.layer.CellList(self.layers)
 
-    def construct(self, input_data, bias_mat):
+    def forward(self, input_data, bias_mat):
         for cell in self.layers:
             input_data = cell(input_data, bias_mat)
         return input_data/self.num_heads[-1]

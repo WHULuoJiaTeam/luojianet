@@ -27,7 +27,7 @@ from luojianet_ms.common.api import _cell_graph_executor
 grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)
 
 
-class InputBackward(nn.Cell):
+class InputBackward(nn.Module):
     """ InputBackward definition """
 
     def __init__(self, network, c1=None, c2=None):
@@ -38,7 +38,7 @@ class InputBackward(nn.Cell):
         self.c1 = c1
         self.c2 = c2
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         pass
 
     def construct1(self, x1, sens):
@@ -63,7 +63,7 @@ class InputBackward(nn.Cell):
         return self.grad(self.network)(x1, x2, x3, x4, x5, x6, x7, sens)
 
 
-class InputOpNet(nn.Cell):
+class InputOpNet(nn.Module):
     """ InputOpNet definition """
 
     def __init__(self, op, get_first=False,
@@ -76,7 +76,7 @@ class InputOpNet(nn.Cell):
         self.c3 = c3
         self.c4 = c4
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         pass
 
     def construct0_c0_fack(self, data):
@@ -212,7 +212,7 @@ class InputOpNet(nn.Cell):
         return x
 
 
-class NetOutputAsLoss(nn.Cell):
+class NetOutputAsLoss(nn.Module):
     """ NetOutputAsLoss definition """
 
     def __init__(self, network, output_index):
@@ -220,7 +220,7 @@ class NetOutputAsLoss(nn.Cell):
         self.network = network
         self.output_index = output_index
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         pass
 
     def construct1(self, x1):
@@ -246,8 +246,8 @@ class NetOutputAsLoss(nn.Cell):
 
 def get_loss_fun(construct_net, num_input, output_index):
     net = NetOutputAsLoss(construct_net, output_index)
-    f = getattr(net, 'construct%d' % num_input)
-    setattr(net, "construct", f)
+    f = getattr(net, 'forward%d' % num_input)
+    setattr(net, "forward", f)
     return net
 
 
@@ -317,18 +317,18 @@ def gen_net(shapes, config, get_first=False):
     if const_first:
         fn_name = 'constructc%d_%d' % (len(const_input), len(shapes))
     else:
-        fn_name = 'construct%d_c%d' % (len(shapes), len(const_input))
+        fn_name = 'forward%d_c%d' % (len(shapes), len(const_input))
     if add_fack_input:
         fn_name += '_fack'
     f = getattr(net, fn_name)
-    setattr(net, "construct", f)
+    setattr(net, "forward", f)
     return net
 
 
 def gen_backward_net(construct_net, input_num):
     net = InputBackward(construct_net)
-    f = getattr(net, 'construct%d' % input_num)
-    setattr(net, "construct", f)
+    f = getattr(net, 'forward%d' % input_num)
+    setattr(net, "forward", f)
     return net
 
 
@@ -337,7 +337,7 @@ def batch_tuple_tensor(data, batch_size):
     return tuple(ret)
 
 
-class OutPutWrap(nn.Cell):
+class OutPutWrap(nn.Module):
     """
     OutPutWrap definition
     """
@@ -351,7 +351,7 @@ class OutPutWrap(nn.Cell):
         self.cast = P.Cast()
         self.output_is_tuple = output_is_tuple
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         pass
 
     def construct1(self, x1):
@@ -411,6 +411,6 @@ class OutPutWrap(nn.Cell):
 
 def get_output_wrap(network, num_input, num_output, output_is_tuple=0):
     net = OutPutWrap(network, num_output, output_is_tuple)
-    f = getattr(net, 'construct%d' % num_input)
-    setattr(net, "construct", f)
+    f = getattr(net, 'forward%d' % num_input)
+    setattr(net, "forward", f)
     return net

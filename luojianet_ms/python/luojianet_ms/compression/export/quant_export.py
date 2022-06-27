@@ -28,7 +28,7 @@ from ...common import Tensor
 from ...common import dtype as mstype
 from ...common.api import _cell_graph_executor as _executor
 from ...common.parameter import Parameter
-from ...nn import Cell
+from ...nn import Module
 from ...nn.layer import quant
 from ...ops import operations as P
 from ...ops import functional as F
@@ -40,7 +40,7 @@ from ..quant.qat import _AddFakeQuantInput, _AddFakeQuantAfterSubCell
 __all__ = ["ExportToQuantInferNetwork"]
 
 
-class QuantBlock(Cell):
+class QuantBlock(Module):
     r"""
     A quant block of Conv/Dense, activation layer for Ascend deploy.
 
@@ -92,7 +92,7 @@ class QuantBlock(Cell):
         self.sub = P.Sub()
         self.weight_offset = Parameter(np.zeros(1, dtype=np.int8), name='weight_offset')
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.quant(x)
         if self.has_bias:
             weight = self.sub(self.weight, self.weight_offset)
@@ -116,11 +116,11 @@ class QuantBlock(Cell):
         return s
 
 
-class QuantMindirBlock(Cell):
+class QuantMindirBlock(Module):
     """A quant binary block of Conv/Dense, activation layer for export MINDIR model.
 
        Args:
-        core_op (Cell): The operation cell.
+        core_op (Module): The operation cell.
         weight (Tensor): The weight of the cell.
         bias (Tensor): The bias of the cell. Default: None.
         activation (str): The regularization function applied to the output of the layer, eg. 'relu'. Default: None.
@@ -167,7 +167,7 @@ class QuantMindirBlock(Cell):
         self.has_act = activation is not None
         self.bias_add = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         if self.has_bias:
             x = self.core_op(x, self.weight)
             x = self.bias_add(x, self.bias)
@@ -191,7 +191,7 @@ class ExportToQuantInferNetwork:
     Convert quantization aware network to infer network.
 
     Args:
-        network (Cell): LuoJiaNET quantization aware training network.
+        network (Module): LuoJiaNET quantization aware training network.
         inputs (Tensor): Input tensors of the `quantization aware training network`.
         mean (int, float): The mean of input data after preprocessing, used for quantizing the first layer of network.
           Default: 127.5.
@@ -200,11 +200,11 @@ class ExportToQuantInferNetwork:
         is_mindir (bool): Whether export MINDIR format. Default: False.
 
     Returns:
-        Cell, Infer network.
+        Module, Infer network.
     """
 
     def __init__(self, network, mean, std_dev, *inputs, is_mindir=False):
-        network = Validator.check_isinstance('network', network, (nn.Cell,))
+        network = Validator.check_isinstance('network', network, (nn.Module,))
         self.data_type = mstype.int8
         self.network = copy.deepcopy(network)
         self.network_bk = copy.deepcopy(network)

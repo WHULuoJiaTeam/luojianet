@@ -22,24 +22,24 @@ from luojianet_ms.common.api import ms_function
 from luojianet_ms.ops.composite import GradOperation
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, raw_paddings, mode):
         super(Net, self).__init__()
         self.pad = nn.Pad(raw_paddings, mode=mode)
 
     @ms_function
-    def construct(self, x):
+    def forward(self, x):
         return self.pad(x)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
     @ms_function
-    def construct(self, x, grads):
+    def forward(self, x, grads):
         return self.grad(self.network)(x, grads)
 
 

@@ -28,24 +28,24 @@ context.set_context(mode=context.GRAPH_MODE)
 grad_all = C.GradOperation(get_all=True)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, net):
         super(Grad, self).__init__(auto_prefix=False)
         self.forward_net = net
         self.grad = C.GradOperation(get_all=True)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         grads = self.grad(self.forward_net)(*inputs)
         return grads
 
 
-class ForBreakForwardNet(nn.Cell):
+class ForBreakForwardNet(nn.Module):
     def __init__(self, max_cycles=10):
         super(ForBreakForwardNet, self).__init__()
         self.max_cycles = max_cycles
         self.zero = Tensor(np.array(0), mstype.int32)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = self.zero
         for i in range(self.max_cycles):
             if i % 2 == 0:
@@ -86,14 +86,14 @@ def test_for_break_backward():
     assert graph_grads == (Tensor(np.array(3), mstype.int32), Tensor(np.array(1), mstype.int32))
 
 
-class WhileBreakForwardNet(nn.Cell):
+class WhileBreakForwardNet(nn.Module):
     def __init__(self, max_cycles=10):
         super(WhileBreakForwardNet, self).__init__()
         self.max_cycles = max_cycles
         self.i = Tensor(np.array(0), mstype.int32)
         self.zero = Tensor(np.array(0), mstype.int32)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         i = self.i
         out = self.zero
         while i < self.max_cycles:
@@ -136,7 +136,7 @@ def test_while_break_backward():
     assert graph_grads == (Tensor(np.array(15), mstype.int32), Tensor(np.array(5), mstype.int32))
 
 
-class IfAfterIfInWhileBreakForwardNet(nn.Cell):
+class IfAfterIfInWhileBreakForwardNet(nn.Module):
     def __init__(self, max_cycles=10):
         super(IfAfterIfInWhileBreakForwardNet, self).__init__()
         self.max_cycles = max_cycles
@@ -144,7 +144,7 @@ class IfAfterIfInWhileBreakForwardNet(nn.Cell):
         self.zero = Tensor(np.array(0), mstype.int32)
         self.weight = Parameter(Tensor(np.array(0), mstype.int32))
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         i = self.i
         out = self.zero
         while i < self.max_cycles:
@@ -205,13 +205,13 @@ def test_if_after_if_in_while_break_backward():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if_after_for_in_if_break():
-    class IfAfterForInIfNet(nn.Cell):
+    class IfAfterForInIfNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             out = x + self.param_a
             if self.param_a > self.param_b:
                 for _ in range(4):
@@ -251,13 +251,13 @@ def test_if_after_for_in_if_break():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if_after_for_in_for_break():
-    class IfAfterForInForNet(nn.Cell):
+    class IfAfterForInForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(2, mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             out = x + self.param_a
             for _ in range(0, 10):
                 x *= 2
@@ -289,14 +289,14 @@ def test_if_after_for_in_for_break():
     assert graph_backward_res == (Tensor(16, mstype.int32),)
 
 
-class WhileAfterWhileInWhileBreakForwardNet(nn.Cell):
+class WhileAfterWhileInWhileBreakForwardNet(nn.Module):
     def __init__(self, max_cycles=10):
         super(WhileAfterWhileInWhileBreakForwardNet, self).__init__()
         self.max_cycles = max_cycles
         self.zero = Tensor(np.array(0), mstype.int32)
         self.i = Tensor(np.array(0), mstype.int32)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = self.zero
         i = self.i
         while i < self.max_cycles:
@@ -347,12 +347,12 @@ def test_while_after_while_in_while_break_backward():
     assert graph_grads == (Tensor(np.array(54), mstype.int32), Tensor(np.array(18), mstype.int32))
 
 
-class TwoBreakDeadForwardNet(nn.Cell):
+class TwoBreakDeadForwardNet(nn.Module):
     def __init__(self):
         super(TwoBreakDeadForwardNet, self).__init__()
         self.zero = Tensor(np.array(0), mstype.int32)
 
-    def construct(self, x):
+    def forward(self, x):
         while x < 5:
             if x > 3:
                 x -= 2
@@ -377,13 +377,13 @@ def test_2break_dead_block():
     assert graph_out == Tensor(np.array(1), mstype.int32)
 
 
-class ForInFor2BreakForwardNet(nn.Cell):
+class ForInFor2BreakForwardNet(nn.Module):
     def __init__(self):
         super(ForInFor2BreakForwardNet, self).__init__()
         self.relu = P.ReLU()
         self.add = P.TensorAdd()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         out = z
         for _ in range(2):
             for _ in range(3):
@@ -416,14 +416,14 @@ def test_for_in_for_break():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_while_true_break():
-    class WhileTrueBreakNet(nn.Cell):
+    class WhileTrueBreakNet(nn.Module):
         def __init__(self, t):
             super(WhileTrueBreakNet, self).__init__()
             self.add = P.Add()
             self.mul = P.Mul()
             self.para = Parameter(Tensor(t, mstype.int32), name="a")
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul(y, self.para)
             while True:
                 if x == 5:
@@ -449,14 +449,14 @@ def test_while_true_break():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_continue_stuck_in_vm():
-    class NetWork(nn.Cell):
+    class NetWork(nn.Module):
         def __init__(self, t):
             super().__init__()
             self.add = P.Add()
             self.mul = P.Mul()
             self.para = Parameter(Tensor(t, mstype.int32), name="a")
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul(y, y)
             while x != 3:
                 while self.para > 5:
@@ -492,8 +492,8 @@ def test_partial_eliminate_while_for_if_break():
     Expectation: Null.
     """
 
-    class NetWork(nn.Cell):
-        def construct(self, x):
+    class NetWork(nn.Module):
+        def forward(self, x):
             while x < 3:
                 for _ in range(2):
                     if x <= 4:

@@ -57,13 +57,13 @@ def test_smoothl1loss():
     assert(diff < epsilon).all()
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, x1, x2, sens):
+    def forward(self, x1, x2, sens):
         gout = self.grad(self.network)(x1, x2, sens)
         return gout
 

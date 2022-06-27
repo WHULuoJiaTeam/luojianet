@@ -22,12 +22,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, dim):
         super(Net, self).__init__()
         self.softmax = nn.Softmax(dim)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.softmax(input_x)
 
 

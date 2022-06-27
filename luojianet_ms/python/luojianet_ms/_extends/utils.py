@@ -21,7 +21,7 @@ from functools import wraps
 
 def cell_attr_register(fn=None, attrs=None):
     """
-    Cell init attributes register.
+    Module init attributes register.
 
     Registering the decorator of the built-in operator cell __init__
     function will add save all the parameters of __init__ as operator attributes.

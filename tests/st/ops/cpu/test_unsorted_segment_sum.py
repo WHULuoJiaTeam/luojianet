@@ -25,13 +25,13 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
-class UnsortedSegmentSumNet(nn.Cell):
+class UnsortedSegmentSumNet(nn.Module):
     def __init__(self, num_segments):
         super(UnsortedSegmentSumNet, self).__init__()
         self.unsorted_segment_sum = P.UnsortedSegmentSum()
         self.num_segments = num_segments
 
-    def construct(self, data, ids):
+    def forward(self, data, ids):
         return self.unsorted_segment_sum(data, ids, self.num_segments)
 
 

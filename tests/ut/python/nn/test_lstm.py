@@ -22,7 +22,7 @@ from ..ut_filter import run_on_gpu
 from ....ops_common import convert
 
 
-class LstmTestNet(nn.Cell):
+class LstmTestNet(nn.Module):
     """ LstmTestNet definition """
 
     def __init__(self, input_size, hidden_size, num_layers, has_bias, batch_first, bidirectional):
@@ -35,7 +35,7 @@ class LstmTestNet(nn.Cell):
                             bidirectional=bidirectional,
                             dropout=0.0)
 
-    def construct(self, inp, h0, c0):
+    def forward(self, inp, h0, c0):
         return self.lstm(inp, (h0, c0))
 
 

@@ -24,7 +24,7 @@ from luojianet_ms.nn import WithLossCell
 from ...ut_filter import non_graph_engine
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -35,7 +35,7 @@ class Net(nn.Cell):
         self.biasAdd = P.BiasAdd()
         self.softmax = P.Softmax()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         x = self.softmax(x)
         return x

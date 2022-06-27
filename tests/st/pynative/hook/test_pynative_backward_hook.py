@@ -58,49 +58,49 @@ def backward_hook_fn4(cell_id, grad_inp, grad_outp):
     return (Tensor(np.ones([2, 2, 2, 2]).astype(np.float32) * 10),)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.mul = nn.MatMul()
         self.handle = self.mul.register_backward_hook(backward_hook_fn)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.mul(x, y)
         x = x + x
         return x
 
 
-class SingleNet(nn.Cell):
+class SingleNet(nn.Module):
     def __init__(self):
         super(SingleNet, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.bn(x)
         return x
 
 
-class CmpNet(nn.Cell):
+class CmpNet(nn.Module):
     def __init__(self):
         super(CmpNet, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.bn(x)
         return x
 
 
-class CmpNetPreHook(nn.Cell):
+class CmpNetPreHook(nn.Module):
     def __init__(self):
         super(CmpNetPreHook, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
 
-    def construct(self, x):
+    def forward(self, x):
         x = x + x
         x = x * x
         x = self.conv(x)
@@ -108,14 +108,14 @@ class CmpNetPreHook(nn.Cell):
         return x
 
 
-class CmpNetFWHook(nn.Cell):
+class CmpNetFWHook(nn.Module):
     def __init__(self):
         super(CmpNetFWHook, self).__init__()
         self.conv = nn.Conv2d(2, 2, kernel_size=2, stride=1, padding=0, weight_init="ones", pad_mode="valid")
         self.bn = nn.BatchNorm2d(2, momentum=0.99, eps=0.00001, gamma_init="ones")
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)

@@ -22,7 +22,7 @@ import time
 from collections import defaultdict
 
 from luojianet_ms import log as logger
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 from ..._c_expression import Tensor, security
 from ..._checkparam import Validator
@@ -113,7 +113,7 @@ class SummaryRecord:
         log_dir (str): The log_dir is a directory location to save the summary.
         file_prefix (str): The prefix of file. Default: "events".
         file_suffix (str): The suffix of file. Default: "_MS".
-        network (Cell): Obtain a pipeline through network for saving graph summary. Default: None.
+        network (Module): Obtain a pipeline through network for saving graph summary. Default: None.
         max_file_size (int, optional): The maximum size of each file that can be written to disk (in bytes).
             For example, to write not larger than 4GB, specify `max_file_size=4*1024**3`.
             Default: None, which means no limit.
@@ -337,7 +337,7 @@ class SummaryRecord:
 
         Args:
             step (int): Represents training step number.
-            train_network (Cell): The spare network for saving graph.
+            train_network (Module): The spare network for saving graph.
                 Default: None, it means just do not save the graph summary when the original network graph is None.
             plugin_filter (Callable[[str], bool], optional): The filter function, \
                 which is used to filter out which plugin should be written. Default: None.
@@ -346,8 +346,8 @@ class SummaryRecord:
             bool, whether the record process is successful or not.
 
         Raises:
-            TypeError: `step` is not int，or `train_network` is not `luojianet_ms.nn.Cell \
-            <https://www.luojianet_ms.cn/docs/en/r1.7/api_python/nn/luojianet_ms.nn.Cell.html#luojianet_ms-nn-cell>`_ 。
+            TypeError: `step` is not int，or `train_network` is not `luojianet_ms.nn.Module \
+            <https://www.luojianet_ms.cn/docs/en/r1.7/api_python/nn/luojianet_ms.nn.Module.html#luojianet_ms-nn-cell>`_ 。
 
         Examples:
             >>> from luojianet_ms.train.summary import SummaryRecord
@@ -360,7 +360,7 @@ class SummaryRecord:
         """
         logger.debug("SummaryRecord step is %r.", step)
         Validator.check_value_type(arg_name='step', arg_value=step, valid_types=int)
-        Validator.check_value_type(arg_name='train_network', arg_value=train_network, valid_types=[Cell, type(None)])
+        Validator.check_value_type(arg_name='train_network', arg_value=train_network, valid_types=[Module, type(None)])
 
         if self._status.get('closed'):
             logger.error(f"For '{self.__class__.__name__}', The record writer is closed, "

@@ -49,14 +49,14 @@ class Dataset(MindData):
         self.index = 0
 
 
-class CommonNet(nn.Cell):
+class CommonNet(nn.Module):
     def __init__(self):
         super(CommonNet, self).__init__()
         self.weight = Parameter(Tensor(np.ones([256, 64]), dtype=ms.float32), name="mul_weight")
         self.logicalnot = P.LogicalNot().shard(((4, 2),))
         self.equal = P.Equal().shard(((4, 2), (4, 2)))
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         x = self.equal(x, self.weight)
         x = self.logicalnot(x)
         return x

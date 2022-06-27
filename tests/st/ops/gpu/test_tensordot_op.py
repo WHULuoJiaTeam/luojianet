@@ -23,22 +23,22 @@ import luojianet_ms.context as context
 from luojianet_ms.ops import composite as C
 
 
-class NetTensorDot(nn.Cell):
+class NetTensorDot(nn.Module):
     def __init__(self, axes):
         super(NetTensorDot, self).__init__()
         self.axes = axes
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return C.tensor_dot(x, y, self.axes)
 
 
-class GradNetwork(nn.Cell):
+class GradNetwork(nn.Module):
     def __init__(self, network):
         super(GradNetwork, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_data_a, input_data_b, sens):
+    def forward(self, input_data_a, input_data_b, sens):
         gout = self.grad(self.network)(input_data_a, input_data_b, sens)
         return gout
 

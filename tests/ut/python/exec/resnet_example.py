@@ -51,7 +51,7 @@ def bn_with_initialize(out_channels):
                           moving_var_init=var)
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     """
     residual Block
     """
@@ -82,7 +82,7 @@ class ResidualBlock(nn.Cell):
         self.bn_down_sample = bn_with_initialize(out_channels)
         self.add = P.Add()
 
-    def construct(self, x):
+    def forward(self, x):
         """
         :param x:
         :return:
@@ -110,7 +110,7 @@ class ResidualBlock(nn.Cell):
         return out
 
 
-class MakeLayer3(nn.Cell):
+class MakeLayer3(nn.Module):
     """
     make resnet50 3 layers
     """
@@ -122,7 +122,7 @@ class MakeLayer3(nn.Cell):
         self.block1 = block(out_channels, out_channels, stride=1)
         self.block2 = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.block_down_sample(x)
         x = self.block1(x)
         x = self.block2(x)
@@ -130,7 +130,7 @@ class MakeLayer3(nn.Cell):
         return x
 
 
-class MakeLayer4(nn.Cell):
+class MakeLayer4(nn.Module):
     """
     make resnet50 4 layers
     """
@@ -143,7 +143,7 @@ class MakeLayer4(nn.Cell):
         self.block2 = block(out_channels, out_channels, stride=1)
         self.block3 = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.block_down_sample(x)
         x = self.block1(x)
         x = self.block2(x)
@@ -152,7 +152,7 @@ class MakeLayer4(nn.Cell):
         return x
 
 
-class MakeLayer6(nn.Cell):
+class MakeLayer6(nn.Module):
     """
     make resnet50 6 layers
 
@@ -168,7 +168,7 @@ class MakeLayer6(nn.Cell):
         self.block4 = block(out_channels, out_channels, stride=1)
         self.block5 = block(out_channels, out_channels, stride=1)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.block_down_sample(x)
         x = self.block1(x)
         x = self.block2(x)
@@ -179,9 +179,9 @@ class MakeLayer6(nn.Cell):
         return x
 
 
-class ResNet50(nn.Cell):
+class ResNet50(nn.Module):
     """
-    resnet nn.Cell
+    resnet nn.Module
     """
 
     def __init__(self, block, num_classes=100):
@@ -209,7 +209,7 @@ class ResNet50(nn.Cell):
         bias_fc = Tensor(np.ones([num_classes]).astype(np.float32) * 0.01)
         self.fc = nn.Dense(512 * block.expansion, num_classes, weight_init=weight_fc, bias_init=bias_fc)
 
-    def construct(self, x):
+    def forward(self, x):
         """
         :param x:
         :return:

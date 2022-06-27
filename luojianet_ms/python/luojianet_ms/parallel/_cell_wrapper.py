@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Cell of auto parallel"""
+"""Module of auto parallel"""
 
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.ops.operations.comm_ops import AllGather
 from luojianet_ms.communication import GlobalComm
 from ..common import ms_function
@@ -23,7 +23,7 @@ from ..common import ms_function
 _allgather_cell = None
 
 
-class AllGatherCell(Cell):
+class AllGatherCell(Module):
     """
     Allgather cell, used in model parallel scenario.
     To allgather the selected parameter slice from each device.
@@ -34,13 +34,13 @@ class AllGatherCell(Cell):
         self.allgather = AllGather(group)
 
     @ms_function()
-    def construct(self, x):
+    def forward(self, x):
         x = self.allgather(x)
 
         return x
 
 
-class SaveOptShardCkptCell(Cell):
+class SaveOptShardCkptCell(Module):
     """
     Allgather cell, used in optimizer parallel scenario.
     Firstly gather the tensor to original layout in the specified device group.
@@ -54,7 +54,7 @@ class SaveOptShardCkptCell(Cell):
         self.allgather1 = AllGather(group)
         self.allgather2 = AllGather()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.allgather1(x)
         x = self.allgather2(x)
 

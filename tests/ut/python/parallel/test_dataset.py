@@ -21,7 +21,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations.comm_ops import _VirtualDataset
 
 
-class VirtualDatasetNet(nn.Cell):
+class VirtualDatasetNet(nn.Module):
     def __init__(self):
         super(VirtualDatasetNet, self).__init__()
         self.virtual_dataset = _VirtualDataset()
@@ -29,7 +29,7 @@ class VirtualDatasetNet(nn.Cell):
         self.matmul2 = P.MatMul()
         self.gelu = P.GeLU()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         x, y, z = self.virtual_dataset(x, y, z)
         out = self.gelu(self.matmul1(x, y))
         out = self.matmul2(out, z)

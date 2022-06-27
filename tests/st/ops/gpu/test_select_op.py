@@ -23,12 +23,12 @@ import luojianet_ms.ops as ops
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.select = P.Select()
 
-    def construct(self, cond_op, input_x, input_y):
+    def forward(self, cond_op, input_x, input_y):
         return self.select(cond_op, input_x, input_y)
 
 

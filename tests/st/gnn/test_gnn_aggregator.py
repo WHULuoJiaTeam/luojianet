@@ -29,7 +29,7 @@ context.set_context(mode=context.GRAPH_MODE)
 grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)
 
 
-class MeanAggregatorGrad(nn.Cell):
+class MeanAggregatorGrad(nn.Module):
     """Backward of MeanAggregator"""
 
     def __init__(self, network):
@@ -37,7 +37,7 @@ class MeanAggregatorGrad(nn.Cell):
         self.grad_op = grad_all_with_sens
         self.network = network
 
-    def construct(self, x, sens):
+    def forward(self, x, sens):
         grad_op = self.grad_op(self.network)(x, sens)
         return grad_op
 

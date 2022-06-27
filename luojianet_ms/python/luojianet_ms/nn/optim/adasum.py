@@ -21,7 +21,7 @@ import luojianet_ms.nn as nn
 import luojianet_ms.log as logger
 from luojianet_ms import context
 from luojianet_ms._checkparam import Validator as validator
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.common.parameter import ParameterTuple, Parameter
 from luojianet_ms.parallel._utils import _get_global_rank, _get_stage_device_num
 from luojianet_ms.ops import composite as C
@@ -161,7 +161,7 @@ def _adasum_opt_rollback_process(left_send, parameter_divisibility, delta_w, sen
     return res
 
 
-class _AdaSum(Cell):
+class _AdaSum(Module):
     r"""
     The Adaptive Summation, or AdaSum, is a novel algorithm for improving distributed data
     parallel training of Deep Learning models.
@@ -194,7 +194,7 @@ class _AdaSum(Cell):
         hash_res = int(int(target_hash, 16) % MAX_NUM_HASH)
         return hash_res
 
-    def construct(self, delta_weights, parameters, old_parameters):
+    def forward(self, delta_weights, parameters, old_parameters):
         forward_weights = [delta_weights]
         for i in range(self.calc_times):
             process_weights = self.hyper_map(F.partial(_adasum_opt_forward, self.send_node[i]), self.allreduce_list[i],
@@ -344,7 +344,7 @@ class _AdaSum(Cell):
 
 class _AdaSumByGrad(_AdaSum):
     """Apply adasum by gradients"""
-    def construct(self, grads):
+    def forward(self, grads):
         forward_grads = [grads]
         for i in range(self.calc_times):
             process_weights = self.hyper_map(F.partial(_adasum_opt_forward, self.send_node[i]), self.allreduce_list[i],
@@ -400,7 +400,7 @@ def _parallel_check():
         raise RuntimeError("The device_num should be at least 16 and should be the power of 2 when applying adasum.")
 
 
-class AdaSumByGradWrapCell(Cell):
+class AdaSumByGradWrapCell(Module):
     r"""
     Enable the adasum in "auto_parallel/semi_auto_parallel" mode.
     The implementation of the Adaptive Summation (AdaSum) algorithm is calculated by gradients.
@@ -423,7 +423,7 @@ class AdaSumByGradWrapCell(Cell):
         mode, we recommend to using luojianet_ms.boost to applying AdaSum.
 
     Args:
-        optimizer (Union[Cell]): Optimizer for updating the weights. The construct function of the optimizer
+        optimizer (Union[Module]): Optimizer for updating the weights. The forward function of the optimizer
             requires only one input.
 
     Inputs:
@@ -459,14 +459,14 @@ class AdaSumByGradWrapCell(Cell):
         self.adasum = _AdaSumByGrad(_get_global_rank(), _device_number, group_number, self.grad_clone)
         self.sync_tensor = Parameter(Tensor(0, dtype=mstype.int32))
 
-    def construct(self, grads):
+    def forward(self, grads):
         adasum_res = self.adasum(grads)
         sync_tensor = F.depend(self.sync_tensor, adasum_res)
         sync_flag = P.AllReduce()(sync_tensor)
         return F.depend(self.optimizer(adasum_res), sync_flag)
 
 
-class AdaSumByDeltaWeightWrapCell(Cell):
+class AdaSumByDeltaWeightWrapCell(Module):
     r"""
     Enable the adasum in "auto_parallel/semi_auto_parallel" mode.
     The implementation of the Adaptive Summation (AdaSum) algorithm is calculated based on the difference of weights
@@ -490,7 +490,7 @@ class AdaSumByDeltaWeightWrapCell(Cell):
         and in data parallel mode, we recommend to using luojianet_ms.boost to applying AdaSum.
 
     Args:
-        optimizer (Union[Cell]): Optimizer for updating the weights. The construct function of the optimizer
+        optimizer (Union[Module]): Optimizer for updating the weights. The forward function of the optimizer
             requires only one input.
 
     Inputs:
@@ -528,7 +528,7 @@ class AdaSumByDeltaWeightWrapCell(Cell):
         self.sync_tensor = Parameter(Tensor(0, dtype=mstype.int32))
         self.scale = Tensor(1.0, dtype=mstype.float32)
 
-    def construct(self, grads):
+    def forward(self, grads):
         grad_clone = self.hyper_map(F.partial(_clone_weight, self.scale), self.parameters)
         grads = F.depend(grads, grad_clone)
         opt_result = self.optimizer(grads)

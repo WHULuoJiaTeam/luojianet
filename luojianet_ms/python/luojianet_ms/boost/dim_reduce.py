@@ -16,7 +16,7 @@
 """dim_reduce"""
 import math
 import numpy as np
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
@@ -85,7 +85,7 @@ def _get_delta_weight_process(rho, dn, grad_res_momentum):
     return delta_weight
 
 
-class DimReduce(Cell):
+class DimReduce(Module):
     r"""
     The dimension reduce training, is a novel algorithm for accelerating convergence of Deep Learning models.
 
@@ -119,8 +119,8 @@ class DimReduce(Cell):
             \end{align}
 
     Args:
-        network (Cell): The training network. The network only supports single output.
-        optimizer (Union[Cell]): Optimizer for updating the weights.
+        network (Module): The training network. The network only supports single output.
+        optimizer (Union[Module]): Optimizer for updating the weights.
         weight (Tuple(Parameter)): Tuple of parameters.
         pca_mat_local (numpy.ndarray): For PCA operation, k*n, k is part of n_components, n is the size of weight.
         n_components (int): PCA.components.
@@ -217,7 +217,7 @@ class DimReduce(Cell):
         self.grad_proj_init = ParameterTuple(parameter_tuple).clone(prefix="grad_proj_init", init="zeros")
         self.dn_init = ParameterTuple(parameter_tuple).clone(prefix="dn_init", init="zeros")
 
-    def construct(self, loss, old_grad, loss_scale, weight, weight_clone, *inputs):
+    def forward(self, loss, old_grad, loss_scale, weight, weight_clone, *inputs):
         weight = F.depend(weight, loss)
         old_grad = F.depend(old_grad, weight)
         old_grad = self.hyper_map(F.partial(_scale_grad, loss_scale), old_grad)

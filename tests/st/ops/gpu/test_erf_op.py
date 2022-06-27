@@ -26,12 +26,12 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-class NetErf(nn.Cell):
+class NetErf(nn.Module):
     def __init__(self):
         super(NetErf, self).__init__()
         self.erf = P.Erf()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.erf(x)
 
 

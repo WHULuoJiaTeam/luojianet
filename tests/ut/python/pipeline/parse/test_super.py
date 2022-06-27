@@ -23,24 +23,24 @@ from luojianet_ms import context
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class FatherNet(nn.Cell):
+class FatherNet(nn.Module):
     def __init__(self, x):
         super(FatherNet, self).__init__(x)
         self.x = x
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.x * x
 
     def test_father(self, x):
         return self.x + x
 
 
-class MatherNet(nn.Cell):
+class MatherNet(nn.Module):
     def __init__(self, y):
         super(MatherNet, self).__init__()
         self.y = y
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.y * y
 
     def test_mather(self, y):
@@ -52,8 +52,8 @@ class SingleSubNet(FatherNet):
         super(SingleSubNet, self).__init__(x)
         self.z = z
 
-    def construct(self, x, y):
-        ret_father_construct = super().construct(x, y)
+    def forward(self, x, y):
+        ret_father_construct = super().forward(x, y)
         ret_father_test = super(SingleSubNet, self).test_father(x)
         ret_father_x = super(SingleSubNet, self).x
         ret_sub_z = self.z
@@ -67,11 +67,11 @@ class MulSubNet(FatherNet, MatherNet):
         super(FatherNet, self).__init__(y)
         self.z = z
 
-    def construct(self, x, y):
-        ret_father_construct = super().construct(x, y)
+    def forward(self, x, y):
+        ret_father_construct = super().forward(x, y)
         ret_father_test = super(MulSubNet, self).test_father(x)
         ret_father_x = super(MulSubNet, self).x
-        ret_mather_construct = super(FatherNet, self).construct(x, y)
+        ret_mather_construct = super(FatherNet, self).forward(x, y)
         ret_mather_test = super(FatherNet, self).test_mather(y)
         ret_mather_y = super(FatherNet, self).y
         ret_sub_z = self.z
@@ -80,13 +80,13 @@ class MulSubNet(FatherNet, MatherNet):
                ret_mather_construct, ret_mather_test, ret_mather_y, ret_sub_z
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, x):
         super(Net, self).__init__()
         self.x = x
 
-    def construct(self, x, y):
-        ret = super(Net, self).construct(x, y)
+    def forward(self, x, y):
+        ret = super(Net, self).forward(x, y)
         return ret
 
 
@@ -112,12 +112,12 @@ def test_super_cell():
 
 
 def test_single_super_in():
-    class FatherNetIn(nn.Cell):
+    class FatherNetIn(nn.Module):
         def __init__(self, x):
             super(FatherNetIn, self).__init__(x)
             self.x = x
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return self.x * x
 
         def test_father(self, x):
@@ -128,8 +128,8 @@ def test_single_super_in():
             super(SingleSubNetIN, self).__init__(x)
             self.z = z
 
-        def construct(self, x, y):
-            ret_father_construct = super().construct(x, y)
+        def forward(self, x, y):
+            ret_father_construct = super().forward(x, y)
             ret_father_test = super(SingleSubNetIN, self).test_father(x)
             ret_father_x = super(SingleSubNetIN, self).x
             ret_sub_z = self.z

@@ -23,22 +23,22 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
 
-class NetRelu(nn.Cell):
+class NetRelu(nn.Module):
     def __init__(self):
         super(NetRelu, self).__init__()
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.relu(x)
 
 
-class NetReluDynamic(nn.Cell):
+class NetReluDynamic(nn.Module):
     def __init__(self):
         super(NetReluDynamic, self).__init__()
         self.conv = inner.GpuConvertToDynamicShape()
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x_conv = self.conv(x)
         return self.relu(x_conv)
 

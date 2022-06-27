@@ -51,12 +51,12 @@ class Dataset(MindData):
         self.index = 0
 
 
-class PReLUNet(nn.Cell):
+class PReLUNet(nn.Module):
     def __init__(self):
         super(PReLUNet, self).__init__()
         self.prelu = PReLU(channel=256)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.prelu(x)
         return x
 

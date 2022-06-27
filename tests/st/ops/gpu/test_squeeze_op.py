@@ -20,12 +20,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class SqueezeNet(nn.Cell):
+class SqueezeNet(nn.Module):
     def __init__(self):
         super(SqueezeNet, self).__init__()
         self.squeeze = P.Squeeze()
 
-    def construct(self, tensor):
+    def forward(self, tensor):
         return self.squeeze(tensor)
 
 

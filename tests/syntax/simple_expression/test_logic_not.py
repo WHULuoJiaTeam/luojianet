@@ -24,22 +24,22 @@ from luojianet_ms.common.tensor import Tensor
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class LogicNot(nn.Cell):
+class LogicNot(nn.Module):
     def __init__(self):
         super(LogicNot, self).__init__()
         self.m = 1
 
-    def construct(self, x):
+    def forward(self, x):
         not_v = not x
         return not_v
 
 
-class LogicNotSpec(nn.Cell):
+class LogicNotSpec(nn.Module):
     def __init__(self, x):
         super(LogicNotSpec, self).__init__()
         self.x = x
 
-    def construct(self, x):
+    def forward(self, x):
         not_v = not self.x
         return not_v
 

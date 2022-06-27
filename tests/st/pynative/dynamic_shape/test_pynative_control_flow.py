@@ -27,14 +27,14 @@ import torch.nn as nn_pt
 context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
 
 
-class GradofAllInputsAndParams(nn.Cell):
+class GradofAllInputsAndParams(nn.Module):
     def __init__(self, net, sens=False):
         super().__init__()
         self.grad = P.GradOperation(get_all=True, get_by_list=True, sens_param=sens)
         self.net = net
         self.params = ParameterTuple(self.net.trainable_params())
 
-    def construct(self, *x):
+    def forward(self, *x):
         out = self.grad(self.net, self.params)(*x)
         return out
 
@@ -43,12 +43,12 @@ class GradofAllInputsAndParams(nn.Cell):
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_sit_pynative_diff_shape_with_while_in_construct():
-    class WhileNetMs(nn.Cell):
+    class WhileNetMs(nn.Module):
         def __init__(self):
             super().__init__()
             self.conv = nn.Conv2d(1, 1, 3, weight_init='ones', pad_mode='pad')
 
-        def construct(self, x, flag):
+        def forward(self, x, flag):
             while flag:
                 if flag > 1:
                     x = self.conv(x)

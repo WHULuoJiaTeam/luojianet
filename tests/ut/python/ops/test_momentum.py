@@ -50,7 +50,7 @@ def tensor_run_opt(opt, iters, learning_rate, momentum,
     return success
 
 
-class OptimizerByMomentum(nn.Cell):
+class OptimizerByMomentum(nn.Module):
     """ OptimizerByMomentum definition """
 
     def __init__(self, weights):
@@ -65,7 +65,7 @@ class OptimizerByMomentum(nn.Cell):
         self.hyper_map = C.HyperMap()
         self.opt = P.ApplyMomentum()
 
-    def construct(self, grads):
+    def forward(self, grads):
         success = True
         weights = self.weights
         moments = self.moments
@@ -75,7 +75,7 @@ class OptimizerByMomentum(nn.Cell):
         return success
 
 
-class TrainStepWrap(nn.Cell):
+class TrainStepWrap(nn.Module):
     """ TrainStepWrap definition """
 
     def __init__(self, network):
@@ -85,13 +85,13 @@ class TrainStepWrap(nn.Cell):
         self.optimizer = OptimizerByMomentum(self.weights)
         self.hyper_map = C.HyperMap()
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         weights = self.weights
         grads = grad_by_list(self.network, weights)(x, label)
         return self.optimizer(grads)
 
 
-class NetWithLossClass(nn.Cell):
+class NetWithLossClass(nn.Module):
     """ NetWithLossClass definition """
 
     def __init__(self, network):
@@ -99,12 +99,12 @@ class NetWithLossClass(nn.Cell):
         self.loss = nn.SoftmaxCrossEntropyWithLogits()
         self.network = network
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         predict = self.network(x)
         return self.loss(predict, label)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -114,7 +114,7 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.biasAdd(self.matmul(x, self.weight), self.bias)
 
 

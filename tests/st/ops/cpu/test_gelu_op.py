@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class GeluNet(nn.Cell):
+class GeluNet(nn.Module):
     def __init__(self):
         super(GeluNet, self).__init__()
         self.gelu = P.GeLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.gelu(x)
 
 

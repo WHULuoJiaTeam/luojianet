@@ -25,22 +25,22 @@ from luojianet_ms.ops import composite as C
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-class NetSqrtGrad(nn.Cell):
+class NetSqrtGrad(nn.Module):
     def __init__(self):
         super(NetSqrtGrad, self).__init__()
         self.sqrt_grad = G.SqrtGrad()
 
-    def construct(self, y, grad):
+    def forward(self, y, grad):
         return self.sqrt_grad(y, grad)
 
 
-class NetSqrtGradGrad(nn.Cell):
+class NetSqrtGradGrad(nn.Module):
     def __init__(self, forward_net):
         super(NetSqrtGradGrad, self).__init__()
         self.forward_net = forward_net
         self.gradOps = C.GradOperation(get_all=True, sens_param=True)
 
-    def construct(self, y, grad, dout):
+    def forward(self, y, grad, dout):
         backward_net = self.gradOps(self.forward_net)
         return backward_net(y, grad, dout)
 

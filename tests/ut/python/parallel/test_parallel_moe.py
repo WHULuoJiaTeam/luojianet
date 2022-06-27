@@ -56,25 +56,25 @@ config = TransformerOpParallelConfig(data_parallel=2, model_parallel=8, vocab_em
 moe_config = MoEConfig(expert_num=4, num_experts_chosen=3)
 
 
-class NetWithLossFiveInputs(nn.Cell):
+class NetWithLossFiveInputs(nn.Module):
     def __init__(self, network):
         super(NetWithLossFiveInputs, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x1, x2, x3, x4, x5):
+    def forward(self, x1, x2, x3, x4, x5):
         predict, _, _, _ = self.network(x1, x2, x3, x4, x5)
         return self.loss(predict)
 
 
-class NetWithLossMoe(nn.Cell):
+class NetWithLossMoe(nn.Module):
     def __init__(self, network):
         super(NetWithLossMoe, self).__init__()
         self.network = network
         self.add = P.Add().shard(((), ()))
         self.reduce_mean = P.ReduceMean(keep_dims=False).shard(((1, 1),))
 
-    def construct(self, x1, x2, x3, x4, x5):
+    def forward(self, x1, x2, x3, x4, x5):
         predict, _, _, moe_loss = self.network(x1, x2, x3, x4, x5)
         predict = P.Reshape()(predict, (-1, 1))
         predict = self.reduce_mean(predict)
@@ -154,7 +154,7 @@ def test_transformer_model_2d():
     model.train(1, dataset, dataset_sink_mode=False)
 
 
-class TransformerNet(nn.Cell):
+class TransformerNet(nn.Module):
     """Transformer with loss"""
     def __init__(self, en_layer, de_layer, parallel_config):
         super(TransformerNet, self).__init__()
@@ -170,7 +170,7 @@ class TransformerNet(nn.Cell):
                                    parallel_config=parallel_config)
         self.loss = CrossEntropyLoss(parallel_config=parallel_config.dp_mp_config)
 
-    def construct(self, x1, x2, x3, x4, x5, y, mask):
+    def forward(self, x1, x2, x3, x4, x5, y, mask):
         predict, _, _ = self.network(x1, x2, x3, x4, x5)
         predict = P.Reshape()(predict, (-1, F.shape(predict)[-1]))
         return self.loss(predict, y, mask)

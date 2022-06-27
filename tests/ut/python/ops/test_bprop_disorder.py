@@ -31,7 +31,7 @@ context.set_context(mode=context.PYNATIVE_MODE)
 grad_by_list_with_sens = C.GradOperation(get_by_list=True, sens_param=True)
 
 
-class DisOrderTest1(nn.Cell):
+class DisOrderTest1(nn.Module):
     """ DisOrderTest1 definition """
 
     def __init__(self):
@@ -44,11 +44,11 @@ class DisOrderTest1(nn.Cell):
         self.mul = P.Mul()
         self.add = P.Add()
 
-    def construct(self, x):
+    def forward(self, x):
         return x * (self.s1 * self.s2 + self.s2 * self.s3 + self.s3 * self.s4 + self.s4 * self.s1)
 
 
-class DisOrderTest2(nn.Cell):
+class DisOrderTest2(nn.Module):
     """ DisOrderTest2 definition """
 
     def __init__(self):
@@ -61,12 +61,12 @@ class DisOrderTest2(nn.Cell):
         self.mul = P.Mul()
         self.add = P.Add()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.mul(x, (self.add(self.add(self.add(self.mul(self.s1, self.s2), self.mul(self.s2, self.s3)),
                                               self.mul(self.s3, self.s4)), self.mul(self.s4, self.s1))))
 
 
-class GradNetWrap(nn.Cell):
+class GradNetWrap(nn.Module):
     """ GradNetWrap definition """
 
     def __init__(self, net):
@@ -74,7 +74,7 @@ class GradNetWrap(nn.Cell):
         self.net = net
         self.weights = ParameterTuple(net.get_parameters())
 
-    def construct(self, x, sens):
+    def forward(self, x, sens):
         return grad_by_list_with_sens(self.net, self.weights)(x, sens)
 
 

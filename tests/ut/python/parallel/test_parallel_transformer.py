@@ -60,7 +60,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class TransformerNet(nn.Cell):
+class TransformerNet(nn.Module):
     def __init__(self, en_layer, de_layer, parallel_config):
         super(TransformerNet, self).__init__()
         self.network = Transformer(encoder_layers=en_layer,
@@ -74,13 +74,13 @@ class TransformerNet(nn.Cell):
                                    parallel_config=parallel_config)
         self.loss = CrossEntropyLoss(parallel_config=config.dp_mp_config)
 
-    def construct(self, x1, x2, x3, x4, x5, y, mask):
+    def forward(self, x1, x2, x3, x4, x5, y, mask):
         predict, _, _ = self.network(x1, x2, x3, x4, x5)
         predict = P.Reshape()(predict, (-1, F.shape(predict)[-1]))
         return self.loss(predict, y, mask)
 
 
-class TransformerEncoderNet(nn.Cell):
+class TransformerEncoderNet(nn.Module):
     def __init__(self, batch_size, en_layer, de_layer, parallel_config):
         super(TransformerEncoderNet, self).__init__()
         self.embedding = VocabEmbedding(vocab_size=240, embedding_size=64,
@@ -96,7 +96,7 @@ class TransformerEncoderNet(nn.Cell):
                                    parallel_config=parallel_config)
         self.loss = CrossEntropyLoss(parallel_config=config.dp_mp_config)
 
-    def construct(self, x, encoder_mask, label, input_mask):
+    def forward(self, x, encoder_mask, label, input_mask):
         embedded, _ = self.embedding(x)
         logits, _, = self.network(embedded, encoder_mask)
         logits = P.Reshape()(logits, (-1, F.shape(logits)[-1]))
@@ -110,13 +110,13 @@ pipeline_config = TransformerOpParallelConfig(data_parallel=2, model_parallel=8,
                                               micro_batch_num=4, vocab_emb_dp=False)
 
 
-class NetWithLossFiveInputs(nn.Cell):
+class NetWithLossFiveInputs(nn.Module):
     def __init__(self, network):
         super(NetWithLossFiveInputs, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x1, x2, x3, x4, x5):
+    def forward(self, x1, x2, x3, x4, x5):
         predict, _, _ = self.network(x1, x2, x3, x4, x5)
         return self.loss(predict)
 
@@ -459,13 +459,13 @@ def test_transformer_wrong_semi_auto_dp_error():
 
 
 def test_encoder():
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network):
             super(NetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x1, x2):
+        def forward(self, x1, x2):
             predict, _ = self.network(x1, x2)
             return self.loss(predict)
 
@@ -495,13 +495,13 @@ def test_encoder():
 
 
 def test_decoder():
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network):
             super(NetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x1, x2, x3, x4):
+        def forward(self, x1, x2, x3, x4):
             predict, _, _ = self.network(x1, x2, x3, x4)
             return self.loss(predict)
 
@@ -535,13 +535,13 @@ def test_decoder():
 def test_vocabembedding_dp_true():
     set_auto_parallel_context(device_num=8, global_rank=0, parallel_mode=ParallelMode.SEMI_AUTO_PARALLEL)
 
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network):
             super(NetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x1):
+        def forward(self, x1):
             predict, _ = self.network(x1)
             return self.loss(predict)
 
@@ -558,13 +558,13 @@ def test_vocabembedding_dp_true():
 def test_vocabembedding_dp_false():
     set_auto_parallel_context(device_num=8, global_rank=0, parallel_mode=ParallelMode.SEMI_AUTO_PARALLEL)
 
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network):
             super(NetWithLoss, self).__init__()
             self.loss = VirtualLoss()
             self.network = network
 
-        def construct(self, x1):
+        def forward(self, x1):
             predict, _ = self.network(x1)
             return self.loss(predict)
 
@@ -658,13 +658,13 @@ def test_sparse_attention_parallel_dp():
 def test_parallel_cross_entroy_loss_semi_auto_parallel():
     set_auto_parallel_context(device_num=8, global_rank=0, parallel_mode=ParallelMode.AUTO_PARALLEL)
 
-    class NetWithLoss(nn.Cell):
+    class NetWithLoss(nn.Module):
         def __init__(self, network, config_setting):
             super(NetWithLoss, self).__init__()
             self.loss = CrossEntropyLoss(config_setting)
             self.network = network
 
-        def construct(self, x1, x2, x3):
+        def forward(self, x1, x2, x3):
             predict, _ = self.network(x1)
             predict = P.Reshape()(predict, (-1, 16))
             return self.loss(predict, x2, x3)

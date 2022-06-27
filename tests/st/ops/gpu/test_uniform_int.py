@@ -24,13 +24,13 @@ from luojianet_ms.common import dtype as mstype
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(Net, self).__init__()
         self.uniformint = P.UniformInt(seed=seed)
         self.shape = shape
 
-    def construct(self, a, b):
+    def forward(self, a, b):
         return self.uniformint(self.shape, a, b)
 
 @pytest.mark.level0

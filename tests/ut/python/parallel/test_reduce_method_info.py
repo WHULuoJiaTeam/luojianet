@@ -26,43 +26,43 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLossNoBias(nn.Cell):
+class NetWithLossNoBias(nn.Module):
     def __init__(self, network):
         super(NetWithLossNoBias, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrapNoBias(nn.Cell):
+class GradWrapNoBias(nn.Module):
     def __init__(self, network):
         super(GradWrapNoBias, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return grad_all(self.network)(x, y)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -85,14 +85,14 @@ def test_sum_mul():
     Description: partition the non-reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, (1,))
             out = self.mul2(out, b)
@@ -117,14 +117,14 @@ def test_sum_mul2():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, (0, 1))
             out = self.mul2(out, b)
@@ -149,14 +149,14 @@ def test_sum_mul3():
     Description: partition the non-reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, -1)
             out = self.mul2(out, b)
@@ -181,14 +181,14 @@ def test_sum_mul4():
     Description: partition the reduced axes, keep_dims is True
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=True).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, -1)
             out = self.mul2(out, b)
@@ -213,13 +213,13 @@ def test_sum_mul5():
     Description: partition the reduced axes, keep_dims is True
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=True).shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, 0)
             return out
@@ -241,13 +241,13 @@ def test_sum_mul6():
     Description: partition the non-reduced axes, keep_dims is True
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=True).shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, 1)
             return out
@@ -269,13 +269,13 @@ def test_sum_mul7():
     Description: partition the reduced axes, keep_dims is True
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_sum = P.ReduceSum(keep_dims=True).shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, (0, 1))
             return out
@@ -297,14 +297,14 @@ def test_max_mul():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_max = P.ReduceMax(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_max(out, -1)
             out = self.mul2(out, b)
@@ -329,14 +329,14 @@ def test_min_mul():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_min = P.ReduceMin(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_min(out, 0)
             out = self.mul2(out, b)
@@ -361,14 +361,14 @@ def test_reduce_mean_mul_float32():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_mean = P.ReduceMean(keep_dims=False).shard(strategy2)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul1(x, y)
             out = self.reduce_mean(out, 0)
             out = self.mul2(out, b)
@@ -388,52 +388,52 @@ def test_reduce_mean_mul_float32():
     compile_net(net, x, y, b)
 
 
-class ArgMaxWithValueNet(nn.Cell):
+class ArgMaxWithValueNet(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super(ArgMaxWithValueNet, self).__init__()
         self.mul1 = P.Mul().shard(strategy1)
         self.arg_max_with_value = P.ArgMaxWithValue(keep_dims=False, axis=-1).shard(strategy2)
         self.mul2 = P.Mul().shard(strategy3)
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         out = self.mul1(x, y)
         _, out = self.arg_max_with_value(out)
         out = self.mul2(out, b)
         return out
 
 
-class ArgMinWithValueNet(nn.Cell):
+class ArgMinWithValueNet(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super(ArgMinWithValueNet, self).__init__()
         self.mul1 = P.Mul().shard(strategy1)
         self.arg_min_with_value = P.ArgMinWithValue(keep_dims=False, axis=-1).shard(strategy2)
         self.mul2 = P.Mul().shard(strategy3)
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         out = self.mul1(x, y)
         _, out = self.arg_min_with_value(out)
         out = self.mul2(out, b)
         return out
 
-class ArgMaxNet(nn.Cell):
+class ArgMaxNet(nn.Module):
     def __init__(self, strategy1, strategy2):
         super(ArgMaxNet, self).__init__()
         self.mul1 = P.Mul().shard(strategy1)
         self.arg_max = P.Argmax(axis=-1).shard(strategy2)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = self.mul1(x, y)
         out = self.arg_max(out)
         return out
 
 
-class ArgMinNet(nn.Cell):
+class ArgMinNet(nn.Module):
     def __init__(self, strategy1, strategy2):
         super(ArgMinNet, self).__init__()
         self.mul1 = P.Mul().shard(strategy1)
         self.arg_min = P.Argmin(axis=-1).shard(strategy2)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = self.mul1(x, y)
         out = self.arg_min(out)
         return out
@@ -621,14 +621,14 @@ def test_arg_min_mul_auto():
     gen_inputs_and_compile_net_no_bias(net)
 
 
-class ArgMinWithValueNet2(nn.Cell):
+class ArgMinWithValueNet2(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super(ArgMinWithValueNet2, self).__init__()
         self.mul1 = P.Mul().shard(strategy1)
         self.arg_min_with_value = P.ArgMinWithValue(keep_dims=True, axis=-1).shard(strategy2)
         self.relu = P.ReLU().shard(strategy3)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = self.mul1(x, y)
         _, out = self.arg_min_with_value(out)
         out = self.relu(out)
@@ -681,7 +681,7 @@ def test_cross_batch():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
@@ -689,7 +689,7 @@ def test_cross_batch():
             self.reduce_mean = P.ReduceMean(keep_dims=False).shard(strategy3) \
                                 .add_prim_attr("cross_batch", True)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_sum(out, -1)
             out = self.reduce_mean(out, 0)
@@ -713,7 +713,7 @@ def test_cross_batch2():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
@@ -721,7 +721,7 @@ def test_cross_batch2():
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy3) \
                                .add_prim_attr("cross_batch", True)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_mean(out, -1)
             out = self.reduce_sum(out, 0)
@@ -745,14 +745,14 @@ def test_cross_batch_auto():
     Description: don't set the strategy, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.mul1 = P.Mul()
             self.reduce_mean = P.ReduceMean(keep_dims=False)
             self.reduce_sum = P.ReduceSum(keep_dims=False).add_prim_attr("cross_batch", True)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_mean(out, -1)
             out = self.reduce_sum(out, 0)
@@ -773,14 +773,14 @@ def test_max_empty_tuple():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super(Net, self).__init__()
             self.mul = P.Mul().shard(strategy1)
             self.reduce_max = P.ReduceMax(keep_dims=False).shard(strategy2)
             self.add = P.Add().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul(x, y)
             out = self.reduce_max(out)
             out = self.add(out, b)
@@ -806,14 +806,14 @@ def test_any_mul():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_any = P.ReduceAny(keep_dims=False).shard(strategy2)
             self.cast = P.Cast()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.cast(out, ms.bool_)
             out = self.reduce_any(out, 1)
@@ -836,14 +836,14 @@ def test_any_mul2():
     Description: partition the non-reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_any = P.ReduceAny(keep_dims=False).shard(strategy2)
             self.cast = P.Cast()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.cast(out, ms.bool_)
             out = self.reduce_any(out, -1)
@@ -865,14 +865,14 @@ def test_all_mul():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_all = P.ReduceAll(keep_dims=False).shard(strategy2)
             self.cast = P.Cast()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.cast(out, ms.bool_)
             out = self.reduce_all(out, 1)
@@ -895,14 +895,14 @@ def test_all_mul2():
     Description: partition the non-reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_all = P.ReduceAll(keep_dims=False).shard(strategy2)
             self.cast = P.Cast()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.cast(out, ms.bool_)
             out = self.reduce_all(out, -1)
@@ -924,13 +924,13 @@ def test_prod_mul():
     Description: partition the reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_prod = P.ReduceProd(keep_dims=False).shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_prod(out, 0)
             return out
@@ -951,13 +951,13 @@ def test_prod_mul2():
     Description: partition the non-reduced axes, keep_dims is False
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_prod = P.ReduceProd(keep_dims=False).shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_prod(out, -1)
             return out
@@ -978,13 +978,13 @@ def test_prod_mul3():
     Description: partition the reduced axes, keep_dims is True
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, stra_mul, stra_prod):
             super(Net, self).__init__()
             self.mul = P.Mul().shard(stra_mul)
             self.reduce_prod = P.ReduceProd(keep_dims=True).shard(stra_prod)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul(x, y)
             out = self.reduce_prod(out, 0)
             return out
@@ -1005,13 +1005,13 @@ def test_prod_mul_auto():
     Description: don't set the strategy, keep_dims is True
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.reduce_prod = P.ReduceProd(keep_dims=True).shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.reduce_prod(out, 0)
             return out
@@ -1030,13 +1030,13 @@ def test_square_sum_all_mul():
     Description: partition the reduced axes
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super(Net, self).__init__()
             self.mul1 = P.Mul().shard(strategy1)
             self.square_sum_all = P.SquareSumAll().shard(strategy2)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul1(x, y)
             out = self.square_sum_all(out, out)
             return out
@@ -1058,13 +1058,13 @@ def test_square_sum_all_mul2():
     Description: partition the reduced axes
     Expectation: compile success
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, stra_mul, stra_prod):
             super(Net, self).__init__()
             self.mul = P.Mul().shard(stra_mul)
             self.square_sum_all = P.SquareSumAll().shard(stra_prod)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.mul(x, y)
             out = self.square_sum_all(out, out)
             return out

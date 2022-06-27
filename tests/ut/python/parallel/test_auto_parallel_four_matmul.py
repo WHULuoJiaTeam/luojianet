@@ -27,23 +27,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, z, w, b):
+    def forward(self, x, y, z, w, b):
         predict = self.network(x, y, z, w, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, z, w, b):
+    def forward(self, x, y, z, w, b):
         return grad_all(self.network)(x, y, z, w, b)
 
 
@@ -56,7 +56,7 @@ def compile_net(net, x, y, z, w, b):
 
 
 def test_four_matmul_linear():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -64,7 +64,7 @@ def test_four_matmul_linear():
             self.matmul3 = P.MatMul()
             self.matmul4 = P.MatMul()
 
-        def construct(self, x, y, z, w, b):
+        def forward(self, x, y, z, w, b):
             out = self.matmul1(x, y)
             out = self.matmul2(out, z)
             out = self.matmul3(out, w)
@@ -85,12 +85,12 @@ def test_four_matmul_linear():
 
 
 def test_four_matmul1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
 
-        def construct(self, x, y, z, w, b):
+        def forward(self, x, y, z, w, b):
             out = self.matmul(x, y)
             out = self.matmul(out, z)
             out = self.matmul(out, w)
@@ -111,12 +111,12 @@ def test_four_matmul1():
 
 
 def test_four_matmul2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul = P.MatMul()
 
-        def construct(self, x, y, z, w, b):
+        def forward(self, x, y, z, w, b):
             out = self.matmul(x, y)
             out = out - z
             out = self.matmul(out, w)

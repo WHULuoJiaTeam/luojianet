@@ -38,7 +38,7 @@ def _conv(in_channels, out_channels, kernel_size=3, stride=1, padding=0, pad_mod
                      pad_mode=pad_mode, weight_init=weights, has_bias=True, bias_init=biass)
 
 
-class FeatPyramidNeck(nn.Cell):
+class FeatPyramidNeck(nn.Module):
     """
     Feature pyramid network cell, usually uses as network neck.
 
@@ -89,7 +89,7 @@ class FeatPyramidNeck(nn.Cell):
         self.interpolate3 = P.ResizeNearestNeighbor((192, 320))
         self.maxpool = P.MaxPool(kernel_size=1, strides=2, pad_mode="same")
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         x = ()
         for i in range(self.fpn_layer):
             x += (self.lateral_convs_list[i](inputs[i]),)

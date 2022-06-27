@@ -79,14 +79,14 @@ class ModelThor(Model):
     `Model` groups layers into an object with training and inference features.
 
     Args:
-        network (Cell): A training or testing network.
-        loss_fn (Cell): Objective function, if loss_fn is None, the
+        network (Module): A training or testing network.
+        loss_fn (Module): Objective function, if loss_fn is None, the
                              network should contain the logic of loss and grads calculation, and the logic
                              of parallel if needed. Default: None.
-        optimizer (Cell): Optimizer for updating the weights. Default: None.
+        optimizer (Module): Optimizer for updating the weights. Default: None.
         metrics (Union[dict, set]): A Dictionary or a set of metrics to be evaluated by the model during
                         training and testing. eg: {'accuracy', 'recall'}. Default: None.
-        eval_network (Cell): Network for evaluation. If not defined, `network` and `loss_fn` would be wrapped as
+        eval_network (Module): Network for evaluation. If not defined, `network` and `loss_fn` would be wrapped as
                              `eval_network`. Default: None.
         eval_indexes (list): When defining the `eval_network`, if `eval_indexes` is None, all outputs of the
                              `eval_network` would be passed to metrics, otherwise `eval_indexes` must contain three

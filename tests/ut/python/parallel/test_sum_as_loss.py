@@ -26,12 +26,12 @@ from luojianet_ms.ops import operations as P
 grad_all = C.GradOperation(get_all=True)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return grad_all(self.network)(x, y)
 
 
@@ -42,13 +42,13 @@ def compile_net(net, x, y):
 
 
 def test_sum_as_loss():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy0, strategy1):
             super().__init__()
             self.fc_nobias = P.MatMul(transpose_b=True).shard(strategy0)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy1)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.fc_nobias(x, y)
             out = self.reduce_sum(out, (0, 1))
             return out
@@ -65,13 +65,13 @@ def test_sum_as_loss():
 
 
 def test_sum_as_loss2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy0, strategy1):
             super().__init__()
             self.fc_nobias = P.MatMul(transpose_b=True).shard(strategy0)
             self.reduce_sum = P.ReduceSum(keep_dims=False).shard(strategy1)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.fc_nobias(x, y)
             out = self.reduce_sum(out, (0, 1))
             return out

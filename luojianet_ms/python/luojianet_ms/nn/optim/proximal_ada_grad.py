@@ -95,7 +95,7 @@ class ProximalAdagrad(Optimizer):
 
             - weight_decay: Optional. If "weight_decay" in the keys, the value of corresponding weight decay
               will be used. If not, the `weight_decay` in the optimizer will be used. It should be noted that weight
-              decay can be a constant value or a Cell. It is a Cell only when dynamic weight decay is applied. Dynamic
+              decay can be a constant value or a Module. It is a Module only when dynamic weight decay is applied. Dynamic
               weight decay is similar to dynamic learning rate, users need to customize a weight decay schedule only
               with global step as input, and during training, the optimizer calls the instance of WeightDecaySchedule
               to get the weight decay value of current step.
@@ -133,14 +133,14 @@ class ProximalAdagrad(Optimizer):
             `FixedLossScaleManager` is set to False, then this value needs to be the same as the `loss_scale` in
             `FixedLossScaleManager`. Refer to class :class:`luojianet_ms.FixedLossScaleManager` for more details.
             Default: 1.0.
-        weight_decay (Union[float, int, Cell]): Weight decay (L2 penalty). Default: 0.0.
+        weight_decay (Union[float, int, Module]): Weight decay (L2 penalty). Default: 0.0.
 
             - float: The fixed weight decay value. Must be equal to or greater than 0.
 
             - int: The fixed weight decay value. Must be equal to or greater than 0. It will be converted to float.
 
-            - Cell: Weight decay is dynamic. During training, the optimizer calls the instance of
-              the Cell with step as the input to get the weight decay value of current step.
+            - Module: Weight decay is dynamic. During training, the optimizer calls the instance of
+              the Module with step as the input to get the weight decay value of current step.
 
     Inputs:
         - **grads** (tuple[Tensor]) - The gradients of `params` in the optimizer, the shape is the same as the `params`
@@ -196,7 +196,7 @@ class ProximalAdagrad(Optimizer):
         self.opt = P.ApplyProximalAdagrad(use_locking=use_locking)
         self.sparse_opt = P.SparseApplyProximalAdagrad(use_locking=use_locking)
 
-    def construct(self, grads):
+    def forward(self, grads):
         params = self.parameters
         accum = self.accum
         grads = self.decay_weight(grads)

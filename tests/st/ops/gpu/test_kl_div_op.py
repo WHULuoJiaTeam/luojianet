@@ -26,12 +26,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, reduction="none"):
         super(Net, self).__init__()
         self.KLDivLoss = P.KLDivLoss("none")
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.KLDivLoss(x, y)
 
 
@@ -51,13 +51,13 @@ def test_binary_cross_entropy_loss():
     assert np.allclose(loss.asnumpy(), expect)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, x1, x2, sens):
+    def forward(self, x1, x2, sens):
         gout = self.grad(self.network)(x1, x2, sens)
         return gout
 

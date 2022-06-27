@@ -26,7 +26,7 @@ from luojianet_ms.ops import composite as C
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class MaxPool(nn.Cell):
+class MaxPool(nn.Module):
     def __init__(self, dim, kernel_size, strides, pad_mode):
         super(MaxPool, self).__init__()
         if dim == 2:
@@ -34,17 +34,17 @@ class MaxPool(nn.Cell):
         else:
             self.maxpool = P.MaxPool3D(kernel_size=kernel_size, strides=strides, pad_mode=pad_mode)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.maxpool(x)
 
 
-class MaxPoolGrad(nn.Cell):
+class MaxPoolGrad(nn.Module):
     def __init__(self, forward):
         super(MaxPoolGrad, self).__init__()
         self.forward = forward
         self.grad = C.GradOperation(get_all=True, sens_param=True)
 
-    def construct(self, x, sens):
+    def forward(self, x, sens):
         return self.grad(self.forward)(x, sens)
 
 

@@ -274,7 +274,7 @@ def thor(net, learning_rate, damping, momentum, weight_decay=0.0, loss_scale=1.0
     :math:`\otimes` represents Kronecker product, :math:`\gamma` represents 'learning rate'
 
     Args:
-        net (Cell): The training network.
+        net (Module): The training network.
 
         learning_rate (Tensor): A value for the learning rate.
 
@@ -575,7 +575,7 @@ class ThorGpu(Optimizer):
             g = self.reshape(g, g_shape)
         return g
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         params = self.params
         moments = self.moments
         gradients = self.scale_grad(gradients)
@@ -1239,7 +1239,7 @@ class ThorAscend(Optimizer):
             g = self._process_layernorm(damping_step, g)
         return g
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         params = self.params
         moments = self.moments
         gradients = self.scale_grad(gradients)

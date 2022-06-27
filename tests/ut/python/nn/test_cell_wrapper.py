@@ -24,7 +24,7 @@ from luojianet_ms.nn.optim import Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.weight = Parameter(Tensor(np.ones([64, 10]).astype(np.float32)), name="weight")
@@ -32,7 +32,7 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         return x
 
@@ -83,7 +83,7 @@ def test_parameter_update_float32():
     label = Tensor(np.zeros([1, 10]).astype(np.float32))
     _cell_graph_executor.compile(train_network, inputs, label)
 
-    # construct and compile update graph
+    # forward and compile update graph
     param_lr = train_network.parameters_dict()['learning_rate']
     update_network = ParameterUpdate(param_lr)
     update_network.phase = 'update_param'

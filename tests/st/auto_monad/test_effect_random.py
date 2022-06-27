@@ -26,7 +26,7 @@ from luojianet_ms import dtype
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Sampling(nn.Cell):
+class Sampling(nn.Module):
     """
     Test class: sample of Normal distribution.
     """
@@ -36,7 +36,7 @@ class Sampling(nn.Cell):
         self.n1 = msd.Normal(0, 1, seed=seed, dtype=dtype.float32)
         self.shape = shape
 
-    def construct(self, mean=None, sd=None):
+    def forward(self, mean=None, sd=None):
         s1 = self.n1.sample(self.shape, mean, sd)
         s2 = self.n1.sample(self.shape, mean, sd)
         s3 = self.n1.sample(self.shape, mean, sd)
@@ -56,13 +56,13 @@ def test_sample_graph():
         "The results should be different!"
 
 
-class CompositeNormalNet(nn.Cell):
+class CompositeNormalNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(CompositeNormalNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, mean, stddev):
+    def forward(self, mean, stddev):
         s1 = C.normal(self.shape, mean, stddev, self.seed)
         s2 = C.normal(self.shape, mean, stddev, self.seed)
         s3 = C.normal(self.shape, mean, stddev, self.seed)
@@ -83,13 +83,13 @@ def test_composite_normal():
         "The results should be different!"
 
 
-class CompositeLaplaceNet(nn.Cell):
+class CompositeLaplaceNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(CompositeLaplaceNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, mean, lambda_param):
+    def forward(self, mean, lambda_param):
         s1 = C.laplace(self.shape, mean, lambda_param, self.seed)
         s2 = C.laplace(self.shape, mean, lambda_param, self.seed)
         s3 = C.laplace(self.shape, mean, lambda_param, self.seed)
@@ -110,13 +110,13 @@ def test_composite_laplace():
         "The results should be different!"
 
 
-class CompositeGammaNet(nn.Cell):
+class CompositeGammaNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(CompositeGammaNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, alpha, beta):
+    def forward(self, alpha, beta):
         s1 = C.gamma(self.shape, alpha, beta, self.seed)
         s2 = C.gamma(self.shape, alpha, beta, self.seed)
         s3 = C.gamma(self.shape, alpha, beta, self.seed)
@@ -137,13 +137,13 @@ def test_composite_gamma():
         "The results should be different!"
 
 
-class CompositePoissonNet(nn.Cell):
+class CompositePoissonNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(CompositePoissonNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, mean):
+    def forward(self, mean):
         s1 = C.poisson(self.shape, mean, self.seed)
         s2 = C.poisson(self.shape, mean, self.seed)
         s3 = C.poisson(self.shape, mean, self.seed)
@@ -163,13 +163,13 @@ def test_composite_poisson():
         "The results should be different!"
 
 
-class CompositeUniformNet(nn.Cell):
+class CompositeUniformNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(CompositeUniformNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, a, b):
+    def forward(self, a, b):
         s1 = C.uniform(self.shape, a, b, self.seed)
         s2 = C.uniform(self.shape, a, b, self.seed)
         s3 = C.uniform(self.shape, a, b, self.seed)
@@ -190,7 +190,7 @@ def test_composite_uniform():
         "The results should be different!"
 
 
-class StandardNormalNet(nn.Cell):
+class StandardNormalNet(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(StandardNormalNet, self).__init__()
         self.shape = shape
@@ -198,7 +198,7 @@ class StandardNormalNet(nn.Cell):
         self.seed2 = seed2
         self.standard_normal = P.StandardNormal(seed, seed2)
 
-    def construct(self):
+    def forward(self):
         s1 = self.standard_normal(self.shape)
         s2 = self.standard_normal(self.shape)
         s3 = self.standard_normal(self.shape)
@@ -217,7 +217,7 @@ def test_standard_normal():
         "The results should be different!"
 
 
-class StandardLaplaceNet(nn.Cell):
+class StandardLaplaceNet(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(StandardLaplaceNet, self).__init__()
         self.shape = shape
@@ -225,7 +225,7 @@ class StandardLaplaceNet(nn.Cell):
         self.seed2 = seed2
         self.standard_laplace = P.StandardLaplace(seed, seed2)
 
-    def construct(self):
+    def forward(self):
         s1 = self.standard_laplace(self.shape)
         s2 = self.standard_laplace(self.shape)
         s3 = self.standard_laplace(self.shape)
@@ -244,7 +244,7 @@ def test_standard_laplace():
         "The results should be different!"
 
 
-class GammaNet(nn.Cell):
+class GammaNet(nn.Module):
     def __init__(self, shape, alpha, beta, seed=0, seed2=0):
         super(GammaNet, self).__init__()
         self.shape = shape
@@ -254,7 +254,7 @@ class GammaNet(nn.Cell):
         self.seed2 = seed2
         self.gamma = P.Gamma(seed, seed2)
 
-    def construct(self):
+    def forward(self):
         s1 = self.gamma(self.shape, self.alpha, self.beta)
         s2 = self.gamma(self.shape, self.alpha, self.beta)
         s3 = self.gamma(self.shape, self.alpha, self.beta)
@@ -275,7 +275,7 @@ def test_gamma():
         "The results should be different!"
 
 
-class PoissonNet(nn.Cell):
+class PoissonNet(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(PoissonNet, self).__init__()
         self.shape = shape
@@ -283,7 +283,7 @@ class PoissonNet(nn.Cell):
         self.seed2 = seed2
         self.poisson = P.Poisson(seed, seed2)
 
-    def construct(self, mean):
+    def forward(self, mean):
         s1 = self.poisson(self.shape, mean)
         s2 = self.poisson(self.shape, mean)
         s3 = self.poisson(self.shape, mean)
@@ -303,7 +303,7 @@ def test_poisson():
         "The results should be different!"
 
 
-class UniformIntNet(nn.Cell):
+class UniformIntNet(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(UniformIntNet, self).__init__()
         self.shape = shape
@@ -311,7 +311,7 @@ class UniformIntNet(nn.Cell):
         self.seed2 = seed2
         self.uniform_int = P.UniformInt(seed, seed2)
 
-    def construct(self, minval, maxval):
+    def forward(self, minval, maxval):
         s1 = self.uniform_int(self.shape, minval, maxval)
         s2 = self.uniform_int(self.shape, minval, maxval)
         s3 = self.uniform_int(self.shape, minval, maxval)
@@ -332,7 +332,7 @@ def test_uniform_int():
         "The results should be different!"
 
 
-class UniformRealNet(nn.Cell):
+class UniformRealNet(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(UniformRealNet, self).__init__()
         self.shape = shape
@@ -340,7 +340,7 @@ class UniformRealNet(nn.Cell):
         self.seed2 = seed2
         self.uniform_real = P.UniformReal(seed, seed2)
 
-    def construct(self):
+    def forward(self):
         s1 = self.uniform_real(self.shape)
         s2 = self.uniform_real(self.shape)
         s3 = self.uniform_real(self.shape)
@@ -359,13 +359,13 @@ def test_uniform_real():
         "The results should be different!"
 
 
-class DropoutGenMaskNet(nn.Cell):
+class DropoutGenMaskNet(nn.Module):
     def __init__(self, shape):
         super(DropoutGenMaskNet, self).__init__()
         self.shape = shape
         self.dropout_gen_mask = P.DropoutGenMask(Seed0=0, Seed1=0)
 
-    def construct(self, keep_prob):
+    def forward(self, keep_prob):
         s1 = self.dropout_gen_mask(self.shape, keep_prob)
         s2 = self.dropout_gen_mask(self.shape, keep_prob)
         s3 = self.dropout_gen_mask(self.shape, keep_prob)
@@ -385,12 +385,12 @@ def test_dropout_gen_mask():
         "The results should be different!"
 
 
-class RandomChoiceWithMaskNet(nn.Cell):
+class RandomChoiceWithMaskNet(nn.Module):
     def __init__(self):
         super(RandomChoiceWithMaskNet, self).__init__()
         self.rnd_choice_mask = P.RandomChoiceWithMask(count=4, seed=0)
 
-    def construct(self, x):
+    def forward(self, x):
         index1, _ = self.rnd_choice_mask(x)
         index2, _ = self.rnd_choice_mask(x)
         index3, _ = self.rnd_choice_mask(x)
@@ -411,13 +411,13 @@ def test_random_choice_with_mask():
         "The results should be different!"
 
 
-class RandomCategoricalNet(nn.Cell):
+class RandomCategoricalNet(nn.Module):
     def __init__(self, num_sample):
         super(RandomCategoricalNet, self).__init__()
         self.random_categorical = P.RandomCategorical(mstype.int64)
         self.num_sample = num_sample
 
-    def construct(self, logits, seed=0):
+    def forward(self, logits, seed=0):
         s1 = self.random_categorical(logits, self.num_sample, seed)
         s2 = self.random_categorical(logits, self.num_sample, seed)
         s3 = self.random_categorical(logits, self.num_sample, seed)

@@ -20,12 +20,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.rnnt_loss = P.RNNTLoss(blank_label=0)
 
-    def construct(self, acts, labels, act_lens, label_lens):
+    def forward(self, acts, labels, act_lens, label_lens):
         return self.rnnt_loss(acts, labels, act_lens, label_lens)
 
 

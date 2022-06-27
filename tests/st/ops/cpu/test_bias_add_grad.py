@@ -23,12 +23,12 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bias_add_grad = G.BiasAddGrad()
 
-    def construct(self, dout):
+    def forward(self, dout):
         return self.bias_add_grad(dout)
 
 

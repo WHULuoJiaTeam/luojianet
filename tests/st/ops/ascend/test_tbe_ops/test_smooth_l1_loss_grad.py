@@ -25,22 +25,22 @@ from luojianet_ms.ops.composite import GradOperation
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, sigma=1.0):
         super(Net, self).__init__()
         self.SmoothL1Loss = P.SmoothL1Loss(sigma)
 
-    def construct(self, pred, gt):
+    def forward(self, pred, gt):
         return self.SmoothL1Loss(pred, gt)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, pred, gt, dout):
+    def forward(self, pred, gt, dout):
         return self.grad(self.network)(pred, gt, dout)
 
 

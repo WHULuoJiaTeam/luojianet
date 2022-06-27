@@ -18,11 +18,11 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum, BatchNorm2d, BatchNorm1d
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum, BatchNorm2d, BatchNorm1d
 from luojianet_ms.ops import operations as P
 from tests.security_utils import security_off_wrap
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, conv2d_weight, out_channel, kernel_size, pad_mode, stride,
                  strategy1=None, strategy2=None):
         super().__init__()
@@ -33,7 +33,7 @@ class Net(Cell):
         self.bn.bn_train.shard(strategy2)
         self.print = P.Print()
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.conv2d(x, self.conv2d_weight)
         self.print("output is", out)
         out = self.bn(out)
@@ -81,14 +81,14 @@ def test_batchnorm_model_parallel2():
     compile_net(net)
 
 
-class Net2(Cell):
+class Net2(Module):
     def __init__(self, strategy1=None, strategy2=None):
         super().__init__()
         self.bn = BatchNorm1d(8)
         self.bn.bn_train.shard(strategy1)
         self.relu = P.ReLU().shard(strategy2)
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.bn(x)
         out = self.relu(out)
         return out

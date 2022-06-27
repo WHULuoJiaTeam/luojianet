@@ -20,7 +20,7 @@ import luojianet_ms.nn as nn
 from luojianet_ms.ops import operations as P
 
 
-class ELBO(nn.Cell):
+class ELBO(nn.Module):
     """ ELBO class """
     def __init__(self, generator, variational):
         super().__init__()
@@ -30,7 +30,7 @@ class ELBO(nn.Cell):
         self.reduce_mean = P.ReduceMean(keep_dims=False)
         self.square = P.Square()
 
-    def construct(self, *inputs, **kwargs):
+    def forward(self, *inputs, **kwargs):
         if len(inputs) >= 2:
             x, y = inputs[0], inputs[1]
         elif len(inputs) >= 1:

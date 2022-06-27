@@ -24,13 +24,13 @@ from luojianet_ms.train.model import Model
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, perm_in):
         super(Net, self).__init__()
         self.transpose = P.Transpose()
         self.perm = perm_in
 
-    def construct(self, input_):
+    def forward(self, input_):
         x = self.transpose(input_, self.perm)
         return x
 

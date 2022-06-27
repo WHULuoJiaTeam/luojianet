@@ -15,7 +15,7 @@
 # ============================================================================
 """Bijector"""
 from luojianet_ms import context
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.ops import operations as P
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.tensor import Tensor
@@ -25,7 +25,7 @@ from ..distribution import Distribution
 from ..distribution import TransformedDistribution
 
 
-class Bijector(Cell):
+class Bijector(Module):
     """
     Bijecotr class. A bijector perform a mapping from one distribution to the other via some function.
     If X is a random variable following the original distribution,
@@ -298,7 +298,7 @@ class Bijector(Cell):
         If args[0] is a distribution instance, the call will generate a new distribution derived from
         the input distribution.
         Otherwise, input[0] must be the name of a Bijector function, e.g. "forward", then this call will
-        go in the construct and invoke the corresponding Bijector function.
+        go in the forward and invoke the corresponding Bijector function.
 
         Args:
             *args: args[0] shall be either a distribution or the name of a Bijector function.
@@ -307,9 +307,9 @@ class Bijector(Cell):
             return TransformedDistribution(self, args[0])
         return super(Bijector, self).__call__(*args, **kwargs)
 
-    def construct(self, name, *args, **kwargs):
+    def forward(self, name, *args, **kwargs):
         """
-        Override `construct` in Cell.
+        Override `forward` in Module.
 
         Note:
             Names of supported functions include:

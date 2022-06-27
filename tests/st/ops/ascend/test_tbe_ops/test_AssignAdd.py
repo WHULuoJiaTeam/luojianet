@@ -25,7 +25,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
 
     def __init__(self):
@@ -34,7 +34,7 @@ class Net(nn.Cell):
         self.inputdata = Parameter(initializer('normal', [1]), name="global_step")
         print("inputdata: ", self.inputdata)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.AssignAdd(self.inputdata, x)
         return out
 

@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.AddN()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.add((x, y))
 
 
@@ -50,12 +50,12 @@ def test_net():
 
 def test_grad_addn_with_list():
     grad_op = C.GradOperation(get_all=True)
-    class AddN(nn.Cell):
+    class AddN(nn.Module):
         def __init__(self):
             super().__init__()
             self.add_n = P.AddN()
 
-        def construct(self, a, b):
+        def forward(self, a, b):
             return self.add_n([a, b])
 
     inp = Tensor(np.ones([128, 96]).astype(np.float32))

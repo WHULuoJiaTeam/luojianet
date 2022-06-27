@@ -17,11 +17,11 @@
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import operations as P
 from luojianet_ms._checkparam import Validator
-from ....cell import Cell
+from ....cell import Module
 from ....layer.basic import Dense
 
 
-class VAE(Cell):
+class VAE(Module):
     r"""
     Variational Auto-Encoder (VAE).
 
@@ -34,8 +34,8 @@ class VAE(Cell):
         The latent_size must be less than or equal to the hidden_size.
 
     Args:
-        encoder(Cell): The Deep Neural Network (DNN) model defined as encoder.
-        decoder(Cell): The DNN model defined as decoder.
+        encoder(Module): The Deep Neural Network (DNN) model defined as encoder.
+        decoder(Module): The DNN model defined as decoder.
         hidden_size(int): The size of encoder's output tensor.
         latent_size(int): The size of the latent space.
 
@@ -54,8 +54,8 @@ class VAE(Cell):
         super(VAE, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
-        if (not isinstance(encoder, Cell)) or (not isinstance(decoder, Cell)):
-            raise TypeError('The encoder and decoder should be Cell type.')
+        if (not isinstance(encoder, Module)) or (not isinstance(decoder, Module)):
+            raise TypeError('The encoder and decoder should be Module type.')
         self.hidden_size = Validator.check_positive_int(hidden_size)
         self.latent_size = Validator.check_positive_int(latent_size)
         if hidden_size < latent_size:
@@ -80,7 +80,7 @@ class VAE(Cell):
         recon_x = self.decoder(z)
         return recon_x
 
-    def construct(self, x):
+    def forward(self, x):
         mu, log_var = self._encode(x)
         std = self.exp(0.5 * log_var)
         z = self.normal(self.shape(mu), mu, std, seed=0)

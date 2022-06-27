@@ -21,12 +21,12 @@ from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, is_training):
         super(Net, self).__init__()
         self.fused_bn_grad_ex = G.BatchNormGrad(is_training=is_training, epsilon=1e-5)
 
-    def construct(self, input_dy, input_x, input_scale, input_save_mean, input_save_inv_variance, input_reverse):
+    def forward(self, input_dy, input_x, input_scale, input_save_mean, input_save_inv_variance, input_reverse):
         return self.fused_bn_grad_ex(
             input_dy, input_x, input_scale, input_save_mean, input_save_inv_variance, input_reverse)
 

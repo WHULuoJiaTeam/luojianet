@@ -161,7 +161,7 @@ def _make_layer(block,
     return layer, g_current_stride, g_rate
 
 
-class Subsample(nn.Cell):
+class Subsample(nn.Module):
     """
     Subsample for DeepLab-ResNet.
     Args:
@@ -177,36 +177,36 @@ class Subsample(nn.Cell):
         self.pool = nn.MaxPool2d(kernel_size=1,
                                  stride=factor)
 
-    def construct(self, x):
+    def forward(self, x):
         if self.factor == 1:
             return x
         return self.pool(x)
 
 
-class SpaceToBatch(nn.Cell):
+class SpaceToBatch(nn.Module):
     def __init__(self, block_shape, paddings):
         super(SpaceToBatch, self).__init__()
         self.space_to_batch = P.SpaceToBatch(block_shape, paddings)
         self.bs = block_shape
         self.pd = paddings
 
-    def construct(self, x):
+    def forward(self, x):
         return self.space_to_batch(x)
 
 
-class BatchToSpace(nn.Cell):
+class BatchToSpace(nn.Module):
     def __init__(self, block_shape, crops):
         super(BatchToSpace, self).__init__()
         self.batch_to_space = P.BatchToSpace(block_shape, crops)
         self.bs = block_shape
         self.cr = crops
 
-    def construct(self, x):
+    def forward(self, x):
         return self.batch_to_space(x)
 
 
-class _DepthwiseConv2dNative(nn.Cell):
-    """Depthwise Conv2D Cell."""
+class _DepthwiseConv2dNative(nn.Module):
+    """Depthwise Conv2D Module."""
     def __init__(self,
                  in_channels,
                  channel_multiplier,
@@ -237,13 +237,13 @@ class _DepthwiseConv2dNative(nn.Cell):
         self.weight = Parameter(initializer(weight_init, [1, in_channels // group, *kernel_size]),
                                 name='weight')
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         """Must be overridden by all subclasses."""
         raise NotImplementedError
 
 
 class DepthwiseConv2dNative(_DepthwiseConv2dNative):
-    """Depthwise Conv2D Cell."""
+    """Depthwise Conv2D Module."""
     def __init__(self,
                  in_channels,
                  channel_multiplier,
@@ -278,11 +278,11 @@ class DepthwiseConv2dNative(_DepthwiseConv2dNative):
         self.depthwise_conv2d_native.shard(strategy)
         return self
 
-    def construct(self, x):
+    def forward(self, x):
         return self.depthwise_conv2d_native(x, self.weight)
 
 
-class BottleneckV1(nn.Cell):
+class BottleneckV1(nn.Module):
     """
     ResNet V1 BottleneckV1 block definition.
     Args:
@@ -349,7 +349,7 @@ class BottleneckV1(nn.Cell):
         self.relu = nn.ReLU()
         self.Reshape = P.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.conv_bn1(x)
         out = self.conv_bn2(out)
         out = self.bn3(self.conv3(out))
@@ -358,7 +358,7 @@ class BottleneckV1(nn.Cell):
         return out
 
 
-class BottleneckV2(nn.Cell):
+class BottleneckV2(nn.Module):
     """
     ResNet V2 Bottleneck variance V2 block definition.
     Args:
@@ -422,7 +422,7 @@ class BottleneckV2(nn.Cell):
         self.add = P.Add()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.conv_bn1(x)
         out = self.conv_bn2(out)
         out = self.bn3(self.conv3(out))
@@ -431,7 +431,7 @@ class BottleneckV2(nn.Cell):
         return out
 
 
-class BottleneckV3(nn.Cell):
+class BottleneckV3(nn.Module):
     """
     ResNet V1 Bottleneck variance V1 block definition.
     Args:
@@ -482,7 +482,7 @@ class BottleneckV3(nn.Cell):
         self.add = P.Add()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.conv_bn1(x)
         out = self.conv_bn2(out)
         out = self.bn3(self.conv3(out))
@@ -491,7 +491,7 @@ class BottleneckV3(nn.Cell):
         return out
 
 
-class ResNetV1(nn.Cell):
+class ResNetV1(nn.Module):
     """
     ResNet V1 for DeepLab.
     Args:
@@ -528,7 +528,7 @@ class ResNetV1(nn.Cell):
         self.layer4_3 = BottleneckV2(2048, 2048, stride=1, use_batch_to_stob_and_btos=True,
                                      use_batch_statistics=fine_tune_batch_norm)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.layer_root(x)
         x = self.layer1_1(x)
         c2 = self.layer1_2(x)
@@ -550,7 +550,7 @@ class ResNetV1(nn.Cell):
         return c2, c5
 
 
-class RootBlockBeta(nn.Cell):
+class RootBlockBeta(nn.Module):
     """
     ResNet V1 beta root block definition.
     Returns:
@@ -567,7 +567,7 @@ class RootBlockBeta(nn.Cell):
         self.conv3 = _conv_bn_relu(64, 128, ksize=3, stride=1, padding=0, pad_mode="same",
                                    use_batch_statistics=fine_tune_batch_norm)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)

@@ -60,13 +60,13 @@ class Rolling(PrimitiveWithInfer):
         return x_dtype
 
 
-class RollingNet(nn.Cell):
+class RollingNet(nn.Module):
     def __init__(self, window: int, min_periods: int, center: bool, axis: int, closed: str,
                  method: str):
         super(RollingNet, self).__init__()
         self.rolling = Rolling(window, min_periods, center, axis, closed, method)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.rolling(x)
 
 

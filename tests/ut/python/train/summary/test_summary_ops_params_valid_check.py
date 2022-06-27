@@ -38,7 +38,7 @@ class SummaryEnum(Enum):
     HISTOGRAM = P.HistogramSummary.__name__
 
 
-class SummaryNet(nn.Cell):
+class SummaryNet(nn.Module):
     """Summary net definition."""
     def __init__(self, summary_type, tag, data):
         super(SummaryNet, self).__init__()
@@ -48,7 +48,7 @@ class SummaryNet(nn.Cell):
         self.one = Tensor(np.array([1]).astype(np.float32))
         self.add = P.Add()
 
-    def construct(self):
+    def forward(self):
         self.summary_fn(self.tag, self.data)
         return self.add(self.one, self.one)
 

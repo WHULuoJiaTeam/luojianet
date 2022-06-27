@@ -18,7 +18,7 @@ import pytest
 import numpy as np
 import luojianet_ms.ops.operations as op
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 def setup_module():
     context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
@@ -43,13 +43,13 @@ class OpsFactory(MetaFactory):
         else:
             self.loss = 0
 
-class EmbeddingLookup(Cell):
+class EmbeddingLookup(Module):
     def __init__(self, offset):
         super().__init__()
         self.op = op.EmbeddingLookup()
         self.offset = offset
 
-    def construct(self, params, indices):
+    def forward(self, params, indices):
         x = self.op(params, indices, self.offset)
         return x
 

@@ -23,7 +23,7 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Prob(nn.Cell):
+class Prob(nn.Module):
     """
     Test class: probability of Logistic distribution.
     """
@@ -31,7 +31,7 @@ class Prob(nn.Cell):
         super(Prob, self).__init__()
         self.l = msd.Logistic(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.l.prob(x_)
 
 def test_pdf():
@@ -45,7 +45,7 @@ def test_pdf():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_pdf) < tol).all()
 
-class LogProb(nn.Cell):
+class LogProb(nn.Module):
     """
     Test class: log probability of Logistic distribution.
     """
@@ -53,7 +53,7 @@ class LogProb(nn.Cell):
         super(LogProb, self).__init__()
         self.l = msd.Logistic(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.l.log_prob(x_)
 
 def test_log_likelihood():
@@ -67,7 +67,7 @@ def test_log_likelihood():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_logpdf) < tol).all()
 
-class Basics(nn.Cell):
+class Basics(nn.Module):
     """
     Test class: mean/sd/mode of Logistic distribution.
     """
@@ -75,7 +75,7 @@ class Basics(nn.Cell):
         super(Basics, self).__init__()
         self.l = msd.Logistic(np.array([3.0]), np.array([2.0, 4.0]), dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.l.mean(), self.l.sd(), self.l.mode()
 
 def test_basics():
@@ -91,7 +91,7 @@ def test_basics():
     assert (np.abs(mode.asnumpy() - expect_mean) < tol).all()
     assert (np.abs(sd.asnumpy() - expect_sd) < tol).all()
 
-class Sampling(nn.Cell):
+class Sampling(nn.Module):
     """
     Test class: sample of Logistic distribution.
     """
@@ -100,7 +100,7 @@ class Sampling(nn.Cell):
         self.l = msd.Logistic(np.array([3.0]), np.array([[2.0], [4.0]]), seed=seed, dtype=dtype.float32)
         self.shape = shape
 
-    def construct(self, mean=None, sd=None):
+    def forward(self, mean=None, sd=None):
         return self.l.sample(self.shape, mean, sd)
 
 def test_sample():
@@ -115,7 +115,7 @@ def test_sample():
     output = sample(mean, sd)
     assert output.shape == (2, 3, 3)
 
-class CDF(nn.Cell):
+class CDF(nn.Module):
     """
     Test class: cdf of Logistic distribution.
     """
@@ -123,7 +123,7 @@ class CDF(nn.Cell):
         super(CDF, self).__init__()
         self.l = msd.Logistic(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.l.cdf(x_)
 
 
@@ -138,7 +138,7 @@ def test_cdf():
     tol = 2e-5
     assert (np.abs(output.asnumpy() - expect_cdf) < tol).all()
 
-class LogCDF(nn.Cell):
+class LogCDF(nn.Module):
     """
     Test class: log_cdf of Logistic distribution.
     """
@@ -146,7 +146,7 @@ class LogCDF(nn.Cell):
         super(LogCDF, self).__init__()
         self.l = msd.Logistic(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.l.log_cdf(x_)
 
 def test_log_cdf():
@@ -160,7 +160,7 @@ def test_log_cdf():
     tol = 5e-5
     assert (np.abs(output.asnumpy() - expect_logcdf) < tol).all()
 
-class SF(nn.Cell):
+class SF(nn.Module):
     """
     Test class: survival function of Logistic distribution.
     """
@@ -168,7 +168,7 @@ class SF(nn.Cell):
         super(SF, self).__init__()
         self.l = msd.Logistic(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.l.survival_function(x_)
 
 def test_survival():
@@ -182,7 +182,7 @@ def test_survival():
     tol = 2e-5
     assert (np.abs(output.asnumpy() - expect_survival) < tol).all()
 
-class LogSF(nn.Cell):
+class LogSF(nn.Module):
     """
     Test class: log survival function of Logistic distribution.
     """
@@ -190,7 +190,7 @@ class LogSF(nn.Cell):
         super(LogSF, self).__init__()
         self.l = msd.Logistic(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.l.log_survival(x_)
 
 def test_log_survival():
@@ -204,7 +204,7 @@ def test_log_survival():
     tol = 2e-5
     assert (np.abs(output.asnumpy() - expect_log_survival) < tol).all()
 
-class EntropyH(nn.Cell):
+class EntropyH(nn.Module):
     """
     Test class: entropy of Logistic distribution.
     """
@@ -212,7 +212,7 @@ class EntropyH(nn.Cell):
         super(EntropyH, self).__init__()
         self.l = msd.Logistic(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.l.entropy()
 
 def test_entropy():

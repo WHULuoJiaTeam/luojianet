@@ -23,7 +23,7 @@ from luojianet_ms.common.api import ms_function
 from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 
-class DepthToSpaceNet(nn.Cell):
+class DepthToSpaceNet(nn.Module):
     def __init__(self, nptype, block_size=2, input_shape=(1, 12, 1, 1)):
         super(DepthToSpaceNet, self).__init__()
         self.DepthToSpace = P.DepthToSpace(2)
@@ -35,7 +35,7 @@ class DepthToSpaceNet(nn.Cell):
 
 
     @ms_function
-    def construct(self):
+    def forward(self):
         y1 = self.DepthToSpace(self.x1)
         return y1
 

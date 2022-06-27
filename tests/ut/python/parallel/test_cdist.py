@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 
 from parallel.utils.utils import compile_net
@@ -33,12 +33,12 @@ input_x_3d_ = Tensor(np.random.normal(size=[B, P, M]).astype(np.float32))
 input_y_3d_ = Tensor(np.random.normal(size=[B, R, M]).astype(np.float32))
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, strategy=None):
         super(Net, self).__init__()
         self.cdist = ops.Cdist().shard(strategy)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         output = self.cdist(*inputs)
         return output
 

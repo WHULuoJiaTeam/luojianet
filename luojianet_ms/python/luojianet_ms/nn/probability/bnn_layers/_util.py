@@ -15,12 +15,12 @@
 # ============================================================================
 """Utility functions to help bnn layers."""
 from luojianet_ms.common.tensor import Tensor
-from ...cell import Cell
+from ...cell import Module
 
 
 def check_prior(prior_fn, arg_name):
     """check prior distribution of bnn layers."""
-    if isinstance(prior_fn, Cell):
+    if isinstance(prior_fn, Module):
         prior = prior_fn
     else:
         prior = prior_fn()

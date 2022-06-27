@@ -25,25 +25,25 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.ops import composite as c
 
 
-class GradOfAllInputsAndParams(nn.Cell):
+class GradOfAllInputsAndParams(nn.Module):
     def __init__(self, network, sens_param):
         super().__init__()
         self.grad = c.GradOperation(get_all=True, get_by_list=True, sens_param=sens_param)
         self.network = network
         self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         gout = self.grad(self.network, self.params)(*inputs)
         return gout
 
 
-class LSTM(nn.Cell):
+class LSTM(nn.Module):
     def __init__(self, input_s, hidden_s, num_layers, has_bias, batch_first, bidirectional, dropout):
         super().__init__()
         self.lstm = nn.LSTM(input_size=input_s, hidden_size=hidden_s, num_layers=num_layers, has_bias=has_bias,
                             batch_first=batch_first, bidirectional=bidirectional, dropout=dropout)
 
-    def construct(self, inp, h0, c0):
+    def forward(self, inp, h0, c0):
         return self.lstm(inp, (h0, c0))
 
 

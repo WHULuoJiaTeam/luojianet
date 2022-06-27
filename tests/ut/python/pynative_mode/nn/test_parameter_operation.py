@@ -52,12 +52,12 @@ def test_parameter_div():
     z = x / y
     assert np.allclose(z.asnumpy(), expect)
 
-class ParameterNet(nn.Cell):
+class ParameterNet(nn.Module):
     def __init__(self):
         super(ParameterNet, self).__init__()
         self.weight = Parameter(Tensor(np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]], np.float32)), name="ref")
 
-    def construct(self, x):
+    def forward(self, x):
         self.weight = x
 
 def test_parameter_assign():

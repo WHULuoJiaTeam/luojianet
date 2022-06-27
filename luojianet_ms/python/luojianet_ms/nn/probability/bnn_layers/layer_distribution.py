@@ -19,13 +19,13 @@ import luojianet_ms.common.dtype as mstype
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.ops import operations as P
-from ...cell import Cell
+from ...cell import Module
 from ..distribution.normal import Normal
 
 __all__ = ['NormalPrior', 'NormalPosterior']
 
 
-class NormalPrior(Cell):
+class NormalPrior(Module):
     r"""
     To initialize a normal distribution of mean 0 and standard deviation 0.1.
 
@@ -36,7 +36,7 @@ class NormalPrior(Cell):
         std (int, float): Standard deviation of normal distribution. Default: 0.1.
 
     Returns:
-        Cell, a normal distribution.
+        Module, a normal distribution.
 
     Supported Platforms:
         ``Ascend`` ``GPU``
@@ -45,11 +45,11 @@ class NormalPrior(Cell):
         super(NormalPrior, self).__init__()
         self.normal = Normal(mean, std, dtype=dtype)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.normal(*inputs)
 
 
-class NormalPosterior(Cell):
+class NormalPosterior(Module):
     r"""
     Build Normal distributions with trainable parameters.
 
@@ -65,7 +65,7 @@ class NormalPosterior(Cell):
             Default: 0.1.
 
     Returns:
-        Cell, a normal distribution.
+        Module, a normal distribution.
 
     Supported Platforms:
         ``Ascend`` ``GPU``
@@ -113,7 +113,7 @@ class NormalPosterior(Cell):
         std = 1e-6 + P.Log()(P.Exp()(std_pre) + 1)
         return std
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         std = self._std_trans(self.untransformed_std)
         return self.normal(*inputs, mean=self.mean, sd=std)
 

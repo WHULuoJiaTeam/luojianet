@@ -16,13 +16,13 @@
 """
 TensorArray
 """
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.ops.operations import _tensor_array as ta
 from luojianet_ms._checkparam import Rel, Validator
 from luojianet_ms.common import dtype as mstype
 
 
-class TensorArray(Cell):
+class TensorArray(Module):
     r"""TensorArray: a dynamic array to store tensors.
 
     .. warning::

@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class NetEluGrad(nn.Cell):
+class NetEluGrad(nn.Module):
     def __init__(self):
         super(NetEluGrad, self).__init__()
         self.eluGrad = G.EluGrad()
 
-    def construct(self, x, dy):
+    def forward(self, x, dy):
         return self.eluGrad(dy, x)
 
 

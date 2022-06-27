@@ -23,25 +23,25 @@ from luojianet_ms.common.api import _cell_graph_executor
 from luojianet_ms.nn.probability.dpn import VAE
 
 
-class Encoder(nn.Cell):
+class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
         self.fc1 = nn.Dense(6, 3)
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.fc1(x)
         x = self.relu(x)
         return x
 
 
-class Decoder(nn.Cell):
+class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
         self.fc1 = nn.Dense(3, 6)
         self.sigmoid = nn.Sigmoid()
 
-    def construct(self, z):
+    def forward(self, z):
         z = self.fc1(z)
         z = self.sigmoid(z)
         return z

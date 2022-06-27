@@ -16,11 +16,11 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum, AdaSumByDeltaWeightWrapCell, AdaSumByGradWrapCell
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum, AdaSumByDeltaWeightWrapCell, AdaSumByGradWrapCell
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, strategy1=None, strategy2=None, strategy3=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -31,7 +31,7 @@ class Net(Cell):
         self.matmul_weight = Parameter(Tensor(np.ones([32, 32]), dtype=ms.float32), "w2")
         self.embedding_table = Parameter(Tensor(np.ones([64, 32]), dtype=ms.float32), "embedding_table")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.gather(self.embedding_table, x, 0)
         out = self.matmul(out, self.matmul_weight)
         out = self.mul(out, self.mul_weight)

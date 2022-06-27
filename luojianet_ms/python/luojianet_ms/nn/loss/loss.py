@@ -23,18 +23,18 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import functional as F
 from luojianet_ms import nn
 from luojianet_ms.ops.primitive import constexpr
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer.activation import get_activation
 from luojianet_ms._checkparam import Validator as validator
 from luojianet_ms._checkparam import Rel
 from ... import context
 
 
-class LossBase(Cell):
+class LossBase(Module):
     """
     Base class for other losses.
 
-    Other losses derived from this should implement their own `construct` and use method `self.get_loss`
+    Other losses derived from this should implement their own `forward` and use method `self.get_loss`
     to apply reduction to loss values.
 
     Args:
@@ -81,7 +81,7 @@ class LossBase(Cell):
             ...         super(Net, self).__init__(reduction)
             ...         self.abs = ops.Abs()
             ...
-            ...     def construct(self, logits, labels):
+            ...     def forward(self, logits, labels):
             ...         x = self.abs(logits - labels)
             ...         axis = self.get_axis(x)
             ...         return axis
@@ -124,7 +124,7 @@ class LossBase(Cell):
             ...         super(Net, self).__init__(reduction)
             ...         self.abs = ops.Abs()
             ...
-            ...     def construct(self, logits, labels):
+            ...     def forward(self, logits, labels):
             ...         x = self.abs(logits - labels)
             ...         output = self.get_loss(x)
             ...         return output
@@ -153,7 +153,7 @@ class LossBase(Cell):
         x = self.cast(x, input_dtype)
         return x
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         raise NotImplementedError
 
 
@@ -168,7 +168,7 @@ class _Loss(LossBase):
                     "will be removed in a future version, use 'LossBase' instead.")
         super(_Loss, self).__init__(reduction)
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         raise NotImplementedError
 
 
@@ -243,7 +243,7 @@ class L1Loss(LossBase):
         super(L1Loss, self).__init__(reduction)
         self.abs = P.Abs()
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
         x = self.abs(logits - labels)
@@ -308,7 +308,7 @@ class MSELoss(LossBase):
          [0. 0. 1.]]
     """
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
         x = F.square(logits - labels)
@@ -361,7 +361,7 @@ class RMSELoss(LossBase):
         super(RMSELoss, self).__init__()
         self.MSELoss = MSELoss()
 
-    def construct(self, logits, label):
+    def forward(self, logits, label):
         rmse_loss = F.sqrt(self.MSELoss(logits, label))
 
         return rmse_loss
@@ -431,7 +431,7 @@ class MAELoss(LossBase):
         super(MAELoss, self).__init__(reduction)
         self.abs = P.Abs()
 
-    def construct(self, logits, label):
+    def forward(self, logits, label):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', label, self.cls_name)
         x = self.abs(logits - label)
@@ -497,7 +497,7 @@ class SmoothL1Loss(LossBase):
         self.beta = beta
         self.smooth_l1_loss = P.SmoothL1Loss(self.beta)
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
         return self.smooth_l1_loss(logits, labels)
@@ -549,7 +549,7 @@ class SoftMarginLoss(LossBase):
         super(SoftMarginLoss, self).__init__()
         self.soft_margin_loss = P.SoftMarginLoss(reduction)
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         return self.soft_margin_loss(logits, labels)
 
 
@@ -631,7 +631,7 @@ class SoftmaxCrossEntropyWithLogits(LossBase):
         self.is_cpugpu = context.get_context('device_target') in ["CPU", "GPU"]
         self.sparse_softmax_cross_entropy = P.SparseSoftmaxCrossEntropyWithLogits()
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
         if self.sparse:
@@ -696,7 +696,7 @@ class DiceLoss(LossBase):
         self.smooth = validator.check_positive_float(smooth, "smooth")
         self.reshape = P.Reshape()
 
-    def construct(self, logits, label):
+    def forward(self, logits, label):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', label, self.cls_name)
         _check_shape(logits.shape, label.shape, self.cls_name)
@@ -747,7 +747,7 @@ class MultiClassDiceLoss(LossBase):
             Default: None.
         ignore_indiex (Union[int, None]): Class index to ignore.
             Default: None.
-        activation (Union[str, Cell]): Activate function applied to the output of the fully connected layer, eg. 'ReLU'.
+        activation (Union[str, Module]): Activate function applied to the output of the fully connected layer, eg. 'ReLU'.
             Default: 'softmax'. Choose from: ['softmax', 'logsoftmax', 'relu', 'relu6', 'tanh','Sigmoid']
 
     Inputs:
@@ -795,12 +795,12 @@ class MultiClassDiceLoss(LossBase):
                              f"but got {activation}.")
 
         self.activation = get_activation(activation) if isinstance(activation, str) else activation
-        if self.activation is not None and not isinstance(self.activation, Cell):
-            raise TypeError(f"For '{self.cls_name}', the 'activation' must be str or Cell, "
+        if self.activation is not None and not isinstance(self.activation, Module):
+            raise TypeError(f"For '{self.cls_name}', the 'activation' must be str or Module, "
                             f"but got {type(self.activation)}.")
         self.reshape = P.Reshape()
 
-    def construct(self, logits, label):
+    def forward(self, logits, label):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', label, self.cls_name)
         _check_shape(logits.shape, label.shape, self.cls_name)
@@ -929,7 +929,7 @@ class SampledSoftmaxLoss(LossBase):
         self.expand_dims = P.ExpandDims()
         self.dtype = P.DType()
 
-    def construct(self, weights, biases, labels, logits):
+    def forward(self, weights, biases, labels, logits):
         _check_is_tensor('weights', weights, self.cls_name)
         _check_is_tensor('biases', biases, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
@@ -1115,7 +1115,7 @@ class BCELoss(LossBase):
         else:
             self.ones = P.OnesLike()
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
         if self.weight_one:
@@ -1186,7 +1186,7 @@ class CosineEmbeddingLoss(LossBase):
         validator.check_value_type("margin", margin, [float], self.cls_name)
         self.margin = validator.check_float_range(margin, -1.0, 1.0, Rel.INC_BOTH, "margin", self.cls_name)
 
-    def construct(self, logits_x1, logits_x2, labels):
+    def forward(self, logits_x1, logits_x2, labels):
         _check_is_tensor('logits_x1', logits_x1, self.cls_name)
         _check_is_tensor('logits_x2', logits_x2, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
@@ -1309,7 +1309,7 @@ class BCEWithLogitsLoss(LossBase):
             return F.reduce_sum(output)
         return output
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
         if self.is_cpu:
@@ -1434,7 +1434,7 @@ class FocalLoss(LossBase):
         self.dtype = P.DType()
         self.logsoftmax = nn.LogSoftmax(1)
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         _check_is_tensor('logits', logits, self.cls_name)
         _check_is_tensor('labels', labels, self.cls_name)
         labelss = labels

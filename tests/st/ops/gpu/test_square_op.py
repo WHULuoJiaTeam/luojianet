@@ -44,13 +44,13 @@ def test_square_normal():
 
 
 # Dynamic Shape Testing
-class SqaureNetDynamic(nn.Cell):
+class SqaureNetDynamic(nn.Module):
     def __init__(self):
         super(SqaureNetDynamic, self).__init__()
         self.square = P.Square()
         self.gpu_convert_to_dynamic_shape = inner.GpuConvertToDynamicShape()
 
-    def construct(self, x):
+    def forward(self, x):
         x_dyn = self.gpu_convert_to_dynamic_shape(x)
         return self.square(x_dyn)
 

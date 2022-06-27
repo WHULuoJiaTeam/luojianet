@@ -62,7 +62,7 @@ class AdamWeightDecayOp(Optimizer):
         self.opt = P.AdamWeightDecay()
         self.opt.add_prim_attr("primitive_target", "CPU")
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         """AdamWeightDecayOp"""
         lr = self.get_lr()
         optim_result = self.map_reverse(F.partial(_adam_opt, self.opt, self.beta1, self.beta2, self.eps, lr,
@@ -71,7 +71,7 @@ class AdamWeightDecayOp(Optimizer):
         return optim_result
 
 
-class NetAdamWeightDecay(nn.Cell):
+class NetAdamWeightDecay(nn.Module):
     def __init__(self):
         super(NetAdamWeightDecay, self).__init__()
         self.batch_size = 1
@@ -80,7 +80,7 @@ class NetAdamWeightDecay(nn.Cell):
         bias = Tensor(np.zeros(10).astype(np.float32))
         self.fc1 = Dense(16, 10, weight_init=weight, bias_init=bias)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         output = self.reshape(input_x, (self.batch_size, -1))
         output = self.fc1(output)
         return output

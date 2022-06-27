@@ -22,12 +22,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, max_length, pad, dtype=luojianet_ms.int32):
         super(Net, self).__init__()
         self.randperm = P.Randperm(max_length, pad, dtype)
 
-    def construct(self, n):
+    def forward(self, n):
         return self.randperm(n)
 
 

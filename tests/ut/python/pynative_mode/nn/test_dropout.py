@@ -30,12 +30,12 @@ def test_check_dropout():
     m(x)
 
 
-class Net_Dropout(nn.Cell):
+class Net_Dropout(nn.Module):
     def __init__(self):
         super(Net_Dropout, self).__init__()
         self.dropout = nn.Dropout(0.5)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.dropout(x)
 
 

@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetSinh(nn.Cell):
+class NetSinh(nn.Module):
     def __init__(self):
         super(NetSinh, self).__init__()
         self.sinh = P.Sinh()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.sinh(x)
 
 

@@ -18,7 +18,7 @@ import numpy as onp
 import pytest
 
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms import dtype as mstype
 
 
@@ -29,8 +29,8 @@ def setup_module():
 def setup_testcase(input_np, case_fn):
     input_ms = Tensor(input_np)
 
-    class TensorSetItem(Cell):
-        def construct(self, x):
+    class TensorSetItem(Module):
+        def forward(self, x):
             return case_fn(x)
 
     class NumpySetItem():
@@ -42,8 +42,8 @@ def setup_testcase(input_np, case_fn):
     assert onp.all(out_ms.asnumpy() == out_np)
 
 
-class TensorSetItemByList(Cell):
-    def construct(self, x):
+class TensorSetItemByList(Module):
+    def forward(self, x):
         x[[0, 1], [1, 2], [1, 3]] = [3, 4]
         x[([0, 1], [0, 2], [1, 1])] = [10, 5]
         x[[0, 1], ..., [0, 1]] = 4
@@ -231,8 +231,8 @@ def test_setitem_by_tuple_of_slices():
     setup_testcase(x, cases)
 
 
-class TensorItemSetWithNumber(Cell):
-    def construct(self, tensor, number_value):
+class TensorItemSetWithNumber(Module):
+    def forward(self, tensor, number_value):
         ret = tensor.itemset(number_value)
         return ret
 
@@ -266,8 +266,8 @@ def test_itemset_with_number():
         net(input_3d_ms, value_np_2)
 
 
-class TensorItemSetByItemWithNumber(Cell):
-    def construct(self, tensor, index, number_value):
+class TensorItemSetByItemWithNumber(Module):
+    def forward(self, tensor, index, number_value):
         ret = tensor.itemset(index, number_value)
         return ret
 

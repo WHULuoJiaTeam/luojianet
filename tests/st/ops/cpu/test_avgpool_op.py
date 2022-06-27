@@ -26,7 +26,7 @@ from luojianet_ms.ops import composite as C
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class AvgPool(nn.Cell):
+class AvgPool(nn.Module):
     def __init__(self, dim, kernel_size, strides, pad_mode, count_include_pad=False):
         super(AvgPool, self).__init__()
         if dim == 2:
@@ -35,17 +35,17 @@ class AvgPool(nn.Cell):
             self.avgpool = P.AvgPool3D(kernel_size=kernel_size, strides=strides, pad_mode=pad_mode,
                                        count_include_pad=count_include_pad)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.avgpool(x)
 
 
-class AvgPoolGrad(nn.Cell):
+class AvgPoolGrad(nn.Module):
     def __init__(self, forward):
         super(AvgPoolGrad, self).__init__()
         self.forward = forward
         self.grad = C.GradOperation(get_all=True, sens_param=True)
 
-    def construct(self, x, sens):
+    def forward(self, x, sens):
         return self.grad(self.forward)(x, sens)
 
 

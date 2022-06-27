@@ -67,7 +67,7 @@ def test_arguments():
     assert isinstance(l2, msd.Distribution)
 
 
-class CauchyProb(nn.Cell):
+class CauchyProb(nn.Module):
     """
     Cauchy distribution: initialize with loc/scale.
     """
@@ -75,7 +75,7 @@ class CauchyProb(nn.Cell):
         super(CauchyProb, self).__init__()
         self.cauchy = msd.Cauchy(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self, value):
+    def forward(self, value):
         prob = self.cauchy.prob(value)
         log_prob = self.cauchy.log_prob(value)
         cdf = self.cauchy.cdf(value)
@@ -88,7 +88,7 @@ class CauchyProb(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU and GPU")
 def test_cauchy_prob():
     """
-    Test probability functions: passing value through construct.
+    Test probability functions: passing value through forward.
     """
     net = CauchyProb()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -96,7 +96,7 @@ def test_cauchy_prob():
     assert isinstance(ans, Tensor)
 
 
-class CauchyProb1(nn.Cell):
+class CauchyProb1(nn.Module):
     """
     Cauchy distribution: initialize without loc/scale.
     """
@@ -104,7 +104,7 @@ class CauchyProb1(nn.Cell):
         super(CauchyProb1, self).__init__()
         self.cauchy = msd.Cauchy()
 
-    def construct(self, value, mu, s):
+    def forward(self, value, mu, s):
         prob = self.cauchy.prob(value, mu, s)
         log_prob = self.cauchy.log_prob(value, mu, s)
         cdf = self.cauchy.cdf(value, mu, s)
@@ -117,7 +117,7 @@ class CauchyProb1(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU and GPU")
 def test_cauchy_prob1():
     """
-    Test probability functions: passing loc/scale, value through construct.
+    Test probability functions: passing loc/scale, value through forward.
     """
     net = CauchyProb1()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)
@@ -127,7 +127,7 @@ def test_cauchy_prob1():
     assert isinstance(ans, Tensor)
 
 
-class KL(nn.Cell):
+class KL(nn.Module):
     """
     Test kl_loss and cross entropy.
     """
@@ -136,7 +136,7 @@ class KL(nn.Cell):
         self.cauchy = msd.Cauchy(3.0, 4.0)
         self.cauchy1 = msd.Cauchy()
 
-    def construct(self, mu, s, mu_a, s_a):
+    def forward(self, mu, s, mu_a, s_a):
         kl = self.cauchy.kl_loss('Cauchy', mu, s)
         kl1 = self.cauchy1.kl_loss('Cauchy', mu, s, mu_a, s_a)
         cross_entropy = self.cauchy.cross_entropy('Cauchy', mu, s)
@@ -158,7 +158,7 @@ def test_kl_cross_entropy():
     assert isinstance(ans, Tensor)
 
 
-class CauchyBasics(nn.Cell):
+class CauchyBasics(nn.Module):
     """
     Test class: basic loc/scale function.
     """
@@ -166,13 +166,13 @@ class CauchyBasics(nn.Cell):
         super(CauchyBasics, self).__init__()
         self.cauchy = msd.Cauchy(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         mode = self.cauchy.mode()
         entropy = self.cauchy.entropy()
         return mode + entropy
 
 
-class CauchyMean(nn.Cell):
+class CauchyMean(nn.Module):
     """
     Test class: basic loc/scale function.
     """
@@ -180,11 +180,11 @@ class CauchyMean(nn.Cell):
         super(CauchyMean, self).__init__()
         self.cauchy = msd.Cauchy(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.cauchy.mean()
 
 
-class CauchyVar(nn.Cell):
+class CauchyVar(nn.Module):
     """
     Test class: basic loc/scale function.
     """
@@ -192,11 +192,11 @@ class CauchyVar(nn.Cell):
         super(CauchyVar, self).__init__()
         self.cauchy = msd.Cauchy(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.cauchy.var()
 
 
-class CauchySd(nn.Cell):
+class CauchySd(nn.Module):
     """
     Test class: basic loc/scale function.
     """
@@ -204,7 +204,7 @@ class CauchySd(nn.Cell):
         super(CauchySd, self).__init__()
         self.cauchy = msd.Cauchy(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.cauchy.sd()
 
 
@@ -227,16 +227,16 @@ def test_bascis():
         ans = net()
 
 
-class CauchyConstruct(nn.Cell):
+class CauchyConstruct(nn.Module):
     """
-    Cauchy distribution: going through construct.
+    Cauchy distribution: going through forward.
     """
     def __init__(self):
         super(CauchyConstruct, self).__init__()
         self.cauchy = msd.Cauchy(3.0, 4.0)
         self.cauchy1 = msd.Cauchy()
 
-    def construct(self, value, mu, s):
+    def forward(self, value, mu, s):
         prob = self.cauchy('prob', value)
         prob1 = self.cauchy('prob', value, mu, s)
         prob2 = self.cauchy1('prob', value, mu, s)
@@ -246,7 +246,7 @@ class CauchyConstruct(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU and GPU")
 def test_cauchy_construct():
     """
-    Test probability function going through construct.
+    Test probability function going through forward.
     """
     net = CauchyConstruct()
     value = Tensor([0.5, 1.0], dtype=dtype.float32)

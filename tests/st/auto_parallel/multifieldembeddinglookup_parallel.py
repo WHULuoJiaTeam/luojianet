@@ -18,7 +18,7 @@ import os
 import numpy as np
 
 import luojianet_ms.ops.operations as P
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import Adam
 from luojianet_ms.nn import MultiFieldEmbeddingLookup as embedding
 from luojianet_ms import Tensor
@@ -175,7 +175,7 @@ class FakeData:
 
 
 
-class MultiHotNet(Cell):
+class MultiHotNet(Module):
     def __init__(self, vocab_size, embedding_size, field_size,
                  param_init, target, slice_mode, sparse, operator, indices, field_ids):
         super().__init__()
@@ -193,7 +193,7 @@ class MultiHotNet(Cell):
         elif slice_mode == "batch_slice":
             self.relu.shard(((8, 1, 1),))
 
-    def construct(self, values, label):
+    def forward(self, values, label):
         x = self.embedding(self.indices, values, self.field_ids)
         output = self.relu(x)
         return output

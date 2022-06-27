@@ -23,13 +23,13 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class GatherNet(nn.Cell):
+class GatherNet(nn.Module):
     def __init__(self, dim=0):
         super(GatherNet, self).__init__()
         self.gather = P.GatherD()
         self.dim = dim
 
-    def construct(self, x, index):
+    def forward(self, x, index):
         return self.gather(x, self.dim, index)
 
 @pytest.mark.level0

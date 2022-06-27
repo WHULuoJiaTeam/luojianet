@@ -33,24 +33,24 @@ def setup_module(module):
     context.set_context(mode=context.GRAPH_MODE)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, in_features, out_features):
         super(Net, self).__init__()
         self.dense = nn.Dense(in_features, out_features)
         self.loss = nn.MSELoss()
 
-    def construct(self, input_x, label):
+    def forward(self, input_x, label):
         output = self.dense(input_x)
         loss = self.loss(output, label)
         return loss
 
 
-class NetNoLoss(nn.Cell):
+class NetNoLoss(nn.Module):
     def __init__(self, in_features, out_features):
         super(NetNoLoss, self).__init__()
         self.dense = nn.Dense(in_features, out_features)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.dense(input_x)
 
 

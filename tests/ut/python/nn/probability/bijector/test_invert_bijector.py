@@ -46,7 +46,7 @@ def test_name():
     assert b.name == 'InvertScalarAffine'
 
 
-class ForwardBackward(nn.Cell):
+class ForwardBackward(nn.Module):
     """
     Test class: forward and backward pass.
     """
@@ -55,7 +55,7 @@ class ForwardBackward(nn.Cell):
         self.inv1 = msb.Invert(msb.Exp())
         self.inv2 = msb.Invert(msb.ScalarAffine())
 
-    def construct(self, x_):
+    def forward(self, x_):
         ans1 = self.inv1.inverse(x_) + self.inv1.inverse(x_)
         ans2 = self.inv2.inverse(x_) + self.inv2.forward(x_)
         return ans1 + ans2
@@ -72,7 +72,7 @@ def test_forward_and_backward_pass():
     assert isinstance(ans, Tensor)
 
 
-class ForwardJacobian(nn.Cell):
+class ForwardJacobian(nn.Module):
     """
     Test class: Forward log Jacobian.
     """
@@ -81,7 +81,7 @@ class ForwardJacobian(nn.Cell):
         self.inv1 = msb.Invert(msb.Exp())
         self.inv2 = msb.Invert(msb.ScalarAffine())
 
-    def construct(self, x_):
+    def forward(self, x_):
         ans1 = self.inv1.forward_log_jacobian(x_)
         ans2 = self.inv2.forward_log_jacobian(x_)
         return ans1 + ans2
@@ -98,7 +98,7 @@ def test_forward_jacobian():
     assert isinstance(ans, Tensor)
 
 
-class BackwardJacobian(nn.Cell):
+class BackwardJacobian(nn.Module):
     """
     Test class: Backward log Jacobian.
     """
@@ -107,7 +107,7 @@ class BackwardJacobian(nn.Cell):
         self.inv1 = msb.Invert(msb.Exp())
         self.inv2 = msb.Invert(msb.ScalarAffine())
 
-    def construct(self, x_):
+    def forward(self, x_):
         ans1 = self.inv1.inverse_log_jacobian(x_)
         ans2 = self.inv2.inverse_log_jacobian(x_)
         return ans1 + ans2
@@ -124,16 +124,16 @@ def test_backward_jacobian():
     assert isinstance(ans, Tensor)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """
-    Test class: function calls going through construct.
+    Test class: function calls going through forward.
     """
     def __init__(self):
         super(Net, self).__init__()
         self.b1 = msb.ScalarAffine(2.0, 1.0)
         self.inv = msb.Invert(self.b1)
 
-    def construct(self, x_):
+    def forward(self, x_):
         ans1 = self.inv('inverse', self.inv('forward', x_))
         ans2 = self.inv('forward_log_jacobian', x_)
         ans3 = self.inv('inverse_log_jacobian', x_)
@@ -143,7 +143,7 @@ class Net(nn.Cell):
 @pytest.mark.skipif(skip_flag, reason="not support running in CPU")
 def test_old_api():
     """
-    Test old api which goes through construct.
+    Test old api which goes through forward.
     """
     net = Net()
     x = Tensor([2.0, 3.0, 4.0, 5.0], dtype=dtype.float32)

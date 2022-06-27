@@ -25,12 +25,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_flatten():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.flatten()
 
     net = Net()
@@ -38,12 +38,12 @@ def test_flatten():
 
 
 def test_flatten_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.flatten(order='F')
 
     net = Net()
@@ -51,12 +51,12 @@ def test_flatten_1():
 
 
 def test_flatten_error():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.flatten(order='X')
 
     net = Net()
@@ -65,12 +65,12 @@ def test_flatten_error():
 
 
 def test_flatten_error_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.flatten(order=123)
 
     net = Net()

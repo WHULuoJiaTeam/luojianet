@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 """grad accumulation"""
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.common import Parameter, Tensor
 from luojianet_ms.common import dtype as mstype
 from luojianet_ms.ops import composite as C
@@ -43,13 +43,13 @@ def clear_grad(cumulative_grad):
     return F.assign(cumulative_grad, zero_grad)
 
 
-class GradientAccumulation(Cell):
+class GradientAccumulation(Module):
     """
     After accumulating the gradients of multiple steps, call to optimize its update.
 
     Args:
        max_accumulation_step (int): Steps to accumulate gradients.
-       optimizer (Cell): Optimizer used.
+       optimizer (Module): Optimizer used.
     """
     def __init__(self, max_accumulation_step, optimizer):
         super(GradientAccumulation, self).__init__()
@@ -60,7 +60,7 @@ class GradientAccumulation(Cell):
         self._grad_accumulation = self.weights.clone(prefix="grad_accumulation", init='zeros')
         self._accumulation_step = Parameter(Tensor(0, dtype=mstype.int32), name="accumulation_step")
 
-    def construct(self, loss, grads):
+    def forward(self, loss, grads):
         loss = F.depend(loss, self.hyper_map(F.partial(gradient_accumulation_op, self._max_accumulation_step),
                                              self._grad_accumulation, grads))
         self._accumulation_step += 1

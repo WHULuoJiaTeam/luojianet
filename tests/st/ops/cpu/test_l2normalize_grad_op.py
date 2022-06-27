@@ -24,12 +24,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, axis=0, epsilon=1e-4):
         super(Net, self).__init__()
         self.ops = G.L2NormalizeGrad(axis, epsilon)
 
-    def construct(self, input_x, output, dout):
+    def forward(self, input_x, output, dout):
         return self.ops(input_x, output, dout)
 
 

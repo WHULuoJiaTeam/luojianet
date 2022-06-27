@@ -24,12 +24,12 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _inner_ops as inner
 
 
-class ReduceMean(nn.Cell):
+class ReduceMean(nn.Module):
     def __init__(self, keep_dims):
         super(ReduceMean, self).__init__()
         self.reduce_mean = P.ReduceMean(keep_dims=keep_dims)
 
-    def construct(self, x, axis):
+    def forward(self, x, axis):
         return self.reduce_mean(x, axis)
 
 
@@ -64,7 +64,7 @@ def test_reduce_mean(dtype, shape, axis, keep_dims):
     assert output.shape == expect.shape
 
 
-class ReduceMeanDynamic(nn.Cell):
+class ReduceMeanDynamic(nn.Module):
     def __init__(self, x, axis, keepdims=False):
         super(ReduceMeanDynamic, self).__init__()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
@@ -72,7 +72,7 @@ class ReduceMeanDynamic(nn.Cell):
         self.x = x
         self.axis = axis
 
-    def construct(self):
+    def forward(self):
         dynamic_x = self.test_dynamic(self.x)
         output = self.reduce_mean(dynamic_x, self.axis)
         return output
@@ -103,13 +103,13 @@ def test_dynamic_reduce_mean(dtype, shape, axis, keep_dims):
     assert output.shape == expect.shape
 
 
-class ReduceMeanNegativeNet(nn.Cell):
+class ReduceMeanNegativeNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.mean0 = P.ReduceMean(True)
         self.mean1 = P.ReduceMean(False)
 
-    def construct(self, x):
+    def forward(self, x):
         t = self.mean0(x, ())
         return self.mean1(t, (-1,))
 

@@ -23,13 +23,13 @@ from luojianet_ms.common.parameter import Parameter
 grad_all = C.GradOperation(get_all=True)
 
 
-class IfAfterIfNet(nn.Cell):
+class IfAfterIfNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = y
         if self.param_a > self.param_b:
             x += 5
@@ -39,13 +39,13 @@ class IfAfterIfNet(nn.Cell):
         return out
 
 
-class IfAfterIfNet1(nn.Cell):
+class IfAfterIfNet1(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = y
         x = self.func(x)
         if x < self.param_b:
@@ -59,8 +59,8 @@ class IfAfterIfNet1(nn.Cell):
         return x
 
 
-class IfAfterIfNet2(nn.Cell):
-    def construct(self, x, y):
+class IfAfterIfNet2(nn.Module):
+    def forward(self, x, y):
         x += 1
         out = self.func(x, y)
         if out > 10:
@@ -75,13 +75,13 @@ class IfAfterIfNet2(nn.Cell):
         return y
 
 
-class IfAfterIfNet3(nn.Cell):
+class IfAfterIfNet3(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = x * y + self.func(self.param_b)
         if self.param_a > self.param_b:
             out += 5
@@ -95,13 +95,13 @@ class IfAfterIfNet3(nn.Cell):
 
 
 # Add a while to run with vm in ascend
-class IfAfterIfNet4(nn.Cell):
+class IfAfterIfNet4(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         while x < 0:
             x = x + 1
         out = x * y + self.func(self.param_b)
@@ -116,12 +116,12 @@ class IfAfterIfNet4(nn.Cell):
         return x
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super(GradNet, self).__init__()
         self.net = net
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return grad_all(self.net)(*inputs)
 
 

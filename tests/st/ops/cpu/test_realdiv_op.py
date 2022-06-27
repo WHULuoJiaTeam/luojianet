@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetRealDiv(nn.Cell):
+class NetRealDiv(nn.Module):
     def __init__(self):
         super(NetRealDiv, self).__init__()
         self.divide = P.RealDiv()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.divide(x, y)
 
 

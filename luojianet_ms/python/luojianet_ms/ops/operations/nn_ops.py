@@ -979,7 +979,7 @@ class InstanceNorm(PrimitiveWithInfer):
         ValueError: If `momentum` is not in the range of [0, 1].
 
     Examples:
-        >>> class InstanceNormNet(nn.Cell):
+        >>> class InstanceNormNet(nn.Module):
         >>>     def __init__(self):
         >>>         super(InstanceNormNet, self).__init__()
         >>>         self.instance_norm = ops.InstanceNorm()
@@ -988,7 +988,7 @@ class InstanceNorm(PrimitiveWithInfer):
         >>>         self.mean = Parameter(Tensor(np.ones([64]), luojianet_ms.float32), name="mean")
         >>>         self.variance = Parameter(Tensor(np.ones([64]), luojianet_ms.float32), name="variance")
         >>>
-        >>>     def construct(self, input_x):
+        >>>     def forward(self, input_x):
         >>>         out = self.instance_norm(input_x, self.gamma, self.beta, self.mean, self.variance)
         >>>         return out
         >>>
@@ -1902,12 +1902,12 @@ class AvgPool(_Pool):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.avgpool_op = ops.AvgPool(pad_mode="VALID", kernel_size=2, strides=1)
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         result = self.avgpool_op(x)
         ...         return result
         ...
@@ -2884,13 +2884,13 @@ class ApplyRMSProp(PrimitiveWithInfer):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_rms_prop = ops.ApplyRMSProp()
         ...         self.var = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="var")
         ...
-        ...     def construct(self, mean_square, moment, grad, decay, momentum, epsilon, lr):
+        ...     def forward(self, mean_square, moment, grad, decay, momentum, epsilon, lr):
         ...         out = self.apply_rms_prop(self.var, mean_square, moment, lr, grad, decay, momentum, epsilon)
         ...         return out
         ...
@@ -3002,13 +3002,13 @@ class ApplyCenteredRMSProp(Primitive):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_centerd_rms_prop = ops.ApplyCenteredRMSProp()
         ...         self.var = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="var")
         ...
-        ...     def construct(self, mean_grad, mean_square, moment, grad, decay, momentum, epsilon, lr):
+        ...     def forward(self, mean_grad, mean_square, moment, grad, decay, momentum, epsilon, lr):
         ...         out = self.apply_centerd_rms_prop(self.var, mean_grad, mean_square, moment, grad,
         ...                                           lr, decay, momentum, epsilon)
         ...         return out
@@ -3549,11 +3549,11 @@ class PReLU(PrimitiveWithInfer):
         ``Ascend`` ``GPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.prelu = ops.PReLU()
-        ...     def construct(self, x, weight):
+        ...     def forward(self, x, weight):
         ...         result = self.prelu(x, weight)
         ...         return result
         ...
@@ -3998,12 +3998,12 @@ class MirrorPad(PrimitiveWithInfer):
     Examples:
         >>> from luojianet_ms import Tensor, nn, ops
         >>> # case1: mode="REFLECT"
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...    def __init__(self, mode):
         ...        super(Net, self).__init__()
         ...        self.pad = ops.MirrorPad(mode=mode)
         ...        self.paddings = Tensor([[1, 1], [2, 2]])
-        ...    def construct(self, input_x):
+        ...    def forward(self, input_x):
         ...        return self.pad(input_x, self.paddings)
         ...
         >>> input_x = Tensor([[1,2,3], [4,5,6], [7,8,9]])
@@ -4279,14 +4279,14 @@ class Adam(Primitive):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_adam = ops.Adam()
         ...         self.var = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="var")
         ...         self.m = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="m")
         ...         self.v = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="v")
-        ...     def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
+        ...     def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
         ...         out = self.apply_adam(self.var, self.m, self.v, beta1_power, beta2_power, lr, beta1, beta2,
         ...                               epsilon, grad)
         ...         return out
@@ -4373,14 +4373,14 @@ class AdamWeightDecay(PrimitiveWithInfer):
         >>> import numpy as np
         >>> import luojianet_ms.nn as nn
         >>> from luojianet_ms import Tensor, Parameter, ops
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.adam_weight_decay = ops.AdamWeightDecay()
         ...         self.var = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="var")
         ...         self.m = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="m")
         ...         self.v = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="v")
-        ...     def construct(self, lr, beta1, beta2, epsilon, decay, grad):
+        ...     def forward(self, lr, beta1, beta2, epsilon, decay, grad):
         ...         out = self.adam_weight_decay(self.var, self.m, self.v, lr, beta1, beta2,
         ...                               epsilon, decay, grad)
         ...         return out
@@ -4479,7 +4479,7 @@ class AdamNoUpdateParam(PrimitiveWithInfer):
         ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.adam = ops.AdamNoUpdateParam()
@@ -4487,7 +4487,7 @@ class AdamNoUpdateParam(PrimitiveWithInfer):
         ...                            name="m")
         ...         self.v = Parameter(Tensor(np.array([[0.1, 0.1, 0.1], [0.2, 0.2, 0.2]]).astype(np.float32)),
         ...                            name="v")
-        ...     def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
+        ...     def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
         ...         out = self.adam(self.m, self.v, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad)
         ...         return out
         >>> net = Net()
@@ -4600,14 +4600,14 @@ class FusedSparseAdam(PrimitiveWithInfer):
         ``Ascend`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.sparse_apply_adam = ops.FusedSparseAdam()
         ...         self.var = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="var")
         ...         self.m = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="m")
         ...         self.v = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="v")
-        ...     def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad, indices):
+        ...     def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad, indices):
         ...         out = self.sparse_apply_adam(self.var, self.m, self.v, beta1_power, beta2_power, lr, beta1, beta2,
         ...                                      epsilon, grad, indices)
         ...         return out
@@ -4751,14 +4751,14 @@ class FusedSparseLazyAdam(PrimitiveWithInfer):
         ``Ascend`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.sparse_apply_lazyadam = ops.FusedSparseLazyAdam()
         ...         self.var = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="var")
         ...         self.m = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="m")
         ...         self.v = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="v")
-        ...     def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad, indices):
+        ...     def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad, indices):
         ...         out = self.sparse_apply_lazyadam(self.var, self.m, self.v, beta1_power, beta2_power, lr, beta1,
         ...                                          beta2, epsilon, grad, indices)
         ...         return out
@@ -4873,7 +4873,7 @@ class FusedSparseFtrl(PrimitiveWithInfer):
         ``Ascend`` ``CPU``
 
     Examples:
-        >>> class SparseApplyFtrlNet(nn.Cell):
+        >>> class SparseApplyFtrlNet(nn.Module):
         ...     def __init__(self):
         ...         super(SparseApplyFtrlNet, self).__init__()
         ...         self.sparse_apply_ftrl = ops.FusedSparseFtrl(lr=0.01, l1=0.0, l2=0.0, lr_power=-0.5)
@@ -4881,7 +4881,7 @@ class FusedSparseFtrl(PrimitiveWithInfer):
         ...         self.accum = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="accum")
         ...         self.linear = Parameter(Tensor(np.ones([3, 1, 2]).astype(np.float32)), name="linear")
         ...
-        ...     def construct(self, grad, indices):
+        ...     def forward(self, grad, indices):
         ...         out = self.sparse_apply_ftrl(self.var, self.accum, self.linear, grad, indices)
         ...         return out
         ...
@@ -4984,7 +4984,7 @@ class FusedSparseProximalAdagrad(PrimitiveWithInfer):
         ``Ascend`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.sparse_apply_proximal_adagrad = ops.FusedSparseProximalAdagrad()
@@ -4993,7 +4993,7 @@ class FusedSparseProximalAdagrad(PrimitiveWithInfer):
         ...         self.lr = Tensor(0.01, luojianet_ms.float32)
         ...         self.l1 = Tensor(0.0, luojianet_ms.float32)
         ...         self.l2 = Tensor(0.0, luojianet_ms.float32)
-        ...     def construct(self, grad, indices):
+        ...     def forward(self, grad, indices):
         ...         out = self.sparse_apply_proximal_adagrad(self.var, self.accum, self.lr, self.l1,
         ...                                                  self.l2, grad, indices)
         ...         return out
@@ -5087,11 +5087,11 @@ class KLDivLoss(PrimitiveWithInfer):
         ``GPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.kldiv_loss = ops.KLDivLoss()
-        ...     def construct(self, logits, labels):
+        ...     def forward(self, logits, labels):
         ...         result = self.kldiv_loss(logits, labels)
         ...         return result
         ...
@@ -5173,11 +5173,11 @@ class BinaryCrossEntropy(Primitive):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.binary_cross_entropy = ops.BinaryCrossEntropy()
-        ...     def construct(self, logits, labels, weight):
+        ...     def forward(self, logits, labels, weight):
         ...         result = self.binary_cross_entropy(logits, labels, weight)
         ...         return result
         ...
@@ -5260,7 +5260,7 @@ class ApplyAdaMax(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_ada_max = ops.ApplyAdaMax()
@@ -5270,7 +5270,7 @@ class ApplyAdaMax(Primitive):
         ...                                             [0.2, 0.6]]).astype(np.float32)), name="m")
         ...         self.v = Parameter(Tensor(np.array([[0.9, 0.1],
         ...                                             [0.7, 0.8]]).astype(np.float32)), name="v")
-        ...     def construct(self, beta1_power, lr, beta1, beta2, epsilon, grad):
+        ...     def forward(self, beta1_power, lr, beta1, beta2, epsilon, grad):
         ...         out = self.apply_ada_max(self.var, self.m, self.v, beta1_power, lr, beta1, beta2, epsilon, grad)
         ...         return out
         ...
@@ -5358,7 +5358,7 @@ class ApplyAdadelta(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_adadelta = ops.ApplyAdadelta()
@@ -5369,7 +5369,7 @@ class ApplyAdadelta(Primitive):
         ...         self.accum_update = Parameter(Tensor(np.array([[0.9, 0.1],
         ...                                                        [0.7, 0.8]]).astype(np.float32)),
         ...                                                             name="accum_update")
-        ...     def construct(self, lr, rho, epsilon, grad):
+        ...     def forward(self, lr, rho, epsilon, grad):
         ...         out = self.apply_adadelta(self.var, self.accum, self.accum_update, lr, rho, epsilon, grad)
         ...         return out
         ...
@@ -5448,7 +5448,7 @@ class ApplyAdagrad(Primitive):
         ``Ascend`` ``CPU`` ``GPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_adagrad = ops.ApplyAdagrad()
@@ -5456,7 +5456,7 @@ class ApplyAdagrad(Primitive):
         ...                                               [0.1, 0.5]]).astype(np.float32)), name="var")
         ...         self.accum = Parameter(Tensor(np.array([[0.6, 0.5],
         ...                                                 [0.2, 0.6]]).astype(np.float32)), name="accum")
-        ...     def construct(self, lr, grad):
+        ...     def forward(self, lr, grad):
         ...         out = self.apply_adagrad(self.var, self.accum, lr, grad)
         ...         return out
         ...
@@ -5533,7 +5533,7 @@ class ApplyAdagradV2(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_adagrad_v2 = ops.ApplyAdagradV2(epsilon=1e-6)
@@ -5541,7 +5541,7 @@ class ApplyAdagradV2(Primitive):
         ...                                               [0.1, 0.5]]).astype(np.float32)), name="var")
         ...         self.accum = Parameter(Tensor(np.array([[0.6, 0.5],
         ...                                                 [0.2, 0.6]]).astype(np.float32)), name="accum")
-        ...     def construct(self, lr, grad):
+        ...     def forward(self, lr, grad):
         ...         out = self.apply_adagrad_v2(self.var, self.accum, lr, grad)
         ...         return out
         ...
@@ -5620,13 +5620,13 @@ class SparseApplyAdagrad(PrimitiveWithInfer):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.sparse_apply_adagrad = ops.SparseApplyAdagrad(lr=1e-8)
         ...         self.var = Parameter(Tensor(np.array([[[0.2]]]).astype(np.float32)), name="var")
         ...         self.accum = Parameter(Tensor(np.array([[[0.1]]]).astype(np.float32)), name="accum")
-        ...     def construct(self, grad, indices):
+        ...     def forward(self, grad, indices):
         ...         out = self.sparse_apply_adagrad(self.var, self.accum, grad, indices)
         ...         return out
         ...
@@ -5721,14 +5721,14 @@ class SparseApplyAdagradV2(PrimitiveWithInfer):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.sparse_apply_adagrad_v2 = ops.SparseApplyAdagradV2(lr=1e-8, epsilon=1e-6)
         ...         self.var = Parameter(Tensor(np.array([[0.2]]).astype(np.float32)), name="var")
         ...         self.accum = Parameter(Tensor(np.array([[0.1]]).astype(np.float32)), name="accum")
         ...
-        ...     def construct(self, grad, indices):
+        ...     def forward(self, grad, indices):
         ...         out = self.sparse_apply_adagrad_v2(self.var, self.accum, grad, indices)
         ...         return out
         ...
@@ -5823,7 +5823,7 @@ class ApplyProximalAdagrad(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_proximal_adagrad = ops.ApplyProximalAdagrad()
@@ -5834,7 +5834,7 @@ class ApplyProximalAdagrad(Primitive):
         ...         self.lr = 0.01
         ...         self.l1 = 0.0
         ...         self.l2 = 0.0
-        ...     def construct(self, grad):
+        ...     def forward(self, grad):
         ...         out = self.apply_proximal_adagrad(self.var, self.accum, self.lr, self.l1, self.l2, grad)
         ...         return out
         ...
@@ -5920,7 +5920,7 @@ class SparseApplyProximalAdagrad(PrimitiveWithCheck):
         ``Ascend`` ``GPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.sparse_apply_proximal_adagrad = ops.SparseApplyProximalAdagrad()
@@ -5929,7 +5929,7 @@ class SparseApplyProximalAdagrad(PrimitiveWithCheck):
         ...         self.lr = 1.0
         ...         self.l1 = 1.0
         ...         self.l2 = 0.0
-        ...     def construct(self, grad, indices):
+        ...     def forward(self, grad, indices):
         ...         out = self.sparse_apply_proximal_adagrad(self.var, self.accum, self.lr, self.l1,
         ...                                                  self.l2, grad, indices)
         ...         return out
@@ -6027,7 +6027,7 @@ class ApplyAddSign(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_add_sign = ops.ApplyAddSign()
@@ -6039,7 +6039,7 @@ class ApplyAddSign(Primitive):
         ...         self.alpha = 1.0
         ...         self.sign_decay = 0.99
         ...         self.beta = 0.9
-        ...     def construct(self, grad):
+        ...     def forward(self, grad):
         ...         out = self.apply_add_sign(self.var, self.m, self.lr, self.alpha, self.sign_decay, self.beta, grad)
         ...         return out
         ...
@@ -6121,7 +6121,7 @@ class ApplyPowerSign(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_power_sign = ops.ApplyPowerSign()
@@ -6133,7 +6133,7 @@ class ApplyPowerSign(Primitive):
         ...         self.logbase = np.e
         ...         self.sign_decay = 0.99
         ...         self.beta = 0.9
-        ...     def construct(self, grad):
+        ...     def forward(self, grad):
         ...         out = self.apply_power_sign(self.var, self.m, self.lr, self.logbase,
         ...                                        self.sign_decay, self.beta, grad)
         ...         return out
@@ -6197,13 +6197,13 @@ class ApplyGradientDescent(Primitive):
         ``Ascend``  ``GPU``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_gradient_descent = ops.ApplyGradientDescent()
         ...         self.var = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="var")
         ...         self.alpha = 0.001
-        ...     def construct(self, delta):
+        ...     def forward(self, delta):
         ...         out = self.apply_gradient_descent(self.var, self.alpha, delta)
         ...         return out
         ...
@@ -6266,7 +6266,7 @@ class ApplyProximalGradientDescent(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.apply_proximal_gradient_descent = ops.ApplyProximalGradientDescent()
@@ -6274,7 +6274,7 @@ class ApplyProximalGradientDescent(Primitive):
         ...         self.alpha = 0.001
         ...         self.l1 = 0.1
         ...         self.l2 = 0.1
-        ...     def construct(self, delta):
+        ...     def forward(self, delta):
         ...         out = self.apply_proximal_gradient_descent(self.var, self.alpha, self.l1, self.l2, delta)
         ...         return out
         ...
@@ -6334,13 +6334,13 @@ class LARSUpdate(PrimitiveWithInfer):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.lars = ops.LARSUpdate()
         ...         self.reduce = ops.ReduceSum()
         ...         self.square = ops.Square()
-        ...     def construct(self, weight, gradient):
+        ...     def forward(self, weight, gradient):
         ...         w_square_sum = self.reduce(self.square(weight))
         ...         grad_square_sum = self.reduce(self.square(gradient))
         ...         grad_t = self.lars(weight, gradient, w_square_sum, grad_square_sum, 0.0, 1.0)
@@ -6402,7 +6402,7 @@ class ApplyFtrl(Primitive):
         ``Ascend`` ``GPU``
 
     Examples:
-        >>> class ApplyFtrlNet(nn.Cell):
+        >>> class ApplyFtrlNet(nn.Module):
         ...     def __init__(self):
         ...         super(ApplyFtrlNet, self).__init__()
         ...         self.apply_ftrl = ops.ApplyFtrl()
@@ -6417,7 +6417,7 @@ class ApplyFtrl(Primitive):
         ...         self.linear = Parameter(Tensor(np.array([[0.9, 0.1],
         ...                                                  [0.7, 0.8]]).astype(np.float32)), name="linear")
         ...
-        ...     def construct(self, grad):
+        ...     def forward(self, grad):
         ...         out = self.apply_ftrl(self.var, self.accum, self.linear, grad, self.lr, self.l1, self.l2,
         ...                               self.lr_power)
         ...         return out
@@ -6483,7 +6483,7 @@ class SparseApplyFtrl(PrimitiveWithCheck):
         ``Ascend`` ``GPU``
 
     Examples:
-        >>> class SparseApplyFtrlNet(nn.Cell):
+        >>> class SparseApplyFtrlNet(nn.Module):
         ...     def __init__(self):
         ...         super(SparseApplyFtrlNet, self).__init__()
         ...         self.sparse_apply_ftrl = ops.SparseApplyFtrl(lr=0.01, l1=0.0, l2=0.0, lr_power=-0.5)
@@ -6491,7 +6491,7 @@ class SparseApplyFtrl(PrimitiveWithCheck):
         ...         self.accum = Parameter(Tensor(np.array([[0.1]]).astype(np.float32)), name="accum")
         ...         self.linear = Parameter(Tensor(np.array([[0.6]]).astype(np.float32)), name="linear")
         ...
-        ...     def construct(self, grad, indices):
+        ...     def forward(self, grad, indices):
         ...         out = self.sparse_apply_ftrl(self.var, self.accum, self.linear, grad, indices)
         ...         return out
         ...
@@ -6592,7 +6592,7 @@ class SparseApplyFtrlV2(PrimitiveWithInfer):
         ``Ascend``
 
     Examples:
-        >>> class SparseApplyFtrlV2Net(nn.Cell):
+        >>> class SparseApplyFtrlV2Net(nn.Module):
         ...     def __init__(self):
         ...         super(SparseApplyFtrlV2Net, self).__init__()
         ...         self.sparse_apply_ftrl_v2 = ops.SparseApplyFtrlV2(lr=0.01, l1=0.0, l2=0.0,
@@ -6601,7 +6601,7 @@ class SparseApplyFtrlV2(PrimitiveWithInfer):
         ...         self.accum = Parameter(Tensor(np.array([[0.5, 0.9]]).astype(np.float32)), name="accum")
         ...         self.linear = Parameter(Tensor(np.array([[0.7, 0.5]]).astype(np.float32)), name="linear")
         ...
-        ...     def construct(self, grad, indices):
+        ...     def forward(self, grad, indices):
         ...         out = self.sparse_apply_ftrl_v2(self.var, self.accum, self.linear, grad, indices)
         ...         return out
         ...
@@ -7084,7 +7084,7 @@ class DynamicRNN(PrimitiveWithInfer):
           Only `None` is currently supported.
         - **init_h** (Tensor) - Hidden state of initial time. Tensor of shape :math:`(1, batch\_size, hidden\_size)`.
           The data type must be float16.
-        - **init_c** (Tensor) - Cell state of initial time. Tensor of shape :math:`(1, batch\_size, hidden\_size)`.
+        - **init_c** (Tensor) - Module state of initial time. Tensor of shape :math:`(1, batch\_size, hidden\_size)`.
           The data type must be float16.
 
     Outputs:
@@ -8081,7 +8081,7 @@ class SparseApplyAdadelta(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self,epsilon,use_locking = False):
         ...         super(Net, self).__init__()
         ...         self.sparse_apply_adadelta = P.SparseApplyAdadelta(epsilon,use_locking)
@@ -8089,7 +8089,7 @@ class SparseApplyAdadelta(Primitive):
         ...         self.accum = Parameter(Tensor(np.array([[1.5,2.5],[3.5,4.5]]).astype(np.float32)), name="accum")
         ...         self.accum_update = Parameter(Tensor(np.array([[1.2,2.4],[1.8,0.6]]).astype(np.float32)),
         ...                name="accum_update")
-        ...     def construct(self, lr, rho, grad, indices):
+        ...     def forward(self, lr, rho, grad, indices):
         ...         out = self.sparse_apply_adadelta(self.var, self.accum, self.accum_update, lr, rho, grad, indices)
         ...         return out
         ...
@@ -8616,7 +8616,7 @@ class ApplyAdagradDA(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class ApplyAdagradDANet(nn.Cell):
+        >>> class ApplyAdagradDANet(nn.Module):
         ...     def __init__(self, use_locking=False):
         ...         super(ApplyAdagradDANet, self).__init__()
         ...         self.apply_adagrad_d_a = P.ApplyAdagradDA(use_locking)
@@ -8630,7 +8630,7 @@ class ApplyAdagradDA(Primitive):
         ...         self.gradient_accumulator = Parameter(Tensor(np.array([[0.1, 0.3],
         ...                                                                [0.1, 0.5]]).astype(np.float32)),
         ...                                               name="gradient_accumulator")
-        ...     def construct(self, grad, lr, l1, l2, global_step):
+        ...     def forward(self, grad, lr, l1, l2, global_step):
         ...         out = self.apply_adagrad_d_a(self.var, self.gradient_accumulator,
         ...                                      self.gradient_squared_accumulator, grad, lr, l1, l2, global_step)
         ...         return out
@@ -8732,14 +8732,14 @@ class SparseApplyRMSProp(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class SparseApplyRMSPropNet(nn.Cell):
+        >>> class SparseApplyRMSPropNet(nn.Module):
         ...     def __init__(self, rho, momentum, epsilon, use_locking=False):
         ...         super(SparseApplyRMSPropNet, self).__init__()
         ...         self.sparse_apply_r_m_s_prop = P.SparseApplyRMSProp(rho, momentum, epsilon, use_locking)
         ...         self.var = Parameter(Tensor(np.array([[0.6, 0.3], [0.1, 0.5]]).astype(np.float32)), name="var")
         ...         self.ms = Parameter(Tensor(np.array([[0.2, 0.4], [0.1, 0.3]]).astype(np.float32)), name="ms")
         ...         self.mom = Parameter(Tensor(np.array([[0.3, 0.1], [0.3, 0.6]]).astype(np.float32)), name="mom")
-        ...     def construct(self, lr, grad, indices):
+        ...     def forward(self, lr, grad, indices):
         ...         out = self.sparse_apply_r_m_s_prop(self.var, self.ms, self.mom, lr, grad, indices)
         ...         return out
         ...
@@ -8839,13 +8839,13 @@ class ApplyKerasMomentum(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class ApplyKerasMomentumNet(nn.Cell):
+        >>> class ApplyKerasMomentumNet(nn.Module):
         ...     def __init__(self, use_locking=False, use_nesterov=False):
         ...         super(ApplyKerasMomentumNet, self).__init__()
         ...         self.apply_keras_momentum = P.ApplyKerasMomentum(use_locking, use_nesterov)
         ...         self.var = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="var")
         ...         self.accum = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="accum")
-        ...     def construct(self, lr, grad, momentum):
+        ...     def forward(self, lr, grad, momentum):
         ...         out = self.apply_keras_momentum(self.var, self.accum, lr, grad, momentum)
         ...         return out
         ...
@@ -8934,7 +8934,7 @@ class ApplyAdamWithAmsgrad(Primitive):
         ``Ascend``
 
     Examples:
-        >>> class ApplyAdamWithAmsgradNet(nn.Cell):
+        >>> class ApplyAdamWithAmsgradNet(nn.Module):
         ...     def __init__(self, beta1, beta2, epsilon, use_locking=False):
         ...         super(ApplyAdamWithAmsgradNet, self).__init__()
         ...         self.apply_adam_with_amsgrad = P.ApplyAdamWithAmsgrad(beta1, beta2, epsilon, use_locking)
@@ -8942,7 +8942,7 @@ class ApplyAdamWithAmsgrad(Primitive):
         ...         self.m = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="m")
         ...         self.v = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="v")
         ...         self.vhat = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="vhat")
-        ...     def construct(self, beta1_power, beta2_power, lr, grad):
+        ...     def forward(self, beta1_power, beta2_power, lr, grad):
         ...         out = self.apply_adam_with_amsgrad(self.var, self.m, self.v, self.vhat,
         ...                                            beta1_power, beta2_power, lr, grad)
         ...         return out

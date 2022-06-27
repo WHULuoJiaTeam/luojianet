@@ -25,32 +25,32 @@ import luojianet_ms.context as context
 from tests.security_utils import security_off_wrap
 
 
-class PrintNetOneInput(nn.Cell):
+class PrintNetOneInput(nn.Module):
     def __init__(self):
         super(PrintNetOneInput, self).__init__()
         self.op = P.Print()
 
-    def construct(self, x):
+    def forward(self, x):
         self.op(x)
         return x
 
 
-class PrintNetTwoInputs(nn.Cell):
+class PrintNetTwoInputs(nn.Module):
     def __init__(self):
         super(PrintNetTwoInputs, self).__init__()
         self.op = P.Print()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         self.op(x, y)
         return x
 
 
-class PrintNetIndex(nn.Cell):
+class PrintNetIndex(nn.Module):
     def __init__(self):
         super(PrintNetIndex, self).__init__()
         self.op = P.Print()
 
-    def construct(self, x):
+    def forward(self, x):
         self.op(x[0][0][6][3])
         return x
 
@@ -76,12 +76,12 @@ def print_testcase(nptype):
     net_3(x)
 
 
-class PrintNetString(nn.Cell):
+class PrintNetString(nn.Module):
     def __init__(self):
         super(PrintNetString, self).__init__()
         self.op = P.Print()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         self.op("The first Tensor is", x)
         self.op("The second Tensor is", y)
         self.op("This line only prints string", "Another line")
@@ -101,12 +101,12 @@ def print_testcase_string(nptype):
     net(x, y)
 
 
-class PrintTypes(nn.Cell):
+class PrintTypes(nn.Module):
     def __init__(self):
         super(PrintTypes, self).__init__()
         self.op = P.Print()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         self.op("This is a scalar:", 34, "This is int:", x, "This is float64:", y, "This is int64:", z)
         return x
 

@@ -362,13 +362,13 @@ class MakeRefKey(Primitive):
         >>> from luojianet_ms import Parameter, Tensor
         >>> from luojianet_ms import dtype as mstype
         >>> import luojianet_ms.ops as ops
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.y = Parameter(Tensor(np.ones([2, 3]), mstype.int32), name="y")
         ...         self.make_ref_key = ops.MakeRefKey("y")
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         key = self.make_ref_key()
         ...         ref = ops.make_ref(key, x, self.y)
         ...         return ref * x
@@ -521,14 +521,14 @@ class FusedCastAdamWeightDecay(PrimitiveWithInfer):
         >>> import luojianet_ms.ops as ops
         >>> from luojianet_ms import Tensor, Parameter
         >>> from luojianet_ms import dtype as mstype
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.opt = ops.FusedCastAdamWeightDecay()
         ...         self.var = Parameter(Tensor(np.ones([2, 2]), mstype.float16), name="var")
         ...         self.m = Parameter(Tensor(np.ones([2, 2]), mstype.float32), name="m")
         ...         self.v = Parameter(Tensor(np.ones([2, 2]), mstype.float32), name="v")
-        ...     def construct(self, lr, beta1, beta2, epsilon, decay, grad):
+        ...     def forward(self, lr, beta1, beta2, epsilon, decay, grad):
         ...         out = self.opt(self.var, self.m, self.v, lr, beta1, beta2, epsilon, decay, grad)
         ...         return out
         >>> context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
@@ -651,7 +651,7 @@ class FusedAdaFactor(PrimitiveWithInfer):
         >>> from luojianet_ms import Tensor, Parameter
         >>> from luojianet_ms import dtype as mstype
         >>> param_shape = [2, 3, 2]
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.opt = ops.FusedAdaFactor()
@@ -661,7 +661,7 @@ class FusedAdaFactor(PrimitiveWithInfer):
         ...         self.exp_avg_sq_row = Parameter(Tensor(np.zeros([2, 3]), mstype.float32), name="exp_avg_sq_row")
         ...         self.exp_avg_sq_col = Parameter(Tensor(np.zeros([2, 2]), mstype.float32), name="exp_avg_sq_col")
         ...
-        ...     def construct(self, epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad):
+        ...     def forward(self, epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad):
         ...         out = self.opt(epsilon, clip_threshold, beta1, beta2, weight_decay, lr, grad, self.param,
         ...                        self.exp_avg, self.exp_avg_sq_row, self.exp_avg_sq_col, self.exp_avg_sq)
         ...         return out

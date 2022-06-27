@@ -22,25 +22,25 @@ from luojianet_ms.common.api import _cell_graph_executor
 from luojianet_ms.nn.wrap.cell_wrapper import MicroBatchInterleaved
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, strategy1, strategy2):
         super().__init__()
         self.matmul1 = P.MatMul().shard(strategy1)
         self.matmul2 = P.MatMul().shard(strategy2)
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         out = self.matmul1(x, y)
         out = self.matmul2(out, b)
         return out
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = P.ReLU()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 

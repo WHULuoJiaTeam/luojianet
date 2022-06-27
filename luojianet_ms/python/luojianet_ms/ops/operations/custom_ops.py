@@ -37,8 +37,8 @@ from ._pyfunc_registry import add_pyfunc
 class Custom(ops.PrimitiveWithInfer):
     r"""
     `Custom` primitive is used for user defined operators and is to enhance the expressive ability of built-in
-    primitives. You can construct a `Custom` object with a predefined function, which describes the computation
-    logic of a user defined operator. You can also construct another `Custom` object with another predefined
+    primitives. You can forward a `Custom` object with a predefined function, which describes the computation
+    logic of a user defined operator. You can also forward another `Custom` object with another predefined
     function if needed. Then these `Custom` objects can be directly used in neural networks.
 
     .. warning::
@@ -208,7 +208,7 @@ class Custom(ops.PrimitiveWithInfer):
         >>> import numpy as np
         >>> from luojianet_ms.ops import CustomRegOp, custom_info_register, DataType, ms_hybrid
         >>> from luojianet_ms.common import dtype as mstype
-        >>> from luojianet_ms.nn import Cell
+        >>> from luojianet_ms.nn import Module
         >>> input_x = Tensor(np.ones([16, 16]).astype(np.float32))
         >>> input_y = Tensor(np.ones([16, 16]).astype(np.float32))
         >>>

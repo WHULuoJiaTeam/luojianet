@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 
-"""Component that construct function that compile gradients graph wrt inputs."""
+"""Component that forward function that compile gradients graph wrt inputs."""
 
 from luojianet_ms.ops.composite import GradOperation
 from ...components.icomponent import IBuilderComponent

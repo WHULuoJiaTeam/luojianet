@@ -29,7 +29,7 @@ from luojianet_ms.train.callback import _InternalCallbackParam
 from luojianet_ms.train.summary.enums import ModeEnum, PluginEnum
 from luojianet_ms.train.summary import SummaryRecord
 from luojianet_ms.train.summary.summary_record import _DEFAULT_EXPORT_OPTIONS
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn.optim.optimizer import Optimizer
 from luojianet_ms.ops.operations import Add
 from luojianet_ms._c_expression import security
@@ -57,14 +57,14 @@ _SPECIFIED_DATA = SummaryCollector._DEFAULT_SPECIFIED_DATA
 _SPECIFIED_DATA['collect_metric'] = False
 
 
-class CustomNet(Cell):
+class CustomNet(Module):
     """Define custom network."""
     def __init__(self):
         super(CustomNet, self).__init__()
         self.add = Add
         self.optimizer = Optimizer(learning_rate=1, parameters=[Parameter(Tensor(1), 'weight')])
 
-    def construct(self, data):
+    def forward(self, data):
         return data
 
 
@@ -398,13 +398,13 @@ class TestSummaryCollector:
     @security_off_wrap
     def test_get_optimizer_failed(self):
         """Test get optimizer failed."""
-        class Net(Cell):
+        class Net(Module):
             """Define net."""
             def __init__(self):
                 super(Net, self).__init__()
                 self.add = Add()
 
-            def construct(self, data):
+            def forward(self, data):
                 return data
 
         cb_params = _InternalCallbackParam()

@@ -16,18 +16,18 @@
 """Generate WithLossCell suitable for BNN."""
 from .conv_variational import _ConvVariational
 from .dense_variational import _DenseVariational
-from ...cell import Cell
+from ...cell import Module
 
 __all__ = ['WithBNNLossCell']
 
 
-class WithBNNLossCell(Cell):
+class WithBNNLossCell(Module):
     r"""
     Generate a suitable WithLossCell for BNN to wrap the bayesian network with loss function.
 
     Args:
-        backbone (Cell): The target network.
-        loss_fn (Cell): The loss function used to compute loss.
+        backbone (Module): The target network.
+        loss_fn (Module): The loss function used to compute loss.
         dnn_factor(int, float): The coefficient of backbone's loss, which is computed by the loss function. Default: 1.
         bnn_factor(int, float): The coefficient of KL loss, which is the KL divergence of Bayesian layer. Default: 1.
 
@@ -46,11 +46,11 @@ class WithBNNLossCell(Cell):
         >>> import luojianet_ms.nn as nn
         >>> from luojianet_ms.nn.probability import bnn_layers
         >>> from luojianet_ms import Tensor
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.dense = bnn_layers.DenseReparam(16, 1)
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.dense(x)
         >>> net = Net()
         >>> loss_fn = nn.SoftmaxCrossEntropyWithLogits(sparse=False)
@@ -83,7 +83,7 @@ class WithBNNLossCell(Cell):
         self.kl_loss = []
         self._add_kl_loss(self._backbone)
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         y_pred = self._backbone(x)
         backbone_loss = self._loss_fn(y_pred, label)
         kl_loss = 0
@@ -106,6 +106,6 @@ class WithBNNLossCell(Cell):
         Returns the backbone network.
 
         Returns:
-            Cell, the backbone network.
+            Module, the backbone network.
         """
         return self._backbone

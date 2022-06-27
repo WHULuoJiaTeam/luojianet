@@ -27,14 +27,14 @@ from luojianet_ms import export, load
 from luojianet_ms import nn
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.flag = False
         self.weight = Parameter(np_param, requires_grad=True)
         self.dense = nn.Dense(3, 4)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         if self.flag:
             ret = self.dense(x * self.weight)
         else:

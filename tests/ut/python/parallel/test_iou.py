@@ -18,7 +18,7 @@ import pytest
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
@@ -26,17 +26,17 @@ _anchor_boxes = Tensor(np.ones([32, 4]), ms.float32)
 _gt_boxes = Tensor(np.ones([64, 4]), ms.float32)
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, strategy=None):
         super(Net, self).__init__()
         self.iou = P.IOU().shard(strategy)
 
-    def construct(self, anchor_boxes, gt_boxes):
+    def forward(self, anchor_boxes, gt_boxes):
         x = self.iou(anchor_boxes, gt_boxes)
         return x
 
 
-def compile_net(net: Cell):
+def compile_net(net: Module):
     net.set_train()
     net.set_auto_parallel()
     _cell_graph_executor.compile(net, _anchor_boxes, _gt_boxes)

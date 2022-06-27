@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetACos(nn.Cell):
+class NetACos(nn.Module):
     def __init__(self):
         super(NetACos, self).__init__()
         self.acos = P.ACos()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.acos(x)
 
 

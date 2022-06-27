@@ -18,15 +18,15 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.squaresumall = P.SquareSumAll()
 
-    def construct(self, x0, x1):
+    def forward(self, x0, x1):
         return self.squaresumall(x0, x1)
 
 def get_output(inp0, inp1, enable_graph_kernel=False):

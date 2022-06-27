@@ -813,7 +813,7 @@ class MapCenterOfMass(PrimitiveWithInfer):
 
 class NeighborListRefresh(PrimitiveWithInfer):
     """
-    Update (or construct if first time) the Verlet neighbor list for the
+    Update (or forward if first time) the Verlet neighbor list for the
     calculation of short-ranged force.
 
     .. warning::
@@ -822,7 +822,7 @@ class NeighborListRefresh(PrimitiveWithInfer):
     Args:
         grid_numbers (int32): the total number of grids divided G.
         atom_numbers (int32): the number of atoms n.
-        not_first_time (int32): whether to construct the neighbor list first time or not.
+        not_first_time (int32): whether to forward the neighbor list first time or not.
         nxy (int32): the total number of grids divided in xy plane.
         excluded_atom_numbers (int32): the total atom numbers in the excluded list E.
         cutoff_square (float32): the cutoff square distance for short-range force calculation.
@@ -1259,7 +1259,7 @@ class BondForceWithAtomEnergyAndVirial(PrimitiveWithInfer):
     The calculation formula is the same as operator BondForce() and BondEnergy().
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. warning::
@@ -1347,7 +1347,7 @@ class LJForceWithVirialEnergy(PrimitiveWithInfer):
     LJForce(), and the PME direct part is within PME method.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. warning::
@@ -1455,7 +1455,7 @@ class LJForceWithPMEDirectForceUpdate(PrimitiveWithInfer):
     LJForce(), and the PME direct part is within PME method.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. warning::
@@ -1565,7 +1565,7 @@ class PMEReciprocalForceUpdate(PrimitiveWithInfer):
     10.1063/1.470117.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. warning::
@@ -1660,7 +1660,7 @@ class PMEExcludedForceUpdate(PrimitiveWithInfer):
     n, and the length of excluded list is E.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. warning::
@@ -1762,7 +1762,7 @@ class LJForceWithVirialEnergyUpdate(PrimitiveWithInfer):
     LJForce(), and the PME direct part is within PME method.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. warning::
@@ -1986,7 +1986,7 @@ class PMEEnergyUpdate(PrimitiveWithInfer):
     Calculate the Coulumb energy of the system using PME method for pressure.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. warning::

@@ -27,23 +27,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -54,14 +54,14 @@ def compile_net(net, x, y, b):
 
 
 def test_matmul_pow():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.pow = P.Pow().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.pow(out, 2.0)
             out = self.matmul2(out, b)
@@ -80,14 +80,14 @@ def test_matmul_pow():
 
 
 def test_matmul_exp():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.exp = P.Exp().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.exp(out)
             out = self.matmul2(out, b)
@@ -106,14 +106,14 @@ def test_matmul_exp():
 
 
 def test_matmul_log():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.log = P.Log().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.log(out)
             out = self.matmul2(out, b)
@@ -131,14 +131,14 @@ def test_matmul_log():
     compile_net(net, x, y, b)
 
 def test_matmul_abs():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.abs = P.Abs().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.abs(out)
             out = self.matmul2(out, b)
@@ -156,14 +156,14 @@ def test_matmul_abs():
     compile_net(net, x, y, b)
 
 def test_matmul_sign():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.sign = P.Sign().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.sign(out)
             out = self.matmul2(out, b)
@@ -182,14 +182,14 @@ def test_matmul_sign():
 
 
 def test_matmul_floor():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.floor = P.Floor().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.floor(out)
             out = self.matmul2(out, b)
@@ -207,14 +207,14 @@ def test_matmul_floor():
     compile_net(net, x, y, b)
 
 def test_matmul_round():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.round = P.Round().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.round(out)
             out = self.matmul2(out, b)
@@ -233,14 +233,14 @@ def test_matmul_round():
 
 
 def test_matmul_reciprocal():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.reciprocal = P.Reciprocal().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.reciprocal(out)
             out = self.matmul2(out, b)
@@ -259,14 +259,14 @@ def test_matmul_reciprocal():
 
 
 def test_matmul_inv():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.inv = P.Inv().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.inv(out)
             out = self.matmul2(out, b)
@@ -285,14 +285,14 @@ def test_matmul_inv():
 
 
 def test_matmul_rsqrt():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.rsqrt = P.Rsqrt().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.rsqrt(out)
             out = self.matmul2(out, b)
@@ -311,14 +311,14 @@ def test_matmul_rsqrt():
 
 
 def test_matmul_tan():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.tan = P.Tan().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.tan(out)
             out = self.matmul2(out, b)
@@ -337,14 +337,14 @@ def test_matmul_tan():
 
 
 def test_matmul_sin():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.sin = P.Sin().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.sin(out)
             out = self.matmul2(out, b)
@@ -363,14 +363,14 @@ def test_matmul_sin():
 
 
 def test_matmul_sinh():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.sinh = P.Sinh().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.sinh(out)
             out = self.matmul2(out, b)
@@ -389,14 +389,14 @@ def test_matmul_sinh():
 
 
 def test_matmul_log1p():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.log1p = P.Log1p().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.log1p(out)
             out = self.matmul2(out, b)
@@ -415,14 +415,14 @@ def test_matmul_log1p():
 
 
 def test_matmul_expm1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.expm1 = P.Expm1().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.expm1(out)
             out = self.matmul2(out, b)
@@ -441,14 +441,14 @@ def test_matmul_expm1():
 
 
 def test_matmul_cosh():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.cosh = P.Cosh().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.cosh(out)
             out = self.matmul2(out, b)
@@ -466,14 +466,14 @@ def test_matmul_cosh():
     compile_net(net, x, y, b)
 
 def test_matmul_erf():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.erf = P.Erf().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.erf(out)
             out = self.matmul2(out, b)
@@ -492,14 +492,14 @@ def test_matmul_erf():
 
 
 def test_matmul_erfc():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.erfc = P.Erfc().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.erfc(out)
             out = self.matmul2(out, b)
@@ -518,14 +518,14 @@ def test_matmul_erfc():
 
 
 def test_matmul_zeroslike():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.zeroslike = P.ZerosLike().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.zeroslike(out)
             out = self.matmul2(out, b)
@@ -544,14 +544,14 @@ def test_matmul_zeroslike():
 
 
 def test_matmul_oneslike():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.oneslike = P.OnesLike().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.oneslike(out)
             out = self.matmul2(out, b)
@@ -570,14 +570,14 @@ def test_matmul_oneslike():
 
 
 def test_matmul_BesselI0e():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.BesselI0e = P.BesselI0e().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.BesselI0e(out)
             out = self.matmul2(out, b)
@@ -596,14 +596,14 @@ def test_matmul_BesselI0e():
 
 
 def test_matmul_BesselI1e():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.BesselI1e = P.BesselI1e().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.BesselI1e(out)
             out = self.matmul2(out, b)
@@ -622,14 +622,14 @@ def test_matmul_BesselI1e():
 
 
 def test_matmul_ceil():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.Ceil = P.Ceil().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.Ceil(out)
             out = self.matmul2(out, b)
@@ -648,14 +648,14 @@ def test_matmul_ceil():
 
 
 def test_matmul_atan():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.atan = P.Atan().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.atan(out)
             out = self.matmul2(out, b)
@@ -674,14 +674,14 @@ def test_matmul_atan():
 
 
 def test_matmul_Atanh():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.atanh = P.Atanh().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.atanh(out)
             out = self.matmul2(out, b)
@@ -700,14 +700,14 @@ def test_matmul_Atanh():
 
 
 def test_matmul_asin():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.asin = P.Asin().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.asin(out)
             out = self.matmul2(out, b)
@@ -726,14 +726,14 @@ def test_matmul_asin():
 
 
 def test_matmul_asinh():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.asinh = P.Asinh().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.asinh(out)
             out = self.matmul2(out, b)
@@ -752,14 +752,14 @@ def test_matmul_asinh():
 
 
 def test_matmul_acosh():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.acosh = P.Acosh().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.acosh(out)
             out = self.matmul2(out, b)
@@ -778,14 +778,14 @@ def test_matmul_acosh():
 
 
 def test_matmul_logical_not():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.logicalnot = P.LogicalNot().shard(strategy2)
             self.equal = P.Equal().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.equal(out, b)
             out = self.logicalnot(out)
@@ -805,14 +805,14 @@ def test_matmul_logical_not():
 
 
 def test_matmul_cast():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.cast = P.Cast().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             b = self.cast(b, ms.float32)
             out = self.matmul2(out, b)
@@ -832,13 +832,13 @@ def test_matmul_cast():
 
 
 def test_gradient_fp32_sync():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.cast = P.Cast()
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             b = self.cast(b, ms.float32)
             out = self.matmul(out, b)
@@ -856,13 +856,13 @@ def test_gradient_fp32_sync():
 
 
 def test_gradient_fp32_sync1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.cast = P.Cast()
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             b = self.cast(b, ms.float16)
             out = self.matmul(out, b)
@@ -880,13 +880,13 @@ def test_gradient_fp32_sync1():
 
 
 def test_gradient_fp32_sync2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.cast = P.Cast()
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             b = self.cast(b, ms.float16)
             out = self.matmul(out, b)
@@ -904,13 +904,13 @@ def test_gradient_fp32_sync2():
 
 
 def test_gradient_fp32_sync3():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.cast = P.Cast()
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             b = self.cast(b, ms.float16)
             out = self.matmul(out, b)
@@ -928,7 +928,7 @@ def test_gradient_fp32_sync3():
 
 
 def test_mul_two_cast():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.mul = P.Mul().shard(strategy1)
@@ -936,7 +936,7 @@ def test_mul_two_cast():
             self.cast = P.Cast().shard(strategy3)
             self.cast2 = P.Cast().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.mul(x, y)
             out = self.mul2(out, b)
             out = self.cast(out, ms.int32)
@@ -962,14 +962,14 @@ def test_matmul_hshrink():
     Description: matmul-hshrink-matmul net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.hshrink = P.HShrink().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.hshrink(out)
             out = self.matmul2(out, b)
@@ -993,14 +993,14 @@ def test_matmul_hsigmoid():
     Description: matmul-hsigmoid-matmul net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.hsigmoid = P.HSigmoid().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.hsigmoid(out)
             out = self.matmul2(out, b)
@@ -1024,7 +1024,7 @@ def test_matmul_is_finite():
     Description: matmul-is_finite-cast-matmul net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
@@ -1032,7 +1032,7 @@ def test_matmul_is_finite():
             self.cast = P.Cast().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.is_finite(out)
             out = self.cast(out, ms.float32)
@@ -1057,14 +1057,14 @@ def test_matmul_mish():
     Description: matmul-mish-matmul net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.mish = P.Mish().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.mish(out)
             out = self.matmul2(out, b)
@@ -1088,14 +1088,14 @@ def test_matmul_rint():
     Description: matmul-rint-matmul net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.rint = P.Rint().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.rint(out)
             out = self.matmul2(out, b)
@@ -1119,14 +1119,14 @@ def test_selu_mish():
     Description: matmul-selu-matmul net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.selu = P.SeLU().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.selu(out)
             out = self.matmul2(out, b)
@@ -1150,14 +1150,14 @@ def test_matmul_soft_shrink():
     Description: matmul-soft_shrink-matmul net with strategy in semi auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.soft_shrink = P.SoftShrink().shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy1)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul(x, y)
             out = self.soft_shrink(out)
             out = self.matmul2(out, b)

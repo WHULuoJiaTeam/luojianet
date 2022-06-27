@@ -31,7 +31,7 @@ size = get_group_size()
 x = np.asarray([1, 1, 1, 1, 1, 1, 1, 1]).astype(np.float32) * rank
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.neighborexchange = P.comm_ops.NeighborExchange(
@@ -42,7 +42,7 @@ class Net(nn.Cell):
             recv_type=ms.float32,
             group="nccl_world_group")
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         return self.neighborexchange(inputs)
 
 

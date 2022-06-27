@@ -24,12 +24,12 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms._checkparam import Validator, Rel, twice, _check_3d_int_or_tuple
 from luojianet_ms._extends import cell_attr_register
-from ..cell import Cell
+from ..cell import Module
 
 __all__ = ['Conv2d', 'Conv2dTranspose', 'Conv1d', 'Conv1dTranspose', 'Conv3d', 'Conv3dTranspose']
 
 
-class _Conv(Cell):
+class _Conv(Module):
     """
     Applies a N-D convolution over an input signal composed of several input planes.
     """
@@ -102,7 +102,7 @@ class _Conv(Cell):
                 logger.warning("Value of 'has_bias' is False, value of 'bias_init' will be ignored.")
             self.bias = None
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         """Must be overridden by all subclasses."""
         raise NotImplementedError
 
@@ -282,7 +282,7 @@ class Conv2d(_Conv):
                                data_format=self.format)
         self.bias_add = P.BiasAdd(data_format=self.format)
 
-    def construct(self, x):
+    def forward(self, x):
         output = self.conv2d(x, self.weight)
         if self.has_bias:
             output = self.bias_add(output, self.bias)
@@ -474,7 +474,7 @@ class Conv1d(_Conv):
         self.squeeze = P.Squeeze(2)
         self.shape = P.Shape()
 
-    def construct(self, x):
+    def forward(self, x):
         x_shape = self.shape(x)
         _check_input_3d(x_shape, self.cls_name)
         x = self.expand_dims(x, 2)
@@ -695,7 +695,7 @@ class Conv3d(_Conv):
         self.bias_add = P.BiasAdd(data_format=self.format)
         self.shape = P.Shape()
 
-    def construct(self, x):
+    def forward(self, x):
         x_shape = self.shape(x)
         _check_input_5dims(x_shape, self.cls_name)
         output = self.conv3d(x, self.weight)
@@ -909,7 +909,7 @@ class Conv3dTranspose(_Conv):
         self.bias_add = P.BiasAdd(data_format=self.format)
         self.shape = P.Shape()
 
-    def construct(self, x):
+    def forward(self, x):
         x_shape = self.shape(x)
         _check_input_5dims(x_shape, self.cls_name)
         output = self.conv3d_transpose(x, self.weight)
@@ -1133,7 +1133,7 @@ class Conv2dTranspose(_Conv):
         self.conv2d_transpose.shard(strategy)
         return self
 
-    def construct(self, x):
+    def forward(self, x):
         n, _, h, w = self.shape(x)
         h_out = _deconv_output_length(self.is_valid, self.is_same, self.is_pad, h, self.kernel_size[0],
                                       self.stride[0], self.dilation[0], self.padding_top + self.padding_bottom)
@@ -1329,7 +1329,7 @@ class Conv1dTranspose(_Conv):
         self.conv2d_transpose.shard(strategy)
         return self
 
-    def construct(self, x):
+    def forward(self, x):
         x_shape = self.shape(x)
         _check_input_3d(x_shape, self.cls_name)
         x = self.expand_dims(x, 2)

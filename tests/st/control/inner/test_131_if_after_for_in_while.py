@@ -28,13 +28,13 @@ grad_all = C.GradOperation(get_all=True)
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if_after_for_in_while():
-    class IfAfterForInWhileNet(nn.Cell):
+    class IfAfterForInWhileNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(2, mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             out = x + self.param_a
             while self.param_a > self.param_b:
                 self.param_b += 1
@@ -45,12 +45,12 @@ def test_if_after_for_in_while():
                 out += self.param_a * 10
             return out
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor(2, mstype.int32)

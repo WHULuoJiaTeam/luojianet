@@ -25,12 +25,12 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.common.api import _cell_graph_executor
 
 
-class PSNRNet(nn.Cell):
+class PSNRNet(nn.Module):
     def __init__(self, max_val=1.0):
         super(PSNRNet, self).__init__()
         self.net = nn.PSNR(max_val)
 
-    def construct(self, img1, img2):
+    def forward(self, img1, img2):
         return self.net(img1, img2)
 
 

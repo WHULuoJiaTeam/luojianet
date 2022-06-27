@@ -307,7 +307,7 @@ def test_grad_if():
     assert grad_if(Tensor(5, dtype=ms.int32), Tensor(4, dtype=ms.int32)) == (3, 0)
 
 
-class ConvNet(nn.Cell):
+class ConvNet(nn.Module):
     def __init__(self):
         super(ConvNet, self).__init__()
         out_channel = 16
@@ -322,7 +322,7 @@ class ConvNet(nn.Cell):
                              group=1)
         self.w = Parameter(Tensor(np.ones([16, 16, 3, 3]).astype(np.float32)), name='w')
 
-    def construct(self, x):
+    def forward(self, x):
         return self.conv(x, self.w)
 
 
@@ -641,14 +641,14 @@ def test_GradCheckerPrimitive():
 def test_NNGradChecker():
     """ test_NNGradChecker """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
             super(Net, self).__init__()
             self.dense = nn.Dense(10, 10)
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.dense(x)
             return out
 
@@ -661,7 +661,7 @@ def test_NNGradChecker():
 def test_OperationGradChecker():
     """ test_OperationGradChecker """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
@@ -669,7 +669,7 @@ def test_OperationGradChecker():
             self.matmul = P.MatMul()
             self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             x = x * self.z
             out = self.matmul(x, y)
             return out
@@ -682,7 +682,7 @@ def test_OperationGradChecker():
 def test_OperationJacobianChecker():
     """ test_OperationJacobianChecker """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
@@ -690,7 +690,7 @@ def test_OperationJacobianChecker():
             self.matmul = P.MatMul()
             self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             x = x * self.z
             out = self.matmul(x, y)
             return x, out
@@ -704,14 +704,14 @@ def test_OperationJacobianChecker():
 def test_NNJacobianChecker():
     """ test_NNJacobianChecker """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
             super(Net, self).__init__()
             self.dense = nn.Dense(10, 10)
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.dense(x)
             return out, x
 
@@ -853,13 +853,13 @@ def test_grad_refactor_10():
 
 
 def test_grad_refactor_11():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return x * y * y
 
     net = Net()
@@ -867,14 +867,14 @@ def test_grad_refactor_11():
 
 
 def test_grad_refactor_12():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
             super(Net, self).__init__()
             self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return x * self.z * y
 
     net = Net()
@@ -882,14 +882,14 @@ def test_grad_refactor_12():
 
 
 def test_grad_refactor_13():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         """ Net definition """
 
         def __init__(self):
             super(Net, self).__init__()
             self.z = Parameter(Tensor(np.ones([2]).astype(np.float32)), name='z')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return x * self.z * y
 
     net = Net()
@@ -915,13 +915,13 @@ def grad_refactor_14(a, b):
 
 
 # pylint: disable=using-constant-test
-class IfDeferInline(nn.Cell):
+class IfDeferInline(nn.Module):
     def __init__(self, mul_size):
         super().__init__()
         self.mul_weight = Tensor(np.full(mul_size, 0.6, dtype=np.float32))
         self.mul = P.Mul()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         x = self.mul(inputs, self.mul_weight)
         if True:
             x = x
@@ -938,12 +938,12 @@ def test_grad_if_defer_inline():
 
 
 def test_dict_const():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.res = {'1': 10}
 
-        def construct(self):
+        def forward(self):
             return self.res
 
     Net()()

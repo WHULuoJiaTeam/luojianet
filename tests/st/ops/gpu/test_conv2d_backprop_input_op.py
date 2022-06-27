@@ -25,7 +25,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class Conv2dInput(nn.Cell):
+class Conv2dInput(nn.Module):
     def __init__(self):
         super(Conv2dInput, self).__init__()
         out_channel = 1
@@ -42,7 +42,7 @@ class Conv2dInput(nn.Cell):
         self.get_shape = P.Shape()
 
     @ms_function
-    def construct(self, out, w, x):
+    def forward(self, out, w, x):
         return self.conv_input(out, w, self.get_shape(x))
 
 

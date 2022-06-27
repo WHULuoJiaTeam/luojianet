@@ -21,13 +21,13 @@ from luojianet_ms import Tensor
 from luojianet_ms.common.api import ms_function
 from luojianet_ms.ops.operations import _grad_ops as G
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bias_add_grad = G.BiasAddGrad()
 
     @ms_function
-    def construct(self, dout):
+    def forward(self, dout):
         return self.bias_add_grad(dout)
 
 

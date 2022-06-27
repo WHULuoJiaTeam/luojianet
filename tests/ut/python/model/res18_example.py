@@ -37,7 +37,7 @@ def conv1x1(in_channels, out_channels, stride=1, padding=0, pad_mode='pad'):
                      kernel_size=1, stride=stride, padding=padding, pad_mode=pad_mode)
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     """
     residual Block
     """
@@ -68,7 +68,7 @@ class ResidualBlock(nn.Cell):
         self.bn_down_sample = nn.BatchNorm2d(out_channels)
         self.add = Add()
 
-    def construct(self, x):
+    def forward(self, x):
         """
         :param x:
         :return:
@@ -96,9 +96,9 @@ class ResidualBlock(nn.Cell):
         return out
 
 
-class ResNet18(nn.Cell):
+class ResNet18(nn.Module):
     """
-    resnet nn.Cell
+    resnet nn.Module
     """
 
     def __init__(self, block, num_classes=100):
@@ -143,7 +143,7 @@ class ResNet18(nn.Cell):
 
         return nn.SequentialCell(layers)
 
-    def construct(self, x):
+    def forward(self, x):
         """
         :param x:
         :return:
@@ -165,9 +165,9 @@ class ResNet18(nn.Cell):
         return x
 
 
-class ResNet9(nn.Cell):
+class ResNet9(nn.Module):
     """
-    resnet nn.Cell
+    resnet nn.Module
     """
 
     def __init__(self, block, num_classes=100):
@@ -212,7 +212,7 @@ class ResNet9(nn.Cell):
 
         return nn.SequentialCell(layers)
 
-    def construct(self, x):
+    def forward(self, x):
         """
         :param x:
         :return:

@@ -54,12 +54,12 @@ class Shift(PrimitiveWithInfer):
         return x_dtype
 
 
-class ShiftNet(nn.Cell):
+class ShiftNet(nn.Module):
     def __init__(self, periods=1, axis=-1):
         super(ShiftNet, self).__init__()
         self.shift = Shift(periods, axis)
 
-    def construct(self, x, fill_value):
+    def forward(self, x, fill_value):
         return self.shift(x, fill_value)
 
 

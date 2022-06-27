@@ -27,14 +27,14 @@ from .. import boost
 from .. import context
 
 
-class _OutputTo16(nn.Cell):
+class _OutputTo16(nn.Module):
     "Wrap cell for amp. Cast network output back to float16"
 
     def __init__(self, op):
         super(_OutputTo16, self).__init__(auto_prefix=False)
         self._op = op
 
-    def construct(self, x):
+    def forward(self, x):
         return F.cast(self._op(x), mstype.float16)
 
 
@@ -114,7 +114,7 @@ def _check_level(level, boost_level):
 def _add_loss_network(network, loss_fn, cast_model_type):
     """Add loss network."""
 
-    class WithLossCell(nn.Cell):
+    class WithLossCell(nn.Module):
         "Wrap loss for amp. Cast network output back to float32"
 
         def __init__(self, backbone, loss_fn):
@@ -122,12 +122,12 @@ def _add_loss_network(network, loss_fn, cast_model_type):
             self._backbone = backbone
             self._loss_fn = loss_fn
 
-        def construct(self, data, label):
+        def forward(self, data, label):
             out = self._backbone(data)
             label = F.mixed_precision_cast(mstype.float32, label)
             return self._loss_fn(F.mixed_precision_cast(mstype.float32, out), label)
 
-    validator.check_value_type('loss_fn', loss_fn, nn.Cell)
+    validator.check_value_type('loss_fn', loss_fn, nn.Module)
     if cast_model_type == mstype.float16:
         network = WithLossCell(network, loss_fn)
     else:
@@ -140,8 +140,8 @@ def build_train_network(network, optimizer, loss_fn=None, level='O0', boost_leve
     Build the mixed precision training cell automatically.
 
     Args:
-        network (Cell): Definition of the network.
-        loss_fn (Union[None, Cell]): Define the loss function. If None, the `network` should have the loss inside.
+        network (Module): Definition of the network.
+        loss_fn (Union[None, Module]): Define the loss function. If None, the `network` should have the loss inside.
             Default: None.
         optimizer (Optimizer): Define the optimizer to update the Parameter.
         level (str): Supports ["O0", "O2", "O3", "auto"]. Default: "O0".
@@ -182,7 +182,7 @@ def build_train_network(network, optimizer, loss_fn=None, level='O0', boost_leve
         ValueError: If device is CPU, property `loss_scale_manager` is not `None` or `FixedLossScaleManager`
             (with property `drop_overflow_update=False` ).
     """
-    validator.check_value_type('network', network, nn.Cell)
+    validator.check_value_type('network', network, nn.Module)
     validator.check_value_type('optimizer', optimizer, (nn.Optimizer, boost.FreezeOpt,
                                                         nn.AdaSumByGradWrapCell, nn.AdaSumByDeltaWeightWrapCell))
 

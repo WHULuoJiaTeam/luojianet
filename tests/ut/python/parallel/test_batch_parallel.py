@@ -27,27 +27,27 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, w1, w2):
+    def forward(self, x, w1, w2):
         predict = self.network(x, w1, w2)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, w1, w2):
+    def forward(self, x, w1, w2):
         return grad_all(self.network)(x, w1, w2)
 
 
-class NetConv(nn.Cell):
+class NetConv(nn.Module):
     def __init__(self,
                  cin,
                  cout,
@@ -75,12 +75,12 @@ class NetConv(nn.Cell):
                               bias_init)
         self.conv.conv2d.shard(strategy)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.conv(input_x)
 
 
 def test_batch():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.conv1 = NetConv(16, 8, (3, 3), bias_init='zeros', strategy=strategy1)
@@ -88,7 +88,7 @@ def test_batch():
             self.conv2 = NetConv(8, 64, (9, 9), bias_init='zeros', strategy=strategy1)
             self.mul2 = P.Mul().shard(strategy3)
 
-        def construct(self, x, w1, w2):
+        def forward(self, x, w1, w2):
             out1 = self.conv1(x)
             out2 = self.mul1(out1, w1)
             out3 = self.conv2(out2)

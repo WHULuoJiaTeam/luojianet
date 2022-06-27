@@ -57,7 +57,7 @@ def _clip_grad(clip_type, clip_value, grad):
     return new_grad
 
 
-class TrainOneStepWithLossScaleCell(nn.Cell):
+class TrainOneStepWithLossScaleCell(nn.Module):
     def __init__(self, network, optimizer, scale_update_cell=None):
         super(TrainOneStepWithLossScaleCell, self).__init__(auto_prefix=False)
         self.network = network
@@ -81,7 +81,7 @@ class TrainOneStepWithLossScaleCell(nn.Cell):
             self.loss_scale = Parameter(Tensor(scale_update_cell.get_loss_scale(), dtype=mstype.float32),
                                         name="loss_scale")
 
-    def construct(self, x, sens=None):
+    def forward(self, x, sens=None):
         """Defines the computation performed."""
         weights = self.weights
         loss = self.network(x)
@@ -132,20 +132,20 @@ class DatasetLenet(MindData):
         self.index = 0
 
 
-class LoopLayer(nn.Cell):
+class LoopLayer(nn.Module):
     def __init__(self):
         super(LoopLayer, self).__init__()
         self.matmul = P.MatMul()
         self.relu = P.ReLU()
         self.matmul_weight = Parameter(Tensor(np.ones([64, 64]), dtype=ms.float32), name="weight")
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.matmul(x, self.matmul_weight)
         out = self.relu(out)
         return out
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.exp = P.Exp()
@@ -156,7 +156,7 @@ class Net(nn.Cell):
             layers.append(layer)
         self.layers = nn.CellList(layers)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.exp(x)
         for layer in self.layers:
             layer_out = layer(out)
@@ -165,14 +165,14 @@ class Net(nn.Cell):
         return out
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self):
         super(Net2, self).__init__()
         self.matmul = P.MatMul()
         self.relu = P.ReLU()
         self.matmul_weight = Parameter(Tensor(np.ones([64, 64]), dtype=ms.float32), name="weight")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.matmul(x, self.matmul_weight)
         out = self.relu(out)
         return out

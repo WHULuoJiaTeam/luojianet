@@ -25,12 +25,12 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetAsinGrad(nn.Cell):
+class NetAsinGrad(nn.Module):
     def __init__(self):
         super(NetAsinGrad, self).__init__()
         self.asinGrad = G.AsinGrad()
 
-    def construct(self, x, dy):
+    def forward(self, x, dy):
         return self.asinGrad(x, dy)
 
 

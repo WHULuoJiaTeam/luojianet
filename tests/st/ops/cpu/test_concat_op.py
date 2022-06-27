@@ -24,7 +24,7 @@ import luojianet_ms.context as context
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
-class ConcatV10(nn.Cell):
+class ConcatV10(nn.Module):
     def __init__(self, nptype):
         super(ConcatV10, self).__init__()
 
@@ -34,7 +34,7 @@ class ConcatV10(nn.Cell):
                                    [[2., 4., 5.],
                                     [3., 6., 7.]]]).astype(nptype))
 
-    def construct(self):
+    def forward(self):
         return self.cat((self.x1,))
 
 
@@ -68,7 +68,7 @@ def test_axis10_bool():
     axis10(np.bool)
 
 
-class ConcatV32(nn.Cell):
+class ConcatV32(nn.Module):
     def __init__(self, nptype):
         super(ConcatV32, self).__init__()
 
@@ -76,7 +76,7 @@ class ConcatV32(nn.Cell):
         self.x1 = Tensor(np.arange(2 * 2 * 1).reshape(2, 2, 1).astype(nptype))
         self.x2 = Tensor(np.arange(2 * 2 * 2).reshape(2, 2, 2).astype(nptype))
 
-    def construct(self):
+    def forward(self):
         return self.cat((self.x1, self.x2))
 
 
@@ -109,33 +109,33 @@ def test_axis32_bool():
     axis32(np.bool)
 
 
-class ConcatWithList(nn.Cell):
+class ConcatWithList(nn.Module):
     def __init__(self):
         super(ConcatWithList, self).__init__()
         self.concat = P.Concat(axis=2)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         input_list = [x, y]
         return self.concat(input_list)
 
 
-class ConcatWithTuple(nn.Cell):
+class ConcatWithTuple(nn.Module):
     def __init__(self):
         super(ConcatWithTuple, self).__init__()
         self.concat = P.Concat(axis=2)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         input_list = (x, y)
         return self.concat(input_list)
 
 
-class GradConcat(nn.Cell):
+class GradConcat(nn.Module):
     def __init__(self, network):
         super(GradConcat, self).__init__()
         self.grad = ops.GradOperation()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         gout = self.grad(self.network)(x, y)
         return gout
 
@@ -171,7 +171,7 @@ def test_concat_tuple_grad():
     assert (output.asnumpy() == expect).all()
 
 
-class ConcatV43(nn.Cell):
+class ConcatV43(nn.Module):
     def __init__(self, nptype):
         super(ConcatV43, self).__init__()
 
@@ -179,7 +179,7 @@ class ConcatV43(nn.Cell):
         self.x1 = Tensor(np.arange(2 * 2 * 2 * 2).reshape(2, 2, 2, 2).astype(nptype))
         self.x2 = Tensor(np.arange(2 * 2 * 2 * 3).reshape(2, 2, 2, 3).astype(nptype))
 
-    def construct(self):
+    def forward(self):
         return self.cat((self.x1, self.x2))
 
 
@@ -217,7 +217,7 @@ def test_axis43_bool():
     axis43(np.bool)
 
 
-class ConcatV21(nn.Cell):
+class ConcatV21(nn.Module):
     def __init__(self, nptype):
         super(ConcatV21, self).__init__()
 
@@ -225,7 +225,7 @@ class ConcatV21(nn.Cell):
         self.x1 = Tensor(np.arange(2 * 2).reshape(2, 2).astype(nptype))
         self.x2 = Tensor(np.arange(2 * 3).reshape(2, 3).astype(nptype))
 
-    def construct(self):
+    def forward(self):
         return self.cat((self.x1, self.x2))
 
 
@@ -257,12 +257,12 @@ def test_axis21_bool():
     axis21(np.bool)
 
 
-class Concat3INet(nn.Cell):
+class Concat3INet(nn.Module):
     def __init__(self):
         super(Concat3INet, self).__init__()
         self.cat = P.Concat(axis=1)
 
-    def construct(self, x1, x2, x3):
+    def forward(self, x1, x2, x3):
         return self.cat((x1, x2, x3))
 
 
@@ -314,12 +314,12 @@ def test_concat_3i_bool():
     assert (output_ms.asnumpy() == output_np).all()
 
 
-class Concat4INet(nn.Cell):
+class Concat4INet(nn.Module):
     def __init__(self):
         super(Concat4INet, self).__init__()
         self.cat = P.Concat(axis=1)
 
-    def construct(self, x1, x2, x3, x4):
+    def forward(self, x1, x2, x3, x4):
         return self.cat((x1, x2, x3, x4))
 
 

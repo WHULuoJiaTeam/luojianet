@@ -21,13 +21,13 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, num_sample):
         super(Net, self).__init__()
         self.random_categorical = P.RandomCategorical(luojianet_ms.int64)
         self.num_sample = num_sample
 
-    def construct(self, logits, seed=0):
+    def forward(self, logits, seed=0):
         return self.random_categorical(logits, self.num_sample, seed)
 
 def test_net():

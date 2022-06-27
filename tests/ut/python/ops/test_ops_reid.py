@@ -27,7 +27,7 @@ from ....luojianet_ms_test_framework.pipeline.gradient.compile_gradient \
 from ....ops_common import convert
 
 
-class SeqConvBnRelu(nn.Cell):
+class SeqConvBnRelu(nn.Module):
     """ SeqConvBnRelu definition """
 
     def __init__(self, in_ch, out_ch):
@@ -36,7 +36,7 @@ class SeqConvBnRelu(nn.Cell):
         self.bn = nn.BatchNorm2d(out_ch)
         self.relu = P.ReLU()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.relu(self.bn(self.conv(input_x)))
 
 

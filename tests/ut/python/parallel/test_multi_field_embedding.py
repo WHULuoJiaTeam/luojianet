@@ -36,27 +36,27 @@ def _test_context():
     context.reset_auto_parallel_context()
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         return grad_all(self.network)(x, y, z)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         predict = self.network(x, y, z)
         return self.loss(predict)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, shape, field_size=10, slice_mode=nn.EmbeddingLookup.BATCH_SLICE, target="Device",
                  operator='SUM'):
         super().__init__()
@@ -65,7 +65,7 @@ class Net(nn.Cell):
         self.reshape = P.Reshape()
         self.batch_size = shape[0]
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         out = self.embedding(x, y, z)
         out = self.reshape(out, (self.batch_size, -1))
         return out

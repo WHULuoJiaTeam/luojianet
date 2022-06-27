@@ -31,24 +31,24 @@ def test_partial_pos_arg():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             f = partial(self.show, x)
             ret = f(y, z)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             f = partial(self.show, x)
             ret = f(y, z)
             return ret
@@ -68,24 +68,24 @@ def test_partial_key_ward_arg():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             f = partial(self.show, x=x)
             ret = f(y=y, z=z)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             f = partial(self.show, x=x)
             ret = f(y=y, z=z)
             return ret
@@ -105,24 +105,24 @@ def test_partial_key_ward_arg_update():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             f = partial(self.show, x=x, y=y)
             ret = f(y=y, z=z)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             f = partial(self.show, x=x, y=y)
             ret = f(y=y, z=z)
             return ret
@@ -142,24 +142,24 @@ def test_partial_key_ward_arg_and_pos_arg():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             f = partial(self.show, y=y)
             ret = f(2, z=z)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             f = partial(self.show, y=y)
             ret = f(2, z=z)
             return ret
@@ -179,24 +179,24 @@ def test_partial_pos_arg_const():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, 1)
             ret = f(2, 3)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, 1)
             ret = f(2, 3)
             return ret
@@ -212,24 +212,24 @@ def test_partial_key_ward_arg_const():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, x=1)
             ret = f(y=2, z=3)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, x=1)
             ret = f(y=2, z=3)
             return ret
@@ -245,24 +245,24 @@ def test_partial_key_ward_arg_update_const():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, x=1, y=2)
             ret = f(y=3, z=4)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, x=1, y=2)
             ret = f(y=3, z=4)
             return ret
@@ -278,24 +278,24 @@ def test_partial_key_ward_arg_and_pos_arg_const():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, y=2)
             ret = f(1, z=3)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, y=2)
             ret = f(1, z=3)
             return ret
@@ -311,24 +311,24 @@ def test_partial_key_ward_arg_and_pos_arg_const_multi_assign_x():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, x=1)
             ret = f(1, 2, 3)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, x=1)
             ret = f(1, 2, 3)
             return ret
@@ -346,24 +346,24 @@ def test_partial_key_ward_arg_and_pos_arg_const_multi_assign_y():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, y=2)
             ret = f(1, 2, z=3)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, y=2)
             ret = f(1, 2, z=3)
             return ret
@@ -381,24 +381,24 @@ def test_partial_key_ward_arg_and_pos_arg_const_multi_assign_z():
     Expectation: the result match given one
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
         def show(self, x, y, z):
             return x, y, z
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, z=1)
             ret = f(1, 2, 3)
             return ret
 
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.show = lambda x, y, z: (x, y, z)
 
-        def construct(self):
+        def forward(self):
             f = partial(self.show, z=1)
             ret = f(1, 2, 3)
             return ret

@@ -16,7 +16,7 @@ import numpy as np
 import pytest
 
 from luojianet_ms import context, Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 from parallel.utils.utils import compile_net
@@ -26,21 +26,21 @@ input_v_ = Tensor(np.random.normal(size=[16, 8, 8]).astype(np.float32))
 indices_ = tuple(range(16))
 
 
-class InplaceAddNet(Cell):
+class InplaceAddNet(Module):
     def __init__(self, indices, strategy=None):
         super(InplaceAddNet, self).__init__()
         self.inplace_add = P.InplaceAdd(indices).shard(strategy)
 
-    def construct(self, x, input_v):
+    def forward(self, x, input_v):
         return self.inplace_add(x, input_v)
 
 
-class InplaceSubNet(Cell):
+class InplaceSubNet(Module):
     def __init__(self, indices, strategy=None):
         super(InplaceSubNet, self).__init__()
         self.inplace_sub = P.InplaceSub(indices).shard(strategy)
 
-    def construct(self, x, input_v):
+    def forward(self, x, input_v):
         return self.inplace_sub(x, input_v)
 
 

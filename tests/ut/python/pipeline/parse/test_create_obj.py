@@ -17,8 +17,8 @@
 @File  : test_create_obj.py
 @Author:
 @Date  : 2019-06-26
-@Desc  : test create object instance on parse function, eg: 'construct'
-         Support class : nn.Cell ops.Primitive
+@Desc  : test create object instance on parse function, eg: 'forward'
+         Support class : nn.Module ops.Primitive
          Support parameter: type is define on function 'ValuePtrToPyData'
                             (int,float,string,bool,tensor)
 """
@@ -37,7 +37,7 @@ log = logging.getLogger("test")
 log.setLevel(level=logging.ERROR)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -45,12 +45,12 @@ class Net(nn.Cell):
         self.softmax = nn.Softmax(0)
         self.axis = 0
 
-    def construct(self, x):
+    def forward(self, x):
         x = nn.Softmax(self.axis)(x)
         return x
 
 
-# Test: Create Cell OR Primitive instance on construct
+# Test: Create Module OR Primitive instance on forward
 @non_graph_engine
 def test_create_cell_object_on_construct():
     """ test_create_cell_object_on_construct """
@@ -67,8 +67,8 @@ def test_create_cell_object_on_construct():
     log.debug("finished test_create_object_on_construct")
 
 
-# Test: Create Cell OR Primitive instance on construct
-class Net1(nn.Cell):
+# Test: Create Module OR Primitive instance on forward
+class Net1(nn.Module):
     """ Net1 definition """
 
     def __init__(self):
@@ -76,7 +76,7 @@ class Net1(nn.Cell):
         self.add = P.Add()
 
     @ms_function
-    def construct(self, x, y):
+    def forward(self, x, y):
         add = P.Add()
         result = add(x, y)
         return result
@@ -90,12 +90,12 @@ def test_create_primitive_object_on_construct():
     y = Tensor(np.array([[2, 3, 4], [1, 1, 2]], np.float32))
 
     net = Net1()
-    net.construct(x, y)
+    net.forward(x, y)
     log.debug("finished test_create_object_on_construct")
 
 
-# Test: Create Cell OR Primitive instance on construct use many parameter
-class NetM(nn.Cell):
+# Test: Create Module OR Primitive instance on forward use many parameter
+class NetM(nn.Module):
     """ NetM definition """
 
     def __init__(self, name, axis):
@@ -105,24 +105,24 @@ class NetM(nn.Cell):
         self.axis = axis
         self.softmax = nn.Softmax(self.axis)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.softmax(x)
         return x
 
 
-class NetC(nn.Cell):
+class NetC(nn.Module):
     """ NetC definition """
 
     def __init__(self, tensor):
         super(NetC, self).__init__()
         self.tensor = tensor
 
-    def construct(self, x):
+    def forward(self, x):
         x = NetM("test", 1)(x)
         return x
 
 
-# Test: Create Cell OR Primitive instance on construct
+# Test: Create Module OR Primitive instance on forward
 @non_graph_engine
 def test_create_cell_object_on_construct_use_many_parameter():
     """ test_create_cell_object_on_construct_use_many_parameter """
@@ -139,15 +139,15 @@ def test_create_cell_object_on_construct_use_many_parameter():
     log.debug("finished test_create_object_on_construct")
 
 
-class NetD(nn.Cell):
+class NetD(nn.Module):
     """ NetD definition """
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         concat = P.Concat(axis=1)
         return concat((x, y))
 
 
-# Test: Create Cell OR Primitive instance on construct
+# Test: Create Module OR Primitive instance on forward
 @non_graph_engine
 def test_create_primitive_object_on_construct_use_kwargs():
     """ test_create_primitive_object_on_construct_use_kwargs """
@@ -160,14 +160,14 @@ def test_create_primitive_object_on_construct_use_kwargs():
     log.debug("finished test_create_primitive_object_on_construct_use_kwargs")
 
 
-class NetE(nn.Cell):
+class NetE(nn.Module):
     """ NetE definition """
 
     def __init__(self):
         super(NetE, self).__init__()
         self.w = Parameter(Tensor(np.ones([16, 16, 3, 3]).astype(np.float32)), name='w')
 
-    def construct(self, x):
+    def forward(self, x):
         out_channel = 16
         kernel_size = 3
         conv2d = P.Conv2D(out_channel,
@@ -181,7 +181,7 @@ class NetE(nn.Cell):
         return conv2d(x, self.w)
 
 
-# Test: Create Cell OR Primitive instance on construct
+# Test: Create Module OR Primitive instance on forward
 @non_graph_engine
 def test_create_primitive_object_on_construct_use_args_and_kwargs():
     """ test_create_primitive_object_on_construct_use_args_and_kwargs """
@@ -193,18 +193,18 @@ def test_create_primitive_object_on_construct_use_args_and_kwargs():
     log.debug("finished test_create_primitive_object_on_construct_use_args_and_kwargs")
 
 
-# Test: Create Cell instance in construct
-class SubCell(nn.Cell):
+# Test: Create Module instance in forward
+class SubCell(nn.Module):
     def __init__(self, t):
         super(SubCell, self).__init__()
         self.t = t
 
-    def construct(self):
+    def forward(self):
         return ops.typeof(self.t)
 
 
-class WrapCell(nn.Cell):
-    def construct(self, t):
+class WrapCell(nn.Module):
+    def forward(self, t):
         type_0 = ops.typeof(t)
         type_1 = SubCell(t)()
         return type_0, type_1
@@ -212,7 +212,7 @@ class WrapCell(nn.Cell):
 
 def test_create_cell_with_tensor():
     """
-    Feature: Raise exception while create Cell(that init use tensor input) in construct.
+    Feature: Raise exception while create Module(that init use tensor input) in forward.
     Description: None
     Expectation: TypeError.
     """

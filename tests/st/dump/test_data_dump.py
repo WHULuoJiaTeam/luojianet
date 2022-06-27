@@ -29,7 +29,7 @@ import luojianet_ms.nn as nn
 import luojianet_ms.ops as ops
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P, constexpr
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import Dense
 from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
 from luojianet_ms.nn import Momentum
@@ -40,12 +40,12 @@ from dump_test_utils import generate_dump_json, generate_dump_json_with_overflow
 from tests.security_utils import security_off_wrap
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.Add()
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         return self.add(x_, y_)
 
 
@@ -190,14 +190,14 @@ def test_gpu_e2e_dump_with_hccl_set():
     del os.environ['RANK_ID']
 
 
-class ReluReduceMeanDenseRelu(Cell):
+class ReluReduceMeanDenseRelu(Module):
     def __init__(self, kernel, bias, in_channel, num_class):
         super().__init__()
         self.relu = P.ReLU()
         self.mean = P.ReduceMean(keep_dims=False)
         self.dense = Dense(in_channel, num_class, kernel, bias)
 
-    def construct(self, x_):
+    def forward(self, x_):
         x_ = self.relu(x_)
         x_ = self.mean(x_, (2, 3))
         x_ = self.dense(x_)
@@ -616,12 +616,12 @@ def construct_tensor(cst):
     return Tensor(np.array(cst))
 
 
-class ConstantNet(nn.Cell):
+class ConstantNet(nn.Module):
     def __init__(self):
         super(ConstantNet, self).__init__()
         self.relu = ops.ReLU()
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.relu(construct_tensor(ops.shape(x_)))
 
 

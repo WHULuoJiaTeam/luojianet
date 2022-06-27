@@ -72,13 +72,13 @@ class ScalarSummary(Primitive):
         >>> import luojianet_ms.ops as ops
         >>>
         >>>
-        >>> class SummaryDemo(nn.Cell):
+        >>> class SummaryDemo(nn.Module):
         ...     def __init__(self,):
         ...         super(SummaryDemo, self).__init__()
         ...         self.summary = ops.ScalarSummary()
         ...         self.add = ops.Add()
         ...
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         name = "x"
         ...         self.summary(name, x)
         ...         x = self.add(x, y)
@@ -117,12 +117,12 @@ class ImageSummary(PrimitiveWithInfer):
         >>> import luojianet_ms.ops as ops
         >>>
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.summary = ops.ImageSummary()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         name = "image"
         ...         out = self.summary(name, x)
         ...         return out
@@ -171,13 +171,13 @@ class TensorSummary(Primitive):
         >>> import luojianet_ms.ops as ops
         >>>
         >>>
-        >>> class SummaryDemo(nn.Cell):
+        >>> class SummaryDemo(nn.Module):
         ...     def __init__(self,):
         ...         super(SummaryDemo, self).__init__()
         ...         self.summary = ops.TensorSummary()
         ...         self.add = ops.Add()
         ...
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         x = self.add(x, y)
         ...         name = "x"
         ...         self.summary(name, x)
@@ -215,13 +215,13 @@ class HistogramSummary(PrimitiveWithInfer):
         >>> import luojianet_ms.ops as ops
         >>>
         >>>
-        >>> class SummaryDemo(nn.Cell):
+        >>> class SummaryDemo(nn.Module):
         ...     def __init__(self,):
         ...         super(SummaryDemo, self).__init__()
         ...         self.summary = ops.HistogramSummary()
         ...         self.add = ops.Add()
         ...
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         x = self.add(x, y)
         ...         name = "x"
         ...         self.summary(name, x)
@@ -440,12 +440,12 @@ class Print(PrimitiveWithInfer):
         ``Ascend`` ``GPU``
 
     Examples:
-        >>> class PrintDemo(nn.Cell):
+        >>> class PrintDemo(nn.Module):
         ...     def __init__(self):
         ...         super(PrintDemo, self).__init__()
         ...         self.print = ops.Print()
         ...
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         self.print('Print Tensor x and Tensor y:', x, y)
         ...         return x
         ...
@@ -504,13 +504,13 @@ class Assert(PrimitiveWithInfer):
         TypeError: If `input_data` is neither a tuple nor a list.
 
     Examples:
-        >>> class AssertDemo(nn.Cell):
+        >>> class AssertDemo(nn.Module):
         ...     def __init__(self):
         ...         super(AssertDemo, self).__init__()
         ...         self.assert1 = ops.Assert(summarize=10)
         ...         self.add = ops.Add()
         ...
-        ...     def construct(self, x, y):
+        ...     def forward(self, x, y):
         ...         data = self.add(x, y)
         ...         self.assert1(True, [data])
         ...         return data

@@ -20,7 +20,7 @@ import luojianet_ms as ms
 import luojianet_ms.nn as nn
 import luojianet_ms.ops.operations as P
 from luojianet_ms import context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import ReLU
 from luojianet_ms.common.tensor import Tensor
 
@@ -31,7 +31,7 @@ class MetaFactory:
         self.device_id = None
         self.global_rank_id = None
 
-class ReluTanhSoftmax(Cell, MetaFactory):
+class ReluTanhSoftmax(Module, MetaFactory):
     def __init__(self):
         super().__init__()
         MetaFactory.__init__(self)
@@ -39,22 +39,22 @@ class ReluTanhSoftmax(Cell, MetaFactory):
         self.tanh = nn.Tanh()
         self.softmax = nn.Softmax()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.relu(x)
         y = self.tanh(x)
         z = self.softmax(x)
         return x, y, z
 
-class Add(Cell, MetaFactory):
+class Add(Module, MetaFactory):
     def __init__(self):
         super().__init__()
         MetaFactory.__init__(self)
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.add(x, y)
 
-class ReluTanhAdd(Cell, MetaFactory):
+class ReluTanhAdd(Module, MetaFactory):
     def __init__(self):
         super().__init__()
         MetaFactory.__init__(self)
@@ -62,7 +62,7 @@ class ReluTanhAdd(Cell, MetaFactory):
         self.tanh = nn.Tanh()
         self.add = Add()
 
-    def construct(self, x):
+    def forward(self, x):
         x_1 = self.relu(x)
         y = self.tanh(x)
         x = self.add(x_1, y)

@@ -100,7 +100,7 @@ class _ConvVariational(_Conv):
         self.log = P.Log()
         self.sum = P.ReduceSum()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         outputs = self._apply_variational_weight(inputs)
         if self.has_bias:
             outputs = self.apply_variational_bias(outputs)
@@ -192,7 +192,7 @@ class ConvReparam(_ConvVariational):
             Default: 1.
         has_bias (bool): Specifies whether the layer uses a bias vector.
             Default: False.
-        weight_prior_fn (Cell): The prior distribution for weight.
+        weight_prior_fn (Module): The prior distribution for weight.
             It must return a luojianet_ms distribution instance.
             Default: NormalPrior. (which creates an instance of standard
             normal distribution). The current version only supports normal distribution.
@@ -200,7 +200,7 @@ class ConvReparam(_ConvVariational):
             It must be a function handle which returns a luojianet_ms
             distribution instance. Default: normal_post_fn.
             The current version only supports normal distribution.
-        bias_prior_fn (Cell): The prior distribution for bias vector. It must return
+        bias_prior_fn (Module): The prior distribution for bias vector. It must return
             a luojianet_ms distribution. Default: NormalPrior(which creates an
             instance of standard normal distribution). The current version
             only supports normal distribution.

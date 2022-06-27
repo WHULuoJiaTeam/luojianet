@@ -132,21 +132,21 @@ def test_resetnet50_build():
     Model(network=network, loss_fn=loss_func, optimizer=optimizer)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.conv = nn.Conv2d(3, 64, 3, bias_init='zeros')
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         return self.conv(inputs)
 
 
-class TestNet(nn.Cell):
+class TestNet(nn.Module):
     def __init__(self):
         super(TestNet, self).__init__()
         self.param = Parameter(Tensor([1, 3, 16, 50]), "param")
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         self.param = self.param + inputs
         return self.param
 

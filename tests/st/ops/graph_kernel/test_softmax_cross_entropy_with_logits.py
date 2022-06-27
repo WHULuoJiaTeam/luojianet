@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetSoftmaxCrossEntropyWithLogits(nn.Cell):
+class NetSoftmaxCrossEntropyWithLogits(nn.Module):
     def __init__(self):
         super(NetSoftmaxCrossEntropyWithLogits, self).__init__()
         self.loss = P.SoftmaxCrossEntropyWithLogits()
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         return self.loss(logits, labels)
 
 

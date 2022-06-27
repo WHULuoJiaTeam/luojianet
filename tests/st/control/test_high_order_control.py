@@ -14,7 +14,7 @@
 # ============================================================================
 """ test high order control flow """
 import pytest
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.common import Tensor, dtype
 import luojianet_ms.ops.functional as F
 
@@ -31,8 +31,8 @@ def test_high_control_while():
     Expectation: Null.
     """
 
-    class Net(Cell):
-        def construct(self, x):
+    class Net(Module):
+        def forward(self, x):
             while x < 10:
                 x = (x * 2)
             return x
@@ -57,8 +57,8 @@ def test_high_control_for_while():
     Expectation: Null.
     """
 
-    class Net(Cell):
-        def construct(self, x):
+    class Net(Module):
+        def forward(self, x):
             for _ in [2]:
                 for _ in [2]:
                     while x > 1:

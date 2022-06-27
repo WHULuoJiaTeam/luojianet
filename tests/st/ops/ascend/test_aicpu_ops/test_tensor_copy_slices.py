@@ -25,21 +25,21 @@ from luojianet_ms.ops.operations import _inner_ops
 from luojianet_ms import ops as P
 from luojianet_ms.ops import composite as C
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.copy_slices = _inner_ops.TensorCopySlices()
 
-    def construct(self, input_x, update, begin, end, strides):
+    def forward(self, input_x, update, begin, end, strides):
         return self.copy_slices(input_x, update, begin, end, strides)
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self):
         super(GradNet, self).__init__()
         self.input_x = Parameter(Tensor([[2, 3, 4, 5], [2, 3, 4, 5]], mstype.float32))
         self.relu = P.ReLU()
 
-    def construct(self, input_y):
+    def forward(self, input_y):
         self.input_x[0:1] /= input_y
         return self.relu(self.input_x)
 

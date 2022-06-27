@@ -28,54 +28,54 @@ from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     pipeline_for_compile_forward_ge_graph_for_case_by_case_config
 
 
-class AssignAddNet(nn.Cell):
+class AssignAddNet(nn.Module):
     def __init__(self,):
         super(AssignAddNet, self).__init__()
         self.op = P.AssignAdd()
         self.inputdata = Parameter(Tensor(np.zeros([1]).astype(np.bool_), mstype.bool_), name="assign_add1")
 
-    def construct(self, x):
+    def forward(self, x):
         self.op(self.inputdata, x)
         return self.inputdata
 
 
-class AssignSubNet(nn.Cell):
+class AssignSubNet(nn.Module):
     def __init__(self,):
         super(AssignSubNet, self).__init__()
         self.op = P.AssignSub()
         self.inputdata = Parameter(Tensor(np.zeros([1]).astype(np.bool_), mstype.bool_), name="assign_sub1")
 
-    def construct(self, x):
+    def forward(self, x):
         self.op(self.inputdata, x)
         return self.inputdata
 
 
-class ReduceNet(nn.Cell):
+class ReduceNet(nn.Module):
     def __init__(self, op_class, keep_dims, axis):
         super(ReduceNet, self).__init__()
         self.axis = axis
         self.op = op_class(keep_dims=keep_dims)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.op(x, self.axis)
 
 
-class CumProdNet(nn.Cell):
+class CumProdNet(nn.Module):
     def __init__(self):
         super(CumProdNet, self).__init__()
         self.op = P.CumProd()
 
-    def construct(self, x, axis):
+    def forward(self, x, axis):
         return self.op(x, axis)
 
 
-class CumSumNet(nn.Cell):
+class CumSumNet(nn.Module):
     def __init__(self, axis):
         super(CumSumNet, self).__init__()
         self.axis = axis
         self.op = P.CumSum()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.op(x, self.axis)
 
 

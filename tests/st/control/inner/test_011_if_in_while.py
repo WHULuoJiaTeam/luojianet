@@ -27,7 +27,7 @@ from tests.security_utils import security_off_wrap
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class ForwardNet(nn.Cell):
+class ForwardNet(nn.Module):
     def __init__(self, max_cycles=10):
         super(ForwardNet, self).__init__()
         self.max_cycles = max_cycles
@@ -35,7 +35,7 @@ class ForwardNet(nn.Cell):
         self.zero = Tensor(np.array(0), mstype.int32)
         self.weight = Parameter(Tensor(np.array(0), mstype.int32))
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         i = self.i
         out = self.zero
         while i < self.max_cycles:
@@ -48,13 +48,13 @@ class ForwardNet(nn.Cell):
         return out
 
 
-class BackwardNet(nn.Cell):
+class BackwardNet(nn.Module):
     def __init__(self, net):
         super(BackwardNet, self).__init__(auto_prefix=False)
         self.forward_net = net
         self.grad = C.GradOperation(get_all=True)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         grads = self.grad(self.forward_net)(*inputs)
         return grads
 

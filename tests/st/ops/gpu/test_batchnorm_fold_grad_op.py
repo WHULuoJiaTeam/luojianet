@@ -26,13 +26,13 @@ from luojianet_ms.ops.operations import _quant_ops as Q
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.op = Q.BatchNormFoldGrad(freeze_bn=10)
 
     @ms_function
-    def construct(self, d_batch_mean, d_batch_std, x, batch_mean, batch_std, current_step):
+    def forward(self, d_batch_mean, d_batch_std, x, batch_mean, batch_std, current_step):
         dx = self.op(d_batch_mean, d_batch_std, x, batch_mean, batch_std, current_step)
         return dx
 

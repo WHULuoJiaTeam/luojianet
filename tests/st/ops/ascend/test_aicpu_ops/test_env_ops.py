@@ -72,13 +72,13 @@ def test_high_order_with_params():
                  first_grad: 3 * (x ** 2) * (self.weight ** 3)
                  second_grad: 3 * (x ** 2) * 3 * (self.weight * 2)
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.weight = Parameter(Tensor(Tensor([2], mstype.int32)), name="weight", requires_grad=True)
             self.n = Tensor([3], mstype.int32)
 
-        def construct(self, x):
+        def forward(self, x):
             r = one
             n = self.n
             while n > zero:
@@ -87,25 +87,25 @@ def test_high_order_with_params():
             return r
 
 
-    class Grad(nn.Cell):
+    class Grad(nn.Module):
         def __init__(self, network):
             super(Grad, self).__init__()
             self.grad = ops.GradOperation(get_all=True, sens_param=False)
             self.network = network
 
-        def construct(self, x):
+        def forward(self, x):
             output = self.grad(self.network)(x)
             return output
 
 
-    class GradSec(nn.Cell):
+    class GradSec(nn.Module):
         def __init__(self, network):
             super(GradSec, self).__init__()
             self.grad = ops.GradOperation(get_by_list=True, sens_param=False)
             self.network = network
             self.params = ParameterTuple(network.trainable_params())
 
-        def construct(self, x):
+        def forward(self, x):
             output = self.grad(self.network, self.params)(x)
             return output
 
@@ -133,25 +133,25 @@ def test_reftoembed_with_two_weights():
         def get_data(self):
             return self.a
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.weight = Parameter(Tensor([2], mstype.int32), name="weight", requires_grad=True)
             self.bias = Parameter(Tensor([3], mstype.int32), name="bias", requires_grad=True)
 
-        def construct(self, x):
+        def forward(self, x):
             simple = SimpleData(x)
             r = self.weight * self.bias * simple.get_data()
             return r
 
-    class Grad(nn.Cell):
+    class Grad(nn.Module):
         def __init__(self, network):
             super(Grad, self).__init__()
             self.grad = ops.GradOperation(get_by_list=True, sens_param=False)
             self.network = network
             self.params = ParameterTuple(network.trainable_params())
 
-        def construct(self, x):
+        def forward(self, x):
             output = self.grad(self.network, self.params)(x)
             return output
 

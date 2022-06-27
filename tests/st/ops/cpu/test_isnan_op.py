@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Netnan(nn.Cell):
+class Netnan(nn.Module):
     def __init__(self):
         super(Netnan, self).__init__()
         self.isnan = P.IsNan()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.isnan(x)
 
 

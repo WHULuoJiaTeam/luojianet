@@ -50,14 +50,14 @@ class Dataset(MindData):
         self.index = 0
 
 
-class AllToAllNet(nn.Cell):
+class AllToAllNet(nn.Module):
     def __init__(self, strategy1):
         super(AllToAllNet, self).__init__()
         self.matmul = P.MatMul().shard(((1, 1), (1, 8)))
         self.matmul_weight = Parameter(Tensor(np.ones([128, 256]), dtype=ms.float32), name="weight")
         self.transpose1 = P.Transpose().shard(strategy1)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.matmul(x, self.matmul_weight)
         x = self.transpose1(x, (1, 0))
         return x

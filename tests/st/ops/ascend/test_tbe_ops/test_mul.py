@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.mul = P.Mul()
 
     @ms_function
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         return self.mul(x1, x2)
 
 

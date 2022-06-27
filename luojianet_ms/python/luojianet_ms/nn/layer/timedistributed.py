@@ -19,7 +19,7 @@ from luojianet_ms.ops.primitive import constexpr, Primitive
 from luojianet_ms.ops import Reshape, Transpose, Stack, Unstack
 from luojianet_ms.common import Tensor
 from luojianet_ms._checkparam import Validator
-from ..cell import Cell
+from ..cell import Module
 
 __all__ = ['TimeDistributed']
 
@@ -64,7 +64,7 @@ def _check_inputs_dim(shape, prim_name=None):
         raise ValueError(f"{msg_prefix} inputs shape should be at least 3D, but got {len(shape)}.")
 
 
-class TimeDistributed(Cell):
+class TimeDistributed(Module):
     r"""
     The time distributed layer.
 
@@ -76,7 +76,7 @@ class TimeDistributed(Cell):
     For example, reshape_with_axis could not be provided when deal with Batch Normalization.
 
     Args:
-        layer(Union[Cell, Primitive]): The Cell or Primitive which will be wrapped.
+        layer(Union[Module, Primitive]): The Module or Primitive which will be wrapped.
         time_axis(int): The axis of time_step.
         reshape_with_axis(int): The axis which will be reshaped with time_axis. Default: None.
 
@@ -91,7 +91,7 @@ class TimeDistributed(Cell):
         ``Ascend`` ``GPU`` ``CPU``
 
     Raises:
-        TypeError: If layer is not a Cell or Primitive.
+        TypeError: If layer is not a Module or Primitive.
 
     Examples:
         >>> x = Tensor(np.random.random([32, 10, 3]), luojianet_ms.float32)
@@ -104,8 +104,8 @@ class TimeDistributed(Cell):
 
     def __init__(self, layer, time_axis, reshape_with_axis=None):
         """Initialize TimeDistributed."""
-        if not isinstance(layer, (Cell, Primitive)):
-            raise TypeError(f"For '{self.cls_name}', the 'layer' should be Cell or Primitive instance, "
+        if not isinstance(layer, (Module, Primitive)):
+            raise TypeError(f"For '{self.cls_name}', the 'layer' should be Module or Primitive instance, "
                             f"but got type: {type(layer).__name__}.")
         super(TimeDistributed, self).__init__()
         Validator.check_is_int(time_axis, "time_axis", self.cls_name)
@@ -117,7 +117,7 @@ class TimeDistributed(Cell):
         self.transpose = Transpose()
         self.reshape = Reshape()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         _check_data(isinstance(inputs, Tensor), self.cls_name)
         _check_inputs_dim(inputs.shape, self.cls_name)
         time_axis = self.time_axis % len(inputs.shape)

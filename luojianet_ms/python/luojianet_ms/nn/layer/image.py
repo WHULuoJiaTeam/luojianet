@@ -26,12 +26,12 @@ from .conv import Conv2d
 from .container import CellList
 from .pooling import AvgPool2d
 from .activation import ReLU
-from ..cell import Cell
+from ..cell import Module
 
 __all__ = ['ImageGradients', 'SSIM', 'MSSSIM', 'PSNR', 'CentralCrop']
 
 
-class ImageGradients(Cell):
+class ImageGradients(Module):
     r"""
     Returns two tensors, the first is along the height dimension and the second is along the width dimension.
 
@@ -72,7 +72,7 @@ class ImageGradients(Cell):
     def __init__(self):
         super(ImageGradients, self).__init__()
 
-    def construct(self, images):
+    def forward(self, images):
         check = _check_input_4d(F.shape(images), "images", self.cls_name)
         images = F.depend(images, check)
         batch_size, depth, height, width = P.Shape()(images)
@@ -200,7 +200,7 @@ def _compute_multi_channel_loss(c1, c2, img1, img2, conv, concat, mean):
     return ssim, cs
 
 
-class SSIM(Cell):
+class SSIM(Module):
     r"""
     Returns SSIM index between two images.
 
@@ -272,7 +272,7 @@ class SSIM(Cell):
         self.reduce_mean = P.ReduceMean()
         self.concat = P.Concat(axis=1)
 
-    def construct(self, img1, img2):
+    def forward(self, img1, img2):
         _check_input_dtype(F.dtype(img1), "img1", [mstype.float32, mstype.float16], self.cls_name)
         _check_input_filter_size(F.shape(img1), "img1", self.filter_size, self.cls_name)
         P.SameTypeShape()(img1, img2)
@@ -297,7 +297,7 @@ def _downsample(img1, img2, op):
     return a, b
 
 
-class MSSSIM(Cell):
+class MSSSIM(Module):
     r"""
     Returns MS-SSIM index between two images.
 
@@ -379,7 +379,7 @@ class MSSSIM(Cell):
         self.stack = P.Stack(axis=-1)
         self.concat = P.Concat(axis=1)
 
-    def construct(self, img1, img2):
+    def forward(self, img1, img2):
         _check_input_4d(F.shape(img1), "img1", self.cls_name)
         _check_input_4d(F.shape(img2), "img2", self.cls_name)
         valid_type = [mstype.float64, mstype.float32, mstype.float16, mstype.uint8]
@@ -412,7 +412,7 @@ class MSSSIM(Cell):
         return loss
 
 
-class PSNR(Cell):
+class PSNR(Module):
     r"""
     Returns Peak Signal-to-Noise Ratio of two image batches.
 
@@ -458,7 +458,7 @@ class PSNR(Cell):
         validator.check_number('max_val', max_val, 0.0, Rel.GT, self.cls_name)
         self.max_val = max_val
 
-    def construct(self, img1, img2):
+    def forward(self, img1, img2):
         _check_input_4d(F.shape(img1), "img1", self.cls_name)
         _check_input_4d(F.shape(img2), "img2", self.cls_name)
         P.SameTypeShape()(img1, img2)
@@ -503,7 +503,7 @@ def _get_bbox(rank, shape, central_fraction):
     return bbox_begin, bbox_size
 
 
-class CentralCrop(Cell):
+class CentralCrop(Module):
     """
     Crops the central region of the images with the central_fraction.
 
@@ -538,7 +538,7 @@ class CentralCrop(Cell):
         self.central_fraction = central_fraction
         self.slice = P.Slice()
 
-    def construct(self, image):
+    def forward(self, image):
         image_shape = F.shape(image)
         rank = len(image_shape)
         if not rank in (3, 4):

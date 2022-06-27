@@ -17,7 +17,7 @@
 import numpy as np
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _grad_ops as GP
 from luojianet_ms.common import dtype as mstype
@@ -28,7 +28,7 @@ context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 context.set_context(enable_graph_kernel=True)
 
 
-class BertAttentionGradPiece(Cell):
+class BertAttentionGradPiece(Module):
     def __init__(self):
         super(BertAttentionGradPiece, self).__init__()
         self.add = P.Add()
@@ -38,7 +38,7 @@ class BertAttentionGradPiece(Cell):
         self.multiply = P.Mul()
         self.cast = P.Cast()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         out1 = self.dropout_grad(x, y)
         out2 = self.multiply(out1, z)
         out3 = self.reducesum(self.cast(out2, mstype.float32), (-1,))

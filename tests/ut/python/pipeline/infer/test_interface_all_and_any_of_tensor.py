@@ -22,11 +22,11 @@ from luojianet_ms import context
 
 
 def test_all_and_any_of_tensor_in_graph():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             all_ = x.all()
             any_ = x.any()
             all_0 = x.all(None, True)
@@ -40,11 +40,11 @@ def test_all_and_any_of_tensor_in_graph():
 
 
 def test_all_and_any_of_tensor_in_pynative():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             all_ = x.all()
             any_ = x.any()
             all_0 = x.all(0, True)

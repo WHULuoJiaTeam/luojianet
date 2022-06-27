@@ -22,13 +22,13 @@ from luojianet_ms.ops import composite as C
 import luojianet_ms.nn as nn
 import luojianet_ms.context as context
 
-class RepeatElementsNet(nn.Cell):
+class RepeatElementsNet(nn.Module):
     def __init__(self, rep, axis):
         super(RepeatElementsNet, self).__init__()
         self.rep = rep
         self.axis = axis
 
-    def construct(self, x):
+    def forward(self, x):
         return C.repeat_elements(x, self.rep, self.axis)
 
 

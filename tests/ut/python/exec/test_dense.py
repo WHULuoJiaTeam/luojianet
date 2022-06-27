@@ -21,7 +21,7 @@ from luojianet_ms import Tensor
 from ..ut_filter import non_graph_engine
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
 
     def __init__(self,
@@ -37,7 +37,7 @@ class Net(nn.Cell):
                            bias,
                            has_bias)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.fc(input_x)
 
 

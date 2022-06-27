@@ -19,29 +19,29 @@ import numpy as np
 import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms import ops
 
 
-class Net1(Cell):
+class Net1(Module):
     def __init__(self, list1):
         super().__init__()
         self.list = list1
         self.fla = nn.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         for _ in self.list:
             x = self.fla(x)
         return x
 
 
-class Net2(Cell):
+class Net2(Module):
     def __init__(self, list1):
         super().__init__()
         self.list = list1
         self.addn = ops.AddN()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.addn(self.list[0::2])
         return x
 

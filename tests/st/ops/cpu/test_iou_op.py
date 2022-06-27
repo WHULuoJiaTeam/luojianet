@@ -24,12 +24,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetIOU(nn.Cell):
+class NetIOU(nn.Module):
     def __init__(self, mode):
         super(NetIOU, self).__init__()
         self.encode = P.IOU(mode=mode)
 
-    def construct(self, anchor, groundtruth):
+    def forward(self, anchor, groundtruth):
         return self.encode(anchor, groundtruth)
 
 @pytest.mark.level0

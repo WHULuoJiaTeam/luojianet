@@ -22,12 +22,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class NetElu(nn.Cell):
+class NetElu(nn.Module):
     def __init__(self):
         super(NetElu, self).__init__()
         self.elu = P.Elu()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.elu(x)
 
 

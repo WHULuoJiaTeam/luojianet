@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class Slice(nn.Cell):
+class Slice(nn.Module):
     def __init__(self):
         super(Slice, self).__init__()
         self.slice = P.Slice()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.slice(x, (0, 1, 0), (2, 1, 3))
 
 
@@ -46,12 +46,12 @@ def test_slice():
     assert (output.asnumpy() == expect).all()
 
 
-class SliceNet(nn.Cell):
+class SliceNet(nn.Module):
     def __init__(self):
         super(SliceNet, self).__init__()
         self.slice = P.Slice()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.slice(x, (0, 11, 0, 0), (32, 7, 224, 224))
 
 
@@ -70,12 +70,12 @@ def test_slice_4d():
     assert (output_ms.asnumpy() == output_np).all()
 
 
-class Slice5DNet(nn.Cell):
+class Slice5DNet(nn.Module):
     def __init__(self):
         super(Slice5DNet, self).__init__()
         self.slice = P.Slice()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.slice(x, (0, 11, 1, 2, 3), (32, 7, 14, 10, 221))
 
 

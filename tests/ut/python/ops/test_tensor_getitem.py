@@ -20,30 +20,30 @@ import pytest
 from luojianet_ms import Tensor
 from luojianet_ms import context
 from luojianet_ms import dtype as mstype
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
 from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config, \
     pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception
 
 
-class NetWorkFancyIndex(Cell):
+class NetWorkFancyIndex(Module):
     def __init__(self, index):
         super(NetWorkFancyIndex, self).__init__()
         self.index = index
 
-    def construct(self, tensor):
+    def forward(self, tensor):
         return tensor[self.index]
 
 
-class TensorItemByNone(Cell):
-    def construct(self, tensor):
+class TensorItemByNone(Module):
+    def forward(self, tensor):
         ret = tensor.item()
         return ret
 
 
-class TensorItemByItem(Cell):
-    def construct(self, tensor, index):
+class TensorItemByItem(Module):
+    def forward(self, tensor, index):
         ret = tensor.item(index)
         return ret
 

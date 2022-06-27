@@ -88,7 +88,7 @@ class Primitive(Primitive_):
         for name in init_params:
             value = self.attrs[name]
             init_args[name] = value
-        # __init__ should be called to construct cpp object.
+        # __init__ should be called to forward cpp object.
         cloned.__init__(**init_args)
         for name in self.attrs:
             value = self.attrs[name]
@@ -354,21 +354,21 @@ class Primitive(Primitive_):
             >>> import numpy as np
             >>> import luojianet_ms as ms
             >>> from luojianet_ms import Tensor, ops, nn
-            >>> class NetRecompute(nn.Cell):
+            >>> class NetRecompute(nn.Module):
             ...     def __init__(self):
             ...         super(NetRecompute,self).__init__()
             ...         self.relu = ops.ReLU().recompute()
             ...         self.sqrt = ops.Sqrt()
-            ...     def construct(self, x):
+            ...     def forward(self, x):
             ...         out = self.relu(x)
             ...         return self.sqrt(out)
             ...
-            >>> class GradNet(nn.Cell):
+            >>> class GradNet(nn.Module):
             ...     def __init__(self, network):
             ...         super(GradNet,self).__init__()
             ...         self.network = network
             ...         self.grad = ops.GradOperation()
-            ...     def construct(self, x):
+            ...     def forward(self, x):
             ...         g_out = self.grad(self.network)(x)
             ...         return g_out
             ...

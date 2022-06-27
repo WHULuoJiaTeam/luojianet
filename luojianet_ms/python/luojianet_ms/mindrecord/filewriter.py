@@ -146,7 +146,7 @@ class FileWriter:
             file_name = file_name.replace("\\", "/")
         check_filename(file_name)
 
-        # construct ShardHeader
+        # forward ShardHeader
         reader = ShardReader()
         reader.open(file_name, False)
         header = ShardHeader(reader.get_header())

@@ -23,19 +23,19 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.ops.composite import GradOperation
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, net):
         super().__init__()
         self.grad = GradOperation(get_all=False)
         self.net = net
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         grad_net = self.grad(self.net)
         grad = grad_net(x, y)
         return grad
 
 
-class CaseNet(nn.Cell):
+class CaseNet(nn.Module):
     def __init__(self):
         super(CaseNet, self).__init__()
         self.conv = nn.Conv2d(1, 1, 3)
@@ -45,7 +45,7 @@ class CaseNet(nn.Cell):
         self.layers1 = (self.relu, self.softmax)
         self.layers2 = (self.conv, self.relu1)
 
-    def construct(self, x, index1, index2):
+    def forward(self, x, index1, index2):
         x = self.layers1[index1](x)
         x = self.layers2[index2](x)
         return x
@@ -81,15 +81,15 @@ def test_cell_in_list():
     Expectation: success if grad and output are correct.
     """
 
-    class TestCell(nn.Cell):
+    class TestCell(nn.Module):
         def __init__(self, i):
             super().__init__()
             self.i = i
 
-        def construct(self, x):
+        def forward(self, x):
             return self.i * x
 
-    class CellInList(nn.Cell):
+    class CellInList(nn.Module):
         def __init__(self):
             super().__init__()
             self.cell_list = nn.CellList()
@@ -97,7 +97,7 @@ def test_cell_in_list():
             self.cell_list.append(TestCell(5))
             self.cell_list.append(TestCell(6))
 
-        def construct(self, t, x):
+        def forward(self, t, x):
             out = t
             while x < 3:
                 add = self.cell_list[x](t)

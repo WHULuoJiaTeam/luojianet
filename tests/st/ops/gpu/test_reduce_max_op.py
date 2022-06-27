@@ -64,7 +64,7 @@ np_axis8 = None
 keep_dims8 = True
 
 
-class ReduceMax(nn.Cell):
+class ReduceMax(nn.Module):
     def __init__(self):
         super(ReduceMax, self).__init__()
 
@@ -105,7 +105,7 @@ class ReduceMax(nn.Cell):
         self.keep_dims8 = keep_dims8
 
     @ms_function
-    def construct(self):
+    def forward(self):
         return (P.ReduceMax(self.keep_dims0)(self.x0, self.axis0),
                 P.ReduceMax(self.keep_dims1)(self.x1, self.axis1),
                 P.ReduceMax(self.keep_dims2)(self.x2, self.axis2),
@@ -184,7 +184,7 @@ x_2 = x1
 axis_2 = 0
 
 
-class ReduceMaxDynamic(nn.Cell):
+class ReduceMaxDynamic(nn.Module):
     def __init__(self, x, axis):
         super(ReduceMaxDynamic, self).__init__()
         self.reducemax = P.ReduceMax(False)
@@ -192,7 +192,7 @@ class ReduceMaxDynamic(nn.Cell):
         self.x = x
         self.axis = axis
 
-    def construct(self):
+    def forward(self):
         dynamic_x = self.test_dynamic(self.x)
         return self.reducemax(dynamic_x, self.axis)
 
@@ -214,14 +214,14 @@ def test_reduce_max_dynamic():
     np.testing.assert_almost_equal(output2.asnumpy(), expect_2)
 
 
-class ReduceMaxTypeNet(nn.Cell):
+class ReduceMaxTypeNet(nn.Module):
     def __init__(self, nptype):
         super(ReduceMaxTypeNet, self).__init__()
         self.x0 = Tensor(x0.astype(nptype))
         self.axis0 = axis0
         self.keep_dims0 = keep_dims0
 
-    def construct(self):
+    def forward(self):
         return P.ReduceMax(self.keep_dims0)(self.x0, self.axis0)
 
 @pytest.mark.level0

@@ -24,12 +24,12 @@ from luojianet_ms.common import dtype as mstype
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
-class NetGatherV2_axis0(nn.Cell):
+class NetGatherV2_axis0(nn.Module):
     def __init__(self):
         super(NetGatherV2_axis0, self).__init__()
         self.gatherv2 = P.Gather()
 
-    def construct(self, params, indices):
+    def forward(self, params, indices):
         return self.gatherv2(params, indices, 0)
 
 @pytest.mark.level0
@@ -50,12 +50,12 @@ def test_gatherv2_axis0():
     assert np.all(diff < error)
     assert np.all(-diff < error)
 
-class NetGatherV2_axis1(nn.Cell):
+class NetGatherV2_axis1(nn.Module):
     def __init__(self):
         super(NetGatherV2_axis1, self).__init__()
         self.gatherv2 = P.Gather()
 
-    def construct(self, params, indices):
+    def forward(self, params, indices):
         return self.gatherv2(params, indices, 1)
 
 @pytest.mark.level0
@@ -76,12 +76,12 @@ def test_gatherv2_axis1():
     assert np.all(diff < error)
     assert np.all(-diff < error)
 
-class NetGatherV2_axisN1(nn.Cell):
+class NetGatherV2_axisN1(nn.Module):
     def __init__(self):
         super(NetGatherV2_axisN1, self).__init__()
         self.gatherv2 = P.Gather()
 
-    def construct(self, params, indices):
+    def forward(self, params, indices):
         return self.gatherv2(params, indices, -1)
 
 @pytest.mark.level0

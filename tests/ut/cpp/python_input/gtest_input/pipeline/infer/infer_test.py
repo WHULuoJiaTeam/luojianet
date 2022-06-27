@@ -60,11 +60,11 @@ def test_fun_add(x, y):
     return scala_add(x, y)
 
 
-class AddNet(nn.Cell):
+class AddNet(nn.Module):
     def __init__(self):
         super(AddNet, self).__init__()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return F.scalar_add(x, y)
 
     def get_params(self):
@@ -76,11 +76,11 @@ def test_net_construct_add():
     return model
 
 
-class SubNet(nn.Cell):
+class SubNet(nn.Module):
     def __init__(self):
         super(SubNet, self).__init__()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return F.scalar_sub(x, y)
 
     def get_params(self):

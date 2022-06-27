@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 """
-The VAE interface can be called to construct VAE-GAN network.
+The VAE interface can be called to forward VAE-GAN network.
 """
 import os
 
@@ -31,21 +31,21 @@ IMAGE_SHAPE = (-1, 1, 32, 32)
 image_path = os.path.join('/home/workspace/luojianet_ms_dataset/mnist', "train")
 
 
-class Encoder(nn.Cell):
+class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
         self.fc1 = nn.Dense(1024, 400)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.flatten(x)
         x = self.fc1(x)
         x = self.relu(x)
         return x
 
 
-class Decoder(nn.Cell):
+class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
         self.fc1 = nn.Dense(400, 1024)
@@ -53,14 +53,14 @@ class Decoder(nn.Cell):
         self.sigmoid = nn.Sigmoid()
         self.reshape = ops.Reshape()
 
-    def construct(self, z):
+    def forward(self, z):
         z = self.fc1(z)
         z = self.reshape(z, IMAGE_SHAPE)
         z = self.sigmoid(z)
         return z
 
 
-class Discriminator(nn.Cell):
+class Discriminator(nn.Module):
     """
     The Discriminator of the GAN network.
     """
@@ -74,7 +74,7 @@ class Discriminator(nn.Cell):
         self.sigmoid = nn.Sigmoid()
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.flatten(x)
         x = self.fc1(x)
         x = self.relu(x)
@@ -85,7 +85,7 @@ class Discriminator(nn.Cell):
         return x
 
 
-class VaeGan(nn.Cell):
+class VaeGan(nn.Module):
     def __init__(self):
         super(VaeGan, self).__init__()
         self.E = Encoder()
@@ -97,7 +97,7 @@ class VaeGan(nn.Cell):
         self.normal = ops.normal
         self.to_tensor = ops.ScalarToArray()
 
-    def construct(self, x):
+    def forward(self, x):
         recon_x, x, mu, std = self.vae(x)
         z_p = self.normal(self.shape(mu), self.to_tensor(0.0), self.to_tensor(1.0), seed=0)
         z_p = self.dense(z_p)
@@ -114,7 +114,7 @@ class VaeGanLoss(ELBO):
         self.zeros = ops.ZerosLike()
         self.mse = nn.MSELoss(reduction='sum')
 
-    def construct(self, data, label):
+    def forward(self, data, label):
         ld_real, ld_fake, ld_p, recon_x, x, mu, std = data
         y_real = self.zeros(ld_real) + 1
         y_fake = self.zeros(ld_fake)

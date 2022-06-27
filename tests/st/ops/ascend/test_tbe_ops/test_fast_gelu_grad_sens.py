@@ -18,20 +18,20 @@ import numpy as np
 from luojianet_ms import context
 from luojianet_ms import log as logger
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell, FastGelu
+from luojianet_ms.nn import Module, FastGelu
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.composite import GradOperation
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Grad(Cell):
+class Grad(Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_, output_grad):
+    def forward(self, input_, output_grad):
         return self.grad(self.network)(input_, output_grad)
 
 
@@ -58,24 +58,24 @@ def fast_gelu_backward_cmp(input_shape):
 
 # ----------    LARGE INPUT  ---------------
 
-class MEGeluLargeIn(Cell):
+class MEGeluLargeIn(Module):
     def __init__(self):
         super(MEGeluLargeIn, self).__init__()
         self.matmul = P.MatMul()
         self.fast_gelu = P.GeLU()
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         x = self.matmul(x1, x2)
         return self.fast_gelu(x)
 
 
-class GradLargeIn(Cell):
+class GradLargeIn(Module):
     def __init__(self, network):
         super(GradLargeIn, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, x1, x2, output_grad):
+    def forward(self, x1, x2, output_grad):
         return self.grad(self.network)(x1, x2, output_grad)
 
 

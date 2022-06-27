@@ -88,12 +88,12 @@ def test_list_of_tensor():
     print(use_list_of_tensor())
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.x = Tensor([2, 3, 4])
 
-    def construct(self):
+    def forward(self):
         x_len = len(self.x)
         for i in range(x_len):
             print(i)
@@ -213,12 +213,12 @@ def test_context():
     Description: Test context in graph.
     Expectation: No exception.
     """
-    class ContextNet(nn.Cell):
+    class ContextNet(nn.Module):
         def __init__(self):
             super(ContextNet, self).__init__()
             self.mode = context.get_context("mode")
 
-        def construct(self):
+        def forward(self):
             out = 1
             if self.mode == context.GRAPH_MODE:
                 out = 2
@@ -235,8 +235,8 @@ def test_scipy_module():
     Description: Test scipy module in graph.
     Expectation: No exception.
     """
-    class Network(nn.Cell):
-        def construct(self, x):
+    class Network(nn.Module):
+        def forward(self, x):
             return alg.eigh(x)
 
     net = Network()
@@ -251,12 +251,12 @@ def test_probability_cauchy():
     Description: NumPy method is called in probability cauchy.
     Expectation: No exception.
     """
-    class CauchyProb(nn.Cell):
+    class CauchyProb(nn.Module):
         def __init__(self, loc, scale, seed=10, dtype=mstype.float32, name='Cauchy'):
             super().__init__()
             self.b = distribution.Cauchy(loc, scale, seed, dtype, name)
 
-        def construct(self, value, loc=None, scale=None):
+        def forward(self, value, loc=None, scale=None):
             out1 = self.b.prob(value, loc, scale)
             out2 = self.b.log_prob(value, loc, scale)
             out3 = self.b.cdf(value, loc, scale)
@@ -282,8 +282,8 @@ def test_third_party_module_functools():
     Description: functools is a python built-in module and does not perform JIT Fallback.
     Expectation: No exception.
     """
-    class ModuleNet(nn.Cell):
-        def construct(self, x, y):
+    class ModuleNet(nn.Module):
+        def forward(self, x, y):
             func = functools.partial(add_func, x)
             out = func(y)
             return out

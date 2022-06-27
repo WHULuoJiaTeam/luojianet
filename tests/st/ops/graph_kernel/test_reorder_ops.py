@@ -22,14 +22,14 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class CastUpNet(nn.Cell):
+class CastUpNet(nn.Module):
     def __init__(self):
         super(CastUpNet, self).__init__()
         self.cast = P.Cast()
         self.transpose = P.Transpose()
         self.neg = P.Neg()
 
-    def construct(self, i0):
+    def forward(self, i0):
         res = self.cast(i0, mstype.float32)
         res = self.transpose(res, (1, 0))
         res = self.neg(res)
@@ -52,14 +52,14 @@ def test_castup():
     assert np.allclose(expect_np, output_np, 1e-4, 1e-4)
 
 
-class CastDownNet(nn.Cell):
+class CastDownNet(nn.Module):
     def __init__(self):
         super(CastDownNet, self).__init__()
         self.cast = P.Cast()
         self.transpose = P.Transpose()
         self.neg = P.Neg()
 
-    def construct(self, i0):
+    def forward(self, i0):
         res = self.transpose(i0, (1, 0))
         res = self.neg(res)
         res = self.cast(res, mstype.float16)

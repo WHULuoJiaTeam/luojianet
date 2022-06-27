@@ -25,7 +25,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import composite as C
 
 
-class NetConv3d(nn.Cell):
+class NetConv3d(nn.Module):
     def __init__(self):
         super(NetConv3d, self).__init__()
         out_channel = 4
@@ -39,7 +39,7 @@ class NetConv3d(nn.Cell):
                              dilation=1,
                              group=1)
 
-    def construct(self, x, w):
+    def forward(self, x, w):
         return self.conv(x, w)
 
 
@@ -76,7 +76,7 @@ def test_conv3d():
     assert (output.asnumpy() == expect).all()
 
 
-class MSConv3dNet(nn.Cell):
+class MSConv3dNet(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, pad_mode='pad', padding=0, stride=1, dilation=1,
                  has_bias=False, weight_init='normal'):
         super(MSConv3dNet, self).__init__()
@@ -92,19 +92,19 @@ class MSConv3dNet(nn.Cell):
                              weight_init=weight_init,
                              data_format='NCDHW')
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.cv1(x)
         return x
 
 
-class MSGradNet(nn.Cell):
+class MSGradNet(nn.Module):
     def __init__(self, network):
         super(MSGradNet, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True, get_by_list=True)
         self.network = network
         self.params = ParameterTuple(network.trainable_params())
 
-    def construct(self, x, dy):
+    def forward(self, x, dy):
         grad_op = self.grad(self.network, self.params)
         output = grad_op(x, dy)
         return output

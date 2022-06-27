@@ -243,8 +243,8 @@ class AutoBoost:
         Boost network train.
 
         Args:
-            network (Cell): The training network.
-            optimizer (Cell): Optimizer for updating the weights.
+            network (Module): The training network.
+            optimizer (Module): Optimizer for updating the weights.
         """
         if self.boost_config["dim_reduce"]:
             self.local_pca_mat_path = _get_local_pca_mat_path(self.weight_load_dir, self.pca_mat_path,
@@ -278,7 +278,7 @@ class AutoBoost:
         Boost network eval.
 
         Args:
-            network (Cell): The inference network.
+            network (Module): The inference network.
         """
         if self.boost_config["dim_reduce"]:
             return network

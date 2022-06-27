@@ -16,7 +16,7 @@
 """
 Layer.
 
-The high-level components(Cells) used to construct the neural network.
+The high-level components(Cells) used to forward the neural network.
 """
 from . import activation, normalization, container, conv, basic, embedding, pooling, image, quant, math, \
     combined, timedistributed, thor_layer, rnns, rnn_cells

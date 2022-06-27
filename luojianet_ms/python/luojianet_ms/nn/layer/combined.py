@@ -20,7 +20,7 @@ from luojianet_ms.ops.primitive import Primitive
 from luojianet_ms._checkparam import Validator
 from .normalization import BatchNorm2d, BatchNorm1d
 from .activation import get_activation, LeakyReLU
-from ..cell import Cell
+from ..cell import Module
 
 
 __all__ = [
@@ -29,7 +29,7 @@ __all__ = [
 ]
 
 
-class Conv2dBnAct(Cell):
+class Conv2dBnAct(Module):
     r"""
     A combination of convolution, Batchnorm, and activation layer.
 
@@ -65,7 +65,7 @@ class Conv2dBnAct(Cell):
         momentum (float): Momentum for moving average for batchnorm, must be [0, 1]. Default:0.997
         eps (float): Term added to the denominator to improve numerical stability for batchnorm, should be greater
             than 0. Default: 1e-5.
-        activation (Union[str, Cell, Primitive]): Specifies activation type. The optional values are as following:
+        activation (Union[str, Module, Primitive]): Specifies activation type. The optional values are as following:
             'softmax', 'logsoftmax', 'relu', 'relu6', 'tanh', 'gelu', 'sigmoid',
             'prelu', 'leakyrelu', 'hswish', 'hsigmoid'. Default: None.
         alpha (float): Slope of the activation function at x < 0 for LeakyReLU. Default: 0.2.
@@ -137,11 +137,11 @@ class Conv2dBnAct(Cell):
             self.activation = LeakyReLU(alpha)
         else:
             self.activation = get_activation(activation) if isinstance(activation, str) else activation
-            if activation is not None and not isinstance(self.activation, (Cell, Primitive)):
-                raise TypeError(f"For '{self.cls_name}', the 'activation' must be str or Cell or Primitive, "
+            if activation is not None and not isinstance(self.activation, (Module, Primitive)):
+                raise TypeError(f"For '{self.cls_name}', the 'activation' must be str or Module or Primitive, "
                                 f"but got {type(activation).__name__}.")
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         if self.has_bn:
             x = self.batchnorm(x)
@@ -150,7 +150,7 @@ class Conv2dBnAct(Cell):
         return x
 
 
-class DenseBnAct(Cell):
+class DenseBnAct(Module):
     r"""
     A combination of Dense, Batchnorm, and the activation layer.
 
@@ -168,7 +168,7 @@ class DenseBnAct(Cell):
         momentum (float): Momentum for moving average for batchnorm, must be [0, 1]. Default:0.9
         eps (float): Term added to the denominator to improve numerical stability for batchnorm, should be greater
             than 0. Default: 1e-5.
-        activation (Union[str, Cell, Primitive]): Specifies activation type. The optional values are as following:
+        activation (Union[str, Module, Primitive]): Specifies activation type. The optional values are as following:
             'softmax', 'logsoftmax', 'relu', 'relu6', 'tanh', 'gelu', 'sigmoid',
             'prelu', 'leakyrelu', 'hswish', 'hsigmoid'. Default: None.
         alpha (float): Slope of the activation function at x < 0 for LeakyReLU. Default: 0.2.
@@ -228,11 +228,11 @@ class DenseBnAct(Cell):
             self.activation = LeakyReLU(alpha)
         else:
             self.activation = get_activation(activation) if isinstance(activation, str) else activation
-            if activation is not None and not isinstance(self.activation, (Cell, Primitive)):
-                raise TypeError(f"For '{self.cls_name}', the 'activation' must be str or Cell or Primitive, "
+            if activation is not None and not isinstance(self.activation, (Module, Primitive)):
+                raise TypeError(f"For '{self.cls_name}', the 'activation' must be str or Module or Primitive, "
                                 f"but got {type(activation).__name__}.")
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.dense(x)
         if self.has_bn:
             x = self.batchnorm(x)

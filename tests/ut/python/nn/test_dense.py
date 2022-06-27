@@ -87,7 +87,7 @@ def test_dense_channels_error():
         nn.Dense(-1, 2)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self,
@@ -105,7 +105,7 @@ class Net(nn.Cell):
                               has_bias,
                               activation=activation)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.dense(input_x)
 
 

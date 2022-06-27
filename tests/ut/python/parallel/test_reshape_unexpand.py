@@ -29,23 +29,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         predict = self.network(x)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         return grad_all(self.network)(x)
 
 def compile_net(net, input_data, dev_num=8, parallel_mode="semi_auto_parallel"):
@@ -61,14 +61,14 @@ def test_reshape_unexpand():
     Description: rreshape-weight net in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.mul = P.Mul().shard(((1, 8), (1, 1, 8)))
             self.mul_weight = Parameter(Tensor(np.ones([96, 128]), dtype=ms.float32), name="weight")
 
-        def construct(self, x):
+        def forward(self, x):
             weight = self.reshape(self.mul_weight, (1, 128, 96))
             out = self.mul(x, weight)
             return out
@@ -83,14 +83,14 @@ def test_reshape_unexpand_1():
     Description: weight-reshape net in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.mul = P.Mul().shard(((1, 1, 8), (1, 8)))
             self.mul_weight = Parameter(Tensor(np.ones([128, 96]), dtype=ms.float32), name="weight")
 
-        def construct(self, data):
+        def forward(self, data):
             x = self.reshape(self.mul_weight, (1, 128, 96))
             out = self.mul(x, self.mul_weight)
             return out
@@ -105,14 +105,14 @@ def test_reshape_unexpand_2():
     Description: weight-reshape net in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.mul = P.Mul().shard(((1, 4, 2), (4, 2)))
             self.mul_weight = Parameter(Tensor(np.ones([128, 96]), dtype=ms.float32), name="weight")
 
-        def construct(self, data):
+        def forward(self, data):
             x = self.reshape(self.mul_weight, (1, 128, 96))
             out = self.mul(x, self.mul_weight)
             return out
@@ -127,14 +127,14 @@ def test_reshape_unexpand_3():
     Description: relu-reshape-relu net in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.relu1 = P.ReLU().shard(((4, 1),))
             self.relu2 = P.ReLU().shard(((1, 4),))
 
-        def construct(self, data):
+        def forward(self, data):
             x = self.relu1(data)
             x = self.reshape(x, (3, 4))
             x = self.relu2(x)
@@ -150,14 +150,14 @@ def test_reshape_unexpand_4():
     Description: relu-reshape-relu net in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.relu1 = P.ReLU().shard(((4, 1),))
             self.relu2 = P.ReLU().shard(((1, 2, 2),))
 
-        def construct(self, data):
+        def forward(self, data):
             x = self.relu1(data)
             x = self.reshape(x, (3, 2, 2))
             x = self.relu2(x)
@@ -173,14 +173,14 @@ def test_reshape_unexpand_5():
     Description: relu-reshape-relu net in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.relu1 = P.ReLU().shard(((2, 2, 1),))
             self.relu2 = P.ReLU().shard(((1, 4),))
 
-        def construct(self, data):
+        def forward(self, data):
             x = self.relu1(data)
             x = self.reshape(x, (3, 4))
             x = self.relu2(x)
@@ -196,14 +196,14 @@ def test_reshape_unexpand_6():
     Description: weight-reshape net in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.relu1 = P.ReLU().shard(((2, 1),))
             self.relu2 = P.ReLU().shard(((1, 1, 4),))
 
-        def construct(self, data):
+        def forward(self, data):
             x = self.relu1(data)
             x = self.reshape(x, (1, 3, 4))
             x = self.relu2(x)
@@ -219,7 +219,7 @@ def test_reshape_unexpand_7():
     Description: reshape as net output in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, in_channel=3, out_channel=8, axis=1, input_shape=(32, 4, 110, -1),
                      mul_size=(32, 1, 220, 220)):
             super().__init__()
@@ -235,7 +235,7 @@ def test_reshape_unexpand_7():
             self.reshape = P.Reshape()
             self.input_shape = input_shape
 
-        def construct(self, inputs):
+        def forward(self, inputs):
             x = self.conv(inputs)
             x = self.softmax(x)
             x = self.relu(x)
@@ -254,14 +254,14 @@ def test_reshape_unexpand_8():
     Description: weight-reshape net in auto parallel.
     Expectation: compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.reshape = P.Reshape()
             self.mul = P.Mul().shard(((1, 4, 2), (4, 2)))
             self.mul_weight = Parameter(Tensor(np.ones([128, 96]), dtype=ms.float32), name="weight")
 
-        def construct(self, data):
+        def forward(self, data):
             x = self.reshape(self.mul_weight, (1, 128, 96))
             out = self.mul(x, self.mul_weight)
             return out

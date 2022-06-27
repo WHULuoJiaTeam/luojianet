@@ -22,12 +22,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class NetFloorDiv(nn.Cell):
+class NetFloorDiv(nn.Module):
     def __init__(self):
         super(NetFloorDiv, self).__init__()
         self.floordiv = P.FloorDiv()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.floordiv(x, y)
 
 @pytest.mark.level0

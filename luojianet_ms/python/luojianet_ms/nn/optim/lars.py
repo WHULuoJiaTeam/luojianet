@@ -166,7 +166,7 @@ class LARS(Optimizer):
 
         return lr
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         params = self.parameters
         if self.use_clip:
             lr = self._get_lr()

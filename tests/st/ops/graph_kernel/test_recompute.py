@@ -19,24 +19,24 @@ import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
 from luojianet_ms.common import dtype as mstype
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 
 #{cast} would be recompute and fused
-class Net1(Cell):
+class Net1(Module):
     def __init__(self):
         super(Net1, self).__init__()
         self.cast = P.Cast()
         self.sum = P.ReduceSum(keep_dims=False)
 
-    def construct(self, x):
+    def forward(self, x):
         cast_res = self.cast(x, mstype.float32)
         sum1_res = self.sum(cast_res, (0,))
         sum2_res = self.sum(cast_res, (1,))
         return sum1_res, sum2_res
 
 #{sqrt} would be recompute on Ascend
-class Net2(Cell):
+class Net2(Module):
     def __init__(self):
         super(Net2, self).__init__()
         self.sqrt = P.Sqrt()
@@ -44,7 +44,7 @@ class Net2(Cell):
         self.add = P.Add()
         self.neg = P.Neg()
 
-    def construct(self, x0, x1):
+    def forward(self, x0, x1):
         sqrt_res = self.sqrt(x0)
         neg_res = self.neg(sqrt_res)
         add_res = self.add(x1, sqrt_res)
@@ -52,28 +52,28 @@ class Net2(Cell):
         return neg_res, sum_res
 
 #{sqrt} would be recompute
-class Net3(Cell):
+class Net3(Module):
     def __init__(self):
         super(Net3, self).__init__()
         self.sqrt = P.Sqrt()
         self.add = P.Add()
         self.neg = P.Neg()
 
-    def construct(self, x0, x1):
+    def forward(self, x0, x1):
         sqrt_res = self.sqrt(x0)
         neg_res = self.neg(sqrt_res)
         add_res = self.add(x1, sqrt_res)
         return neg_res, add_res
 
 #{sqrt neg} would be recompute
-class Net4(Cell):
+class Net4(Module):
     def __init__(self):
         super(Net4, self).__init__()
         self.sqrt = P.Sqrt()
         self.neg = P.Neg()
         self.sum = P.ReduceSum(keep_dims=False)
 
-    def construct(self, x):
+    def forward(self, x):
         sqrt_res = self.sqrt(x)
         neg_res = self.neg(sqrt_res)
         sum1_res = self.sum(neg_res, (0,))
@@ -81,13 +81,13 @@ class Net4(Cell):
         return sum1_res, sum2_res
 
 #{sqrt} would be recompute
-class Net5(Cell):
+class Net5(Module):
     def __init__(self):
         super(Net5, self).__init__()
         self.sqrt = P.Sqrt()
         self.add = P.Add()
 
-    def construct(self, x0, x1, x2):
+    def forward(self, x0, x1, x2):
         sqrt_res = self.sqrt(x0)
         add1_res = self.add(sqrt_res, x1)
         add2_res = self.add(sqrt_res, x2)

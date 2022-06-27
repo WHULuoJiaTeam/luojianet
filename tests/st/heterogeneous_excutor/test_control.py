@@ -23,7 +23,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self):
         super(Net1, self).__init__()
         self.relu1 = P.ReLU()
@@ -31,7 +31,7 @@ class Net1(nn.Cell):
         self.mul = P.Mul()
         self.depend = P.Depend()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         a = self.relu1(x)
         y = self.depend(y, a)
         b = self.relu2(y)
@@ -39,7 +39,7 @@ class Net1(nn.Cell):
         return c, a
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self):
         super(Net2, self).__init__()
         self.relu1 = P.ReLU()
@@ -47,7 +47,7 @@ class Net2(nn.Cell):
         self.mul = P.Mul()
         self.depend = P.Depend()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         a = self.relu1(x)
         y = self.depend(y, a)
         b = self.relu2(y)

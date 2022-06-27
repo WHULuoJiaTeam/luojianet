@@ -48,7 +48,7 @@ def weight_variable():
     return TruncatedNormal(0.02)
 
 
-class BNNLeNet5(nn.Cell):
+class BNNLeNet5(nn.Module):
     """
     bayesian Lenet network
 
@@ -74,7 +74,7 @@ class BNNLeNet5(nn.Cell):
         self.flatten = nn.Flatten()
         self.reshape = ops.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)

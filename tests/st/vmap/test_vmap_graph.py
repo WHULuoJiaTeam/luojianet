@@ -39,18 +39,18 @@ def test_vmap_cond():
     """
     Feature: vmap
     Description: This case mainly tests the following `vmap` application scenarios in graph mode:
-        1. The `fn` is a `Cell`, which contains control flow operators, such as `if` and `while`.
+        1. The `fn` is a `Module`, which contains control flow operators, such as `if` and `while`.
         2. The specific VmapRule of `Switch` and `Add` operation.
         3. The `in_axes` is a single integer, which automatically match to multiple arguments.
     Expectation: success
     """
-    class CondNet(nn.Cell):
+    class CondNet(nn.Module):
         def __init__(self):
             super(CondNet, self).__init__()
             self.inner_tensor_a = Tensor(2, mstype.int32)
             self.inner_tensor_b = Tensor(5, mstype.int32)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             a = self.inner_tensor_a + 1
             b = self.inner_tensor_b
             if a < b:
@@ -91,12 +91,12 @@ def test_vmap_gradient():
         out = F.sin(out)
         return F.reduce_sum(out)
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, fn):
             super(GradNet, self).__init__()
             self.fn = fn
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = F.grad(self.fn, grad_position=(0, 1))(x, y)
             return out
 
@@ -143,12 +143,12 @@ def test_vmap_monad():
     """
     Feature: vmap
     Description: This case mainly tests the following `vmap` application scenarios in graph mode:
-        1. The `fn` is a `Cell`, which contains side effect operators, such as `AssignAdd`, `Assign`,
+        1. The `fn` is a `Module`, which contains side effect operators, such as `AssignAdd`, `Assign`,
         `Print`, `ScatterAdd`.
         2. Parameter as argument.
     Expectation: success
     """
-    class AssignNet(nn.Cell):
+    class AssignNet(nn.Module):
         def __init__(self):
             super(AssignNet, self).__init__()
             self.assign = P.Assign()
@@ -157,13 +157,13 @@ def test_vmap_monad():
             self.assign_ref = Parameter(Tensor([[0, 0, 0], [1, 1, 1]], mstype.float32), name='assign_ref')
             self.replace_tensor = Tensor([[1, 1, 1], [2, 2, 2]], mstype.float32)
 
-        def construct(self, assign_add_val, assign_add_var, scatter_ref, indices, updates):
+        def forward(self, assign_add_val, assign_add_var, scatter_ref, indices, updates):
             self.assign(self.assign_ref, self.replace_tensor)
             F.print(self.assign_ref)
             out = self.assign_add(assign_add_var, assign_add_val) + self.scatter_add(scatter_ref, indices, updates)
             return out
 
-    class VmapMonadNet(nn.Cell):
+    class VmapMonadNet(nn.Module):
         def __init__(self, net):
             super(VmapMonadNet, self).__init__()
             self.net = net
@@ -174,7 +174,7 @@ def test_vmap_monad():
                 Tensor([[[0, 0, 0], [0, 0, 0]], [[1, 1, 1], [1, 1, 1]], [[2, 2, 2], [2, 2, 2]]], mstype.float32),
                 name='scatter_ref')
 
-        def construct(self, assign_add_val, scatter_indices, scatter_updates):
+        def forward(self, assign_add_val, scatter_indices, scatter_updates):
             output = vmap(self.net, (0, 1, 0, 0, None), 1)(assign_add_val, self.assign_add_var,
                                                            self.scatter_ref, scatter_indices, scatter_updates)
             return output, self.assign_add_var
@@ -206,13 +206,13 @@ def test_vmap_reduce():
         2. The `out_axes` is a single integer, which automatically match to multiple outputs.
     Expectation: success
     """
-    class ReduceNet(nn.Cell):
+    class ReduceNet(nn.Module):
         def __init__(self):
             super(ReduceNet, self).__init__()
             self.reduce_sum = P.ReduceSum(keep_dims=False)
             self.reduce_sum_keep_dims = P.ReduceSum(keep_dims=True)
 
-        def construct(self, x):
+        def forward(self, x):
             out1 = self.reduce_sum(x)
             out2 = self.reduce_sum_keep_dims(x)
             out3 = self.reduce_sum(x, 1)
@@ -222,12 +222,12 @@ def test_vmap_reduce():
             output = (out1, out2, out3, out4, out5, out6)
             return output
 
-    class VmapNet(nn.Cell):
+    class VmapNet(nn.Module):
         def __init__(self, net):
             super(VmapNet, self).__init__()
             self.net = net
 
-        def construct(self, x):
+        def forward(self, x):
             vmap_function = F.vmap(self.net, 1, 0)
             output = vmap_function(x)
             return output
@@ -321,13 +321,13 @@ def test_vmap_nested_axes():
         5. VmapRule for that operators with indefinite length as input, such as `Stack`.
     Expectation: success
     """
-    class AddNet(nn.Cell):
+    class AddNet(nn.Module):
         def __init__(self):
             super(AddNet, self).__init__()
             self.inner_tensor = Tensor([5, 6], mstype.float32)
             self.inner_para = Parameter(Tensor([5, 6], mstype.float32), name='inner_para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             a = 1
             b = 2
             c = 3

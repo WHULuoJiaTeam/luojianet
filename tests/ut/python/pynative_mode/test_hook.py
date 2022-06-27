@@ -67,12 +67,12 @@ def var_hook_function(grad_out):
     assert (grad_out[0].asnumpy().shape == (32, 120))
 
 
-class Block(nn.Cell):
+class Block(nn.Module):
     def __init__(self):
         super(Block, self).__init__()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.relu(x)
         return x
 
@@ -83,7 +83,7 @@ class Block(nn.Cell):
         grad = Tensor(grad)
         return (grad,)
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """
     Lenet network
     Args:
@@ -110,7 +110,7 @@ class LeNet5(nn.Cell):
         self.reshape = P.Reshape()
         self.hook = P.HookBackward(var_hook_function)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)
@@ -127,14 +127,14 @@ class LeNet5(nn.Cell):
         return x
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     """ GradWrap definition """
     def __init__(self, network):
         super(GradWrap, self).__init__(auto_prefix=False)
         self.network = network
         self.weights = ParameterTuple(filter(lambda x: x.requires_grad, network.get_parameters()))
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         weights = self.weights
         return C.GradOperation(get_by_list=True)(self.network, weights)(x, label)
 
@@ -161,11 +161,11 @@ def test_hook():
 
 bprop_debug = False
 
-class MulAdd(nn.Cell):
+class MulAdd(nn.Module):
     def __init__(self):
         super(MulAdd, self).__init__()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return 2 * x * x + y * y
 
     def bprop(self, x, y, out, dout):
@@ -183,11 +183,11 @@ def test_custom_bprop():
     assert bprop_debug
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return 2 * x * x + y * y
 
 def test_grad_all():

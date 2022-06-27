@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 """cell grad"""
-from ..cell import Cell
+from ..cell import Module
 from ...ops import composite as C
 from ...ops import operations as P
 from ...ops.primitive import Primitive
@@ -22,51 +22,51 @@ from ...common import dtype as mstype
 from ...common.api import ms_function
 
 
-class _FirstGrad(Cell):
+class _FirstGrad(Module):
     def __init__(self, fn):
         super(_FirstGrad, self).__init__()
         self.first_grad_op = C.GradOperation(sens_param=True, get_all=True)
         self.fn = fn
 
-    def construct(self, u, first_grad_input):
+    def forward(self, u, first_grad_input):
         return self.first_grad_op(self.fn)(*first_grad_input, u)
 
 
-class _JvpFirstGrad(Cell):
+class _JvpFirstGrad(Module):
     def __init__(self):
         super(_JvpFirstGrad, self).__init__()
         self.first_grad_op = C.GradOperation(sens_param=True, get_all=True)
 
-    def construct(self, u, fn, first_grad_input):
+    def forward(self, u, fn, first_grad_input):
         return self.first_grad_op(fn)(*first_grad_input, u)
 
 
-class _FirstGradSingleValue(Cell):
+class _FirstGradSingleValue(Module):
     def __init__(self, fn):
         super(_FirstGradSingleValue, self).__init__()
         self.first_grad_single_value_op = C.GradOperation(sens_param=True)
         self.fn = fn
 
-    def construct(self, u, first_grad_single_value_input):
+    def forward(self, u, first_grad_single_value_input):
         return self.first_grad_single_value_op(self.fn)(*first_grad_single_value_input, u)
 
 
-class _JvpFirstGradSingleValue(Cell):
+class _JvpFirstGradSingleValue(Module):
     def __init__(self):
         super(_JvpFirstGradSingleValue, self).__init__()
         self.first_grad_single_value_op = C.GradOperation(sens_param=True)
 
-    def construct(self, u, fn, first_grad_single_value_input):
+    def forward(self, u, fn, first_grad_single_value_input):
         return self.first_grad_single_value_op(fn)(*first_grad_single_value_input, u)
 
 
 
-class Jvp(Cell):
+class Jvp(Module):
     """
     Compute the jacobian-vector-product of the given fn. Jvp is equivalent to forward mode autodiff.
 
     Args:
-        fn (Cell): The fn that takes Tensor inputs and returns a tuple of Tensors or a Tensor.
+        fn (Module): The fn that takes Tensor inputs and returns a tuple of Tensors or a Tensor.
 
     Inputs:
         - **inputs** (Tensors) - The inputs to `fn`.
@@ -84,8 +84,8 @@ class Jvp(Cell):
 
     Examples:
         >>> from luojianet_ms.nn import Jvp
-        >>> class Net(nn.Cell):
-        ...     def construct(self, x, y):
+        >>> class Net(nn.Module):
+        ...     def forward(self, x, y):
         ...         return x**3 + y
         >>> x = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
         >>> y = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
@@ -113,7 +113,7 @@ class Jvp(Cell):
         self.tuple_len = Primitive("tuple_len")
 
     @ms_function
-    def construct(self, *args):
+    def forward(self, *args):
         jvp_input = args[0:-1]
         v = args[-1]
         output = self.fn(*jvp_input)
@@ -134,7 +134,7 @@ class Jvp(Cell):
         return output, gradient_output
 
 
-class _JvpInner(Cell):
+class _JvpInner(Module):
     """
     Compute the jacobian-vector-product of the given network. Jvp is equivalent to forward mode autodiff.
     This class implements the inner process of function jvp.
@@ -152,7 +152,7 @@ class _JvpInner(Cell):
         self.make_tuple = Primitive('MakeTuple')
         self.tuple_len = Primitive("tuple_len")
 
-    def construct(self, *args):
+    def forward(self, *args):
         fn = args[0]
         v = args[1]
         jvp_input = args[2:]
@@ -174,13 +174,13 @@ class _JvpInner(Cell):
         return output, gradient_output
 
 
-class Vjp(Cell):
+class Vjp(Module):
     """
     Computes the dot product between a vector `v` and the Jacobian of the given fn at the point
     given by the inputs.
 
     Args:
-        fn (Cell): The fn that takes Tensor inputs and returns a tuple of Tensors or a Tensor.
+        fn (Module): The fn that takes Tensor inputs and returns a tuple of Tensors or a Tensor.
 
     Inputs:
         - **inputs** (Tensors) - The inputs to `fn`. Must be a tuple or a list.
@@ -198,8 +198,8 @@ class Vjp(Cell):
 
     Examples:
         >>> from luojianet_ms.nn import Vjp
-        >>> class Net(nn.Cell):
-        ...     def construct(self, x, y):
+        >>> class Net(nn.Module):
+        ...     def forward(self, x, y):
         ...         return x**3 + y
         >>> x = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
         >>> y = Tensor(np.array([[1, 2], [3, 4]]).astype(np.float32))
@@ -226,7 +226,7 @@ class Vjp(Cell):
         self.tuple_len = Primitive("tuple_len")
 
     @ms_function
-    def construct(self, *args):
+    def forward(self, *args):
         front_input = args[0:-1]
         output = self.fn(*front_input)
         if self.tuple_len(front_input) == 1:
@@ -236,7 +236,7 @@ class Vjp(Cell):
         return output, gradient_output
 
 
-class _VjpInner(Cell):
+class _VjpInner(Module):
     """
     Computes the dot product between a vector `v` and the Jacobian of the given network at the point
     given by the inputs. This class implements the inner process of function vjp.
@@ -248,7 +248,7 @@ class _VjpInner(Cell):
         self.grad_single_value = C.GradOperation(sens_param=True)
         self.tuple_len = Primitive("tuple_len")
 
-    def construct(self, *args):
+    def forward(self, *args):
         fn = args[0]
         front_input = args[1:-1]
         input_with_v = args[1:]

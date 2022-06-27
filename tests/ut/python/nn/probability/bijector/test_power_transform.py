@@ -38,7 +38,7 @@ def test_type():
         msb.PowerTransform(name=0.1)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """
     Test class: forward and inverse pass of bijector.
     """
@@ -47,7 +47,7 @@ class Net(nn.Cell):
         self.b1 = msb.PowerTransform(power=0.)
         self.b2 = msb.PowerTransform()
 
-    def construct(self, x_):
+    def forward(self, x_):
         ans1 = self.b1.inverse(self.b1.forward(x_))
         ans2 = self.b2.inverse(self.b2.forward(x_))
         return ans1 - ans2
@@ -64,7 +64,7 @@ def test1():
     assert isinstance(ans, Tensor)
 
 
-class Jacobian(nn.Cell):
+class Jacobian(nn.Module):
     """
     Test class: forward and inverse pass of bijector.
     """
@@ -73,7 +73,7 @@ class Jacobian(nn.Cell):
         self.b1 = msb.PowerTransform(power=0.)
         self.b2 = msb.PowerTransform()
 
-    def construct(self, x_):
+    def forward(self, x_):
         ans1 = self.b1.forward_log_jacobian(x_)
         ans2 = self.b2.forward_log_jacobian(x_)
         ans3 = self.b1.inverse_log_jacobian(x_)

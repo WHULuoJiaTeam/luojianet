@@ -24,12 +24,12 @@ from luojianet_ms.ops import operations as P
 np.random.seed(100)
 
 
-class MatMulNet(nn.Cell):
+class MatMulNet(nn.Module):
     def __init__(self, transpose_a=False, transpose_b=False):
         super(MatMulNet, self).__init__()
         self.matmul = P.MatMul(transpose_a, transpose_b)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.matmul(x, y)
 
 

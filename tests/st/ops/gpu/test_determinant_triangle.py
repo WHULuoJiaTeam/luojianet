@@ -25,12 +25,12 @@ from luojianet_ms.common import dtype as mstype
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, fill_mode=0):
         super(Net, self).__init__()
         self.det_triangle = P.DetTriangle(fill_mode=fill_mode)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.det_triangle(x)
 
 @pytest.mark.level2

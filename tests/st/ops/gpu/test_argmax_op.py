@@ -26,12 +26,12 @@ from luojianet_ms.common import dtype as mstype
 import luojianet_ms.ops as ops
 
 
-class NetArgmax(nn.Cell):
+class NetArgmax(nn.Module):
     def __init__(self, axis=0):
         super(NetArgmax, self).__init__()
         self.argmax = ops.Argmax(axis, output_type=mstype.int32)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.argmax(x)
 
 

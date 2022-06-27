@@ -157,7 +157,7 @@ def fold_batchnorm(weight, cell_quant):
 
     Args:
         weight (numpy.ndarray): Weight of `cell_quant`.
-        cell_quant (Cell): Object of `luojianet_ms.nn.layer.Conv2dBnFoldQuant`.
+        cell_quant (Module): Object of `luojianet_ms.nn.layer.Conv2dBnFoldQuant`.
 
     Returns:
         weight (numpy.ndarray): Folded weight.
@@ -196,7 +196,7 @@ def without_fold_batchnorm(weight, cell_quant):
 
     Args:
         weight (numpy.ndarray): Weight of `cell_quant`.
-        cell_quant (Cell): Object of `luojianet_ms.nn.layer.Conv2dBnWithoutFoldQuant`.
+        cell_quant (Module): Object of `luojianet_ms.nn.layer.Conv2dBnWithoutFoldQuant`.
 
     Returns:
         weight (numpy.ndarray): whihout folded weight.
@@ -289,12 +289,12 @@ def query_quant_layers(network):
     layers, which not exist in practical execution, may appear.
 
     Args:
-        network (Cell): input network
+        network (Module): input network
 
     Examples:
         >>> from luojianet_ms.compression.quant import QuantizationAwareTraining
         >>> from luojianet_ms.compression.quant.quant_utils import query_quant_layers
-        >>> class LeNet5(nn.Cell):
+        >>> class LeNet5(nn.Module):
         ...     def __init__(self, num_class=10, channel=1):
         ...         super(LeNet5, self).__init__()
         ...         self.type = "fusion"
@@ -311,7 +311,7 @@ def query_quant_layers(network):
         ...         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         ...         self.flatten = nn.Flatten()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         x = self.conv1(x)
         ...         x = self.max_pool2d(x)
         ...         x = self.conv2(x)
@@ -337,7 +337,7 @@ def query_quant_layers(network):
         fc3.dense.fake_quant_weight                                        INT8
         fc3.activation.fake_quant_act                                      INT8
     """
-    network = Validator.check_isinstance("network", network, nn.Cell)
+    network = Validator.check_isinstance("network", network, nn.Module)
     tplt = "{0:60}\t{1:10}"
     for cell_and_name in network.cells_and_names():
         cell_name = cell_and_name[0]
@@ -351,7 +351,7 @@ def load_nonquant_param_into_quant_net(quant_model, params_dict, quant_new_param
     Load fp32 model parameters into quantization model.
 
     Args:
-        quant_model(Cell): Quantization model.
+        quant_model(Module): Quantization model.
         params_dict(dict): Parameter dict that stores fp32 parameters.
         quant_new_params(list): Parameters that exist in quantization network but not in non-quantization
             network. Default: None.
@@ -364,7 +364,7 @@ def load_nonquant_param_into_quant_net(quant_model, params_dict, quant_new_param
     Examples:
         >>> from luojianet_ms import load_checkpoint
         >>> from luojianet_ms.compression.quant.quant_utils import load_nonquant_param_into_quant_net
-        >>> class LeNet5(nn.Cell):
+        >>> class LeNet5(nn.Module):
         ...     def __init__(self, num_class=10, channel=1):
         ...         super(LeNet5, self).__init__()
         ...         self.type = "fusion"
@@ -381,7 +381,7 @@ def load_nonquant_param_into_quant_net(quant_model, params_dict, quant_new_param
         ...         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         ...         self.flatten = nn.Flatten()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         x = self.conv1(x)
         ...         x = self.max_pool2d(x)
         ...         x = self.conv2(x)

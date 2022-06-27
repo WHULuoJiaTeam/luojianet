@@ -38,12 +38,12 @@ def create_model():
     Define and return a simple model
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.print = P.Print()
 
-        def construct(self, x):
+        def forward(self, x):
             self.print(x)
             return x
 

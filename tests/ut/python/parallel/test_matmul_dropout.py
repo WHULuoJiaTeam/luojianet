@@ -31,23 +31,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         predict = self.network(x, y, b)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         return grad_all(self.network)(x, y, b)
 
 
@@ -57,7 +57,7 @@ def _is_float_dtype(dtype):
         return True
     return False
 
-class Dropout(nn.Cell):
+class Dropout(nn.Module):
     def __init__(self, keep_prob=0.5, dtype=mstype.float32):
         super(Dropout, self).__init__()
         if keep_prob <= 0 or keep_prob > 1:
@@ -76,7 +76,7 @@ class Dropout(nn.Cell):
         self.is_gpu = context.get_context('device_target') in ["GPU"]
         self.dropout = P.Dropout(keep_prob)
 
-    def construct(self, x):
+    def forward(self, x):
         if not self.training:
             return x
 
@@ -101,7 +101,7 @@ class Dropout(nn.Cell):
 
 # model_parallel test
 def test_two_matmul_dropout():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
@@ -110,7 +110,7 @@ def test_two_matmul_dropout():
             self.dropout.dropout_gen_mask.shard(strategy2)
             self.matmul2 = P.MatMul().shard(strategy3)
 
-        def construct(self, x, y, b):
+        def forward(self, x, y, b):
             out = self.matmul1(x, y)
             out = self.dropout(out)
             out = self.matmul2(out, b)

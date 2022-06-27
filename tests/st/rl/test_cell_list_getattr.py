@@ -19,17 +19,17 @@ from luojianet_ms import context, nn, dtype, Tensor, ms_function
 from luojianet_ms.ops import operations as P
 
 
-class Actor(nn.Cell):
+class Actor(nn.Module):
     def act(self, x, y):
         return x + y
 
 
-class Trainer(nn.Cell):
+class Trainer(nn.Module):
     def __init__(self, net_list):
         super(Trainer, self).__init__()
         self.net_list = net_list
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.net_list[0].act(x, y)
 
 
@@ -70,14 +70,14 @@ def test_cell_list_getattr():
     assert np.array_equal(res.asnumpy(), expect_res.asnumpy())
 
 
-class Trainer2(nn.Cell):
+class Trainer2(nn.Module):
     def __init__(self, net_list):
         super(Trainer2, self).__init__()
         self.net_list = net_list
         self.less = P.Less()
         self.zero_float = Tensor(0, dtype=dtype.float32)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         sum_value = self.zero_float
         num_actor = 0
         while num_actor < 3:
@@ -123,13 +123,13 @@ def test_cell_list_getattr2():
     assert np.array_equal(res.asnumpy(), expect_res.asnumpy())
 
 
-class MSRL(nn.Cell):
+class MSRL(nn.Module):
     def __init__(self, agent):
         super(MSRL, self).__init__()
         self.agent = agent
 
 
-class Agent(nn.Cell):
+class Agent(nn.Module):
     def __init__(self, actor):
         super(Agent, self).__init__()
         self.actor = actor
@@ -139,7 +139,7 @@ class Agent(nn.Cell):
         return out
 
 
-class Trainer3(nn.Cell):
+class Trainer3(nn.Module):
     def __init__(self, msrl):
         super(Trainer3, self).__init__()
         self.msrl = msrl

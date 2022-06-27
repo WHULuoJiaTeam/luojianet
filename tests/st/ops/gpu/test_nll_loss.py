@@ -24,21 +24,21 @@ from luojianet_ms.ops.operations import _grad_ops as G
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, reduction):
         super(Net, self).__init__()
         self.loss = P.NLLLoss(reduction=reduction)
 
-    def construct(self, predict, target, weight):
+    def forward(self, predict, target, weight):
         return self.loss(predict, target, weight)
 
 
-class NLLLossGradNet(nn.Cell):
+class NLLLossGradNet(nn.Module):
     def __init__(self, reduction):
         super(NLLLossGradNet, self).__init__()
         self.grad = G.NLLLossGrad(reduction=reduction)
 
-    def construct(self, x, dout_x, target, weight, total_weight):
+    def forward(self, x, dout_x, target, weight, total_weight):
         gout = self.grad(x, dout_x, target, weight, total_weight)
         return gout
 

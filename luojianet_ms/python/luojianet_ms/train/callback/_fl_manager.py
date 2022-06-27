@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms._checkparam import Validator, Rel
 
 
-class _StartFLJob(nn.Cell):
+class _StartFLJob(nn.Module):
     """
     StartFLJob for Federated Learning Worker.
     """
@@ -33,12 +33,12 @@ class _StartFLJob(nn.Cell):
         super(_StartFLJob, self).__init__()
         self.start_fl_job = P.StartFLJob(data_size)
 
-    def construct(self):
+    def forward(self):
         succ = self.start_fl_job()
         return succ
 
 
-class _UpdateAndGetModel(nn.Cell):
+class _UpdateAndGetModel(nn.Module):
     """
     Update and Get Model for Federated Learning Worker.
     """
@@ -49,13 +49,13 @@ class _UpdateAndGetModel(nn.Cell):
         self.get_model = P.GetModel()
         self.weights = weights
 
-    def construct(self):
+    def forward(self):
         self.update_model(self.weights)
         succ = self.get_model(self.weights)
         return succ
 
 
-class _ExchangeKeys(nn.Cell):
+class _ExchangeKeys(nn.Module):
     """
     Exchange Keys for Stable PW Encrypt.
     """
@@ -64,11 +64,11 @@ class _ExchangeKeys(nn.Cell):
         super(_ExchangeKeys, self).__init__()
         self.exchange_keys = P.ExchangeKeys()
 
-    def construct(self):
+    def forward(self):
         return self.exchange_keys()
 
 
-class _GetKeys(nn.Cell):
+class _GetKeys(nn.Module):
     """
     Get Keys for Stable PW Encrypt.
     """
@@ -77,7 +77,7 @@ class _GetKeys(nn.Cell):
         super(_GetKeys, self).__init__()
         self.get_keys = P.GetKeys()
 
-    def construct(self):
+    def forward(self):
         return self.get_keys()
 
 
@@ -86,7 +86,7 @@ class FederatedLearningManager(Callback):
     Manage Federated Learning during training.
 
     Args:
-        model (nn.Cell): A training model.
+        model (nn.Module): A training model.
         sync_frequency (int): Synchronization frequency of parameters in Federated Learning.
                               Note that in dataset sink mode, the unit of the frequency is the number of epochs.
                               Otherwise, the unit of the frequency is the number of steps.
@@ -105,7 +105,7 @@ class FederatedLearningManager(Callback):
         server_mode = context.get_fl_context("server_mode")
         if server_mode not in ("FEDERATED_LEARNING", "HYBRID_TRAINING"):
             raise ValueError("server_mode must in (\"FEDERATED_LEARNING\", \"HYBRID_TRAINING\")")
-        Validator.check_isinstance('model', model, nn.Cell)
+        Validator.check_isinstance('model', model, nn.Module)
         Validator.check_positive_int(sync_frequency)
         Validator.check_string(sync_type, ["fixed", "adaptive"])
         self._model = model
@@ -163,7 +163,7 @@ class FederatedLearningManager(Callback):
 
     def _as_wrap_cell(self):
         """
-        Wrap Cell for adaptive synchronization.
+        Wrap Module for adaptive synchronization.
         """
         param_list = list()
         for param in self._model.trainable_params():

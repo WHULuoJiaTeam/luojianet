@@ -20,12 +20,12 @@ import luojianet_ms.context as context
 import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 
-class NetSparseSoftmaxCrossEntropyWithLogits(nn.Cell):
+class NetSparseSoftmaxCrossEntropyWithLogits(nn.Module):
     def __init__(self):
         super(NetSparseSoftmaxCrossEntropyWithLogits, self).__init__()
         self.loss = self.loss = nn.SoftmaxCrossEntropyWithLogits(sparse=True)
 
-    def construct(self, logits, labels):
+    def forward(self, logits, labels):
         return self.loss(logits, labels)
 
 

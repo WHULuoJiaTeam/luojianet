@@ -184,7 +184,7 @@ class SGD(Optimizer):
         self.accum = self.parameters.clone(prefix="accum", init='zeros')
         self.stat = self.parameters.clone(prefix="stat", init='ones')
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         params = self.parameters
         accum = self.accum
         stat = self.stat

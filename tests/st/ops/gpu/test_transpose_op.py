@@ -28,7 +28,7 @@ from luojianet_ms.ops.operations import _inner_ops as inner
 
 context.set_context(device_target='GPU')
 
-class Transpose(nn.Cell):
+class Transpose(nn.Module):
     def __init__(self, nptype):
         super(Transpose, self).__init__()
         self.transpose = P.Transpose()
@@ -48,11 +48,11 @@ class Transpose(nn.Cell):
         self.perm_5D = (1, 0, 3, 4, 2)
 
     @ms_function
-    def construct(self):
+    def forward(self):
         return (self.transpose(self.x_2D, self.perm_2D), self.transpose(self.x_3D, self.perm_3D),
                 self.transpose(self.x_4D, self.perm_4D), self.transpose(self.x_5D, self.perm_5D))
 
-class Transpose_dynamic(nn.Cell):
+class Transpose_dynamic(nn.Module):
     def __init__(self, nptype):
         super(Transpose_dynamic, self).__init__()
         self.transpose = P.Transpose()
@@ -63,11 +63,11 @@ class Transpose_dynamic(nn.Cell):
         self.perm = (1, 0, 3, 4, 2)
 
     @ms_function
-    def construct(self):
+    def forward(self):
         out = self.test_dynamic(self.x)
         return self.transpose(out, self.perm)
 
-class Transpose_dynamic2(nn.Cell):
+class Transpose_dynamic2(nn.Module):
     def __init__(self, input_1, input_2, perm_1, perm_2):
         super(Transpose_dynamic2, self).__init__()
         self.transpose = P.Transpose()
@@ -78,7 +78,7 @@ class Transpose_dynamic2(nn.Cell):
         self.perm_2 = perm_2
 
     @ms_function
-    def construct(self):
+    def forward(self):
         out_1 = self.test_dynamic(self.x_1)
         out_1 = self.transpose(out_1, self.perm_1)
         out_2 = self.test_dynamic(self.x_2)

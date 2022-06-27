@@ -120,7 +120,7 @@ def assign_min_max_params(in_params, center=1):
     return min_param, max_param
 
 
-class ApplyPreTransform(nn.Cell):
+class ApplyPreTransform(nn.Module):
     """
     Concatenates offload model with network.
     """
@@ -130,7 +130,7 @@ class ApplyPreTransform(nn.Cell):
         self.transform = transform
         self.model = model
 
-    def construct(self, *x):
+    def forward(self, *x):
         data = []
         for data_col in x:
             data.append(data_col)
@@ -141,7 +141,7 @@ class ApplyPreTransform(nn.Cell):
         return data
 
 
-class IdentityCell(nn.Cell):
+class IdentityCell(nn.Module):
     """
     Applies identity transform on given input tensors.
     """
@@ -150,11 +150,11 @@ class IdentityCell(nn.Cell):
         super(IdentityCell, self).__init__()
         self.identity = P.Identity()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.identity(x)
 
 
-class RandomHorizontalFlip(nn.Cell):
+class RandomHorizontalFlip(nn.Module):
     """
     Applies Random Horizontal Flip transform on given input tensors.
     """
@@ -170,7 +170,7 @@ class RandomHorizontalFlip(nn.Cell):
         self.h_flip = P.ReverseV2(axis=[2])
         self.mul = P.Mul()
 
-    def construct(self, x):
+    def forward(self, x):
 
         x = self.cast(x, mstype.float32)
         x_shape = self.shape(x)
@@ -187,7 +187,7 @@ class RandomHorizontalFlip(nn.Cell):
         return x
 
 
-class RandomVerticalFlip(nn.Cell):
+class RandomVerticalFlip(nn.Module):
     """
     Applies Random Vertical Flip transform on given input tensors.
     """
@@ -203,7 +203,7 @@ class RandomVerticalFlip(nn.Cell):
         self.h_flip = P.ReverseV2(axis=[1])
         self.mul = P.Mul()
 
-    def construct(self, x):
+    def forward(self, x):
 
         x = self.cast(x, mstype.float32)
         x_shape = self.shape(x)
@@ -220,7 +220,7 @@ class RandomVerticalFlip(nn.Cell):
         return x
 
 
-class GenerateRandBatch(nn.Cell):
+class GenerateRandBatch(nn.Module):
     """
     Generate batch with random values uniformly selected from [degree_min, degree_max].
     """
@@ -231,7 +231,7 @@ class GenerateRandBatch(nn.Cell):
         self.ones = P.Ones()
         self.reshape = P.Reshape()
 
-    def construct(self, degree_min, degree_max, check_rand, shape):
+    def forward(self, degree_min, degree_max, check_rand, shape):
 
         bs, h, w, c = shape
         rand_factor = Tensor(np.random.uniform(size=(bs, 1)), dtype=mstype.float32)
@@ -243,7 +243,7 @@ class GenerateRandBatch(nn.Cell):
         return rand_factor
 
 
-class RandomColorAdjust(nn.Cell):
+class RandomColorAdjust(nn.Module):
     """
     Applies Random Color Adjust transform on given input tensors.
     """
@@ -287,7 +287,7 @@ class RandomColorAdjust(nn.Cell):
 
         self.generate_rand_batch = GenerateRandBatch()
 
-    def construct(self, x):
+    def forward(self, x):
 
         x = self.cast(x, mstype.float32)
         x_shape = self.shape(x)
@@ -358,7 +358,7 @@ class RandomColorAdjust(nn.Cell):
         return x
 
 
-class RandomSharpness(nn.Cell):
+class RandomSharpness(nn.Module):
     """
     Applies Random Sharpness transform on given input tensors.
     """
@@ -390,7 +390,7 @@ class RandomSharpness(nn.Cell):
 
         self.filter = P.Conv2D(out_channel=3, kernel_size=(3, 3), pad_mode='pad', pad=1)
 
-    def construct(self, x):
+    def forward(self, x):
 
         x = self.cast(x, mstype.float32)
         x_shape = self.shape(x)
@@ -412,7 +412,7 @@ class RandomSharpness(nn.Cell):
         return x
 
 
-class Rescale(nn.Cell):
+class Rescale(nn.Module):
     """
     Applies Rescale transform on given input tensors.
     """
@@ -426,7 +426,7 @@ class Rescale(nn.Cell):
         self.cast = P.Cast()
         self.mul = P.Mul()
 
-    def construct(self, x):
+    def forward(self, x):
 
         x = self.cast(x, mstype.float32)
         x = x * self.rescale + self.shift
@@ -434,7 +434,7 @@ class Rescale(nn.Cell):
         return x
 
 
-class HwcToChw(nn.Cell):
+class HwcToChw(nn.Module):
     """
     Applies Channel Swap transform on given input tensors.
     """
@@ -444,13 +444,13 @@ class HwcToChw(nn.Cell):
         self.trans = P.Transpose()
         self.shape = P.Shape()
 
-    def construct(self, x):
+    def forward(self, x):
         x_shape = self.shape(x)
         check_input_dims(x_shape, 4, 'HwcToChw')
         return self.trans(x, (0, 3, 1, 2))
 
 
-class Normalize(nn.Cell):
+class Normalize(nn.Module):
     """
     Applies Normalize transform on given input tensors.
     """
@@ -463,14 +463,14 @@ class Normalize(nn.Cell):
         self.div = P.Div()
         self.cast = P.Cast()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.cast(x, mstype.float32)
         x = self.sub(x, self.mean)
         x = self.div(x, self.std)
         return x
 
 
-class TypeCast(nn.Cell):
+class TypeCast(nn.Module):
     """
     Applies TypeCast transform on given input tensors.
     """
@@ -481,7 +481,7 @@ class TypeCast(nn.Cell):
         self.cast = P.Cast()
         self.data_type = mstype.typing.str_to_type(data_type_str)
 
-    def construct(self, x):
+    def forward(self, x):
 
         return self.cast(x, self.data_type)
 
@@ -506,7 +506,7 @@ op_to_model = {
 }
 
 
-class GetModelFromJson2Col(nn.Cell):
+class GetModelFromJson2Col(nn.Module):
     """
     Generates offload ME model from offload JSON file for a single map op.
     """
@@ -533,7 +533,7 @@ class GetModelFromJson2Col(nn.Cell):
 
         self.cell = nn.SequentialCell(self.me_ops)
 
-    def construct(self, x):
+    def forward(self, x):
         # apply single column
         col_idx = self.col_idxs[0]
         x[col_idx] = self.cell(x[col_idx])
@@ -541,7 +541,7 @@ class GetModelFromJson2Col(nn.Cell):
         return x
 
 
-class GetOffloadModel(nn.Cell):
+class GetOffloadModel(nn.Module):
     """
     Generates offload ME model.
     """
@@ -557,7 +557,7 @@ class GetOffloadModel(nn.Cell):
                     self.transform_list.append(GetModelFromJson2Col(node, ds_col_idxs))
             self.transform_list.reverse()
 
-    def construct(self, x):
+    def forward(self, x):
         for transform in self.transform_list:
             x = transform(x)
         return x

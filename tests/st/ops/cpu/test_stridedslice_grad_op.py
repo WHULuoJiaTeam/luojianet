@@ -28,14 +28,14 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class StridedSliceGrad(nn.Cell):
+class StridedSliceGrad(nn.Module):
     def __init__(self):
         super(StridedSliceGrad, self).__init__()
         self.ssg = G.StridedSliceGrad()
         self.shape = P.Shape()
 
     @ms_function
-    def construct(self, dy, x):
+    def forward(self, dy, x):
         return self.ssg(dy, self.shape(x), (2, 0, 0), (3, 2, 3), (1, 1, 1))
 
 
@@ -51,14 +51,14 @@ def test_slice():
     assert (output.asnumpy() == expect).all()
 
 
-class StridedSliceGrad2(nn.Cell):
+class StridedSliceGrad2(nn.Module):
     def __init__(self):
         super(StridedSliceGrad2, self).__init__()
         self.ssg = G.StridedSliceGrad()
         self.shape = P.Shape()
 
     @ms_function
-    def construct(self, dy, x):
+    def forward(self, dy, x):
         return self.ssg(dy, self.shape(x), (0, 0, 0), (1, 4, 2), (1, 1, 1))
 
 @pytest.mark.level0

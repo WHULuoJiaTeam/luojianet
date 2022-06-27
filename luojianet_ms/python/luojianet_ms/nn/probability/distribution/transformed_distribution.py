@@ -76,7 +76,7 @@ class TransformedDistribution(Distribution):
         >>> import luojianet_ms.nn.probability.distribution as msd
         >>> import luojianet_ms.nn.probability.bijector as msb
         >>> from luojianet_ms import Tensor
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, shape, dtype=luojianet_ms.float32, seed=0, name='transformed_distribution'):
         ...         super(Net, self).__init__()
         ...         # create TransformedDistribution distribution
@@ -85,7 +85,7 @@ class TransformedDistribution(Distribution):
         ...         self.lognormal = msd.TransformedDistribution(self.exp, self.normal, seed=seed, name=name)
         ...         self.shape = shape
         ...
-        ...     def construct(self, value):
+        ...     def forward(self, value):
         ...         cdf = self.lognormal.cdf(value)
         ...         sample = self.lognormal.sample(self.shape)
         ...         return cdf, sample

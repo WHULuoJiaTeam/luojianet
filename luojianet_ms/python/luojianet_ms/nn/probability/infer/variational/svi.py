@@ -17,7 +17,7 @@
 import luojianet_ms.common.dtype as mstype
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms._checkparam import Validator
-from ....cell import Cell
+from ....cell import Module
 from ....wrap.cell_wrapper import TrainOneStepCell
 from .elbo import ELBO
 
@@ -32,8 +32,8 @@ class SVI:
     For more details, refer to `Variational Inference: A Review for Statisticians <https://arxiv.org/abs/1601.00670>`_.
 
     Args:
-        net_with_loss(Cell): Cell with loss function.
-        optimizer (Cell): Optimizer for updating the weights.
+        net_with_loss(Module): Module with loss function.
+        optimizer (Module): Optimizer for updating the weights.
 
     Supported Platforms:
         ``Ascend`` ``GPU``
@@ -46,8 +46,8 @@ class SVI:
         if not isinstance(self.loss_fn, ELBO):
             raise TypeError('The loss function for variational inference should be ELBO.')
         self.optimizer = optimizer
-        if not isinstance(optimizer, Cell):
-            raise TypeError('The optimizer should be Cell type.')
+        if not isinstance(optimizer, Module):
+            raise TypeError('The optimizer should be Module type.')
         self._loss = 0.0
 
     def run(self, train_dataset, epochs=10):
@@ -59,7 +59,7 @@ class SVI:
             epochs (int): Total number of iterations on the data. Default: 10.
 
         Returns:
-            Cell, the trained probability network.
+            Module, the trained probability network.
         """
         epochs = Validator.check_positive_int(epochs)
         train_net = TrainOneStepCell(self.net_with_loss, self.optimizer)

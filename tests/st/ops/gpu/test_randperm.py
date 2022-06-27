@@ -22,12 +22,12 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class RandpermNet(nn.Cell):
+class RandpermNet(nn.Module):
     def __init__(self, max_length, pad, dtype):
         super(RandpermNet, self).__init__()
         self.randperm = P.Randperm(max_length, pad, dtype)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.randperm(x)
 
 

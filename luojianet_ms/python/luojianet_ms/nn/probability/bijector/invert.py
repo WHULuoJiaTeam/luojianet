@@ -36,13 +36,13 @@ class Invert(Bijector):
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms.nn.probability.bijector as msb
         >>> from luojianet_ms import Tensor
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.origin = msb.ScalarAffine(scale=2.0, shift=1.0)
         ...         self.invert = msb.Invert(self.origin)
         ...
-        ...     def construct(self, x_):
+        ...     def forward(self, x_):
         ...         return self.invert.forward(x_)
         >>> forward = Net()
         >>> x = np.array([2.0, 3.0, 4.0, 5.0]).astype(np.float32)

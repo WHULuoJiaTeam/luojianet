@@ -20,18 +20,18 @@ import numpy as np
 import pytest
 from luojianet_ms import context, Tensor
 from luojianet_ms.common import dtype as mstype
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 from luojianet_ms.ops import DataType, CustomRegOp
 
 
-class AOTSingleOutputNet(Cell):
+class AOTSingleOutputNet(Module):
     def __init__(self, func, out_shapes, out_types, reg=None):
         super(AOTSingleOutputNet, self).__init__()
 
         self.program = ops.Custom(func, out_shapes, out_types, "aot", reg_info=reg)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.program(x, y)
 
 
@@ -173,12 +173,12 @@ def test_hetero_square_mul():
     assert np.allclose(expect, output.asnumpy(), 0.001, 0.001)
 
 
-class SquareGradNet(Cell):
+class SquareGradNet(Module):
     def __init__(self, func, out_shapes, out_types, bprop, reg):
         super(SquareGradNet, self).__init__()
         self.square = ops.Custom(func, out_shapes, out_types, "aot", bprop, reg)
 
-    def construct(self, x):
+    def forward(self, x):
         res = self.square(x)
         res2 = self.square(res)
         return res2
@@ -222,7 +222,7 @@ def test_square_py_bprop():
 @pytest.mark.env_onecard
 def test_square_aot_bprop():
     """
-    Feature: custom aot operator, bprop(Cell), GPU
+    Feature: custom aot operator, bprop(Module), GPU
     Description: pre-compile xxx.cu to xxx.so, custom operator launches xxx.so
     Expectation: nn result matches numpy result
     """
@@ -261,7 +261,7 @@ def test_square_aot_bprop():
     assert np.allclose(expect, dx_np, 0.0001, 0.0001)
 
 
-class AOTMultiOutputNet(Cell):
+class AOTMultiOutputNet(Module):
     def __init__(self, func, out_shapes, out_types, bprop=None, reg=None):
         super(AOTMultiOutputNet, self).__init__()
 
@@ -269,7 +269,7 @@ class AOTMultiOutputNet(Cell):
         self.add = ops.Add()
         self.mul = ops.Mul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         aot = self.program(x, y)
         add_res = self.add(aot[0], aot[1])
         mul_res = self.mul(add_res, aot[2])
@@ -348,7 +348,7 @@ def add_mul_div_bprop(source, execf, source_prop, execf_prop):
 @pytest.mark.platform_x86_gpu_training
 def test_add_mul_div_bprop_graph():
     """
-    Feature: custom aot operator, bprop(Cell), multiple outputs, GPU, GRAPH_MODE
+    Feature: custom aot operator, bprop(Module), multiple outputs, GPU, GRAPH_MODE
     Description: pre-compile xxx.cu to xxx.so, custom operator launches xxx.so
     Expectation: nn result matches numpy result
     """
@@ -361,7 +361,7 @@ def test_add_mul_div_bprop_graph():
 @pytest.mark.platform_x86_gpu_training
 def test_add_mul_div_bprop_pynative():
     """
-    Feature: custom aot operator, bprop(Cell), multiple outputs, GPU, PYNATIVE_MODE
+    Feature: custom aot operator, bprop(Module), multiple outputs, GPU, PYNATIVE_MODE
     Description: pre-compile xxx.cu to xxx.so, custom operator launches xxx.so
     Expectation: nn result matches numpy result
     """

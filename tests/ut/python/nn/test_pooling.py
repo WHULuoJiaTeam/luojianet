@@ -23,14 +23,14 @@ from luojianet_ms import Tensor
 from luojianet_ms.common.api import _cell_graph_executor
 
 
-class AvgNet(nn.Cell):
+class AvgNet(nn.Module):
     def __init__(self,
                  kernel_size,
                  stride=None):
         super(AvgNet, self).__init__()
         self.avgpool = nn.AvgPool2d(kernel_size, stride)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.avgpool(x)
 
 
@@ -40,7 +40,7 @@ def test_compile_avg():
     _cell_graph_executor.compile(net, x)
 
 
-class MaxNet(nn.Cell):
+class MaxNet(nn.Module):
     """ MaxNet definition """
 
     def __init__(self,
@@ -52,7 +52,7 @@ class MaxNet(nn.Cell):
         self.maxpool = nn.MaxPool2d(kernel_size,
                                     stride)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.maxpool(x)
 
 
@@ -62,14 +62,14 @@ def test_compile_max():
     _cell_graph_executor.compile(net, x)
 
 
-class Avg1dNet(nn.Cell):
+class Avg1dNet(nn.Module):
     def __init__(self,
                  kernel_size,
                  stride=None):
         super(Avg1dNet, self).__init__()
         self.avg1d = nn.AvgPool1d(kernel_size, stride)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.avg1d(x)
 
 

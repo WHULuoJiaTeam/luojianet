@@ -22,7 +22,7 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     """
     Test class: Normal distribution.  `dist_spec_args` are `mean`, `sd`.
     """
@@ -32,7 +32,7 @@ class Net1(nn.Cell):
         self.normal1 = msd.Normal(0.0, 1.0, dtype=dtype.float32)
         self.normal2 = msd.Normal(3.0, 4.0, dtype=dtype.float32)
 
-    def construct(self, value, mean, sd, mean_a, sd_a):
+    def forward(self, value, mean, sd, mean_a, sd_a):
         args_list = self.normal.get_dist_args(mean, sd)
         prob = self.normal1.prob(value, *args_list)
         args_list1 = self.normal.get_dist_args()
@@ -62,7 +62,7 @@ def test1():
     assert (np.abs(ans.asnumpy() - expected.asnumpy()) < tol).all()
     assert (np.abs(ans1.asnumpy() - expected1.asnumpy()) < tol).all()
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """
     Test class: Exponential distribution.  `dist_spec_args` is `rate`.
     """
@@ -72,7 +72,7 @@ class Net2(nn.Cell):
         self.expon1 = msd.Exponential(1.0, dtype=dtype.float32)
         self.expon2 = msd.Exponential(2.0, dtype=dtype.float32)
 
-    def construct(self, value, rate, rate1):
+    def forward(self, value, rate, rate1):
         args_list = self.expon.get_dist_args(rate)
         prob = self.expon1.prob(value, *args_list)
         args_list1 = self.expon.get_dist_args()

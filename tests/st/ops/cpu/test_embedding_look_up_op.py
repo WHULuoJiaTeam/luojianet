@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, offset):
         super(Net, self).__init__()
         self.embedding = P.EmbeddingLookup().add_prim_attr("primitive_target", "CPU")
         self.offset = offset
 
-    def construct(self, param, index):
+    def forward(self, param, index):
         return self.embedding(param, index, self.offset)
 
 

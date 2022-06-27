@@ -16,7 +16,7 @@
 """grad reducer cell for distributed training"""
 from luojianet_ms import context
 from luojianet_ms import log as logger
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.communication.management import GlobalComm, get_group_size
 from luojianet_ms.common.tensor import RowTensor
 from luojianet_ms.ops import functional as F, composite as C
@@ -284,11 +284,11 @@ def _tensors_cast_datatype_with_sparse(datatype, grad):
     return RowTensor(grad.indices, dout, grad.dense_shape)
 
 
-class DistributedGradReducer(Cell):
+class DistributedGradReducer(Module):
     """
     A distributed optimizer.
 
-    Constructs a gradient reducer Cell, which applies communication and average operations on
+    Constructs a gradient reducer Module, which applies communication and average operations on
     single-process gradient values. Used in data parallel.
 
     Args:
@@ -323,7 +323,7 @@ class DistributedGradReducer(Cell):
         >>> context.reset_auto_parallel_context()
         >>> context.set_auto_parallel_context(parallel_mode=ParallelMode.DATA_PARALLEL)
         >>>
-        >>> class TrainingWrapper(nn.Cell):
+        >>> class TrainingWrapper(nn.Module):
         ...     def __init__(self, network, optimizer, sens=1.0):
         ...         super(TrainingWrapper, self).__init__(auto_prefix=False)
         ...         self.network = network
@@ -343,7 +343,7 @@ class DistributedGradReducer(Cell):
         ...             degree = context.get_auto_parallel_context("device_num")
         ...             self.grad_reducer = nn.DistributedGradReducer(optimizer.parameters, mean, degree)
         ...
-        ...     def construct(self, *args):
+        ...     def forward(self, *args):
         ...         weights = self.weights
         ...         loss = self.network(*args)
         ...         sens = ops.Fill()(ops.DType()(loss), ops.Shape()(loss), self.sens)
@@ -353,14 +353,14 @@ class DistributedGradReducer(Cell):
         ...             grads = self.grad_reducer(grads)
         ...         return self.depend(loss, self.optimizer(grads))
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, in_features, out_features):
         ...         super(Net, self).__init__()
         ...         self.weight = Parameter(Tensor(np.ones([in_features, out_features]).astype(np.float32)),
         ...                                 name='weight')
         ...         self.matmul = ops.MatMul()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output = self.matmul(x, self.weight)
         ...         return output
         >>>
@@ -409,7 +409,7 @@ class DistributedGradReducer(Cell):
         self.enable_parameter_server = any(self.ps_parameters)
         self.mode = context.get_context("mode")
 
-    def construct(self, grads):
+    def forward(self, grads):
         """
         Under certain circumstances, the data precision of grads could be mixed with float16 and float32. Thus, the
         result of AllReduce is unreliable. To solve the problem, grads must be cast to float32 before AllReduce,

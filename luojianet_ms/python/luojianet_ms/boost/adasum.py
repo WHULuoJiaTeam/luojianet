@@ -17,7 +17,7 @@
 import copy
 import hashlib
 import math
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.communication.management import create_group
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops import functional as F
@@ -138,7 +138,7 @@ def _adasum_opt_rollback_process(left_send, parameter_divisibility, delta_w, sen
     return res
 
 
-class AdaSum(Cell):
+class AdaSum(Module):
     r"""
     The Adaptive Summation, or AdaSum, is a novel algorithm for improving distributed data
     parallel training of Deep Learning models.
@@ -300,7 +300,7 @@ class AdaSum(Cell):
         hash_res = int(int(target_hash, 16) % MAX_NUM_HASH)
         return hash_res
 
-    def construct(self, delta_weights, parameters, old_parameters):
+    def forward(self, delta_weights, parameters, old_parameters):
         forward_weights = [delta_weights]
         for i in range(self.calc_times):
             process_weights = self.hyper_map(F.partial(_adasum_opt_forward, self.send_node[i], self.allreduce_list[i]),

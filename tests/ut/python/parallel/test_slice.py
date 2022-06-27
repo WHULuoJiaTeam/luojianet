@@ -19,11 +19,11 @@ import pytest
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, weight, w2, begin, end, strategy1=None, strategy2=None, is_parameter=True):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -37,14 +37,14 @@ class Net(Cell):
         self.begin = begin
         self.end = end
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.slice(self.weight, self.begin, self.end)
         out = self.mul(x, out)
         out = self.mul2(out, self.weight2)
         return out
 
 
-class Net2(Cell):
+class Net2(Module):
     def __init__(self, weight2, begin, end, strategy1=None, strategy2=None):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
@@ -53,7 +53,7 @@ class Net2(Cell):
         self.begin = begin
         self.end = end
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.mul(x, self.weight2)
         out = self.slice(out, self.begin, self.end)
         return out

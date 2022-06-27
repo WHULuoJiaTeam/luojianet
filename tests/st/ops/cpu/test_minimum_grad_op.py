@@ -18,7 +18,7 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops.operations import Minimum
 
@@ -26,22 +26,22 @@ context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 grad = C.GradOperation(get_all=True, sens_param=True)
 
 
-class MinNetMe(Cell):
+class MinNetMe(Module):
     def __init__(self):
         super(MinNetMe, self).__init__()
         self.min = Minimum()
 
-    def construct(self, inputA, inputB):
+    def forward(self, inputA, inputB):
         x = self.min(inputA, inputB)
         return x
 
 
-class GradWrap(Cell):
+class GradWrap(Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, inputA, inputB, sens):
+    def forward(self, inputA, inputB, sens):
         gout = grad(self.network)(inputA, inputB, sens)
         return gout
 

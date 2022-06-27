@@ -31,7 +31,7 @@ from luojianet_ms.context import ParallelMode
 from tests.dataset_mock import MindData
 context.set_context(mode=context.PYNATIVE_MODE)
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
     def __init__(self):
         super(Net, self).__init__()
@@ -45,7 +45,7 @@ class Net(nn.Cell):
         self.matmul1 = P.MatMul()
         self.matmul2 = P.MatMul()
 
-    def construct(self, x):
+    def forward(self, x):
         q = self.fc1(x)
         k = self.fc2(x)
         v = self.fc3(x)
@@ -75,7 +75,7 @@ class Dataset(MindData):
     def reset(self):
         self.index = 0
 
-class DenseNet1(nn.Cell):
+class DenseNet1(nn.Module):
     def __init__(self, has_bias=True, activation='relu'):
         super(DenseNet1, self).__init__()
         self.fc1 = nn.Dense(128, 128, has_bias=has_bias, activation=activation)
@@ -83,14 +83,14 @@ class DenseNet1(nn.Cell):
         self.fc3 = nn.Dense(128, 128, has_bias=has_bias, activation=activation)
         self.fc4 = nn.Dense(128, 128, has_bias=has_bias, activation=activation)
 
-    def construct(self, x):
+    def forward(self, x):
         q = self.fc1(x)
         k = self.fc2(q)
         v = self.fc3(k)
         s = self.fc4(v)
         return s
 
-class DenseNet2(nn.Cell):
+class DenseNet2(nn.Module):
     def __init__(self, has_bias=True, activation='relu'):
         super(DenseNet2, self).__init__()
         self.fc1 = nn.Dense(128, 128, has_bias=has_bias, activation=activation)
@@ -102,7 +102,7 @@ class DenseNet2(nn.Cell):
         self.fc7 = nn.Dense(128, 128, has_bias=has_bias, activation=activation)
         self.fc8 = nn.Dense(128, 128, has_bias=has_bias, activation=activation)
 
-    def construct(self, x):
+    def forward(self, x):
         q = self.fc1(x)
         k = self.fc2(q)
         v = self.fc3(k)
@@ -113,22 +113,22 @@ class DenseNet2(nn.Cell):
         z = self.fc8(w)
         return z
 
-class DenseNet3(nn.Cell):
+class DenseNet3(nn.Module):
     def __init__(self, has_bias=True, activation='relu'):
         super(DenseNet3, self).__init__()
         self.fc1 = nn.Dense(128, 128, has_bias=has_bias, activation=activation)
 
-    def construct(self, x):
+    def forward(self, x):
         q = self.fc1(x)
         return q
 
-class SimpleDMLNet(nn.Cell):
+class SimpleDMLNet(nn.Module):
     def __init__(self, net1, net2):
         super(SimpleDMLNet, self).__init__()
         self.backbone1 = net1
         self.backbone2 = net2
 
-    def construct(self, x):
+    def forward(self, x):
         x1 = self.backbone1(x)
         x2 = self.backbone2(x)
         return x1 + x2

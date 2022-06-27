@@ -21,39 +21,39 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class LessNet(nn.Cell):
+class LessNet(nn.Module):
     def __init__(self):
         super(LessNet, self).__init__()
         self.ops = P.Less()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.ops(x, y)
 
 
-class GreaterNet(nn.Cell):
+class GreaterNet(nn.Module):
     def __init__(self):
         super(GreaterNet, self).__init__()
         self.ops = P.Greater()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.ops(x, y)
 
 
-class LessEqualNet(nn.Cell):
+class LessEqualNet(nn.Module):
     def __init__(self):
         super(LessEqualNet, self).__init__()
         self.ops = P.LessEqual()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.ops(x, y)
 
 
-class GreaterEqualNet(nn.Cell):
+class GreaterEqualNet(nn.Module):
     def __init__(self):
         super(GreaterEqualNet, self).__init__()
         self.ops = P.GreaterEqual()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.ops(x, y)
 
 

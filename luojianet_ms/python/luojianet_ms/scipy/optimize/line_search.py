@@ -180,7 +180,7 @@ def _zoom(fn, a_low, phi_low, dphi_low, a_high, phi_high, dphi_high, phi_0, g_0,
     return state
 
 
-class LineSearch(nn.Cell):
+class LineSearch(nn.Module):
     """Line Search that satisfies strong Wolfe conditions."""
 
     def __init__(self, func):
@@ -188,7 +188,7 @@ class LineSearch(nn.Cell):
         super(LineSearch, self).__init__()
         self.func = func
 
-    def construct(self, xk, pk, old_fval=None, old_old_fval=None, gfk=None, c1=1e-4, c2=0.9, maxiter=20):
+    def forward(self, xk, pk, old_fval=None, old_old_fval=None, gfk=None, c1=1e-4, c2=0.9, maxiter=20):
         def fval_and_grad(alpha):
             xkk = xk + alpha * pk
             fkk = self.func(xkk)

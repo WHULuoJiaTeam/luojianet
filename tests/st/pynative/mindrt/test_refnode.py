@@ -2,16 +2,16 @@ import pytest
 import numpy as np
 from luojianet_ms import ops, Tensor, context
 from luojianet_ms.common.parameter import Parameter
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 
-class AssignNet(Cell):
+class AssignNet(Module):
     def __init__(self, input_variable):
         super(AssignNet, self).__init__()
         self.op = ops.Assign()
         self.input_data = input_variable
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.op(self.input_data, input_x)
 
 @pytest.mark.level0

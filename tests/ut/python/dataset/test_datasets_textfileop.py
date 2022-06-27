@@ -184,7 +184,7 @@ def test_textline_dataset_repeat():
 
 def test_textline_dataset_output_tensor():
     """
-    Feature: Test text dataset output string and construct luojianet_ms.Tensor.
+    Feature: Test text dataset output string and forward luojianet_ms.Tensor.
     Description: set output_numpy=False in create_dict_iterator.
     Expectation: output tensor successfully
     """

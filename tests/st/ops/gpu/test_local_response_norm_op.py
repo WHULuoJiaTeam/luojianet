@@ -25,24 +25,24 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import composite as C
 
 
-class MSLRNOpNet(nn.Cell):
+class MSLRNOpNet(nn.Module):
     def __init__(self):
         super(MSLRNOpNet, self).__init__()
         self.lrn1 = P.LRN(depth_radius=2, bias=1.0, alpha=0.0001, beta=0.75)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.lrn1(x)
         return x
 
 
-class MSGradNet(nn.Cell):
+class MSGradNet(nn.Module):
     def __init__(self, network):
         super(MSGradNet, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True, get_by_list=True)
         self.network = network
         self.params = ParameterTuple(network.trainable_params())
 
-    def construct(self, x, dy):
+    def forward(self, x, dy):
         grad_op = self.grad(self.network, self.params)
         output = grad_op(x, dy)
         return output

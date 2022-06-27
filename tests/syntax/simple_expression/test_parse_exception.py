@@ -10,12 +10,12 @@ import luojianet_ms
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class TestNoReturn(nn.Cell):
+class TestNoReturn(nn.Module):
     def __init__(self):
         super(TestNoReturn, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         and_v = x * y
         and_v += 1
         # return and_v
@@ -29,12 +29,12 @@ def test_no_return():
     print(ret)
 
 
-class TestSuper(nn.Cell):
+class TestSuper(nn.Module):
     def __init__(self):
         super().__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         super(TestSuper, 2, 3).aa()
         and_v = x * y
         return and_v
@@ -48,12 +48,12 @@ def test_super():
     print(ret)
 
 
-class TestCompare(nn.Cell):
+class TestCompare(nn.Module):
     def __init__(self):
         super(TestCompare, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return x > y > 10
 
 
@@ -65,12 +65,12 @@ def test_compare():
     print(ret)
 
 
-class TestUndefMemberChange(nn.Cell):
+class TestUndefMemberChange(nn.Module):
     def __init__(self):
         super(TestUndefMemberChange, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         self.t = x
         return x > y
 
@@ -83,12 +83,12 @@ def test_undef_member_changer():
     print(ret)
 
 
-class TestMemberChange(nn.Cell):
+class TestMemberChange(nn.Module):
     def __init__(self):
         super(TestMemberChange, self).__init__()
         self.t = Tensor(np.zeros([2, 2], np.float))
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         self.t = x
         return x > y
 
@@ -101,12 +101,12 @@ def test_member_changer():
     print(ret)
 
 
-class TestUnsupportSTMT(nn.Cell):
+class TestUnsupportSTMT(nn.Module):
     def __init__(self):
         super(TestUnsupportSTMT, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         try:
             val = x + y
         finally:
@@ -122,12 +122,12 @@ def test_UnsupportSTMT():
     print(ret)
 
 
-class TestUnsupportNum(nn.Cell):
+class TestUnsupportNum(nn.Module):
     def __init__(self):
         super(TestUnsupportNum, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         a = x + 3.14j
         return a
 
@@ -140,12 +140,12 @@ def test_UnsupportNum():
     print(ret)
 
 
-class TestAssignAdd(nn.Cell):
+class TestAssignAdd(nn.Module):
     def __init__(self):
         super(TestAssignAdd, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x.id_ += y
         # x[1] += y
         return x
@@ -157,12 +157,12 @@ def test_AssignAdd():
     print(ret)
 
 
-class TestParseListComp(nn.Cell):
+class TestParseListComp(nn.Module):
     def __init__(self):
         super(TestParseListComp, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         ret = [m + y for l in x for m in l]
         return ret
 
@@ -174,12 +174,12 @@ def test_ParseListComp():
     print(ret)
 
 
-class TestAssign(nn.Cell):
+class TestAssign(nn.Module):
     def __init__(self):
         super(TestAssign, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x.id_ = y
         return x
 
@@ -190,12 +190,12 @@ def test_Assign():
     print(ret)
 
 
-class TestAssignList(nn.Cell):
+class TestAssignList(nn.Module):
     def __init__(self):
         super(TestAssignList, self).__init__()
         self.m = 1
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         [m, n] = [x, y]
         return m, n
 
@@ -206,12 +206,12 @@ def test_AssignList():
     print(ret)
 
 
-class TestParaDef(nn.Cell):
+class TestParaDef(nn.Module):
     def __init__(self):
         super(TestParaDef, self).__init__()
         self.m = 1
 
-    def construct(self, x=1, y=1):
+    def forward(self, x=1, y=1):
         ret = x + y
         return ret
 
@@ -222,14 +222,14 @@ def test_para_def():
     print(ret)
 
 
-class TestParameterNameNone(nn.Cell):
+class TestParameterNameNone(nn.Module):
     def __init__(self):
         super(TestParameterNameNone, self).__init__()
         self.matmul = ops.MatMul()
         # self.weight = Parameter(Tensor(np.ones((1, 2)), luojianet_ms.float32), name="w", requires_grad=True)
         self.weight = Parameter(Tensor(np.ones((1, 2)), luojianet_ms.float32), name=None, requires_grad=True)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.matmul(self.weight, x)
         return out
 
@@ -240,12 +240,12 @@ def test_parameter_name_none():
     print(net(x))
 
 
-class TestBranchReturn(nn.Cell):
+class TestBranchReturn(nn.Module):
     def __init__(self):
         super(TestBranchReturn, self).__init__()
         self.m = 1
 
-    def construct(self, x):
+    def forward(self, x):
         if x > 0:
             return x + 1
 
@@ -257,12 +257,12 @@ def test_branch_return():
     print(net(1))
 
 
-class TestSliceNotInt(nn.Cell):
+class TestSliceNotInt(nn.Module):
     def __init__(self):
         super(TestSliceNotInt, self).__init__()
         self.m = 1
 
-    def construct(self, x):
+    def forward(self, x):
         s = "ABCDEFGHIJKL"
         sl = slice(x, 4.5)
         return s[sl]
@@ -273,12 +273,12 @@ def test_slice_not_int():
     print(net(1))
 
 
-class TestSliceNotIntDefInInit(nn.Cell):
+class TestSliceNotIntDefInInit(nn.Module):
     def __init__(self):
         super(TestSliceNotIntDefInInit, self).__init__()
         self.sl = slice(1, 4.5)
 
-    def construct(self, x):
+    def forward(self, x):
         s = "ABCDEFGHIJKL"
         return s[self.sl]
 
@@ -288,16 +288,16 @@ def test_slice_not_int_def_in_init():
     print(net(1))
 
 
-class MatMulCell(nn.Cell):
+class MatMulCell(nn.Module):
     def __init__(self):
         super().__init__()
         self.m = 1
 
-    def construct(self, x):
+    def forward(self, x):
         return x
 
 
-class TestCellPipelineStage(nn.Cell):
+class TestCellPipelineStage(nn.Module):
     def __init__(self, strategy1, strategy2, param=None):
         super().__init__()
         self.block = nn.CellList()
@@ -308,7 +308,7 @@ class TestCellPipelineStage(nn.Cell):
         cell.pipeline_stage = -1
         self.block.append(cell)
 
-    def construct(self, x):
+    def forward(self, x):
         for i in range(2):
             x = self.block[i](x)
         return x
@@ -321,12 +321,12 @@ def test_cell_pipeline_state():
     print(net(1))
 
 
-class TestArgsKwArgs(nn.Cell):
+class TestArgsKwArgs(nn.Module):
     def __init__(self):
         super(TestArgsKwArgs, self).__init__()
         self.m = 1
 
-    def construct(self, *args, **kwargs):
+    def forward(self, *args, **kwargs):
         x = 0
         for v in args:
             x += v
@@ -341,12 +341,12 @@ def test_args_kwargs():
     print(net(1, 2, 3, 4, k1=5, k2=6))
 
 
-class TestArgs(nn.Cell):
+class TestArgs(nn.Module):
     def __init__(self):
         super(TestArgs, self).__init__()
         self.m = 1
 
-    def construct(self, x, *args):
+    def forward(self, x, *args):
         for v in args:
             x += v
 
@@ -358,12 +358,12 @@ def test_args():
     print(net(1, 2, 3, 4))
 
 
-class TestNoDef(nn.Cell):
+class TestNoDef(nn.Module):
     def __init__(self):
         super().__init__()
         self.m = 1
 
-    def construct(self, x):
+    def forward(self, x):
         x += self.y
         return x
 

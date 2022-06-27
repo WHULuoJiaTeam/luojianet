@@ -21,7 +21,7 @@ from luojianet_ms.communication.management import init
 from luojianet_ms.communication.management import release
 from luojianet_ms.communication.management import get_rank
 from luojianet_ms.communication.management import get_group_size
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import ReLU
 from luojianet_ms.nn import Dense
 from luojianet_ms.nn import Flatten
@@ -176,7 +176,7 @@ class FakeData:
         raise StopIteration
 
 
-class OptimizerSemiAutoAndAutoParallel6Net(Cell):
+class OptimizerSemiAutoAndAutoParallel6Net(Module):
     def __init__(self, strategy_dict=None):
         super().__init__()
         shared_np = np.full((16, 1, 32, 32), 0.5, dtype=np.float32)
@@ -209,7 +209,7 @@ class OptimizerSemiAutoAndAutoParallel6Net(Cell):
             self.mul2.shard(strategy_dict['mul2'])
             self.mul3.shard(strategy_dict['mul3'])
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         relu = self.relu(inputs)
         sigmoid = self.sigmoid(inputs)
         add1 = self.add1(relu, self.shared_weight)

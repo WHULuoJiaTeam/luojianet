@@ -19,7 +19,7 @@ import luojianet_ms.nn as nn
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class LeNet(nn.Cell):
+class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
         self.relu = P.ReLU()
@@ -37,7 +37,7 @@ class LeNet(nn.Cell):
         self.fc2 = nn.Dense(120, 84)
         self.fc3 = nn.Dense(84, 10)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         output = self.conv1(input_x)
         output = self.relu(output)
         output = self.pool(output)

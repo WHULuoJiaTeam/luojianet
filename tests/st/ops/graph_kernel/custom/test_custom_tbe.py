@@ -17,7 +17,7 @@
 import pytest
 import numpy as np
 from luojianet_ms import context, Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 from luojianet_ms.ops import TBERegOp, DataType, CustomRegOp, custom_info_register
 from luojianet_ms.ops.composite.multitype_ops.zeros_like_impl import zeros_like
@@ -126,7 +126,7 @@ def add_n_with_bias(inputs, output, bias, kernel_name="add_n_with_bias"):
     te.lang.cce.cce_build_code(sch, config)
 
 
-class Net1(Cell):
+class Net1(Module):
     """Net definition"""
 
     def __init__(self):
@@ -141,7 +141,7 @@ class Net1(Cell):
                                               func_type="tbe")
         self.neg = ops.Neg()
 
-    def construct(self, x):
+    def forward(self, x):
         tmp1 = self.square_with_bias(x, 1.0)
         tmp2 = self.square_with_bias(tmp1, 2.0)
         tmp3 = self.neg(tmp2)
@@ -212,7 +212,7 @@ def bprop(data, axis, out, dout):
     return dx, zeros_like(axis)
 
 
-class Net2(Cell):
+class Net2(Module):
     """Net definition"""
 
     def __init__(self, bprop_func):
@@ -220,7 +220,7 @@ class Net2(Cell):
         self.square_with_bias = ops.Custom(square_with_bias, lambda x, _: x, lambda x, _: x, bprop=bprop_func,
                                            func_type="tbe")
 
-    def construct(self, x):
+    def forward(self, x):
         res = self.square_with_bias(x, 1.0)
         return res
 

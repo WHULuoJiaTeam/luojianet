@@ -20,7 +20,7 @@ import pytest
 from luojianet_ms import Tensor, context, Parameter
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import functional as F
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms as ms
 
 
@@ -30,13 +30,13 @@ def test_inner_scalar_divisor():
     Description: The divisor of inner scalar must not be zero.
     Expectation: The divisor of inner scalar must not be zero.
     """
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, ms.int32), name="param_a")
             self.param_b = Parameter(Tensor(5, ms.int32), name="param_b")
 
-        def construct(self, x):
+        def forward(self, x):
             return x + self.param_a + 5 / 0
 
     context.set_context(device_target="GPU")
@@ -53,12 +53,12 @@ def test_inner_scalar_mod():
     Description: The input of inner scalar mod must not be zero.
     Expectation: The input of inner scalar mod must not be zero.
     """
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, ms.int32), name="param_a")
 
-        def construct(self, x):
+        def forward(self, x):
             return x + self.param_a + 5 % 0
 
     x = Tensor(2, dtype=ms.int32)
@@ -74,13 +74,13 @@ def test_inner_scalar_mod_args_length():
     Description: The length of input of inner scalar mod should not less than 2.
     Expectation: The length of input of inner scalar mod should not less than 2.
     """
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(5, ms.int32), name="param_a")
             self.mod = P.Mod()
 
-        def construct(self, x):
+        def forward(self, x):
             return x + self.param_a + self.mod(5)
 
     x = Tensor(2, dtype=ms.int32)
@@ -96,8 +96,8 @@ def test_make_range_input_is_empty():
     Description: The inputs of make_range operator could not be empty.
     Expectation: The inputs of make_range operator could not be empty.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             for _ in range():
                 x += y
             return x
@@ -116,8 +116,8 @@ def test_make_range_step_zero():
     Description: The step value of MakeRange operator could not be 0.
     Expectation: The step value of MakeRange operator could not be 0.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             for _ in range(1, 2, 0):
                 x += y
             return x
@@ -136,8 +136,8 @@ def test_make_range_error_input_1():
     Description: If start > stop, the step need smaller than zero.
     Expectation: If start > stop, the step need smaller than zero.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             for _ in range(1, -1, 3):
                 x += y
             return x
@@ -156,8 +156,8 @@ def test_make_range_error_input_2():
     Description: If start < stop, the step need greater than zero.
     Expectation: If start < stop, the step need greater than zero.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             for _ in range(-1, 1, -3):
                 x += y
             return x
@@ -176,8 +176,8 @@ def test_make_range_input_type():
     Description: The type of inputs of make_range operator must be int64.
     Expectation: The type of inputs of make_range operator must be int64.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             for _ in range(0, 0.02):
                 x += y
             return x
@@ -196,8 +196,8 @@ def test_make_range_input_type_2():
     Description: The type of inputs of make_range operator must be int64.
     Expectation: The type of inputs of make_range operator must be int64.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             for _ in range(0, 1, 3.00):
                 x += y
             return x
@@ -216,8 +216,8 @@ def test_make_range_input_type_3():
     Description: The type of inputs of make_range operator must be int64.
     Expectation: The type of inputs of make_range operator must be int64.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             for _ in range(3.00):
                 x += y
             return x
@@ -236,8 +236,8 @@ def test_make_range_input_size():
     Description: The size of inputs of make_range operator could not exceed 3.
     Expectation: The size of inputs of make_range operator could not exceed 3.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             for _ in range(1, 2, 3, 4):
                 x += y
             return x
@@ -256,8 +256,8 @@ def test_make_range_overflow():
     Description: The size of inputs of make_range operator could not exceed 3.
     Expectation: The size of inputs of make_range operator could not exceed 3.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             max_index = sys.maxsize
             for _ in range(max_index - 1, max_index, 3):
                 x += y
@@ -277,8 +277,8 @@ def test_make_range_overflow_2():
     Description: The size of inputs of make_range operator could not exceed 3.
     Expectation: The size of inputs of make_range operator could not exceed 3.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             min_index = -sys.maxsize
             for _ in range(min_index, min_index - 1, -3):
                 x += y
@@ -298,8 +298,8 @@ def test_typeof():
     Description: The size of inputs of typeof operator must be 1.
     Expectation: The size of inputs of typeof operator must be 1.
     """
-    class Net(Cell):
-        def construct(self, x):
+    class Net(Module):
+        def forward(self, x):
             return F.typeof(x, x)
 
     x = Tensor([2, 3, 4, 5], dtype=ms.int32)
@@ -316,8 +316,8 @@ def test_tuple_div():
     Description: The size of inputs of tuple_div operator must be same.
     Expectation: The size of inputs of tuple_div operator must be same.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             return F.tuple_div(x, y)
 
     x = (8, 14, 20)
@@ -334,8 +334,8 @@ def test_tuple_div_type():
     Description: The type of inputs of tuple_div operator must be int64 number.
     Expectation: The type of inputs of tuple_div operator must be int64 number.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             return F.tuple_div(x, y)
 
     x = (8, 14, 20)
@@ -352,8 +352,8 @@ def test_tuple_div_zero():
     Description: The divisor value should not be 0.
     Expectation: The divisor value should not be 0.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             return F.tuple_div(x, y)
 
     x = (8, 14, 20)
@@ -370,8 +370,8 @@ def test_tuple_div_input_is_not_divisible():
     Description: The inputs of tuple_div could be divisible.
     Expectation: The inputs of tuple_div could be divisible.
     """
-    class Net(Cell):
-        def construct(self, x, y):
+    class Net(Module):
+        def forward(self, x, y):
             return F.tuple_div(x, y)
 
     x = (8, 14)
@@ -388,8 +388,8 @@ def test_make_slice_scalar():
     Description: The scalar input of make_slice is int or bool.
     Expectation: The scalar input of make_slice is int or bool.
     """
-    class Net(Cell):
-        def construct(self, data):
+    class Net(Module):
+        def forward(self, data):
             return data[1.01:None:None]
 
     x = Tensor((8, 10, 12), dtype=ms.int32)

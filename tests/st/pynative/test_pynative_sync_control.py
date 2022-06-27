@@ -23,12 +23,12 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.PYNATIVE_MODE, device_target="Ascend")
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.get_next = P.GetNext([mstype.float32], [(1, 1)], 1, "test")
 
-    def construct(self, x1,):
+    def forward(self, x1,):
         x = self.get_next()
         x = x + x1
         return x

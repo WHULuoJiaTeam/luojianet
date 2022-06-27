@@ -21,7 +21,7 @@ import numpy as np
 import luojianet_ms as ms
 import luojianet_ms.ops.operations as P
 import luojianet_ms.nn as nn
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import ReLU, BatchNorm2d, Conv2d, ParameterUpdate
 from luojianet_ms.nn import Momentum, SoftmaxCrossEntropyWithLogits
 from luojianet_ms import context, Tensor
@@ -52,12 +52,12 @@ def _with_save_graphs():
 
 @security_off_wrap
 def test_print():
-    class Print(Cell):
+    class Print(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.print("input_x:", x, "input_y:", y)
             return x
 
@@ -76,13 +76,13 @@ def test_print():
 
 @security_off_wrap
 def test_print_add():
-    class Print_Add(Cell):
+    class Print_Add(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
             self.add = P.Add()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             x = self.add(x, y)
             self.print("input_x:", x, "input_y:", y)
             return x
@@ -104,13 +104,13 @@ def test_print_add():
 
 @security_off_wrap
 def test_print_assign():
-    class Print_Assign(Cell):
+    class Print_Assign(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x):
+        def forward(self, x):
             self.print("before:", self.para)
             self.para = x
             self.print("after:", self.para)
@@ -132,14 +132,14 @@ def test_print_assign():
 
 @security_off_wrap
 def test_print_assign_add():
-    class Print_Assign_Add(Cell):
+    class Print_Assign_Add(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
             self.add = P.Add()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.print("before:", self.para)
             self.para = x
             self.print("after:", self.para)
@@ -163,12 +163,12 @@ def test_print_assign_add():
 
 @security_off_wrap
 def test_print_while():
-    class Print_While(Cell):
+    class Print_While(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.print("input_x before:", x, "input_y before:", y)
             while x < y:
                 self.print("input_x after:", x, "input_y after:", y)
@@ -198,12 +198,12 @@ def test_print_while():
 
 @security_off_wrap
 def test_print_if():
-    class Print_If(Cell):
+    class Print_If(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.print("input_x before:", x, "input_y before:", y)
             if x < y:
                 self.print("input_x after:", x, "input_y after:", y)
@@ -229,13 +229,13 @@ def test_print_if():
 
 @security_off_wrap
 def test_print_assign_while():
-    class Print_Assign_While(Cell):
+    class Print_Assign_While(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
             self.para = Parameter(Tensor(0, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.print("input_x before:", x, "input_y before:",
                        y, "para before:", self.para)
             while x < y:
@@ -273,13 +273,13 @@ def test_print_assign_while():
 
 @security_off_wrap
 def test_print_assign_if():
-    class Print_Assign_If(Cell):
+    class Print_Assign_If(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.print("input_x before:", x, "input_y before:",
                        y, "para before:", self.para)
             self.para = x
@@ -314,12 +314,12 @@ def test_print_assign_if():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign():
-    class Assign(Cell):
+    class Assign(Module):
         def __init__(self):
             super().__init__()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, value):
+        def forward(self, value):
             self.para = value
             return self.para
 
@@ -335,13 +335,13 @@ def test_assign():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign_implicit():
-    class Assign_Implicit(Cell):
+    class Assign_Implicit(Module):
         def __init__(self):
             super(Assign_Implicit, self).__init__()
             self.b = Parameter(initializer(
                 1, [5], ms.float32), name="global_step")
 
-        def construct(self, w):
+        def forward(self, w):
             self.b = w
             return self.b
 
@@ -356,7 +356,7 @@ def test_assign_implicit():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign_write_after_read():
-    class Assign_WAR(Cell):
+    class Assign_WAR(Module):
         def __init__(self):
             super(Assign_WAR, self).__init__()
             self.assign = P.Assign()
@@ -365,7 +365,7 @@ def test_assign_write_after_read():
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
             self.weight = Parameter(Tensor(5, dtype=ms.int32), name='weight')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             # without auto_monad, execute order is wrong: Add - Assign - Sub - Assign
             # expected execute order: Add - Assign - Assign - Sub
             self.para = self.add(y, x)
@@ -385,7 +385,7 @@ def test_assign_write_after_read():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign_read_after_write():
-    class Assign_RAW(Cell):
+    class Assign_RAW(Module):
         def __init__(self):
             super(Assign_RAW, self).__init__()
             self.assign_add = P.AssignAdd()
@@ -393,7 +393,7 @@ def test_assign_read_after_write():
             self.add = P.Add()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             # without auto_monad, execute order is wrong: Add - Assign - Greater - AssignAdd
             # expected execute order: AssignAdd - Add - Assign
             self.greater(x, y)
@@ -414,12 +414,12 @@ def test_assign_read_after_write():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign_if():
-    class Assign_If(Cell):
+    class Assign_If(Module):
         def __init__(self):
             super().__init__()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             if x < y:
                 self.para = x
             else:
@@ -439,13 +439,13 @@ def test_assign_if():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if():
-    class If(Cell):
+    class If(Module):
         def __init__(self):
             super().__init__()
             self.add = P.Add()
             self.sub = P.Sub()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             if x > y:
                 x = self.sub(x, y)
             else:
@@ -465,8 +465,8 @@ def test_if():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_while():
-    class While(Cell):
-        def construct(self, x, y):
+    class While(Module):
+        def forward(self, x, y):
             y = y + 4
             while x < y:
                 x = x + 1
@@ -486,12 +486,12 @@ def test_while():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign_while():
-    class Assign_While(Cell):
+    class Assign_While(Module):
         def __init__(self):
             super().__init__()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             y = y + 4
             while x < y:
                 x = x + 1
@@ -512,8 +512,8 @@ def test_assign_while():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_for():
-    class For(Cell):
-        def construct(self, x, y):
+    class For(Module):
+        def forward(self, x, y):
             y = x + y
             for _ in range(20):
                 y = y + 1
@@ -529,12 +529,12 @@ def test_for():
 
 @security_off_wrap
 def test_print_for():
-    class Print_For(Cell):
+    class Print_For(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             y = x + y
             self.print("input_x before:", x, "input_y before:", y)
             for _ in range(3):
@@ -566,13 +566,13 @@ def test_print_for():
 
 @security_off_wrap
 def test_print_assign_for():
-    class Print_Assign_For(Cell):
+    class Print_Assign_For(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             y = x + y
             self.print("input_x before:", x, "input_y before:",
                        y, "para before:", self.para)
@@ -614,12 +614,12 @@ def test_print_assign_for():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign_for():
-    class Assign_For(Cell):
+    class Assign_For(Module):
         def __init__(self):
             super().__init__()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             y = y + 4
             for _ in range(5):
                 x = x + y
@@ -645,12 +645,12 @@ def _check_shape(shape):
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_constexpr_check():
-    class ConstexprCheck(Cell):
+    class ConstexprCheck(Module):
         def __init__(self):
             super(ConstexprCheck, self).__init__()
             self.shape = P.Shape()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             s = self.shape(x)
             _check_shape(s)
             x = x + y
@@ -675,12 +675,12 @@ def test_constexpr_check():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if_lambda():
-    class If_Lambda(Cell):
+    class If_Lambda(Module):
         def __init__(self):
             super().__init__()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = x
             if x < y:
                 x2 = (lambda a: a + a)
@@ -701,7 +701,7 @@ def test_if_lambda():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_multi_assign():
-    class Multi_Assign(Cell):
+    class Multi_Assign(Module):
         def __init__(self):
             super().__init__()
             self.assign = P.Assign()
@@ -709,7 +709,7 @@ def test_multi_assign():
             self.para2 = Parameter(Tensor(2, dtype=ms.int32), name='para2')
             self.para3 = Parameter(Tensor(3, dtype=ms.int32), name='para3')
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             a = self.assign(self.para1, x)
             a = self.assign(self.para2, y)
             a = self.assign(self.para3, z)
@@ -729,7 +729,7 @@ def test_multi_assign():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_multi_assign_addn():
-    class Multi_Assign_Addn(Cell):
+    class Multi_Assign_Addn(Module):
         def __init__(self):
             super().__init__()
             self.addn = P.AddN()
@@ -737,7 +737,7 @@ def test_multi_assign_addn():
             self.para1 = Parameter(Tensor(1.0, dtype=ms.float32), name='para1')
             self.para2 = Parameter(Tensor(3.0, dtype=ms.float32), name='para2')
 
-        def construct(self, inputs):
+        def forward(self, inputs):
             self.assign(self.para1, inputs)
             out = self.addn((inputs, self.para1, self.para2))
             self.assign(self.para2, inputs)
@@ -753,7 +753,7 @@ def test_multi_assign_addn():
 
 @security_off_wrap
 def test_multi_assign_print():
-    class Multi_Assign_Print(Cell):
+    class Multi_Assign_Print(Module):
         def __init__(self):
             super().__init__()
             self.pow = P.Pow()
@@ -763,7 +763,7 @@ def test_multi_assign_print():
             self.para1 = Parameter(Tensor(1.0, dtype=ms.float32), name='para1')
             self.para2 = Parameter(Tensor(3.0, dtype=ms.float32), name='para2')
 
-        def construct(self, inputs):
+        def forward(self, inputs):
             self.assign(self.para1, inputs)
             self.assign(self.para2, self.pow(inputs, self.exponent))
             self.print(inputs)
@@ -789,7 +789,7 @@ def test_multi_assign_print():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_matmul_assign_biasadd():
-    class Matmul_Assign_Biasadd(Cell):
+    class Matmul_Assign_Biasadd(Module):
         def __init__(self):
             super().__init__()
             inputs = np.array([[1, 1], [1, 1]])
@@ -802,7 +802,7 @@ def test_matmul_assign_biasadd():
             self.matmul = P.MatMul()
             self.biasadd = P.BiasAdd()
 
-        def construct(self, x):
+        def forward(self, x):
             self.assign(self.parameter1, x)
             x = self.matmul(x, self.parameter1)
             self.assign(self.parameter1, x)
@@ -826,7 +826,7 @@ def test_matmul_assign_biasadd():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign_while_if():
-    class Assign_While_If(Cell):
+    class Assign_While_If(Module):
         def __init__(self):
             super().__init__()
             self.mul = P.Mul()
@@ -835,7 +835,7 @@ def test_assign_while_if():
             self.assign_sub = P.AssignSub()
             self.para = Parameter(Tensor(1.0, dtype=ms.float32), name='para')
 
-        def construct(self, x, y, z, w):
+        def forward(self, x, y, z, w):
             self.assign(self.para, x)
             if self.para > y:
                 self.assign(self.para, y)
@@ -860,13 +860,13 @@ def test_assign_while_if():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_isolate_call():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.para1 = Parameter(Tensor(1, dtype=ms.int32), name='para1')
             self.para2 = Parameter(Tensor(2, dtype=ms.int32), name='para2')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.setpara(x, y)
             return self.para1 + self.para2
 
@@ -892,12 +892,12 @@ def test_isolate_call():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_assign_return_true():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super(Net, self).__init__()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             if self.mycheck(x, y):
                 out = x + y
             else:
@@ -926,22 +926,22 @@ def test_assign_return_true():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_unpack_call():
-    class SetPara(Cell):
+    class SetPara(Module):
         def __init__(self, para):
             super(SetPara, self).__init__()
             self.para = para
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.para = x + y
             return True
 
-    class MyNet(Cell):
+    class MyNet(Module):
         def __init__(self):
             super(MyNet, self).__init__()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
             self.set_para = SetPara(self.para)
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             self.call_func(self.set_para, *inputs)
             out = self.para + 1
             return out
@@ -963,22 +963,22 @@ def test_unpack_call():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_tuple_of_tuple():
-    class SetPara(Cell):
+    class SetPara(Module):
         def __init__(self, para):
             super(SetPara, self).__init__()
             self.para = para
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             self.para = x + y
             return True
 
-    class MyNet(Cell):
+    class MyNet(Module):
         def __init__(self):
             super(MyNet, self).__init__()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
             self.set_para = SetPara(self.para)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             t1 = (self.set_para, x)
             t2 = (t1, y)
             t2[0][0](t2[1], t1[1])
@@ -1002,13 +1002,13 @@ def test_tuple_of_tuple():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_write_read_write():
-    class MyNet(Cell):
+    class MyNet(Module):
         def __init__(self):
             super(MyNet, self).__init__()
             self.para1 = Parameter(Tensor(1, dtype=ms.int32), name='para1')
             self.para2 = Parameter(Tensor(2, dtype=ms.int32), name='para2')
 
-        def construct(self, x, y, x1, y1):
+        def forward(self, x, y, x1, y1):
             self.para1 = x
             self.para2 = y
             a = self.para1 + self.para2
@@ -1031,14 +1031,14 @@ def test_write_read_write():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_variable_from_outer_graph():
-    class MyNet(Cell):
+    class MyNet(Module):
         def __init__(self):
             super(MyNet, self).__init__()
             self.cond = False
             self.add = P.Add()
             self.para = Parameter(Tensor(1, dtype=ms.int32), name='para')
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             b = self.para + x
             a = self.para + b
             if self.cond:
@@ -1060,7 +1060,7 @@ def test_variable_from_outer_graph():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_ctrl_while_by_while_and_if_in_first_while():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU()
@@ -1074,7 +1074,7 @@ def test_ctrl_while_by_while_and_if_in_first_while():
             c = np.full((1,), 7, dtype=np.float32)
             self.c = Parameter(Tensor(c), name="c")
 
-        def construct(self, x):
+        def forward(self, x):
             out = x
             while self.a < 7:
                 if self.a < self.c:
@@ -1097,7 +1097,7 @@ def test_ctrl_while_by_while_and_if_in_first_while():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_ctrl_if_by_while_and_while_in_first_if():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU()
@@ -1111,7 +1111,7 @@ def test_ctrl_if_by_while_and_while_in_first_if():
             c = np.full((1,), 7, dtype=np.float32)
             self.c = Parameter(Tensor(c), name="c")
 
-        def construct(self, x):
+        def forward(self, x):
             out = x
             if self.a < self.c:
                 out = self.relu(x)
@@ -1135,7 +1135,7 @@ def test_ctrl_if_by_while_and_while_in_first_if():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_ctrl_while_by_while_and_while_in_first_while():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU()
@@ -1149,7 +1149,7 @@ def test_ctrl_while_by_while_and_while_in_first_while():
             c = np.full((1,), 7, dtype=np.float32)
             self.c = Parameter(Tensor(c), name="c")
 
-        def construct(self, x):
+        def forward(self, x):
             out = x
             while self.a < self.c:
                 out = self.relu(x)
@@ -1179,13 +1179,13 @@ def find_json_info(file):
     return result
 
 
-class MultiOutReluBywaySqrt(Cell):
+class MultiOutReluBywaySqrt(Module):
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()
         self.sqrt = P.Sqrt()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.relu(x)
         x = self.relu(x)
         x1 = self.relu(x)
@@ -1194,14 +1194,14 @@ class MultiOutReluBywaySqrt(Cell):
         return x, y
 
 
-class MultiOutReluSqrtBywaySqrt(Cell):
+class MultiOutReluSqrtBywaySqrt(Module):
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()
         self.sqrt = P.Sqrt()
         self.sin = P.Sin()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.relu(x)
         x = self.sqrt(x)
         x1 = self.relu(x)
@@ -1266,7 +1266,7 @@ def use_build_train_network_check_cast_num(network, level, inputs, label, cast_n
     return out_me
 
 
-class AssignNet(Cell):
+class AssignNet(Module):
     def __init__(self):
         super().__init__()
         self.relu = ReLU()
@@ -1275,7 +1275,7 @@ class AssignNet(Cell):
         self.input_data = Parameter(initializer(
             1, [1, 3, 2, 2], ms.float32), name='value')
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.assign_sub(self.input_data, x)
         x = self.relu(x)
         x = self.mean(x, (2, 3))
@@ -1296,7 +1296,7 @@ def test_auto_mixed_precision_train_2(pynative_save_graphs):
     use_build_train_network_check_cast_num(net, "O2", input32, label32, 2)
 
 
-class MixControlNet(Cell):
+class MixControlNet(Module):
     def __init__(self, in_channel, x):
         super().__init__()
         self.biasadd = P.BiasAdd()
@@ -1319,7 +1319,7 @@ class MixControlNet(Cell):
         self.value = Tensor(np.random.randn(*(3,)), ms.float32)
         self.x = x
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         x = self.x
         z = self.x
         out = self.biasadd(input_x, self.bias)
@@ -1386,14 +1386,14 @@ def test_auto_mixed_precision_controlflow_auto(pynative_save_graphs):
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if_cast():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, cond1):
             super().__init__()
             self.cond1 = cond1
             self.op_cast = P.Cast()
             self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
 
-        def construct(self, beta1, beta2):
+        def forward(self, beta1, beta2):
             z_local = self.op_cast(self.z, ms.float16)
             self.z = beta2
             if self.cond1:
@@ -1416,12 +1416,12 @@ def test_if_cast():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_while_forward():
-    class MyWhileNet(nn.Cell):
+    class MyWhileNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.max = P.ReduceMax()
 
-        def construct(self, idx, end, x):
+        def forward(self, idx, end, x):
             while idx < end:
                 part = x[idx, :, :]
                 max_num = self.max(part)
@@ -1443,7 +1443,7 @@ def test_while_forward():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_multi_add_assign():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self, i1):
             super(Net, self).__init__()
             self.add = P.Add()
@@ -1452,7 +1452,7 @@ def test_multi_add_assign():
             self.assign = P.Assign()
             self.p = Parameter(i1, name='para')
 
-        def construct(self, a, d, e):
+        def forward(self, a, d, e):
             res1 = self.add(self.add(self.add(self.p, a), a), a)
             mul = self.mul(d, e)
             self.assign(self.p, mul)
@@ -1483,7 +1483,7 @@ def test_multi_add_assign():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_multi_abs_add_assign():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self, para):
             super(Net, self).__init__()
             self.add = P.Add()
@@ -1493,7 +1493,7 @@ def test_multi_abs_add_assign():
             self.assign = P.Assign()
             self.p = Parameter(para, name='para')
 
-        def construct(self, a, d, e):
+        def forward(self, a, d, e):
             tmp = self.abs(self.add(self.abs(a), self.abs(self.mul(a, a))))
             res1 = self.add(self.p, tmp)
             mul = self.mul(d, e)
@@ -1528,7 +1528,7 @@ def test_print_assign_print():
     Description: Test load eliminate when umonad and iomona both exist.
     Expectation: No exception.
     """
-    class Print(Cell):
+    class Print(Module):
         def __init__(self):
             super().__init__()
             self.print = P.Print()
@@ -1539,7 +1539,7 @@ def test_print_assign_print():
             self.assign(self.param, self.param * 5)
             return self.param + 5
 
-        def construct(self, value):
+        def forward(self, value):
             param = self.param
             self.print("param_1:", param)
             res = self.func()

@@ -18,7 +18,7 @@ import pytest
 import numpy as np
 
 from luojianet_ms import Tensor, nn, Parameter
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms as ms
 
 
@@ -28,7 +28,7 @@ def test_map_args_size():
     Description: The size of inputs of map must be greater than 1.
     Expectation: The size of inputs of map must be greater than 1.
     """
-    class MapNet(Cell):
+    class MapNet(Module):
         def __init__(self):
             super().__init__()
             self.relu = nn.ReLU()
@@ -36,7 +36,7 @@ def test_map_args_size():
         def mul(self, x=2, y=4):
             return x * y
 
-        def construct(self, x):
+        def forward(self, x):
             if map(self.mul) == 8:
                 x = self.relu(x)
             return x
@@ -55,7 +55,7 @@ def test_map_args_type():
     Description: The type of inputs of Map() must be list, tuple or class.
     Expectation: The type of inputs of Map() must be list, tuple or class.
     """
-    class MapNet(Cell):
+    class MapNet(Module):
         def __init__(self):
             super().__init__()
             self.relu = nn.ReLU()
@@ -63,7 +63,7 @@ def test_map_args_type():
         def mul(self, x=2, y=4):
             return x * y
 
-        def construct(self, x):
+        def forward(self, x):
             if map(self.mul, 3, 4) == 8:
                 x = self.relu(x)
             return x
@@ -82,11 +82,11 @@ def test_map_args_full_make_list():
     Description: The types of all inputs in Map must be same.
     Expectation: The types of all inputs in Map must be same.
     """
-    class MapNet(Cell):
+    class MapNet(Module):
         def mul(self, x=2, y=4):
             return x * y
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             if map(self.mul, x, y) == [8]:
                 x = y
             return x
@@ -106,11 +106,11 @@ def test_map_args_full_make_list_same_length():
     Description: The list in Map should have same length.
     Expectation: The list in Map should have same length.
     """
-    class MapNet(Cell):
+    class MapNet(Module):
         def mul(self, x=2, y=4):
             return x * y
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             if map(self.mul, x, y) == [8]:
                 x = y
             return x
@@ -130,11 +130,11 @@ def test_map_args_full_make_tuple_same_length():
     Description: The tuple in Map should have same length.
     Expectation: The tuple in Map should have same length.
     """
-    class MapNet(Cell):
+    class MapNet(Module):
         def mul(self, x=2, y=4):
             return x * y
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             if map(self.mul, x, y) == [8]:
                 x = y
             return x
@@ -154,12 +154,12 @@ def test_map_param_cast():
     Description: Check the ref type when insert auto cast.
     Expectation: Check the ref type when insert auto cast.
     """
-    class MapNet(Cell):
+    class MapNet(Module):
         def __init__(self):
             super().__init__()
             self.param = Parameter(Tensor(5, ms.float32), name="param_b")
 
-        def construct(self, x):
+        def forward(self, x):
             self.param = x
             return self.param
 

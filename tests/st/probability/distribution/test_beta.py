@@ -25,7 +25,7 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Prob(nn.Cell):
+class Prob(nn.Module):
     """
     Test class: probability of Beta distribution.
     """
@@ -33,7 +33,7 @@ class Prob(nn.Cell):
         super(Prob, self).__init__()
         self.b = msd.Beta(np.array([3.0]), np.array([1.0]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.b.prob(x_)
 
 def test_pdf():
@@ -47,7 +47,7 @@ def test_pdf():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_pdf) < tol).all()
 
-class LogProb(nn.Cell):
+class LogProb(nn.Module):
     """
     Test class: log probability of Beta distribution.
     """
@@ -55,7 +55,7 @@ class LogProb(nn.Cell):
         super(LogProb, self).__init__()
         self.b = msd.Beta(np.array([3.0]), np.array([1.0]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.b.log_prob(x_)
 
 def test_log_likelihood():
@@ -69,7 +69,7 @@ def test_log_likelihood():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_logpdf) < tol).all()
 
-class KL(nn.Cell):
+class KL(nn.Module):
     """
     Test class: kl_loss of Beta distribution.
     """
@@ -77,7 +77,7 @@ class KL(nn.Cell):
         super(KL, self).__init__()
         self.b = msd.Beta(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         return self.b.kl_loss('Beta', x_, y_)
 
 def test_kl_loss():
@@ -106,7 +106,7 @@ def test_kl_loss():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_kl_loss) < tol).all()
 
-class Basics(nn.Cell):
+class Basics(nn.Module):
     """
     Test class: mean/sd/mode of Beta distribution.
     """
@@ -114,7 +114,7 @@ class Basics(nn.Cell):
         super(Basics, self).__init__()
         self.b = msd.Beta(np.array([3.0]), np.array([3.0]), dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.b.mean(), self.b.sd(), self.b.mode()
 
 def test_basics():
@@ -132,7 +132,7 @@ def test_basics():
     assert (np.abs(mode.asnumpy() - expect_mode) < tol).all()
     assert (np.abs(sd.asnumpy() - expect_sd) < tol).all()
 
-class Sampling(nn.Cell):
+class Sampling(nn.Module):
     """
     Test class: sample of Beta distribution.
     """
@@ -141,7 +141,7 @@ class Sampling(nn.Cell):
         self.b = msd.Beta(np.array([3.0]), np.array([1.0]), seed=seed, dtype=dtype.float32)
         self.shape = shape
 
-    def construct(self, concentration1=None, concentration0=None):
+    def forward(self, concentration1=None, concentration0=None):
         return self.b.sample(self.shape, concentration1, concentration0)
 
 def test_sample():
@@ -156,7 +156,7 @@ def test_sample():
     output = sample(concentration1, concentration0)
     assert output.shape == (2, 3, 3)
 
-class EntropyH(nn.Cell):
+class EntropyH(nn.Module):
     """
     Test class: entropy of Beta distribution.
     """
@@ -164,7 +164,7 @@ class EntropyH(nn.Cell):
         super(EntropyH, self).__init__()
         self.b = msd.Beta(np.array([3.0]), np.array([1.0]), dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.b.entropy()
 
 def test_entropy():
@@ -178,7 +178,7 @@ def test_entropy():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_entropy) < tol).all()
 
-class CrossEntropy(nn.Cell):
+class CrossEntropy(nn.Module):
     """
     Test class: cross entropy between Beta distributions.
     """
@@ -186,7 +186,7 @@ class CrossEntropy(nn.Cell):
         super(CrossEntropy, self).__init__()
         self.b = msd.Beta(np.array([3.0]), np.array([1.0]), dtype=dtype.float32)
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         entropy = self.b.entropy()
         kl_loss = self.b.kl_loss('Beta', x_, y_)
         h_sum_kl = entropy + kl_loss
@@ -204,7 +204,7 @@ def test_cross_entropy():
     tol = 1e-6
     assert (np.abs(diff.asnumpy() - np.zeros(diff.shape)) < tol).all()
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """
     Test class: expand single distribution instance to multiple graphs
     by specifying the attributes.
@@ -214,7 +214,7 @@ class Net(nn.Cell):
         super(Net, self).__init__()
         self.beta = msd.Beta(np.array([3.0]), np.array([1.0]), dtype=dtype.float32)
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         kl = self.beta.kl_loss('Beta', x_, y_)
         prob = self.beta.prob(kl)
         return prob

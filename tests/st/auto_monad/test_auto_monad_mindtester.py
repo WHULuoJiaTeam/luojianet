@@ -18,7 +18,7 @@ import pytest
 import numpy as np
 import luojianet_ms as ms
 import luojianet_ms.ops.operations as P
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms import context, Tensor
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.initializer import initializer
@@ -30,7 +30,7 @@ from tests.security_utils import security_off_wrap
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class _Grad(Cell):
+class _Grad(Module):
     def __init__(self, grad, network, wrt_params=False, real_inputs_count=None):
         super().__init__()
         self.network = network
@@ -41,7 +41,7 @@ class _Grad(Cell):
         if self.wrt_params:
             self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         if self.real_inputs_count is None or self.sens_param is False:
             if self.wrt_params:
                 return self.grad(self.network, self.params)(*inputs)
@@ -105,8 +105,8 @@ def allclose_nparray(data_expected, data_me, rtol, atol, equal_nan=True):
         assert True
 
 
-class ControlGraphSupportNotEqual(Cell):
-    def construct(self, x, y, z, input_data):
+class ControlGraphSupportNotEqual(Module):
+    def forward(self, x, y, z, input_data):
         if x != y:
             out = input_data + input_data
         else:
@@ -165,8 +165,8 @@ def test_ctrl_if_while_graph_support_not_equal_false():
     allclose_nparray(out3, out_me[2].asnumpy(), 0.0001, 0.0001)
 
 
-class ControlBprop(Cell):
-    def construct(self, x, y, z, input_data):
+class ControlBprop(Module):
+    def forward(self, x, y, z, input_data):
         if x != y:
             out = input_data + input_data
         else:
@@ -206,24 +206,24 @@ def test_ctrl_if_while_bprop_true():
     allclose_nparray(input_data * 5.1, grads[3].asnumpy(), 0.0000, 0.0000)
 
 
-class TwoInput(Cell):
+class TwoInput(Module):
     def __init__(self):
         super().__init__()
         self.op = P.Mul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.op(x, y)
         return x
 
 
-class InlineBpropTwoInput1(Cell):
+class InlineBpropTwoInput1(Module):
     def __init__(self):
         super().__init__()
         self.f = TwoInput()
         self.f.set_grad()
         self.grad = GradOfAllInputs(self.f, sens_param=False)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         if x > y:
             x = self.f(x, y)
         else:
@@ -253,7 +253,7 @@ def test_ctrl_if_while_bprop_inlinebprop_twoinput():
     allclose_nparray(input2.asnumpy() * 2, grads[0].asnumpy(), 0, 0)
 
 
-class ControlOneIfOneParaOneAddn(Cell):
+class ControlOneIfOneParaOneAddn(Module):
     def __init__(self, input_shape):
         super().__init__()
         self.addn = P.AddN()
@@ -261,7 +261,7 @@ class ControlOneIfOneParaOneAddn(Cell):
         self.inputdata = Parameter(initializer(
             1, input_shape, ms.float32), name="global_step")
 
-    def construct(self, x, y, input_data):
+    def forward(self, x, y, input_data):
         if x > y:
             out = self.inputdata
         else:
@@ -285,17 +285,17 @@ def test_ctrl_if_para_addn_true():
     allclose_nparray(input_data[0], out.asnumpy()[0], 0.0001, 0.0001)
 
 
-class AddnCell(Cell):
+class AddnCell(Module):
     def __init__(self):
         super().__init__()
         self.addn = P.AddN()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.addn((x, x))
         return x
 
 
-class SideEffectMemoryCellAddnNet(Cell):
+class SideEffectMemoryCellAddnNet(Module):
     def __init__(self):
         super().__init__()
         self.para = Parameter(Tensor([1.0], ms.float32), name="para")
@@ -303,7 +303,7 @@ class SideEffectMemoryCellAddnNet(Cell):
         self.addn = P.AddN()
         self.addn1 = AddnCell()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.addn1(x)
         self.assign(self.para, x)
         out = self.addn((self.para, x))
@@ -327,7 +327,7 @@ def test_grad_memory_addn():
     net.grad_luojianet_ms_impl(inputs, grad_ys)
 
 
-class SideEffectIOCellAddnNet(Cell):
+class SideEffectIOCellAddnNet(Module):
     def __init__(self):
         super().__init__()
         self.para1 = Parameter(Tensor([1.0], ms.float32), name="para1")
@@ -335,7 +335,7 @@ class SideEffectIOCellAddnNet(Cell):
         self.print = P.Print()
         self.addn = AddnCell()
 
-    def construct(self, x):
+    def forward(self, x):
         self.print("para1:", self.para1)
         self.print("para2:", self.para2)
         x = self.addn(x)
@@ -360,7 +360,7 @@ def test_grad_io_addn():
     net.grad_luojianet_ms_impl(inputs, grad_ys)
 
 
-class SideEffectReturnParameterNet(Cell):
+class SideEffectReturnParameterNet(Module):
     def __init__(self):
         super().__init__()
         self.para = Parameter(Tensor([1.0], ms.float32), name="para")
@@ -368,7 +368,7 @@ class SideEffectReturnParameterNet(Cell):
         self.addn = P.AddN()
         self.relu = P.ReLU()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         p1 = self.assign(self.para, inputs)
         out = self.addn((inputs, inputs, inputs))
         out = self.relu(out)
@@ -392,7 +392,7 @@ def test_grad_read_dependency_return_parameter():
     net.grad_luojianet_ms_impl(inputs, grad_ys)
 
 
-class SideEffectAssignAddnReluReturnParNet(Cell):
+class SideEffectAssignAddnReluReturnParNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter1 = Parameter(
@@ -401,7 +401,7 @@ class SideEffectAssignAddnReluReturnParNet(Cell):
         self.addN = P.AddN()
         self.relu = P.ReLU()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         p1 = self.assign(self.parameter1, inputs)
         out = self.addN((inputs, inputs, inputs))
         out = self.relu(out)
@@ -435,7 +435,7 @@ def test_side_effect_grad_read_dependency_assign_addn_relu_return_parameter():
         context.set_context(mode=context.GRAPH_MODE)
 
 
-class SideEffectPrintInHighOrdeAddnNet(Cell):
+class SideEffectPrintInHighOrdeAddnNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter1 = Parameter(
@@ -447,7 +447,7 @@ class SideEffectPrintInHighOrdeAddnNet(Cell):
         self.mul = P.Mul()
         self.print = P.Print()
 
-    def construct(self, x):
+    def forward(self, x):
         self.high_order_func()
         out = self.addn((self.parameter1, x, self.parameter2))
         return out
@@ -482,7 +482,7 @@ def test_side_effect_high_order_print_in_high_order_net():
         context.set_context(mode=context.GRAPH_MODE)
 
 
-class SideEffectControlFlowAssignDependTwoIfNet(Cell):
+class SideEffectControlFlowAssignDependTwoIfNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter1 = Parameter(
@@ -492,7 +492,7 @@ class SideEffectControlFlowAssignDependTwoIfNet(Cell):
         self.addn = P.AddN()
         self.depend = P.Depend()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         self.assign(self.parameter1, x)
         if self.parameter1 > y:
             x = self.mul(x, x)
@@ -522,12 +522,12 @@ def test_side_effect_grad_control_flow_assign_depend_of_two_if():
     net.grad_luojianet_ms_impl(inputs1, inputs2, grad_ys)
 
 
-class SideEffectTwoAddnSwitchNet(Cell):
+class SideEffectTwoAddnSwitchNet(Module):
     def __init__(self):
         super().__init__()
         self.addN = P.AddN()
 
-    def construct(self, x):
+    def forward(self, x):
         y = x
         x = self.addN((x, x, x))
         y = self.addN((y, y))
@@ -559,7 +559,7 @@ def test_side_effect_grad_two_addn_switch():
         context.set_context(mode=context.GRAPH_MODE)
 
 
-class SideEffectGradIfNet(Cell):
+class SideEffectGradIfNet(Module):
     def __init__(self):
         super().__init__()
         self.relu = P.ReLU()
@@ -568,7 +568,7 @@ class SideEffectGradIfNet(Cell):
         b = np.full((1,), 4, dtype=np.float32)
         self.b = Parameter(Tensor(b), name="b")
 
-    def construct(self, x):
+    def forward(self, x):
         if self.a > self.b:
             x = self.relu(x)
             out = x
@@ -601,19 +601,19 @@ def test_side_effect_grad_if():
         context.set_context(mode=context.GRAPH_MODE)
 
 
-class OneInputBprop(Cell):
+class OneInputBprop(Module):
     def __init__(self):
         super().__init__()
         self.op = P.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.op(x)
 
     def bprop(self, x, out, dout):
         return (5 * x,)
 
 
-class HighGrad(Cell):
+class HighGrad(Module):
     def __init__(self, network, grad_list, sens_param=False, real_inputs_count=None):
         super().__init__()
         self.grads = [network]
@@ -623,7 +623,7 @@ class HighGrad(Cell):
         self.final_grad = grad_list[-1](self.grads[-1],
                                         sens_param=sens_param, real_inputs_count=real_inputs_count)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.final_grad(*inputs)
 
 
@@ -652,7 +652,7 @@ def test_highgrad_one_input_third_grad():
     assert (third_grad.asnumpy() == np.array([0, 0]).astype(np.float32)).all()
 
 
-class SideEffectControlFlowAssignDependWhileNet(Cell):
+class SideEffectControlFlowAssignDependWhileNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter1 = Parameter(Tensor([199.0], ms.float32), name="parameter1")
@@ -661,7 +661,7 @@ class SideEffectControlFlowAssignDependWhileNet(Cell):
         self.addn = P.AddN()
         self.depend = P.Depend()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         p1 = self.assign(self.parameter1, x)
         while self.parameter1 < y:
             x = self.addn((x, x))
@@ -698,7 +698,7 @@ def test_side_effect_grad_control_flow_assign_depend_while_net():
         context.set_context(mode=context.GRAPH_MODE)
 
 
-class AssignInZipLoop(Cell):
+class AssignInZipLoop(Module):
     def __init__(self):
         super().__init__()
         self.conv1 = ms.nn.Conv2d(3, 2, 1, weight_init="zero")
@@ -706,7 +706,7 @@ class AssignInZipLoop(Cell):
         self.params1 = self.conv1.trainable_params()
         self.params2 = self.conv2.trainable_params()
 
-    def construct(self, x):
+    def forward(self, x):
         for p1, p2 in zip(self.params1, self.params2):
             P.Assign()(p2, p1 + x)
 

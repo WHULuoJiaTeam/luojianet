@@ -25,7 +25,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms._checkparam import Validator, Rel, twice
 from luojianet_ms import context
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer.activation import get_activation
 from luojianet_ms.parallel._ps_context import _is_role_worker, _get_ps_context, \
     _set_rank_id, _insert_hash_table_size, _set_cache_enable
@@ -38,7 +38,7 @@ from .basic import ClipByNorm
 __all__ = ['DenseThor', 'Conv2dThor', 'EmbeddingThor', 'EmbeddingLookupThor']
 
 
-class DenseThor(Cell):
+class DenseThor(Module):
     r"""
     The dense connected layer and saving the information needed for THOR.
 
@@ -166,7 +166,7 @@ class DenseThor(Cell):
             self.matrix_g = matrix_g
         return out
 
-    def construct(self, x):
+    def forward(self, x):
         if self.thor:
             if self.is_Ascend:
                 inputs = self.cube_matmul(x, x)
@@ -197,7 +197,7 @@ class DenseThor(Cell):
         return s
 
 
-class _ConvThor(Cell):
+class _ConvThor(Module):
     """
     Applies a N-D convolution over an input signal composed of multiple input planes.
     """
@@ -473,7 +473,7 @@ class Conv2dThor(_ConvThor):
             self.matrix_g_cov = matrix_g
         return out
 
-    def construct(self, x):
+    def forward(self, x):
         if self.thor:
             if self.is_Ascend:
                 matrix_a = self.im2col(x)
@@ -528,7 +528,7 @@ class Conv2dThor(_ConvThor):
         return s
 
 
-class EmbeddingThor(Cell):
+class EmbeddingThor(Module):
     r"""
     A simple lookup table that stores embeddings of a fixed dictionary and size
     and saving the information needed for THOR.
@@ -626,7 +626,7 @@ class EmbeddingThor(Cell):
         self.matrix_g = matrix_g
         return out
 
-    def construct(self, ids):
+    def forward(self, ids):
         extended_ids = self.expand(ids, -1)
         out_shape = self.get_shp(ids) + (self.embedding_size,)
         flat_ids = self.reshape_flat(extended_ids, self.shp_flat)
@@ -659,7 +659,7 @@ def _make_axis_range(start, end):
     return axis
 
 
-class EmbeddingLookupThor(Cell):
+class EmbeddingLookupThor(Module):
     r"""
     Returns a slice of the input tensor based on the specified indices
     and saving the information needed for THOR.
@@ -910,7 +910,7 @@ class EmbeddingLookupThor(Cell):
         if _is_role_worker():
             _insert_hash_table_size(self.embedding_table.name, vocab_cache_size, embedding_size, vocab_size)
 
-    def construct(self, indices):
+    def forward(self, indices):
         if self.target == "CPU":
             out = self.embeddinglookup(self.embedding_table, indices, 0)
         else:

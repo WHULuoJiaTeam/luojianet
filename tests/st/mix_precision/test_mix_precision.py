@@ -40,7 +40,7 @@ def read_validateir_file(path_folder):
     return contend
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, in_c, out_c):
         super().__init__()
         self.relu = nn.ReLU()
@@ -64,7 +64,7 @@ class Net(nn.Cell):
                               bias_init='ones')
         self.mean = ops.ReduceMean(keep_dims=False)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.relu(x)
         x = self.bn1(x)
         x = self.conv(x)

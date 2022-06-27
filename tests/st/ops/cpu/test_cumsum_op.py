@@ -43,7 +43,7 @@ x5 = np.random.rand(3).astype(np.float32)
 list1 = [x0, x1, x2, x3, x4]
 list2 = [axis0, axis1, axis2, axis3, axis4, axis5, axis6]
 
-class CumSum(nn.Cell):
+class CumSum(nn.Module):
     def __init__(self, exclusive=False, reverse=False):
         super(CumSum, self).__init__()
         self.cumsum_op = P.CumSum(exclusive, reverse)
@@ -126,7 +126,7 @@ class CumSum(nn.Cell):
         self.x35 = Tensor(x5)
         self.axis35 = axis0
 
-    def construct(self):
+    def forward(self):
         return (self.cumsum_op(self.x0, self.axis0),
                 self.cumsum_op(self.x1, self.axis1),
                 self.cumsum_op(self.x2, self.axis2),

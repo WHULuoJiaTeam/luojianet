@@ -2049,12 +2049,12 @@ class RefToEmbed(Primitive):
         symbolic_key, made from the Ref.
 
     Examples:
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         >>>     def __init__(self):
         >>>         super(Net, self).__init__()
         >>>         self.weight = luojianet_ms.Parameter(1.0, name='weight')
         >>>
-        >>>     def construct(self):
+        >>>     def forward(self):
         >>>         key = RefToEmbed()(self.weight)
         >>>         return key, self.weight
     """

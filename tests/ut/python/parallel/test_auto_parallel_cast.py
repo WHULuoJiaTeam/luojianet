@@ -29,30 +29,30 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, z, w):
+    def forward(self, x, y, z, w):
         predict = self.network(x, y, z, w)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, z, w):
+    def forward(self, x, y, z, w):
         return grad_all(self.network)(x, y, z, w)
 
     # model_parallel test
 
 
 def test_double_star_graph():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul()
@@ -61,7 +61,7 @@ def test_double_star_graph():
             self.cast1 = P.Cast()
             self.cast2 = P.Cast()
 
-        def construct(self, x, y, z, w):
+        def forward(self, x, y, z, w):
             m1_result = self.matmul1(x, y)
             m2_result = self.matmul2(z, w)
             m3_result = self.matmul3(self.cast1(m2_result, mstype.float16), self.cast2(m1_result, mstype.float16))

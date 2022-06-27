@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetAsinh(nn.Cell):
+class NetAsinh(nn.Module):
     def __init__(self):
         super(NetAsinh, self).__init__()
         self.asinh = P.Asinh()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.asinh(x)
 
 

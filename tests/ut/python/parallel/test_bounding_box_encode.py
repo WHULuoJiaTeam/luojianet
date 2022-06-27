@@ -18,7 +18,7 @@ import pytest
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
@@ -26,7 +26,7 @@ _anchor_box = Tensor(np.ones([32, 4]), ms.float32)
 _gt_boxes = Tensor(np.ones([32, 4]), ms.float32)
 
 
-class Net(Cell):
+class Net(Module):
     """
     Create the test net.
     """
@@ -34,12 +34,12 @@ class Net(Cell):
         super(Net, self).__init__()
         self.bbox_encode = P.BoundingBoxEncode().shard(strategy)
 
-    def construct(self, anchor_boxes, gt_boxes):
+    def forward(self, anchor_boxes, gt_boxes):
         x = self.bbox_encode(anchor_boxes, gt_boxes)
         return x
 
 
-def compile_net(net: Cell, *inputs):
+def compile_net(net: Module, *inputs):
     net.set_auto_parallel()
     net.set_train()
     _cell_graph_executor.compile(net, *inputs)

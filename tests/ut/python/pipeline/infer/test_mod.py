@@ -22,13 +22,13 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_positive_mod_positive():
-    class Mod(nn.Cell):
+    class Mod(nn.Module):
         def __init__(self, x, y):
             super(Mod, self).__init__()
             self.x = x
             self.y = y
 
-        def construct(self):
+        def forward(self):
             return self.x % self.y
     x = 3.0
     y = 1.3
@@ -38,13 +38,13 @@ def test_positive_mod_positive():
 
 
 def test_positive_mod_negative():
-    class Mod(nn.Cell):
+    class Mod(nn.Module):
         def __init__(self, x, y):
             super(Mod, self).__init__()
             self.x = x
             self.y = y
 
-        def construct(self):
+        def forward(self):
             return self.x % self.y
     x = 3.0
     y = -1.3
@@ -54,13 +54,13 @@ def test_positive_mod_negative():
 
 
 def test_negative_mod_positive():
-    class Mod(nn.Cell):
+    class Mod(nn.Module):
         def __init__(self, x, y):
             super(Mod, self).__init__()
             self.x = x
             self.y = y
 
-        def construct(self):
+        def forward(self):
             return self.x % self.y
     x = -3.0
     y = 1.3
@@ -70,13 +70,13 @@ def test_negative_mod_positive():
 
 
 def test_negative_mod_negative():
-    class Mod(nn.Cell):
+    class Mod(nn.Module):
         def __init__(self, x, y):
             super(Mod, self).__init__()
             self.x = x
             self.y = y
 
-        def construct(self):
+        def forward(self):
             return self.x % self.y
     x = -3.0
     y = -1.3
@@ -86,13 +86,13 @@ def test_negative_mod_negative():
 
 
 def test_int_mod_int():
-    class Mod(nn.Cell):
+    class Mod(nn.Module):
         def __init__(self, x, y):
             super(Mod, self).__init__()
             self.x = x
             self.y = y
 
-        def construct(self):
+        def forward(self):
             return self.x % self.y
     x = 3
     y = 2

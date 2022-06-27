@@ -71,7 +71,7 @@ def custom_hook_function_print_and_save_grad(grad_out):
     assert grad_out[0].asnumpy().shape == (32, 6, 28, 28)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     def __init__(self, hook_function, cell_hook_function, num_class=10):
         super(LeNet5, self).__init__()
         self.num_class = num_class
@@ -87,7 +87,7 @@ class LeNet5(nn.Cell):
         self.reshape = P.Reshape()
         self.hook = P.HookBackward(hook_function)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.hook(x)
@@ -104,14 +104,14 @@ class LeNet5(nn.Cell):
         return x
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     """ GradWrap definition """
     def __init__(self, network):
         super(GradWrap, self).__init__(auto_prefix=False)
         self.network = network
         self.weights = ParameterTuple(filter(lambda x: x.requires_grad, network.get_parameters()))
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         weights = self.weights
         return C.GradOperation(get_by_list=True)(self.network, weights)(x, label)
 
@@ -124,8 +124,8 @@ class test_custom_cell_base():
         return cell
 
 
-class MulAdd(nn.Cell):
-    def construct(self, x, y):
+class MulAdd(nn.Module):
+    def forward(self, x, y):
         return 2 * x + y
 
     def bprop(self, x, y, out, dout):
@@ -135,12 +135,12 @@ class MulAdd(nn.Cell):
         assert dout.asnumpy() == 1.0
         return dout, y
 
-class Ms_Cell(nn.Cell):
+class Ms_Cell(nn.Module):
     def __init__(self):
         super(Ms_Cell, self).__init__()
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.relu(x)
 
     def bprop(self, x, out, dout):
@@ -148,12 +148,12 @@ class Ms_Cell(nn.Cell):
         assert dout.shape == ()
         return dout
 
-class Ms_Cell_Change_Shape(nn.Cell):
+class Ms_Cell_Change_Shape(nn.Module):
     def __init__(self):
         super(Ms_Cell_Change_Shape, self).__init__()
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.relu(x)
 
     def bprop(self, x, out, dout):

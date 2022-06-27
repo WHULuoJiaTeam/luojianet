@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Boost Mode Cell Wrapper."""
+"""Boost Mode Module Wrapper."""
 from luojianet_ms.nn.wrap import TrainOneStepCell
 import luojianet_ms.context as context
 from luojianet_ms.context import ParallelMode
 from luojianet_ms.parallel._utils import _get_global_rank, _get_device_num, _get_gradients_mean
 from luojianet_ms.communication.management import get_group_size, create_group
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.common import Tensor, RowTensor
 from luojianet_ms.common.parameter import Parameter, ParameterTuple
 from luojianet_ms.nn.wrap.grad_reducer import DistributedGradReducer
@@ -89,13 +89,13 @@ class BoostTrainOneStepCell(TrainOneStepCell):
     r"""
     Boost Network training package class.
 
-    Wraps the network with an optimizer. The resulting Cell is trained with input '\*inputs'.
-    The backward graph will be created in the construct function to update the parameter. Different
+    Wraps the network with an optimizer. The resulting Module is trained with input '\*inputs'.
+    The backward graph will be created in the forward function to update the parameter. Different
     parallel modes are available for training.
 
     Args:
-        network (Cell): The training network. The network only supports single output.
-        optimizer (Union[Cell]): Optimizer for updating the weights.
+        network (Module): The training network. The network only supports single output.
+        optimizer (Union[Module]): Optimizer for updating the weights.
         sens (numbers.Number): The scaling number to be filled as the input of backpropagation. Default value is 1.0.
 
     Inputs:
@@ -120,13 +120,13 @@ class BoostTrainOneStepCell(TrainOneStepCell):
         >>> train_net = boost.BoostTrainOneStepCell(loss_net, optim)
         >>>
         >>> #2) Using user-defined WithLossCell
-        >>> class MyWithLossCell(Cell):
+        >>> class MyWithLossCell(Module):
         ...    def __init__(self, backbone, loss_fn):
         ...        super(MyWithLossCell, self).__init__(auto_prefix=False)
         ...        self._backbone = backbone
         ...        self._loss_fn = loss_fn
         ...
-        ...    def construct(self, x, y, label):
+        ...    def forward(self, x, y, label):
         ...        out = self._backbone(x, y)
         ...        return self._loss_fn(out, label)
         ...
@@ -215,7 +215,7 @@ class BoostTrainOneStepCell(TrainOneStepCell):
             create_group(server_group_name, group_list[current_index])
             self.grad_reducer = DistributedGradReducer(self.weights, self.mean, self.degree, group=server_group_name)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         if self.freeze:
             loss = self.gradient_freeze_process(*inputs)
         else:
@@ -343,16 +343,16 @@ class BoostTrainOneStepWithLossScaleCell(BoostTrainOneStepCell):
     Boost Network training with loss scaling.
 
     This is a training step with loss scaling. It takes a network, an optimizer and possibly a scale update
-    Cell as args. The loss scale value can be updated in both host side or device side. The
+    Module as args. The loss scale value can be updated in both host side or device side. The
     BoostTrainOneStepWithLossScaleCell will be compiled to be graph which takes `*inputs` as input data.
     The Tensor type of `scale_sense` is acting as loss scaling value. If you want to update it on host side,
     the value must be provided. If  the Tensor type of `scale_sense` is not given, the loss scale update logic
-    must be provide by Cell type of `scale_sense`.
+    must be provide by Module type of `scale_sense`.
 
     Args:
-        network (Cell): The training network. The network only supports single output.
-        optimizer (Cell): Optimizer for updating the weights.
-        scale_sense (Union[Tensor, Cell]): If this value is Cell type, the loss scaling update logic cell.If this value
+        network (Module): The training network. The network only supports single output.
+        optimizer (Module): Optimizer for updating the weights.
+        scale_sense (Union[Tensor, Module]): If this value is Module type, the loss scaling update logic cell.If this value
                                           is Tensor type, Tensor with shape :math:`()` or :math:`(1,)`.
 
     Inputs:
@@ -366,7 +366,7 @@ class BoostTrainOneStepWithLossScaleCell(BoostTrainOneStepCell):
         - **loss scaling value** (Tensor) -  Tensor with shape :math:`()`
 
     Raises:
-        TypeError: If `scale_sense` is neither Cell nor Tensor.
+        TypeError: If `scale_sense` is neither Module nor Tensor.
         ValueError: If shape of `scale_sense` is neither (1,) nor ().
 
     Supported Platforms:
@@ -380,19 +380,19 @@ class BoostTrainOneStepWithLossScaleCell(BoostTrainOneStepCell):
         >>> from luojianet_ms import dtype as mstype
         >>> from luojianet_ms import boost
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, in_features, out_features):
         ...         super(Net, self).__init__()
         ...         self.weight = Parameter(Tensor(np.ones([in_features, out_features]).astype(np.float32)),
         ...                                 name='weight')
         ...         self.matmul = ops.MatMul()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output = self.matmul(x, self.weight)
         ...         return output
         ...
         >>> size, in_features, out_features = 16, 16, 10
-        >>> #1) when the type of scale_sense is Cell:
+        >>> #1) when the type of scale_sense is Module:
         >>> net = Net(in_features, out_features)
         >>> loss = nn.MSELoss()
         >>> optimizer = nn.Momentum(net.trainable_params(), learning_rate=0.1, momentum=0.9)
@@ -423,7 +423,7 @@ class BoostTrainOneStepWithLossScaleCell(BoostTrainOneStepCell):
         self.is_distributed = (self.parallel_mode != ParallelMode.STAND_ALONE)
         self.gpu_target = (context.get_context("device_target") == "GPU")
         self.loss_scaling_manager = None
-        if isinstance(scale_sense, Cell):
+        if isinstance(scale_sense, Module):
             self.loss_scaling_manager = scale_sense
             self.scale_sense = Parameter(Tensor(scale_sense.get_loss_scale(), dtype=mstype.float32),
                                          name="scale_sense")
@@ -433,9 +433,9 @@ class BoostTrainOneStepWithLossScaleCell(BoostTrainOneStepCell):
             else:
                 raise ValueError("The shape of scale_sense must be (1,) or (), but got {}".format(scale_sense.shape))
         else:
-            raise TypeError("The scale_sense must be Cell or Tensor, but got {}".format(type(scale_sense)))
+            raise TypeError("The scale_sense must be Module or Tensor, but got {}".format(type(scale_sense)))
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         weights = self.weights
         loss = self.network(*inputs)
         scaling_sens = self.scale_sense

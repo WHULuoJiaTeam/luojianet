@@ -23,12 +23,12 @@ from luojianet_ms.ops.operations import _inner_ops as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.stitch = P.DynamicStitch()
 
-    def construct(self, indices, data):
+    def forward(self, indices, data):
         return self.stitch(indices, data)
 
 

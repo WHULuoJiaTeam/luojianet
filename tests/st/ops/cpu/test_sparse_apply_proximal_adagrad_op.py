@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 import luojianet_ms.common.dtype as mstype
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.sparse_apply_proximal_adagrad = P.FusedSparseProximalAdagrad()
@@ -34,7 +34,7 @@ class Net(nn.Cell):
         self.l1 = 0.0
         self.l2 = 0.0
 
-    def construct(self, grad, indices):
+    def forward(self, grad, indices):
         out = self.sparse_apply_proximal_adagrad(self.var, self.accum, self.lr, self.l1, self.l2, grad, indices)
         return out
 

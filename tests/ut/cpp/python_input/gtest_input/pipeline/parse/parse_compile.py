@@ -31,14 +31,14 @@ log = logging.getLogger("test")
 log.setLevel(level=logging.ERROR)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.conv = nn.Conv2d(3, 64, 3, has_bias=False, weight_init='normal')
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.relu(x)
         out = self.flatten(x)

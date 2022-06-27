@@ -32,7 +32,7 @@ class CrossEntropySmooth(LossBase):
         self.off_value = Tensor(1.0 * smooth_factor / (num_classes - 1), mstype.float32)
         self.ce = nn.SoftmaxCrossEntropyWithLogits(reduction=reduction)
 
-    def construct(self, logit, label):
+    def forward(self, logit, label):
         if self.sparse:
             label = self.onehot(label, F.shape(logit)[1], self.on_value, self.off_value)
         loss = self.ce(logit, label)

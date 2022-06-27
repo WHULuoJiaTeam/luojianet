@@ -41,7 +41,7 @@ class OptimizerProcess:
     and creating new optimizers.
 
     Args:
-       opt (Cell): Optimizer used.
+       opt (Module): Optimizer used.
 
     Examples:
         >>> import numpy as np
@@ -49,14 +49,14 @@ class OptimizerProcess:
         >>> from luojianet_ms import ops
         >>> from luojianet_ms.boost import OptimizerProcess
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, in_features, out_features):
         ...         super(Net, self).__init__()
         ...         self.weight = Parameter(Tensor(np.ones([in_features, out_features]).astype(np.float32)),
         ...                                 name='weight')
         ...         self.matmul = ops.MatMul()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output = self.matmul(x, self.weight)
         ...         return output
         ...
@@ -88,7 +88,7 @@ class OptimizerProcess:
         Build the parameter's dict of the network.
 
         Args:
-            network (Cell): The training network.
+            network (Module): The training network.
         """
         cells = network.cells_and_names()
         params_dict = {}
@@ -138,7 +138,7 @@ class OptimizerProcess:
         Add gradient centralization.
 
         Args:
-            network (Cell): The training network.
+            network (Module): The training network.
         """
         params_dict = self.build_params_dict(network)
 
@@ -181,7 +181,7 @@ class ParameterProcess:
         >>> import luojianet_ms.ops as ops
         >>> from luojianet_ms.boost import OptimizerProcess
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self, in_features, out_features):
         ...         super(Net, self).__init__()
         ...         self.weight = Parameter(Tensor(np.ones([in_features, out_features]).astype(np.float32)),
@@ -191,7 +191,7 @@ class ParameterProcess:
         ...         self.matmul = ops.MatMul()
         ...         self.matmul2 = ops.MatMul()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         output = self.matmul(x, self.weight)
         ...         output2 = self.matmul2(x, self.weight2)
         ...         return output + output2
@@ -295,7 +295,7 @@ def _get_local_pca_mat_path(weight_load_dir, pca_mat_path, n_component, device_n
         pca_mat_path (str): the path to load pca mat. Default: None.
         n_component (int): pca component.
         device_number (int): device number.
-        network (Cell): The network.
+        network (Module): The network.
     """
     if pca_mat_path is not None and os.path.exists(pca_mat_path) and os.path.isfile(pca_mat_path) and \
             pca_mat_path.endswith(".npy"):
@@ -336,7 +336,7 @@ def _load_weights(weight_load_dir, network):
 
     Args:
         weight_load_dir (str): The weight(ckpt) file directory to be load.
-        network (Cell): The network.
+        network (Module): The network.
     """
     param_requires_grad_list = []
     for param in network.trainable_params():

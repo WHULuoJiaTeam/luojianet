@@ -27,34 +27,34 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y, b, z):
+    def forward(self, x, y, b, z):
         predict = self.network(x, y, b, z)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y, b, z):
+    def forward(self, x, y, b, z):
         return grad_all(self.network)(x, y, b, z)
 
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     def __init__(self, strategy1, strategy2, strategy3):
         super().__init__()
         self.matmul1 = P.MatMul().shard(strategy1)
         self.matmul2 = P.MatMul().shard(strategy2)
         self.matmul3 = P.MatMul().shard(strategy3)
 
-    def construct(self, x, y, b):
+    def forward(self, x, y, b):
         out1 = self.matmul1(x, b)
         out2 = self.matmul2(y, b)
         out = self.matmul3(out1, out2)
@@ -62,13 +62,13 @@ class Net1(nn.Cell):
 
 
 def test_two_matmul():
-    class Net2(nn.Cell):
+    class Net2(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3, strategy4):
             super().__init__()
             self.net1_out = Net1(strategy1, strategy2, strategy3)
             self.matmul = P.MatMul().shard(strategy4)
 
-        def construct(self, x, y, b, z):
+        def forward(self, x, y, b, z):
             out = self.net1_out(x, y, b)
             out = self.matmul(out, z)
             return out

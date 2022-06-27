@@ -23,11 +23,11 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_use_numpy_constant():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def forward(self):
             ret = np.pi
             return ret
 
@@ -37,11 +37,11 @@ def test_use_numpy_constant():
 
 
 def test_use_numpy_method():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def forward(self):
             ret = np.linspace(1, 10, 4)
             return ret
 
@@ -53,11 +53,11 @@ def test_use_numpy_method():
     assert "Should not use Python object in runtime" in str(err.value)
 
 def test_use_numpy_module():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self):
+        def forward(self):
             ret = np.random.randint(0, 10, [1, 10])
             return ret
 

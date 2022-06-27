@@ -24,7 +24,7 @@ from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
 
 
-class GNNFeatureTransform(nn.Cell):
+class GNNFeatureTransform(nn.Module):
     r"""
     The GNN featuren transform layer for input.
 
@@ -95,7 +95,7 @@ class GNNFeatureTransform(nn.Cell):
         self.matmul = P.MatMul(transpose_b=True)
         self.bias_add = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         tensor_shape = F.shape(x)
         input_feature = F.reshape(x, (tensor_shape[0] * tensor_shape[1], tensor_shape[2]))
         output = self.matmul(input_feature, self.weight)
@@ -111,7 +111,7 @@ class GNNFeatureTransform(nn.Cell):
         return s
 
 
-class _BaseAggregator(nn.Cell):
+class _BaseAggregator(nn.Module):
     """
     Base Aggregator of GNN
 
@@ -133,7 +133,7 @@ class _BaseAggregator(nn.Cell):
         >>>        super(MyAggregator, self).__init__(self, feature_in_dim, feature_out_dim)
         >>>        self.reduce_mean = P.ReduceSum()
         >>>
-        >>>    def construct(self, x):
+        >>>    def forward(self, x):
         >>>        return self.reduce_mean(x, 1)
     """
 
@@ -166,7 +166,7 @@ class _BaseAggregator(nn.Cell):
         self.activation = get_activation(activation)
         self.activation_flag = self.activation is not None
 
-    def construct(self, **kward):
+    def forward(self, **kward):
         """Must be overridden by all subclasses."""
         raise NotImplementedError
 
@@ -213,7 +213,7 @@ class MeanAggregator(_BaseAggregator):
             activation)
         self.reduce_mean = P.ReduceMean(keep_dims=False)
 
-    def construct(self, input_feature):
+    def forward(self, input_feature):
         if self.use_fc:
             input_feature = self.fc(input_feature)
         if self.dropout_flag:
@@ -224,7 +224,7 @@ class MeanAggregator(_BaseAggregator):
         return output_feature
 
 
-class AttentionHead(nn.Cell):
+class AttentionHead(nn.Module):
     """
     Attention Head for Graph Attention Networks.
 
@@ -234,9 +234,9 @@ class AttentionHead(nn.Cell):
         in_drop_ratio (float): Input feature dropout ratio, default 0.0.
         coef_drop_ratio (float): Coefficient dropout ratio, default 0.0.
         residual (bool): Whether to use residual connection, default False.
-        coef_activation (Cell): The attention coefficient activation function,
+        coef_activation (Module): The attention coefficient activation function,
             default nn.LeakyReLU().
-        activation (Cell): The output activation function, default nn.ELU().
+        activation (Module): The output activation function, default nn.ELU().
 
     Inputs:
         - **input_feature** (Tensor) - Tensor of shape : (batch_size, num_nodes, feature_dim).
@@ -295,7 +295,7 @@ class AttentionHead(nn.Cell):
         self.coef_activation = coef_activation
         self.activation = activation
 
-    def construct(self, input_feature, bias_mat):
+    def forward(self, input_feature, bias_mat):
         input_feature = self.in_drop(input_feature)
 
         feature = self.feature_transform(input_feature)
@@ -326,7 +326,7 @@ class AttentionHead(nn.Cell):
         return ret
 
 
-class AttentionAggregator(nn.Cell):
+class AttentionAggregator(nn.Module):
     """
     Attention Head for Graph Attention Networks，can be regarded as one
         GAT layer.
@@ -337,7 +337,7 @@ class AttentionAggregator(nn.Cell):
         num_heads (int): Number of attention heads for this layer, default 1.
         in_drop_ratio (float): Input feature dropout ratio, default 0.0.
         coef_drop_ratio (float): Coefficient dropout ratio, default 0.0.
-        activation (Cell): The output activation function, default nn.ELU().
+        activation (Module): The output activation function, default nn.ELU().
         residual (bool): Whether to use residual connection, default False.
         output_transform (str['concat', 'sum']): output transform for a layer,
             default 'concat'
@@ -382,7 +382,7 @@ class AttentionAggregator(nn.Cell):
         else:
             raise ValueError
 
-    def construct(self, input_data, bias_mat):
+    def forward(self, input_data, bias_mat):
         res = ()
         for i in range(self.num_heads):
             res += (self.attns[i](input_data, bias_mat),)

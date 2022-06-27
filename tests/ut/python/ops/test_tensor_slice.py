@@ -20,14 +20,14 @@ import pytest
 from luojianet_ms import Tensor, Parameter
 from luojianet_ms import context
 from luojianet_ms import dtype as mstype
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
 from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config, \
     pipeline_for_compile_forward_ge_graph_for_case_by_case_config_exception
 
 
-class NetWorkSlicePositive(Cell):
+class NetWorkSlicePositive(Module):
     def __init__(self):
         super(NetWorkSlicePositive, self).__init__()
         self.tensor_ret0 = Tensor(np.ones([1, 2, 2], np.int32))
@@ -35,7 +35,7 @@ class NetWorkSlicePositive(Cell):
         self.tensor_ret2 = Tensor(np.ones([6, 8, 10], np.int32))
         self.tensor_ret3 = Tensor(np.ones([3, 8, 10], np.int32))
 
-    def construct(self, tensor):
+    def forward(self, tensor):
         ret0 = tensor[3:4:3, 1:5:2, 3:6:2] + self.tensor_ret0
         ret1 = tensor[-6:4:1, 7:-8:-1, ::3] + self.tensor_ret1
         ret2 = tensor[::, ::, ::] + self.tensor_ret2
@@ -43,14 +43,14 @@ class NetWorkSlicePositive(Cell):
         return ret0, ret1, ret2, ret3
 
 
-class NetWorkSliceEllipsis(Cell):
+class NetWorkSliceEllipsis(Module):
     def __init__(self):
         super(NetWorkSliceEllipsis, self).__init__()
         self.tensor_ret0 = Tensor(np.ones([2, 7, 8], np.int32))
         self.tensor_ret1 = Tensor(np.ones([6, 7, 8, 9], np.int32))
         self.tensor_ret2 = Tensor(np.ones([1, 6, 7, 8, 9], np.int32))
 
-    def construct(self, tensor):
+    def forward(self, tensor):
         ret0 = tensor[0:4:2, ..., 1] + self.tensor_ret0
         ret1 = tensor[...] + self.tensor_ret1
         ret2 = tensor[None] + self.tensor_ret2
@@ -58,7 +58,7 @@ class NetWorkSliceEllipsis(Cell):
         return ret0, ret1, ret2, ret3
 
 
-class NetWorkReduceDimension(Cell):
+class NetWorkReduceDimension(Module):
     def __init__(self):
         super(NetWorkReduceDimension, self).__init__()
         self.tensor_ret0 = Tensor(np.ones([2, 4, 1], np.int32))
@@ -67,7 +67,7 @@ class NetWorkReduceDimension(Cell):
         self.tensor_ret3 = Tensor(np.array(8, np.int32))
         self.tensor_ret4 = Tensor(np.ones([8, 10], np.int32))
 
-    def construct(self, tensor):
+    def forward(self, tensor):
         ret0 = tensor[0:6:3, 1:5:1, 3:5:2] + self.tensor_ret0
         ret1 = tensor[::2, 1, ::3] + self.tensor_ret1
         ret2 = tensor[::, ::, 0] + self.tensor_ret2
@@ -76,49 +76,49 @@ class NetWorkReduceDimension(Cell):
         return ret0, ret1, ret2, ret3, ret4
 
 
-class NetWorkStepNegative(Cell):
+class NetWorkStepNegative(Module):
     def __init__(self):
         super(NetWorkStepNegative, self).__init__()
         self.tensor_ret = Tensor(np.ones([6, 5, 10], np.int32))
 
-    def construct(self, tensor):
+    def forward(self, tensor):
         ret = tensor[::1, -5::, ::-1] + self.tensor_ret
         return ret
 
 
-class NetWorkReduceToScalar(Cell):
+class NetWorkReduceToScalar(Module):
     def __init__(self):
         super(NetWorkReduceToScalar, self).__init__()
         self.tensor_ret = Tensor(np.array(9, np.int32))
 
-    def construct(self, tensor):
+    def forward(self, tensor):
         ret = tensor[2, 3, 4] + self.tensor_ret
         return ret
 
 
-class TensorAssignWithSliceError1(Cell):
+class TensorAssignWithSliceError1(Module):
     def __init__(self):
         super(TensorAssignWithSliceError1, self).__init__()
 
-    def construct(self, a, b):
+    def forward(self, a, b):
         a[1:3:-1, ::] = b
         return a
 
 
-class TensorAssignWithSliceError2(Cell):
+class TensorAssignWithSliceError2(Module):
     def __init__(self):
         super(TensorAssignWithSliceError2, self).__init__()
 
-    def construct(self, a, b):
+    def forward(self, a, b):
         a[1:3:-1] = b
         return a
 
 
-class TensorAssignWithSlice2(Cell):
+class TensorAssignWithSlice2(Module):
     def __init__(self):
         super(TensorAssignWithSlice2, self).__init__()
 
-    def construct(self, a, b, ck):
+    def forward(self, a, b, ck):
         a[1:5] = b
         a[3:4] = 5
         a[-1:1:-1] = b
@@ -129,12 +129,12 @@ class TensorAssignWithSlice2(Cell):
         return z
 
 
-class TensorAssignWithSlice(Cell):
+class TensorAssignWithSlice(Module):
     def __init__(self):
         super(TensorAssignWithSlice, self).__init__()
         self.c = 2.0
 
-    def construct(self, a, b, ck):
+    def forward(self, a, b, ck):
         a[1:3, ::] = b
         a[2:3:, 3:] = b
         a[::] = b
@@ -147,107 +147,107 @@ class TensorAssignWithSlice(Cell):
         return z
 
 
-class TensorGetItemByOneTensor(Cell):
+class TensorGetItemByOneTensor(Module):
     def __init__(self):
         super(TensorGetItemByOneTensor, self).__init__()
         self.const = Tensor(np.ones((5, 4, 7, 8)), mstype.int32)
 
-    def construct(self, x, index):
+    def forward(self, x, index):
         ret = x[index] + self.const
         return ret
 
 
-class TensorGetItemByTwoTensors(Cell):
+class TensorGetItemByTwoTensors(Module):
     def __init__(self):
         super(TensorGetItemByTwoTensors, self).__init__()
         self.const = Tensor(np.ones((3, 4, 5, 8)), mstype.int32)
 
-    def construct(self, x, index_0, index_1):
+    def forward(self, x, index_0, index_1):
         ret = x[index_0, index_1] + self.const
         return ret
 
 
-class TensorGetItemByThreeTensors(Cell):
+class TensorGetItemByThreeTensors(Module):
     def __init__(self):
         super(TensorGetItemByThreeTensors, self).__init__()
         self.const = Tensor(np.ones((5, 3, 4, 5)), mstype.int32)
 
-    def construct(self, x, index_0, index_1, index_2):
+    def forward(self, x, index_0, index_1, index_2):
         ret = x[index_0, index_1, index_2] + self.const
         return ret
 
 
-class TensorGetItemByMixedTensors_0(Cell):
+class TensorGetItemByMixedTensors_0(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensors_0, self).__init__()
         self.const = Tensor(np.ones((3, 4, 5, 3, 6, 5), np.float32))
 
-    def construct(self, tensor, index_0, index_1):
+    def forward(self, tensor, index_0, index_1):
         ret = tensor[index_0, index_1, 0:3, ..., 0:5, 3] + self.const
         return ret
 
 
-class TensorGetItemByMixedTensors_1(Cell):
+class TensorGetItemByMixedTensors_1(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensors_1, self).__init__()
         self.const = Tensor(np.ones((3, 4, 5, 3, 5, 5), np.float32))
 
-    def construct(self, tensor, index_0, index_1):
+    def forward(self, tensor, index_0, index_1):
         ret = tensor[0:3, index_0, ..., index_1, 3, 0:5] + self.const
         return ret
 
 
-class TensorGetItemByMixedTensors_2(Cell):
+class TensorGetItemByMixedTensors_2(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensors_2, self).__init__()
         self.const = Tensor(np.ones((3, 4, 5, 6, 7), np.float32))
 
-    def construct(self, tensor, index_0, index_1):
+    def forward(self, tensor, index_0, index_1):
         ret = tensor[0, index_0, index_1, ..., 3] + self.const
         return ret
 
 
-class TensorGetItemByMixedTensors_3(Cell):
+class TensorGetItemByMixedTensors_3(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensors_3, self).__init__()
         self.const = Tensor(np.ones((3, 4, 5, 3, 4, 3, 5), np.float32))
 
-    def construct(self, tensor, index_0, index_1):
+    def forward(self, tensor, index_0, index_1):
         ret = tensor[..., index_0, 0:3, index_1, 0:5] + self.const
         return ret
 
 
-class TensorGetItemByMixedTensors_4(Cell):
+class TensorGetItemByMixedTensors_4(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensors_4, self).__init__()
         self.const = Tensor(np.ones((2, 2, 3, 4, 5, 3, 9), np.float32))
 
-    def construct(self, tensor, index_0, index_1, index_2):
+    def forward(self, tensor, index_0, index_1, index_2):
         ret = tensor[0:2, index_0, index_1, 2, index_2, 0:3, ...] + self.const
         return ret
 
 
-class TensorGetItemByMixedTensors_5(Cell):
+class TensorGetItemByMixedTensors_5(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensors_5, self).__init__()
         self.const = Tensor(np.ones((2, 3, 4, 5, 2, 6), np.float32))
 
-    def construct(self, tensor, index_0, index_1, index_2):
+    def forward(self, tensor, index_0, index_1, index_2):
         ret = tensor[0:2, index_0, index_1, ..., index_2, 2] + self.const
         return ret
 
 
-class TensorGetItemByMixedTensors_6(Cell):
+class TensorGetItemByMixedTensors_6(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensors_6, self).__init__()
         self.const = Tensor(np.ones((3, 4, 2, 3, 4, 5), np.float32))
 
-    def construct(self, tensor, index_0, index_1, index_2):
+    def forward(self, tensor, index_0, index_1, index_2):
         ret = tensor[..., index_0, index_1, index_2, 3] + self.const
         return ret
 
 
-class TensorSetItemByMixedTensors_0(Cell):
+class TensorSetItemByMixedTensors_0(Module):
     def __init__(self, value):
         super(TensorSetItemByMixedTensors_0, self).__init__()
         self.const = Tensor(np.ones((3, 4, 5, 6, 7, 8, 9), np.float32))
@@ -256,13 +256,13 @@ class TensorSetItemByMixedTensors_0(Cell):
                                name="x")
         self.value = value
 
-    def construct(self, index_0, index_1, index_2):
+    def forward(self, index_0, index_1, index_2):
         self.param[0:2, index_0, index_1, 2, index_2, 0:3, ...] = self.value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByMixedTensors_1(Cell):
+class TensorSetItemByMixedTensors_1(Module):
     def __init__(self, value):
         super(TensorSetItemByMixedTensors_1, self).__init__()
         self.const = Tensor(np.ones((3, 4, 5, 6, 7, 8), np.float32))
@@ -270,13 +270,13 @@ class TensorSetItemByMixedTensors_1(Cell):
                                name="x")
         self.value = value
 
-    def construct(self, index_0, index_1, index_2):
+    def forward(self, index_0, index_1, index_2):
         self.param[0:2, index_0, index_1, ..., index_2, 2] = self.value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByMixedTensors_2(Cell):
+class TensorSetItemByMixedTensors_2(Module):
     def __init__(self, value):
         super(TensorSetItemByMixedTensors_2, self).__init__()
         self.const = Tensor(np.ones((3, 4, 5, 6, 7, 8), np.float16))
@@ -284,162 +284,162 @@ class TensorSetItemByMixedTensors_2(Cell):
                                name="x")
         self.value = value
 
-    def construct(self, index_0, index_1, index_2):
+    def forward(self, index_0, index_1, index_2):
         self.param[..., index_0, index_1, index_2, 3] = self.value
         ret = self.param + self.const
         return ret
 
 
-class TensorGetItemByMixedTensorsTypeError(Cell):
+class TensorGetItemByMixedTensorsTypeError(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensorsTypeError, self).__init__()
 
-    def construct(self, x, index_0, index_1):
+    def forward(self, x, index_0, index_1):
         ret = x[index_0, index_1, 0:3, ..., 0:5, [1, 2, 3, 4]]
         return ret
 
 
-class TensorGetItemByMixedTensorsNumberError(Cell):
+class TensorGetItemByMixedTensorsNumberError(Module):
     def __init__(self):
         super(TensorGetItemByMixedTensorsNumberError, self).__init__()
 
-    def construct(self, x, index_0, index_1):
+    def forward(self, x, index_0, index_1):
         ret = x[index_0, index_1, 0:3, ..., index_1, index_0]
         return ret
 
 
-class TensorSetItemByOneTensorWithNumber(Cell):
+class TensorSetItemByOneTensorWithNumber(Module):
     def __init__(self, value):
         super(TensorSetItemByOneTensorWithNumber, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
         self.value = value
 
-    def construct(self, index):
+    def forward(self, index):
         self.param[index] = self.value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByOneTensorWithTensor(Cell):
+class TensorSetItemByOneTensorWithTensor(Module):
     def __init__(self):
         super(TensorSetItemByOneTensorWithTensor, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
 
-    def construct(self, index, value):
+    def forward(self, index, value):
         self.param[index] = value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByOneTensorWithTupleOfNumber(Cell):
+class TensorSetItemByOneTensorWithTupleOfNumber(Module):
     def __init__(self, value):
         super(TensorSetItemByOneTensorWithTupleOfNumber, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
         self.value = value
 
-    def construct(self, index):
+    def forward(self, index):
         self.param[index] = self.value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByOneTensorWithTupleOfTensor(Cell):
+class TensorSetItemByOneTensorWithTupleOfTensor(Module):
     def __init__(self):
         super(TensorSetItemByOneTensorWithTupleOfTensor, self).__init__()
         self.const = Tensor(np.ones((6, 3, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 3 * 8).reshape((6, 3, 8)), mstype.float32), name="x")
 
-    def construct(self, index, value_0, value_1, value_2):
+    def forward(self, index, value_0, value_1, value_2):
         self.param[index] = (value_0, value_1, value_2)
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByTensorsWithNumber(Cell):
+class TensorSetItemByTensorsWithNumber(Module):
     def __init__(self, value):
         super(TensorSetItemByTensorsWithNumber, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
         self.value = value
 
-    def construct(self, index_0, index_1, index_2):
+    def forward(self, index_0, index_1, index_2):
         self.param[index_0, index_1, index_2] = self.value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByTensorsWithTensor(Cell):
+class TensorSetItemByTensorsWithTensor(Module):
     def __init__(self):
         super(TensorSetItemByTensorsWithTensor, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
 
-    def construct(self, index_0, index_1, index_2, value):
+    def forward(self, index_0, index_1, index_2, value):
         self.param[index_0, index_1, index_2] = value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByTensorsWithTensorNumberError(Cell):
+class TensorSetItemByTensorsWithTensorNumberError(Module):
     def __init__(self):
         super(TensorSetItemByTensorsWithTensorNumberError, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
 
-    def construct(self, index_0, index_1, index_2, index_3, value):
+    def forward(self, index_0, index_1, index_2, index_3, value):
         self.param[index_0, index_1, index_2, index_3] = value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByTensorsWithTupleOfNumber(Cell):
+class TensorSetItemByTensorsWithTupleOfNumber(Module):
     def __init__(self, value):
         super(TensorSetItemByTensorsWithTupleOfNumber, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
         self.value = value
 
-    def construct(self, index_0, index_1, index_2):
+    def forward(self, index_0, index_1, index_2):
         self.param[index_0, index_1, index_2] = self.value
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByTensorsWithTupleOfTensor(Cell):
+class TensorSetItemByTensorsWithTupleOfTensor(Module):
     def __init__(self):
         super(TensorSetItemByTensorsWithTupleOfTensor, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
 
-    def construct(self, index_0, index_1, index_2, value_0, value_1, value_2):
+    def forward(self, index_0, index_1, index_2, value_0, value_1, value_2):
         self.param[index_0, index_1, index_2] = (value_0, value_1, value_2)
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByTensorsWithTupleOfTensorNumberError(Cell):
+class TensorSetItemByTensorsWithTupleOfTensorNumberError(Module):
     def __init__(self):
         super(TensorSetItemByTensorsWithTupleOfTensorNumberError, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
 
-    def construct(self, index_0, index_1, index_2, value_0, value_1):
+    def forward(self, index_0, index_1, index_2, value_0, value_1):
         self.param[index_0, index_1, index_2] = (value_0, value_1)
         ret = self.param + self.const
         return ret
 
 
-class TensorSetItemByMixedTensors(Cell):
+class TensorSetItemByMixedTensors(Module):
     def __init__(self):
         super(TensorSetItemByMixedTensors, self).__init__()
         self.const = Tensor(np.ones((6, 7, 8)), mstype.float32)
         self.param = Parameter(Tensor(np.arange(6 * 7 * 8).reshape((6, 7, 8)), mstype.float32), name="x")
         self.value = 99.0
 
-    def construct(self, index_0, index_1):
+    def forward(self, index_0, index_1):
         self.param[index_0, index_1, 0:6] = self.value
         ret = self.param + self.const
         return ret
@@ -539,51 +539,51 @@ def test_tensor_assign():
         net(Ta, Tb)
 
 
-class TensorAssignWithTupleEllipsis2(Cell):
+class TensorAssignWithTupleEllipsis2(Module):
     def __init__(self):
         super(TensorAssignWithTupleEllipsis2, self).__init__()
 
-    def construct(self, a, b):
+    def forward(self, a, b):
         a[1:, ..., ::] = b
         return a
 
 
-class TensorAssignWithTupleEllipsis(Cell):
+class TensorAssignWithTupleEllipsis(Module):
     def __init__(self):
         super(TensorAssignWithTupleEllipsis, self).__init__()
 
-    def construct(self, a, b):
+    def forward(self, a, b):
         a[:2, ...] = 1.0
         a[1:, ...] = b
         return a
 
 
-class TensorAssignWithEllipsis(Cell):
+class TensorAssignWithEllipsis(Module):
     def __init__(self):
         super(TensorAssignWithEllipsis, self).__init__()
 
-    def construct(self, a, b):
+    def forward(self, a, b):
         a[...] = 1
         a[...] = b
         return a
 
 
-class TensorAssignWithInteger(Cell):
+class TensorAssignWithInteger(Module):
     def __init__(self):
         super(TensorAssignWithInteger, self).__init__()
 
-    def construct(self, a, b, ck):
+    def forward(self, a, b, ck):
         a[1] = 1
         a[0] = b
         z = a + ck
         return z
 
 
-class TensorAssignWithTupleInteger(Cell):
+class TensorAssignWithTupleInteger(Module):
     def __init__(self):
         super(TensorAssignWithTupleInteger, self).__init__()
 
-    def construct(self, a, b, ck):
+    def forward(self, a, b, ck):
         a[(1)] = 1.0
         a[(1)] = b
         a[(1, 1)] = b
@@ -592,36 +592,36 @@ class TensorAssignWithTupleInteger(Cell):
         return z
 
 
-class TensorAssignWithBoolTensorIndex(Cell):
+class TensorAssignWithBoolTensorIndex(Module):
     def __init__(self):
         super(TensorAssignWithBoolTensorIndex, self).__init__()
         self.t = Tensor(np.arange(60).reshape([3, 4, 5]), dtype=mstype.float32)
         self.u_scalar = 5
 
-    def construct(self, a, b, c, u_tensor):
+    def forward(self, a, b, c, u_tensor):
         a[c] = self.u_scalar
         a[b] = u_tensor
         z = a + self.t
         return z
 
 
-class TensorAssignWithBoolTensorIndexError(Cell):
+class TensorAssignWithBoolTensorIndexError(Module):
     def __init__(self):
         super(TensorAssignWithBoolTensorIndexError, self).__init__()
 
-    def construct(self, a, b, c, u_tensor):
+    def forward(self, a, b, c, u_tensor):
         a[b][c] = u_tensor
         return a
 
 
-class TensorAssignWithBoolTensorIndex2(Cell):
+class TensorAssignWithBoolTensorIndex2(Module):
     def __init__(self):
         super(TensorAssignWithBoolTensorIndex2, self).__init__()
         self.t = Tensor(np.arange(6).reshape([2, 3]), dtype=mstype.float32)
         self.t = Tensor(np.arange(60).reshape([3, 4, 5]), dtype=mstype.float32)
         self.u_scalar = 5
 
-    def construct(self, a, u_tensor):
+    def forward(self, a, u_tensor):
         a[a > 8] = u_tensor
         a[a >= 6] = self.u_scalar
         a[a < 3] = self.u_scalar
@@ -631,23 +631,23 @@ class TensorAssignWithBoolTensorIndex2(Cell):
         return z
 
 
-class TensorAssignWithBoolTensorIndex2Error(Cell):
+class TensorAssignWithBoolTensorIndex2Error(Module):
     def __init__(self):
         super(TensorAssignWithBoolTensorIndex2Error, self).__init__()
 
-    def construct(self, a, u_tensor):
+    def forward(self, a, u_tensor):
         a[a > 8][a > 5] = u_tensor
         return a
 
 
-class TensorItemSetWithNumber(Cell):
-    def construct(self, tensor, number_value):
+class TensorItemSetWithNumber(Module):
+    def forward(self, tensor, number_value):
         ret = tensor.itemset(number_value)
         return ret
 
 
-class TensorItemSetByItemWithNumber(Cell):
-    def construct(self, tensor, index, number_value):
+class TensorItemSetByItemWithNumber(Module):
+    def forward(self, tensor, index, number_value):
         ret = tensor.itemset(index, number_value)
         return ret
 
@@ -1306,12 +1306,12 @@ def test_check_exception():
 
 
 def test_tensor_slice_reduce_out_of_bounds_neg():
-    class NetWork(Cell):
+    class NetWork(Module):
         def __init__(self):
             super(NetWork, self).__init__()
             self.tensor_ret = Tensor(np.array(9, np.int32))
 
-        def construct(self, tensor):
+        def forward(self, tensor):
             ret = tensor[-7, 3, 4]
             return ret
 
@@ -1322,12 +1322,12 @@ def test_tensor_slice_reduce_out_of_bounds_neg():
 
 
 def test_tensor_slice_reduce_out_of_bounds_positive():
-    class NetWork(Cell):
+    class NetWork(Module):
         def __init__(self):
             super(NetWork, self).__init__()
             self.tensor_ret = Tensor(np.array(9, np.int32))
 
-        def construct(self, tensor):
+        def forward(self, tensor):
             ret = tensor[6, 3, 4]
             return ret
 

@@ -24,8 +24,8 @@ from luojianet_ms.ops.functional import vmap
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class ThreeInputsTwoOutputsNet(nn.Cell):
-    def construct(self, x, y, z):
+class ThreeInputsTwoOutputsNet(nn.Module):
+    def forward(self, x, y, z):
         return x + y, z
 
 
@@ -182,8 +182,8 @@ def test_vmap_non_input():
     Description: The arguments of the cell is empty, it's invalid when apply `vmap`.
     Expectation: throw RuntimeError:"Failed to get 'axis_size' within the scope of vmap."
     """
-    class NonInputSingleOutputNet(nn.Cell):
-        def construct(self):
+    class NonInputSingleOutputNet(nn.Module):
+        def forward(self):
             return 1
 
     with pytest.raises(RuntimeError) as ex:

@@ -126,7 +126,7 @@ class FakeData:
         raise StopIteration
 
 
-class NetWithSparseGatherV2(nn.Cell):
+class NetWithSparseGatherV2(nn.Module):
     def __init__(self, strategy=None, sparse=True):
         super(NetWithSparseGatherV2, self).__init__()
         self.axis = 0
@@ -140,7 +140,7 @@ class NetWithSparseGatherV2(nn.Cell):
         if strategy is not None:
             self.gather.shard(strategy)
 
-    def construct(self, indices):
+    def forward(self, indices):
         x = self.gather(self.weight, indices, self.axis)
         return x
 

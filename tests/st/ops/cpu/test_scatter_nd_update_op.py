@@ -38,14 +38,14 @@ def test_op1(dtype):
     Expectation: success
     """
 
-    class ScatterNdUpdate(nn.Cell):
+    class ScatterNdUpdate(nn.Module):
         def __init__(self):
             super(ScatterNdUpdate, self).__init__()
             self.scatter_nd_update = P.ScatterNdUpdate()
             self.x = Parameter(
                 Tensor(np.array([[-0.1, 0.3, 3.6], [0.4, 0.5, -3.2]], dtype=dtype)), name="x")
 
-        def construct(self, indices, update):
+        def forward(self, indices, update):
             return self.scatter_nd_update(self.x, indices, update)
 
     indices = Tensor(np.array([[0, 0], [1, 1]]), mstype.int32)
@@ -70,14 +70,14 @@ def test_op2(dtype):
     Expectation: success
     """
 
-    class ScatterNdUpdate(nn.Cell):
+    class ScatterNdUpdate(nn.Module):
         def __init__(self):
             super(ScatterNdUpdate, self).__init__()
             self.scatter_nd_update = P.ScatterNdUpdate()
             self.x = Parameter(
                 Tensor(np.array([1, 2, 3, 4, 5, 6, 7, 8], dtype=dtype)), name="x")
 
-        def construct(self, indices, update):
+        def forward(self, indices, update):
             return self.scatter_nd_update(self.x, indices, update)
 
     indices = Tensor(np.array([[4], [3], [1], [7]]), mstype.int32)
@@ -102,13 +102,13 @@ def test_op3(dtype):
     Expectation: success
     """
 
-    class ScatterNdUpdate(nn.Cell):
+    class ScatterNdUpdate(nn.Module):
         def __init__(self):
             super(ScatterNdUpdate, self).__init__()
             self.scatter_nd_update = P.ScatterNdUpdate()
             self.x = Parameter(Tensor(np.zeros((4, 4, 4)).astype(dtype)), name="x")
 
-        def construct(self, indices, update):
+        def forward(self, indices, update):
             return self.scatter_nd_update(self.x, indices, update)
 
     indices = Tensor(np.array([[0], [2]]), mstype.int32)
@@ -138,13 +138,13 @@ def test_op4(dtype):
     Expectation: success
     """
 
-    class ScatterNdUpdate(nn.Cell):
+    class ScatterNdUpdate(nn.Module):
         def __init__(self):
             super(ScatterNdUpdate, self).__init__()
             self.scatter_nd_update = P.ScatterNdUpdate()
             self.x = Parameter(Tensor(np.array([[-0.1, 0.3, 3.6], [0.4, 0.5, -3.2]], dtype=dtype)), name="x")
 
-        def construct(self, indices, update):
+        def forward(self, indices, update):
             return self.scatter_nd_update(self.x, indices, update)
 
     indices = Tensor(np.array([[0, 1]]), mstype.int32)
@@ -168,13 +168,13 @@ def test_op5(dtype):
     Expectation: raise RuntimeError
     """
 
-    class ScatterNdUpdate(nn.Cell):
+    class ScatterNdUpdate(nn.Module):
         def __init__(self):
             super(ScatterNdUpdate, self).__init__()
             self.scatter_nd_update = P.ScatterNdUpdate()
             self.x = Parameter(Tensor(np.ones([1, 4, 1], dtype=dtype)), name="x")
 
-        def construct(self, indices, update):
+        def forward(self, indices, update):
             return self.scatter_nd_update(self.x, indices, update)
 
     indices = Tensor(np.array([[0, 2], [3, 2], [1, 3]]), mstype.int32)

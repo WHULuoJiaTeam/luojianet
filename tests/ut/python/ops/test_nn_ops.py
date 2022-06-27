@@ -54,7 +54,7 @@ grad = C.GradOperation()
 grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)
 
 
-class ResidualBlock(nn.Cell):
+class ResidualBlock(nn.Module):
     """
     residual Block
     """
@@ -85,7 +85,7 @@ class ResidualBlock(nn.Cell):
         self.bn_down_sample = nn.BatchNorm2d(out_channels)
         self.add = P.Add()
 
-    def construct(self, x):
+    def forward(self, x):
         """
         :param x:
         :return:
@@ -157,7 +157,7 @@ class VirtualLoss(PrimitiveWithInfer):
         return x_dtype
 
 
-class VirtualNetWithLoss(nn.Cell):
+class VirtualNetWithLoss(nn.Module):
     """ VirtualNetWithLoss definition """
 
     def __init__(self, network):
@@ -165,72 +165,72 @@ class VirtualNetWithLoss(nn.Cell):
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         predict = self.network(x)
         return self.loss(predict)
 
 
-class SoftMaxGrad(nn.Cell):
+class SoftMaxGrad(nn.Module):
     """ SoftMaxGrad definition """
 
     def __init__(self, network):
         super(SoftMaxGrad, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         return grad(self.network)(x)
 
 
-class DropoutGrad(nn.Cell):
+class DropoutGrad(nn.Module):
     """ DropoutGrad definition """
 
     def __init__(self, network):
         super(DropoutGrad, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         return grad(self.network)(x)
 
 
-class ScalarSummaryNet(nn.Cell):
+class ScalarSummaryNet(nn.Module):
     """ ScalarSummaryNet definition """
 
     def __init__(self):
         super(ScalarSummaryNet, self).__init__()
         self.summary = P.ScalarSummary()
 
-    def construct(self, scalar):
+    def forward(self, scalar):
         string_in = "bias_value"
         out = self.summary(string_in, scalar)
         return out
 
 
-class L2NormalizeNet(nn.Cell):
+class L2NormalizeNet(nn.Module):
     """ L2NormalizeNet definition """
 
     def __init__(self):
         super(L2NormalizeNet, self).__init__()
         self.l2_normalize = P.L2Normalize()
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.l2_normalize(x)
         return out
 
 
-class HistogramSummaryNet(nn.Cell):
+class HistogramSummaryNet(nn.Module):
     """HistogramSummaryNet definition"""
 
     def __init__(self):
         super(HistogramSummaryNet, self).__init__()
         self.summary = P.HistogramSummary()
 
-    def construct(self, tensor):
+    def forward(self, tensor):
         string_in = "wight_value"
         out = self.summary(string_in, tensor)
         return out
 
 
-class FusedBatchNormGrad(nn.Cell):
+class FusedBatchNormGrad(nn.Module):
     """ FusedBatchNormGrad definition """
 
     def __init__(self, network):
@@ -238,11 +238,11 @@ class FusedBatchNormGrad(nn.Cell):
         self.grad = C.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, inp, output_grad):
+    def forward(self, inp, output_grad):
         return self.grad(self.network)(inp, output_grad)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     """ NetWithLoss definition """
 
     def __init__(self, network):
@@ -250,12 +250,12 @@ class NetWithLoss(nn.Cell):
         self.loss = P.SmoothL1Loss()
         self.network = network
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         predict = self.network(x)
         return self.loss(predict, label)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     """ GradWrap definition """
 
     def __init__(self, network):
@@ -263,11 +263,11 @@ class Grad(nn.Cell):
         self.network = network
         self.network.set_train()
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         return grad(self.network)(x, label)
 
 
-class BatchnormNet(nn.Cell):
+class BatchnormNet(nn.Module):
     """ BatchnormNet definition """
 
     def __init__(self):
@@ -280,7 +280,7 @@ class BatchnormNet(nn.Cell):
         self.fc = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.flatten(x)
@@ -288,7 +288,7 @@ class BatchnormNet(nn.Cell):
         return x
 
 
-class NetWithLossClass(nn.Cell):
+class NetWithLossClass(nn.Module):
     """ NetWithLossClass definition """
 
     def __init__(self, network):
@@ -296,14 +296,14 @@ class NetWithLossClass(nn.Cell):
         self.loss = nn.SoftmaxCrossEntropyWithLogits()
         self.network = network
 
-    def construct(self, x, label):
+    def forward(self, x, label):
         predict = self.network(x)
         if F.rank(predict) == 4:
             predict = predict[0, 0, :, :]
         return self.loss(predict, label)
 
 
-class BlockNet(nn.Cell):
+class BlockNet(nn.Module):
     """ BlockNet definition """
 
     def __init__(self):
@@ -321,12 +321,12 @@ class BlockNet(nn.Cell):
         self.fc = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         return x
 
 
-class Conv2dWithBiasNet(nn.Cell):
+class Conv2dWithBiasNet(nn.Module):
     """ Conv2dWithBiasNet definition """
 
     def __init__(self):
@@ -334,11 +334,11 @@ class Conv2dWithBiasNet(nn.Cell):
         self.conv = nn.Conv2d(3, 10, 1, bias_init='zeros')
         self.flatten = P.Flatten()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.flatten(self.conv(input_x))
 
 
-class Conv2dNativeNet(nn.Cell):
+class Conv2dNativeNet(nn.Module):
     """ Conv2dNativeNet definition """
 
     def __init__(self):
@@ -352,11 +352,11 @@ class Conv2dNativeNet(nn.Cell):
             Tensor(np.ones([channel_multipliers, in_channels, *kernel_size], dtype=np.float32)),
             [channel_multipliers, in_channels, *kernel_size]), name='weight')
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.flatten(self.conv(input_x, self.weight))
 
 
-class StateNet(nn.Cell):
+class StateNet(nn.Module):
     """ StateTestTensor definition """
 
     def __init__(self):
@@ -368,7 +368,7 @@ class StateNet(nn.Cell):
         self.loss = nn.SoftmaxCrossEntropyWithLogits()
         self.assign = P.Assign()
 
-    def construct(self, x):
+    def forward(self, x):
         x = F.depend(x, self.assign(self.s1, x + self.s1))
         self.s1 = self.sub(self.s1, x)
         self.s2 = self.sub(self.s2, x)
@@ -376,13 +376,13 @@ class StateNet(nn.Cell):
 
 
 def test_conv2d_same_primitive():
-    class Conv2DSameNet(nn.Cell):
+    class Conv2DSameNet(nn.Module):
         def __init__(self):
             super(Conv2DSameNet, self).__init__()
             self.conv1 = nn.Conv2d(16, 64, (1, 41), (1, 4), "same", 0, 1, has_bias=True)
             self.conv2 = nn.Conv2d(16, 64, (1, 41), (1, 4), "same", 0, 1, has_bias=True)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             r1 = self.conv1(x)
             r2 = self.conv2(y)
             return (r1, r2)
@@ -392,25 +392,25 @@ def test_conv2d_same_primitive():
     net(t1, t2)
 
 
-class ComparisonNet(nn.Cell):
+class ComparisonNet(nn.Module):
     def __init__(self, empty=None):
         """ ComparisonNet definition """
         super(ComparisonNet, self).__init__()
         self.empty = empty
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         ret = x <= y
         return ret
 
 
 def test_max_pool_with_arg_max():
-    class NetMaxPoolWithArgMax(nn.Cell):
+    class NetMaxPoolWithArgMax(nn.Module):
         def __init__(self):
             """ ComparisonNet definition """
             super(NetMaxPoolWithArgMax, self).__init__()
             self.max_pool_with_arg_max = P.MaxPoolWithArgmax(pad_mode="valid", kernel_size=2, strides=1)
 
-        def construct(self, x):
+        def forward(self, x):
             ret = self.max_pool_with_arg_max(x)
             return ret
 
@@ -421,7 +421,7 @@ def test_max_pool_with_arg_max():
     print(ret)
 
 
-class GradWrapUnfold(nn.Cell):
+class GradWrapUnfold(nn.Module):
     """ GradWrapUnfold definition """
 
     def __init__(self, network):
@@ -429,11 +429,11 @@ class GradWrapUnfold(nn.Cell):
         self.network = network
         self.sens = Tensor(np.ones([1, 4, 2, 2], np.float32))
 
-    def construct(self, x):
+    def forward(self, x):
         return grad_all_with_sens(self.network)(x, self.sens)
 
 
-class UnfoldNetValid(nn.Cell):
+class UnfoldNetValid(nn.Module):
     """ UnfoldNetValid definition """
 
     def __init__(self):
@@ -443,11 +443,11 @@ class UnfoldNetValid(nn.Cell):
                                 rates=[1, 1, 1, 1],
                                 padding='VALID')
 
-    def construct(self, x):
+    def forward(self, x):
         return self.unfold(x)
 
 
-class UnfoldNetSame(nn.Cell):
+class UnfoldNetSame(nn.Module):
     """ UnfoldNetSame definition """
 
     def __init__(self):
@@ -457,22 +457,22 @@ class UnfoldNetSame(nn.Cell):
                                 rates=[1, 1, 1, 1],
                                 padding='SAME')
 
-    def construct(self, x):
+    def forward(self, x):
         return self.unfold(x)
 
 
-class FlattenNet(nn.Cell):
+class FlattenNet(nn.Module):
     """ FlattenNet definition """
 
     def __init__(self):
         super(FlattenNet, self).__init__()
         self.flatten = P.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.flatten(x)
 
 
-class PReLUNet(nn.Cell):
+class PReLUNet(nn.Module):
     """ PReLUNet definition """
 
     def __init__(self):
@@ -480,40 +480,40 @@ class PReLUNet(nn.Cell):
         self.prelu = P.PReLU()
         self.w = Tensor(np.ones(3, np.float32))
 
-    def construct(self, x):
+    def forward(self, x):
         return self.prelu(x, self.w)
 
 
-class PReLUGradNet(nn.Cell):
+class PReLUGradNet(nn.Module):
     """ PReLUGradNet definition """
 
     def __init__(self):
         super(PReLUGradNet, self).__init__()
         self.prelu_grad = G.PReLUGrad()
 
-    def construct(self, dout, x, w):
+    def forward(self, dout, x, w):
         return self.prelu_grad(dout, x, w)
 
 
-class LRNNet(nn.Cell):
+class LRNNet(nn.Module):
     """ LRNNet definition """
 
     def __init__(self):
         super(LRNNet, self).__init__()
         self.lrn = P.LRN()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.lrn(x)
 
 
-class LRNGradNet(nn.Cell):
+class LRNGradNet(nn.Module):
     """ LRNGradNet definition """
 
     def __init__(self):
         super(LRNGradNet, self).__init__()
         self.lrn_grad = G.LRNGrad()
 
-    def construct(self, dout, x, out):
+    def forward(self, dout, x, out):
         return self.lrn_grad(dout, x, out)
 
 

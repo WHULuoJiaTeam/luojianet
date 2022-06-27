@@ -30,8 +30,8 @@ from luojianet_ms import dtype as mstype
 context.set_context(mode=context.GRAPH_MODE)
 
 def test_missing_return():
-    class NetMissReturn(nn.Cell):
-        def construct(self, x, y, z):
+    class NetMissReturn(nn.Module):
+        def forward(self, x, y, z):
             if x == 1:
                 return 10
             elif x == 20:
@@ -45,7 +45,7 @@ def test_missing_return():
                         return i + z
                     def g(u):
                         return x + u
-                    # here method 'construct' misses a return statement
+                    # here method 'forward' misses a return statement
                     g(y)
                 else:
                     return 7
@@ -58,12 +58,12 @@ def test_missing_return():
     z = Tensor(2, mstype.int32)
     with pytest.raises(TypeError) as er:
         net(x, y, z)
-    assert "Function must has 'return' statement, but missing in bound method 'construct'" in str(er.value)
+    assert "Function must has 'return' statement, but missing in bound method 'forward'" in str(er.value)
 
 
 def test_nest_function_missing_return():
-    class NetNestFuncMissReturn(nn.Cell):
-        def construct(self, x, y, z):
+    class NetNestFuncMissReturn(nn.Module):
+        def forward(self, x, y, z):
             if x == 1:
                 return 10
             elif x == 20:
@@ -94,8 +94,8 @@ def test_nest_function_missing_return():
 
 
 def test_raise_in_method():
-    class NetRaiseInMethod(nn.Cell):
-        def construct(self, x, y, z):
+    class NetRaiseInMethod(nn.Module):
+        def forward(self, x, y, z):
             if x == 1:
                 return Tensor(10, mstype.int32)
             elif x == 20:
@@ -114,14 +114,14 @@ def test_raise_in_method():
 
 
 def test_raise_in_nested_function():
-    class NetNestRaise(nn.Cell):
+    class NetNestRaise(nn.Module):
         def nest_fn(self, u):
             if u > 0:
                 # add not support grammar 'raise' here
                 raise ValueError('Illegal case')
             return u + z + 1
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             if x == 1:
                 return Tensor(10, mstype.int32)
             elif x == 20:
@@ -139,8 +139,8 @@ def test_raise_in_nested_function():
 
 
 def test_nest_branch_with_return():
-    class NetBranchWithReturn(nn.Cell):
-        def construct(self, x, y, z):
+    class NetBranchWithReturn(nn.Module):
+        def forward(self, x, y, z):
             if x == 1:
                 return 10
             else:
@@ -154,8 +154,8 @@ def test_nest_branch_with_return():
 
 
 def test_any_with_no_return():
-    class NetAnyNoReturn(nn.Cell):
-        def construct(self, inp):
+    class NetAnyNoReturn(nn.Module):
+        def forward(self, inp):
             result = inp.any()
             if result:
                 return 6
@@ -165,11 +165,11 @@ def test_any_with_no_return():
     net = NetAnyNoReturn()
     with pytest.raises(TypeError) as er:
         net(tensor)
-    assert "Function must has 'return' statement, but missing in bound method 'construct'" in str(er.value)
+    assert "Function must has 'return' statement, but missing in bound method 'forward'" in str(er.value)
 
 
 def test_missing_construct():
-    class NetMissConstruct(nn.Cell):
+    class NetMissConstruct(nn.Module):
         def construct1(self, inp):
             return 5
 

@@ -25,7 +25,7 @@ from luojianet_ms._checkparam import Validator
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import functional as F
 from luojianet_ms.ops.primitive import constexpr
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer import Dense
 from luojianet_ms.context import ParallelMode
 from luojianet_ms.parallel._utils import _get_parallel_mode, _is_sharding_propagation
@@ -112,7 +112,7 @@ def calculate_expert_capacity(k, tokens_per_group, capacity_factor, expert_dim):
     return math.ceil(k * tokens_per_group * capacity_factor / expert_dim)
 
 
-class MoE(Cell):
+class MoE(Module):
     """
     The mixture of experts (MoE) implementation. The implementation includes a router and a FeedForward layer.
     The router dispatches tokens to experts in FeedForward, then FeedForward does computation, and the final output is
@@ -207,7 +207,7 @@ class MoE(Cell):
                                  training=True, parallel_config=parallel_config)
             self.cast = P.Cast()
 
-    def construct(self, input_tensor):
+    def forward(self, input_tensor):
         input_shape = F.shape(input_tensor)
         input_tensor = self.reshape(input_tensor, (-1, self.hidden_size))
         bs_and_dmodel = self.shape(input_tensor)
@@ -275,7 +275,7 @@ class MoE(Cell):
         return combined_output, aux_loss
 
 
-class Router(Cell):
+class Router(Module):
     r"""
         A router backbone used to calculate logits of each token, which should be cascaded by router implementations
         mapping tokens to experts.
@@ -346,7 +346,7 @@ class Router(Cell):
             else:
                 self.router = routing_policy
 
-    def construct(self, input_tensor):
+    def forward(self, input_tensor):
         input_tensor = self.cast(input_tensor, mstype.float32)
         if self.noisy_policy == "jitter" and self.training:
             # Here, we temporarily implement the multiplicative jitter this way,
@@ -357,7 +357,7 @@ class Router(Cell):
         return self.router(router_logits)
 
 
-class TopkRouter(Cell):
+class TopkRouter(Module):
     r"""
         A router implementation which maps each tokens to the topk expert.
 
@@ -515,7 +515,7 @@ class TopkRouter(Cell):
         output = (expert_mask, expert_gate, expert_mask_flat, position_in_expert)
         return output
 
-    def construct(self, router_logits):
+    def forward(self, router_logits):
         router_logits_shape = self.shape(router_logits)
         router_logits = self.reshape(router_logits, (-1, router_logits_shape[-1]))
         logits_shape = self.shape(router_logits)

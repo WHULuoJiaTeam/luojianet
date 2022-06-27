@@ -43,7 +43,7 @@ init("hccl")
 GlobalComm.CHECK_ENVS = True
 
 
-class AllReduceNet(nn.Cell):
+class AllReduceNet(nn.Module):
     """AllReduceNet definition"""
 
     def __init__(self, input_channel, out_channel, op):
@@ -52,13 +52,13 @@ class AllReduceNet(nn.Cell):
         self.reduce = AllReduce(op)
         self.relu = ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.dense(x)
         x = self.reduce(x)
         return self.relu(x)
 
 
-class BroadCastNet(nn.Cell):
+class BroadCastNet(nn.Module):
     """BroadCastNet definition"""
 
     def __init__(self, input_channel, out_channel):
@@ -66,13 +66,13 @@ class BroadCastNet(nn.Cell):
         self.dense = Dense(input_channel, out_channel)
         self.broadcast = Broadcast(0)
 
-    def construct(self, x):
+    def forward(self, x):
         x, = self.broadcast((x,))
         x = self.dense(x)
         return x
 
 
-class AllGatherNet(nn.Cell):
+class AllGatherNet(nn.Module):
     """AllGatherNet definition"""
 
     def __init__(self, input_channel, out_channel):
@@ -87,13 +87,13 @@ class AllGatherNet(nn.Cell):
 
         self.relu = ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.dense(x)
         x = self.allgather(x)
         return self.relu(x)
 
 
-class ReduceScatterNet(nn.Cell):
+class ReduceScatterNet(nn.Module):
     """ReduceScatterNet definition"""
 
     def __init__(self, input_channel, out_channel, op):
@@ -102,13 +102,13 @@ class ReduceScatterNet(nn.Cell):
         self.reducescatter = ReduceScatter(op)
         self.relu = ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.dense(x)
         x = self.reducescatter(x)
         return self.relu(x)
 
 
-class AlltoAllNet(nn.Cell):
+class AlltoAllNet(nn.Module):
     """AlltoAllNet definition"""
 
     def __init__(self, input_channel, out_channel):
@@ -117,13 +117,13 @@ class AlltoAllNet(nn.Cell):
         self.alltoall = AlltoAll(1, 0, 1)
         self.relu = ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.dense(x)
         x = self.alltoall(x)
         return self.relu(x)
 
 
-class AllSwapNet(nn.Cell):
+class AllSwapNet(nn.Module):
     """AlltoAllNet definition"""
 
     def __init__(self, batch_size, input_channel, out_channel):
@@ -136,7 +136,7 @@ class AllSwapNet(nn.Cell):
         self.recv_size = Tensor([part_slice*out_channel, part_slice*out_channel, 0], luojianet_ms.int64)
         self.gatherv2 = Gather()
         self.input = Tensor(np.ones([1]), luojianet_ms.int32)
-    def construct(self, x):
+    def forward(self, x):
         x = self.allswap(x, self.send_size, self.recv_size)
         x = self.relu(x)
         x = self.gatherv2(x, self.input, 0)

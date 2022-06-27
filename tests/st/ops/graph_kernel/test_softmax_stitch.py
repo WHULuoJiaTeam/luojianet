@@ -18,7 +18,7 @@ import numpy as np
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
 import luojianet_ms.nn as nn
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 import luojianet_ms.ops.functional as F
 import pytest
@@ -28,7 +28,7 @@ context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 context.set_context(enable_graph_kernel=True)
 
 
-class BertAttentionPiece(Cell):
+class BertAttentionPiece(Module):
     def __init__(self):
         super(BertAttentionPiece, self).__init__()
         self.add = P.Add()
@@ -40,7 +40,7 @@ class BertAttentionPiece(Cell):
         self.get_dtype = P.DType()
         self.cast = P.Cast()
 
-    def construct(self, attention_mask, attention_scores):
+    def forward(self, attention_mask, attention_scores):
         multiply_out = self.sub(self.cast(F.tuple_to_array((1.0,)), self.get_dtype(attention_scores)),
                                 self.cast(attention_mask, self.get_dtype(attention_scores)))
         adder = self.multiply(multiply_out, self.multiply_data)

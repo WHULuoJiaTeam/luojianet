@@ -46,23 +46,23 @@ from ....ops_common import convert
 grad_all_with_sens = C.GradOperation(get_all=True, sens_param=True)
 
 
-class TargetNet(nn.Cell):
+class TargetNet(nn.Module):
     def __init__(self):
         super(TargetNet, self).__init__()
         self.mul = P.Mul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.mul(x, y)
 
 
-# Recursive GradOperation in Cell.
-class Grad(nn.Cell):
+# Recursive GradOperation in Module.
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = C.GradOperation()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.grad(self.network)(x, y)
 
 
@@ -83,7 +83,7 @@ def test_recursive_grad():
     f1(x, y)
 
 
-class IndexAdd(nn.Cell):
+class IndexAdd(nn.Module):
     """IndexAdd net definition"""
 
     def __init__(self, axis):
@@ -91,236 +91,236 @@ class IndexAdd(nn.Cell):
         self.index_add = P.IndexAdd(axis)
         self.input_x = Parameter(Tensor(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).astype(np.float32)))
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         return self.index_add(self.input_x, indices, updates)
 
 
-class InputBackward(nn.Cell):
+class InputBackward(nn.Module):
     def __init__(self, network):
         super(InputBackward, self).__init__()
         self.network = network
         self.network.set_train()
         self.grad = grad_all_with_sens
 
-    def construct(self, x1, x2, x3, sens):
+    def forward(self, x1, x2, x3, sens):
         return self.grad(self.network)(x1, x2, x3, sens)
 
 
-class NetForTupleInput(nn.Cell):
+class NetForTupleInput(nn.Module):
     def __init__(self, op):
         super(NetForTupleInput, self).__init__()
         self.op = op
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         return self.op((x1, x2))
 
 
-class StridedSlicessdNet(nn.Cell):
+class StridedSlicessdNet(nn.Module):
     def __init__(self):
         super(StridedSlicessdNet, self).__init__()
         self.rank = P.Rank()
 
-    def construct(self, x1):
+    def forward(self, x1):
         return P.StridedSlice(1, 1, 0, self.rank(x1), 0)(x1, (0, 0), (0, 0), (1, 1))
 
 
-class NetForConcat(nn.Cell):
+class NetForConcat(nn.Module):
     def __init__(self):
         super(NetForConcat, self).__init__()
         self.concat = P.Concat()
 
-    def construct(self, x1):
+    def forward(self, x1):
         return self.concat((x1, x1))
 
 
-class NetForConcat1(nn.Cell):
+class NetForConcat1(nn.Module):
     def __init__(self):
         super(NetForConcat1, self).__init__()
         self.concat = P.Concat()
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         return self.concat((x1, x2))
 
 
-class NetForConcat2(nn.Cell):
+class NetForConcat2(nn.Module):
     def __init__(self):
         super(NetForConcat2, self).__init__()
         self.concat = P.Concat(axis=2)
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         return self.concat((x1, x2))
 
 
-class NetForConcat3(nn.Cell):
+class NetForConcat3(nn.Module):
     def __init__(self):
         super(NetForConcat3, self).__init__()
         self.concat = P.Concat(axis=0)
 
-    def construct(self, x1, x2, x3):
+    def forward(self, x1, x2, x3):
         return self.concat((x1, x2, x3))
 
 
-class NetForConcat4(nn.Cell):
+class NetForConcat4(nn.Module):
     def __init__(self):
         super(NetForConcat4, self).__init__()
         self.concat = P.Concat(axis=-1)
 
-    def construct(self, x1, x2, x3):
+    def forward(self, x1, x2, x3):
         return self.concat((x1, x2, x3))
 
 
-class NetForStackInput(nn.Cell):
+class NetForStackInput(nn.Module):
     def __init__(self, op):
         super(NetForStackInput, self).__init__()
         self.op = op
         self.mul = P.Mul()
 
-    def construct(self, *args):
+    def forward(self, *args):
         t = ()
         for element in args:
             t = t + (self.mul(element, element),)
         return self.op(t)
 
 
-class NetForUnpackInput(nn.Cell):
+class NetForUnpackInput(nn.Module):
     def __init__(self, op):
         super(NetForUnpackInput, self).__init__()
         self.op = op
         self.mul = P.Mul()
 
-    def construct(self, x1):
+    def forward(self, x1):
         return self.op((self.mul(x1, x1)))
 
 
-class NetForFlatten(nn.Cell):
+class NetForFlatten(nn.Module):
     def __init__(self):
         super(NetForFlatten, self).__init__()
         self.flatten = P.Flatten()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.flatten(x) + y
 
 
-class NetForFlatten0D(nn.Cell):
+class NetForFlatten0D(nn.Module):
     def __init__(self):
         super(NetForFlatten0D, self).__init__()
         self.flatten = P.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.flatten(x)
 
 
-class NetForFlattenComposed(nn.Cell):
+class NetForFlattenComposed(nn.Module):
     # make flatten op together with other ops for testing flatten grad
     def __init__(self):
         super(NetForFlattenComposed, self).__init__()
         self.flatten = P.Flatten()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.flatten(x + x) + y
 
 
-class ArgmaxNet(nn.Cell):
+class ArgmaxNet(nn.Module):
     def __init__(self):
         super(ArgmaxNet, self).__init__()
         self.argmax = P.Argmax(axis=1)
 
-    def construct(self, input_):
+    def forward(self, input_):
         return self.argmax(input_)
 
 
-class ArgminNet(nn.Cell):
+class ArgminNet(nn.Module):
     def __init__(self):
         super(ArgminNet, self).__init__()
         self.argmin = P.Argmin(axis=1)
 
-    def construct(self, input_):
+    def forward(self, input_):
         return self.argmin(input_)
 
 
-class CumSumNet(nn.Cell):
+class CumSumNet(nn.Module):
     def __init__(self):
         super(CumSumNet, self).__init__()
         self.cumsum = P.CumSum()
         self.axis = 1
 
-    def construct(self, input_):
+    def forward(self, input_):
         return self.cumsum(input_, self.axis)
 
 
-class SummaryNet(nn.Cell):
+class SummaryNet(nn.Module):
     def __init__(self):
         super(SummaryNet, self).__init__()
         self.s = P.ScalarSummary()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         self.s("x1", x)
         return self.add(x, y)
 
 
-class HistogramSummaryNet(nn.Cell):
+class HistogramSummaryNet(nn.Module):
     def __init__(self):
         super(HistogramSummaryNet, self).__init__()
         self.summary = P.HistogramSummary()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         out = self.add(x, y)
         string_in = "out"
         self.summary(string_in, out)
         return out
 
 
-class Moments(nn.Cell):
+class Moments(nn.Module):
     """Moments net definition"""
 
     def __init__(self, axis=None, keep_dims=None):
         super(Moments, self).__init__()
         self.moments = nn.Moments(axis=axis, keep_dims=keep_dims)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         mean, variance = self.moments(input_x)
         return mean, variance
 
 
-class BatchNorm3d(nn.Cell):
+class BatchNorm3d(nn.Module):
     """BatchNorm3d net definition"""
 
     def __init__(self, num_features):
         super(BatchNorm3d, self).__init__()
         self.bn3d = normalization.BatchNorm3d(num_features=num_features)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         bn3d_out = self.bn3d(input_x)
         return bn3d_out
 
 
-class NLLLoss(nn.Cell):
+class NLLLoss(nn.Module):
     """NLLLoss net definition"""
 
     def __init__(self, reduction):
         super(NLLLoss, self).__init__()
         self.nll_loss = P.NLLLoss(reduction=reduction)
 
-    def construct(self, input_x, target, weight):
+    def forward(self, input_x, target, weight):
         loss = self.nll_loss(input_x, target, weight)
         return loss
 
 
-class ClipByNorm(nn.Cell):
+class ClipByNorm(nn.Module):
     """ClipByNorm net definition"""
 
     def __init__(self, axis=None):
         super(ClipByNorm, self).__init__()
         self.clip_by_norm = nn.ClipByNorm(axis=axis)
 
-    def construct(self, input_x, max_norm):
+    def forward(self, input_x, max_norm):
         norm = self.clip_by_norm(input_x, max_norm)
         return norm
 
 
-class ClipByGlobalNorm(nn.Cell):
+class ClipByGlobalNorm(nn.Module):
     """ClipByGlobalNorm net definition"""
 
     def __init__(self, x, clip_norm=1.0, use_norm=None):
@@ -329,12 +329,12 @@ class ClipByGlobalNorm(nn.Cell):
         self.clip_norm = clip_norm
         self.use_norm = use_norm
 
-    def construct(self):
+    def forward(self):
         norm = C.clip_by_global_norm(self.x, self.clip_norm, self.use_norm)
         return norm
 
 
-class Embedding(nn.Cell):
+class Embedding(nn.Module):
     """Embedding net definition"""
 
     def __init__(self, vocab_size, embedding_size, padding_idx=None):
@@ -342,12 +342,12 @@ class Embedding(nn.Cell):
         self.embedding = nn.Embedding(vocab_size=vocab_size, embedding_size=embedding_size,
                                       padding_idx=padding_idx)
 
-    def construct(self, index):
+    def forward(self, index):
         res = self.embedding(index)
         return res
 
 
-class EmbeddingLookup(nn.Cell):
+class EmbeddingLookup(nn.Module):
     """EmbeddingLookup net definition"""
 
     def __init__(self, vocab_size, embedding_size, max_norm=None):
@@ -355,12 +355,12 @@ class EmbeddingLookup(nn.Cell):
         self.embedding_lookup = nn.EmbeddingLookup(vocab_size=vocab_size, embedding_size=embedding_size,
                                                    max_norm=max_norm)
 
-    def construct(self, index):
+    def forward(self, index):
         res = self.embedding_lookup(index)
         return res
 
 
-class CountNonZero(nn.Cell):
+class CountNonZero(nn.Module):
     """CountNonZero net definition"""
 
     def __init__(self, axis, keep_dims, dtype):
@@ -369,48 +369,48 @@ class CountNonZero(nn.Cell):
         self.keep_dims = keep_dims
         self.dtype = dtype
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         nonzero_num = C.count_nonzero(input_x, self.axis, self.keep_dims, self.dtype)
         return nonzero_num
 
 
-class Mish(nn.Cell):
+class Mish(nn.Module):
     """Mish net definition"""
 
     def __init__(self):
         super(Mish, self).__init__()
         self.mish = P.Mish()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         out = self.mish(input_x)
         return out
 
 
-class SeLU(nn.Cell):
+class SeLU(nn.Module):
     """Selu net definition"""
 
     def __init__(self):
         super(SeLU, self).__init__()
         self.selu = P.SeLU()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         out = self.selu(input_x)
         return out
 
 
-class MulNoNan(nn.Cell):
+class MulNoNan(nn.Module):
     """MulNoNan net definition"""
 
     def __init__(self):
         super(MulNoNan, self).__init__()
         self.mul_no_nan = P.MulNoNan()
 
-    def construct(self, input_x, input_y):
+    def forward(self, input_x, input_y):
         out = self.mul_no_nan(input_x, input_y)
         return out
 
 
-class ScatterUpdate(nn.Cell):
+class ScatterUpdate(nn.Module):
     """ScatterUpdate net definition"""
 
     def __init__(self, ref_shape, dtype=np.float32, use_locking=False):
@@ -418,12 +418,12 @@ class ScatterUpdate(nn.Cell):
         self.scatter_update = P.ScatterUpdate(use_locking)
         self.ref = Parameter(Tensor(np.ones(ref_shape, dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_update(self.ref, indices, updates)
         return out
 
 
-class ScatterMax(nn.Cell):
+class ScatterMax(nn.Module):
     """ScatterMax net definition"""
 
     def __init__(self, dtype=np.float32, use_locking=False):
@@ -431,12 +431,12 @@ class ScatterMax(nn.Cell):
         self.scatter_max = P.ScatterMax(use_locking)
         self.ref = Parameter(Tensor(np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]], dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_max(self.ref, indices, updates)
         return out
 
 
-class ScatterMin(nn.Cell):
+class ScatterMin(nn.Module):
     """ScatterMin net definition"""
 
     def __init__(self, dtype=np.float32, use_locking=False):
@@ -444,12 +444,12 @@ class ScatterMin(nn.Cell):
         self.scatter_min = P.ScatterMin(use_locking)
         self.ref = Parameter(Tensor(np.array([[-1.0, 2.0, 3.0], [-4.0, 1.0, 6.0]], dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_min(self.ref, indices, updates)
         return out
 
 
-class ScatterAdd(nn.Cell):
+class ScatterAdd(nn.Module):
     """ScatterAdd net definition"""
 
     def __init__(self, ref_shape, dtype=np.float32, use_locking=False):
@@ -457,12 +457,12 @@ class ScatterAdd(nn.Cell):
         self.scatter_add = P.ScatterAdd(use_locking)
         self.ref = Parameter(Tensor(np.ones(ref_shape, dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_add(self.ref, indices, updates)
         return out
 
 
-class ScatterNonAliasingAdd(nn.Cell):
+class ScatterNonAliasingAdd(nn.Module):
     """ScatterNonAliasingAdd net definition"""
 
     def __init__(self, ref_shape, dtype=np.float32):
@@ -470,12 +470,12 @@ class ScatterNonAliasingAdd(nn.Cell):
         self.scatter_no_aliasing_add = P.ScatterNonAliasingAdd()
         self.ref = Parameter(Tensor(np.ones(ref_shape, dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_no_aliasing_add(self.ref, indices, updates)
         return out
 
 
-class ScatterNdSub(nn.Cell):
+class ScatterNdSub(nn.Module):
     """ScatterNdSub net definition"""
 
     def __init__(self, ref_shape, dtype=np.float32):
@@ -483,12 +483,12 @@ class ScatterNdSub(nn.Cell):
         self.scatter_nd_sub = P.ScatterNdSub()
         self.ref = Parameter(Tensor(np.ones(ref_shape, dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_nd_sub(self.ref, indices, updates)
         return out
 
 
-class ScatterNdAdd(nn.Cell):
+class ScatterNdAdd(nn.Module):
     """ScatterNdAdd net definition"""
 
     def __init__(self, ref_shape, dtype=np.float32):
@@ -496,12 +496,12 @@ class ScatterNdAdd(nn.Cell):
         self.scatter_nd_add = P.ScatterNdAdd()
         self.ref = Parameter(Tensor(np.ones(ref_shape, dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_nd_add(self.ref, indices, updates)
         return out
 
 
-class ScatterSub(nn.Cell):
+class ScatterSub(nn.Module):
     """ScatterSub net definition"""
 
     def __init__(self, ref_shape, dtype=np.float32, use_locking=False):
@@ -509,12 +509,12 @@ class ScatterSub(nn.Cell):
         self.scatter_sub = P.ScatterSub(use_locking)
         self.ref = Parameter(Tensor(np.ones(ref_shape, dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_sub(self.ref, indices, updates)
         return out
 
 
-class ScatterMul(nn.Cell):
+class ScatterMul(nn.Module):
     """ScatterMul net definition"""
 
     def __init__(self, ref_shape, dtype=np.float32, use_locking=False):
@@ -522,12 +522,12 @@ class ScatterMul(nn.Cell):
         self.scatter_mul = P.ScatterMul(use_locking)
         self.ref = Parameter(Tensor(np.ones(ref_shape, dtype)), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_mul(self.ref, indices, updates)
         return out
 
 
-class ScatterDiv(nn.Cell):
+class ScatterDiv(nn.Module):
     """ScatterDiv net definition"""
 
     def __init__(self, ref_shape, dtype=np.float32, use_locking=False):
@@ -535,12 +535,12 @@ class ScatterDiv(nn.Cell):
         self.scatter_div = P.ScatterDiv(use_locking)
         self.ref = Parameter(Tensor(np.ones(ref_shape, dtype) * 10), name="ref")
 
-    def construct(self, indices, updates):
+    def forward(self, indices, updates):
         out = self.scatter_div(self.ref, indices, updates)
         return out
 
 
-class Conv3D(nn.Cell):
+class Conv3D(nn.Module):
     """Conv3D net definition"""
 
     def __init__(self, out_channel, kernel_size, mode, pad_mode, pad, stride, dilation, group, data_format):
@@ -548,12 +548,12 @@ class Conv3D(nn.Cell):
         self.conv = nps.Conv3D(out_channel=out_channel, kernel_size=kernel_size, mode=mode, pad_mode=pad_mode,
                                pad=pad, stride=stride, dilation=dilation, group=group, data_format=data_format)
 
-    def construct(self, x, w):
+    def forward(self, x, w):
         out = self.conv(x, w)
         return out
 
 
-class Conv3DBackpropInput(nn.Cell):
+class Conv3DBackpropInput(nn.Module):
     """Conv3DBackpropInput net definition"""
 
     def __init__(self, input_shape, out_channel, kernel_size, mode, pad_mode, pad, stride, dilation, group,
@@ -564,12 +564,12 @@ class Conv3DBackpropInput(nn.Cell):
                                             group=group, data_format=data_format)
         self.x_size = input_shape
 
-    def construct(self, w, doutput):
+    def forward(self, w, doutput):
         ms_out = self.conv(w, doutput, self.x_size)
         return ms_out
 
 
-class Conv3DBackpropFilter(nn.Cell):
+class Conv3DBackpropFilter(nn.Module):
     """Conv3DBackpropFilter net definition"""
 
     def __init__(self, w_shape, out_channel, kernel_size, mode, pad_mode, pad, stride, dilation, group, data_format):
@@ -579,12 +579,12 @@ class Conv3DBackpropFilter(nn.Cell):
                                            group=group, data_format=data_format)
         self.w_size = w_shape
 
-    def construct(self, x, doutput):
+    def forward(self, x, doutput):
         ms_out = self.conv(x, doutput, self.w_size)
         return ms_out
 
 
-class Conv3DTranspose(nn.Cell):
+class Conv3DTranspose(nn.Module):
     """Conv3DTranspose net definition"""
 
     def __init__(self, in_channel, out_channel, kernel_size, mode, pad, stride, dilation, group, data_format):
@@ -593,12 +593,12 @@ class Conv3DTranspose(nn.Cell):
                                         mode=mode, pad=pad, stride=stride, dilation=dilation, group=group,
                                         data_format=data_format)
 
-    def construct(self, x, w):
+    def forward(self, x, w):
         ms_out = self.conv(x, w)
         return ms_out
 
 
-class ApplyFtrlNet(nn.Cell):
+class ApplyFtrlNet(nn.Module):
     def __init__(self):
         super(ApplyFtrlNet, self).__init__()
         self.apply_ftrl = P.ApplyFtrl()
@@ -610,12 +610,12 @@ class ApplyFtrlNet(nn.Cell):
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
         self.linear = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="linear")
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_ftrl(self.var, self.accum, self.linear, grad, self.lr, self.l1, self.l2, self.lr_power)
         return out
 
 
-class SparseApplyFtrlNet(nn.Cell):
+class SparseApplyFtrlNet(nn.Module):
     def __init__(self):
         super(SparseApplyFtrlNet, self).__init__()
         self.sparse_apply_ftrl = P.SparseApplyFtrl(lr=0.001, l1=0.0, l2=0.0, lr_power=-0.5)
@@ -623,12 +623,12 @@ class SparseApplyFtrlNet(nn.Cell):
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
         self.linear = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="linear")
 
-    def construct(self, grad, indices):
+    def forward(self, grad, indices):
         out = self.sparse_apply_ftrl(self.var, self.accum, self.linear, grad, indices)
         return out
 
 
-class SparseApplyFtrlV2Net(nn.Cell):
+class SparseApplyFtrlV2Net(nn.Module):
     def __init__(self):
         super(SparseApplyFtrlV2Net, self).__init__()
         self.sparse_apply_ftrl_v2 = P.SparseApplyFtrlV2(lr=0.001, l1=0.0, l2=0.0, l2_shrinkage=0.0, lr_power=-0.5)
@@ -636,12 +636,12 @@ class SparseApplyFtrlV2Net(nn.Cell):
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
         self.linear = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="linear")
 
-    def construct(self, grad, indices):
+    def forward(self, grad, indices):
         out = self.sparse_apply_ftrl_v2(self.var, self.accum, self.linear, grad, indices)
         return out
 
 
-class SparseApplyProximalAdagradNet(nn.Cell):
+class SparseApplyProximalAdagradNet(nn.Module):
     def __init__(self):
         super(SparseApplyProximalAdagradNet, self).__init__()
         self.sparse_apply_proximal_adagrad = P.SparseApplyProximalAdagrad()
@@ -651,12 +651,12 @@ class SparseApplyProximalAdagradNet(nn.Cell):
         self.l1 = 0.0
         self.l2 = 0.0
 
-    def construct(self, grad, indices):
+    def forward(self, grad, indices):
         out = self.sparse_apply_proximal_adagrad(self.var, self.accum, self.lr, self.l1, self.l2, grad, indices)
         return out
 
 
-class ApplyProximalAdagradNet(nn.Cell):
+class ApplyProximalAdagradNet(nn.Module):
     def __init__(self):
         super(ApplyProximalAdagradNet, self).__init__()
         self.apply_proximal_adagrad = P.ApplyProximalAdagrad()
@@ -666,12 +666,12 @@ class ApplyProximalAdagradNet(nn.Cell):
         self.l1 = 0.0
         self.l2 = 0.0
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_proximal_adagrad(self.var, self.accum, self.lr, self.l1, self.l2, grad)
         return out
 
 
-class ApplyAdaMaxNet(nn.Cell):
+class ApplyAdaMaxNet(nn.Module):
     def __init__(self):
         super(ApplyAdaMaxNet, self).__init__()
         self.apply_ada_max = P.ApplyAdaMax()
@@ -684,13 +684,13 @@ class ApplyAdaMaxNet(nn.Cell):
         self.m = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="m")
         self.v = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="v")
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_ada_max(self.var, self.m, self.v, self.beta1_power, self.lr,
                                  self.beta1, self.beta2, self.epsilon, grad)
         return out
 
 
-class ApplyAdadeltaNet(nn.Cell):
+class ApplyAdadeltaNet(nn.Module):
     def __init__(self):
         super(ApplyAdadeltaNet, self).__init__()
         self.apply_adadelta = P.ApplyAdadelta()
@@ -701,12 +701,12 @@ class ApplyAdadeltaNet(nn.Cell):
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
         self.accum_update = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum_update")
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_adadelta(self.var, self.accum, self.accum_update, self.lr, self.rho, self.epsilon, grad)
         return out
 
 
-class ApplyAdagradNet(nn.Cell):
+class ApplyAdagradNet(nn.Module):
     def __init__(self):
         super(ApplyAdagradNet, self).__init__()
         self.apply_adagrad = P.ApplyAdagrad()
@@ -714,12 +714,12 @@ class ApplyAdagradNet(nn.Cell):
         self.var = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="var")
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_adagrad(self.var, self.accum, self.lr, grad)
         return out
 
 
-class ApplyAdagradV2Net(nn.Cell):
+class ApplyAdagradV2Net(nn.Module):
     def __init__(self):
         super(ApplyAdagradV2Net, self).__init__()
         self.apply_adagrad_v2 = P.ApplyAdagradV2(epsilon=1e-6)
@@ -727,12 +727,12 @@ class ApplyAdagradV2Net(nn.Cell):
         self.var = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="var")
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_adagrad_v2(self.var, self.accum, self.lr, grad)
         return out
 
 
-class ApplyAddSignNet(nn.Cell):
+class ApplyAddSignNet(nn.Module):
     def __init__(self):
         super(ApplyAddSignNet, self).__init__()
         self.apply_add_sign = P.ApplyAddSign()
@@ -743,12 +743,12 @@ class ApplyAddSignNet(nn.Cell):
         self.var = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="var")
         self.m = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="m")
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_add_sign(self.var, self.m, self.lr, self.alpha, self.sign_decay, self.beta, grad)
         return out
 
 
-class ApplyPowerSignNet(nn.Cell):
+class ApplyPowerSignNet(nn.Module):
     def __init__(self):
         super(ApplyPowerSignNet, self).__init__()
         self.apply_power_sign = P.ApplyPowerSign()
@@ -759,24 +759,24 @@ class ApplyPowerSignNet(nn.Cell):
         self.var = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="var")
         self.m = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="m")
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_power_sign(self.var, self.m, self.lr, self.logbase, self.sign_decay, self.beta, grad)
         return out
 
 
-class ApplyGradientDescentNet(nn.Cell):
+class ApplyGradientDescentNet(nn.Module):
     def __init__(self):
         super(ApplyGradientDescentNet, self).__init__()
         self.apply_gradient_descent = P.ApplyGradientDescent()
         self.alpha = 0.001
         self.var = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="var")
 
-    def construct(self, delta):
+    def forward(self, delta):
         out = self.apply_gradient_descent(self.var, self.alpha, delta)
         return out
 
 
-class ApplyProximalGradientDescentNet(nn.Cell):
+class ApplyProximalGradientDescentNet(nn.Module):
     def __init__(self):
         super(ApplyProximalGradientDescentNet, self).__init__()
         self.apply_proximal_gradient_descent = P.ApplyProximalGradientDescent()
@@ -785,36 +785,36 @@ class ApplyProximalGradientDescentNet(nn.Cell):
         self.l2 = 0.0
         self.var = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="var")
 
-    def construct(self, delta):
+    def forward(self, delta):
         out = self.apply_proximal_gradient_descent(self.var, self.alpha, self.l1, self.l2, delta)
         return out
 
 
-class SparseApplyAdagradNet(nn.Cell):
+class SparseApplyAdagradNet(nn.Module):
     def __init__(self):
         super(SparseApplyAdagradNet, self).__init__()
         self.sparse_apply_adagrad = P.SparseApplyAdagrad(lr=0.01)
         self.var = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="var")
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
 
-    def construct(self, grad, indices):
+    def forward(self, grad, indices):
         out = self.sparse_apply_adagrad(self.var, self.accum, grad, indices)
         return out
 
 
-class SparseApplyAdagradV2Net(nn.Cell):
+class SparseApplyAdagradV2Net(nn.Module):
     def __init__(self):
         super(SparseApplyAdagradV2Net, self).__init__()
         self.sparse_apply_adagrad_v2 = P.SparseApplyAdagradV2(lr=0.01, epsilon=0.001)
         self.var = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="var")
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
 
-    def construct(self, grad, indices):
+    def forward(self, grad, indices):
         out = self.sparse_apply_adagrad_v2(self.var, self.accum, grad, indices)
         return out
 
 
-class ApplyRMSNet(nn.Cell):
+class ApplyRMSNet(nn.Module):
     def __init__(self):
         super(ApplyRMSNet, self).__init__()
         self.apply_rms = P.ApplyRMSProp()
@@ -826,99 +826,99 @@ class ApplyRMSNet(nn.Cell):
         self.ms = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="ms")
         self.moment = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="moment")
 
-    def construct(self, grad):
+    def forward(self, grad):
         out = self.apply_rms(self.var, self.ms, self.moment, self.lr, grad, self.rho, self.momentum, self.epsilon)
         return out
 
 
-class InplaceAddNet(nn.Cell):
+class InplaceAddNet(nn.Module):
     def __init__(self):
         super(InplaceAddNet, self).__init__()
         self.inplace_add = P.InplaceAdd(indices=(0, 1))
 
-    def construct(self, x, v):
+    def forward(self, x, v):
         out = self.inplace_add(x, v)
         return out
 
 
-class InplaceSubNet(nn.Cell):
+class InplaceSubNet(nn.Module):
     def __init__(self):
         super(InplaceSubNet, self).__init__()
         self.inplace_sub = P.InplaceSub(indices=(0, 1))
 
-    def construct(self, x, v):
+    def forward(self, x, v):
         out = self.inplace_sub(x, v)
         return out
 
 
-class NormalNet(nn.Cell):
+class NormalNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(NormalNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, mean, stddev):
+    def forward(self, mean, stddev):
         out = C.normal(self.shape, mean, stddev, self.seed)
         return out
 
 
-class LaplaceNet(nn.Cell):
+class LaplaceNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(LaplaceNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, mean, lambda_param):
+    def forward(self, mean, lambda_param):
         out = C.laplace(self.shape, mean, lambda_param, self.seed)
         return out
 
 
-class GammaNet(nn.Cell):
+class GammaNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(GammaNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, alpha, beta):
+    def forward(self, alpha, beta):
         out = C.gamma(self.shape, alpha, beta, self.seed)
         return out
 
 
-class PoissonNet(nn.Cell):
+class PoissonNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(PoissonNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, mean):
+    def forward(self, mean):
         out = C.poisson(self.shape, mean, self.seed)
         return out
 
 
-class UniformNet(nn.Cell):
+class UniformNet(nn.Module):
     def __init__(self, shape=None, seed=0):
         super(UniformNet, self).__init__()
         self.shape = shape
         self.seed = seed
 
-    def construct(self, a, b):
+    def forward(self, a, b):
         out = C.uniform(self.shape, a, b, self.seed)
         return out
 
 
-class CTCGreedyDecoderNet(nn.Cell):
+class CTCGreedyDecoderNet(nn.Module):
     def __init__(self):
         super(CTCGreedyDecoderNet, self).__init__()
         self.ctc_greedy_decoder = P.CTCGreedyDecoder()
         self.assert_op = P.Assert(300)
 
-    def construct(self, inputs, sequence_length):
+    def forward(self, inputs, sequence_length):
         out = self.ctc_greedy_decoder(inputs, sequence_length)
         self.assert_op(True, (out[0], out[1], out[2], out[3]))
         return out[2]
 
 
-class StridedSliceNet(nn.Cell):
+class StridedSliceNet(nn.Module):
     def __init__(self):
         super(StridedSliceNet, self).__init__()
         self.begins = (1, 2, 3, 2, 1)
@@ -937,7 +937,7 @@ class StridedSliceNet(nn.Cell):
         self.const_2 = Tensor(np.ones([1, 3, 7, 8, 9, 1, 8], np.float32))
         self.const_3 = Tensor(np.ones([1, 1, 6, 7, 8, 9, 1, 8], np.float32))
 
-    def construct(self, x):
+    def forward(self, x):
         out_0 = self.strided_slice_0(x, self.begins, self.ends, self.strides) + self.const_0
         out_1 = self.strided_slice_1(x, self.begins, self.ends, self.strides) + self.const_1
         out_2 = self.strided_slice_2(x, self.begins, self.ends, self.strides) + self.const_2
@@ -947,7 +947,7 @@ class StridedSliceNet(nn.Cell):
 
 @pytest.mark.skip(reason='0 in shape is not support')
 def test_strided_slice_const():
-    class StridedSLiceConstNet(nn.Cell):
+    class StridedSLiceConstNet(nn.Module):
         """StridedSLiceConstNet net definition"""
 
         def __init__(self):
@@ -961,7 +961,7 @@ def test_strided_slice_const():
                                                 shrink_axis_mask=6,
                                                 new_axis_mask=18)
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.strided_slice(x, self.begins, self.ends, self.strides)
             return out
 
@@ -973,49 +973,49 @@ def test_strided_slice_const():
     assert (ret.asnumpy() == np.array([], np.float32).reshape([0, 1, 7, 8, 9, 3, 1])).all()
 
 
-class ParallelConcatNet(nn.Cell):
+class ParallelConcatNet(nn.Module):
     def __init__(self):
         super(ParallelConcatNet, self).__init__()
         self.parallel_concat = P.ParallelConcat()
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         return self.parallel_concat((x1, x2))
 
 
-class BasicLSTMCellNet(nn.Cell):
+class BasicLSTMCellNet(nn.Module):
     """ BasicLSTMCellNet definition """
 
     def __init__(self):
         super(BasicLSTMCellNet, self).__init__()
         self.lstm = P.BasicLSTMCell()
 
-    def construct(self, x, h, c, w, b):
+    def forward(self, x, h, c, w, b):
         return self.lstm(x, h, c, w, b)
 
 
-class DynamicGRUV2Net(nn.Cell):
+class DynamicGRUV2Net(nn.Module):
     """ DynamicGRUV2Net definition """
 
     def __init__(self):
         super(DynamicGRUV2Net, self).__init__()
         self.dynamic_gru = P.DynamicGRUV2()
 
-    def construct(self, x, w_i, w_h, b_i, b_h, init_h):
+    def forward(self, x, w_i, w_h, b_i, b_h, init_h):
         return self.dynamic_gru(x, w_i, w_h, b_i, b_h, None, init_h)
 
 
-class EditDistance(nn.Cell):
+class EditDistance(nn.Module):
     def __init__(self, hypothesis_shape, truth_shape, normalize=True):
         super(EditDistance, self).__init__()
         self.edit_distance = P.EditDistance(normalize)
         self.hypothesis_shape = hypothesis_shape
         self.truth_shape = truth_shape
 
-    def construct(self, hypothesis_indices, hypothesis_values, truth_indices, truth_values):
+    def forward(self, hypothesis_indices, hypothesis_values, truth_indices, truth_values):
         return self.edit_distance(hypothesis_indices, hypothesis_values, self.hypothesis_shape,
                                   truth_indices, truth_values, self.truth_shape)
 
-class ApplyAdamWithAmsgradNet(nn.Cell):
+class ApplyAdamWithAmsgradNet(nn.Module):
     def __init__(self, beta1=0.1, beta2=0.1, epsilon=0.001, use_locking=False):
         super(ApplyAdamWithAmsgradNet, self).__init__()
         self.apply_adam_with_amsgrad = P.ApplyAdamWithAmsgrad(beta1, beta2, epsilon, use_locking)
@@ -1024,11 +1024,11 @@ class ApplyAdamWithAmsgradNet(nn.Cell):
         self.v = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="v")
         self.vhat = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="vhat")
 
-    def construct(self, beta1_power, beta2_power, lr, grad):
+    def forward(self, beta1_power, beta2_power, lr, grad):
         out = self.apply_adam_with_amsgrad(self.var, self.m, self.v, self.vhat, beta1_power, beta2_power, lr, grad)
         return out
 
-class SparseApplyAdadeltaNet(nn.Cell):
+class SparseApplyAdadeltaNet(nn.Module):
     def __init__(self, epsilon, use_locking=True):
         super(SparseApplyAdadeltaNet, self).__init__()
         self.sparse_apply_adadelta = P.SparseApplyAdadelta(epsilon, use_locking)
@@ -1038,12 +1038,12 @@ class SparseApplyAdadeltaNet(nn.Cell):
         self.accum = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum")
         self.accum_update = Parameter(Tensor(np.random.rand(3, 3).astype(np.float32)), name="accum_update")
 
-    def construct(self, grad, indices):
+    def forward(self, grad, indices):
         out = self.sparse_apply_adadelta(self.var, self.accum, self.accum_update, self.lr, self.rho, grad, indices)
         return out
 
 
-class ApplyAdagradDANet(nn.Cell):
+class ApplyAdagradDANet(nn.Module):
     def __init__(self, use_locking=False):
         super(ApplyAdagradDANet, self).__init__()
         self.apply_adagrad_d_a = P.ApplyAdagradDA(use_locking)
@@ -1053,13 +1053,13 @@ class ApplyAdagradDANet(nn.Cell):
         self.gradient_squared_accumulator = Parameter(Tensor(np.array([[0.2, 0.1], [0.1, 0.2]]).astype(np.float32)),
                                                       name="gradient_squared_accumulator")
 
-    def construct(self, grad, lr, l1, l2, global_step):
+    def forward(self, grad, lr, l1, l2, global_step):
         out = self.apply_adagrad_d_a(self.var, self.gradient_accumulator, self.gradient_squared_accumulator, grad,
                                      lr, l1, l2, global_step)
         return out
 
 
-class SparseApplyRMSPropNet(nn.Cell):
+class SparseApplyRMSPropNet(nn.Module):
     def __init__(self, rho, momentum, epsilon, use_locking=False):
         super(SparseApplyRMSPropNet, self).__init__()
         self.sparse_apply_r_m_s_prop = P.SparseApplyRMSProp(rho, momentum, epsilon, use_locking)
@@ -1067,19 +1067,19 @@ class SparseApplyRMSPropNet(nn.Cell):
         self.ms = Parameter(Tensor(np.array([[0.2, 0.4], [0.1, 0.3]]).astype(np.float32)), name="ms")
         self.mom = Parameter(Tensor(np.array([[0.3, 0.1], [0.3, 0.6]]).astype(np.float32)), name="mom")
 
-    def construct(self, lr, grad, indices):
+    def forward(self, lr, grad, indices):
         out = self.sparse_apply_r_m_s_prop(self.var, self.ms, self.mom, lr, grad, indices)
         return out
 
 
-class ApplyKerasMomentumNet(nn.Cell):
+class ApplyKerasMomentumNet(nn.Module):
     def __init__(self, use_locking=False, use_nesterov=False):
         super(ApplyKerasMomentumNet, self).__init__()
         self.apply_keras_momentum = P.ApplyKerasMomentum(use_locking, use_nesterov)
         self.var = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="var")
         self.accum = Parameter(Tensor(np.array([[0.2, 0.3], [0.1, 0.4]]).astype(np.float32)), name="accum")
 
-    def construct(self, lr, grad, momentum):
+    def forward(self, lr, grad, momentum):
         out = self.apply_keras_momentum(self.var, self.accum, lr, grad, momentum)
         return out
 

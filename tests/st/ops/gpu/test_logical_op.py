@@ -19,34 +19,34 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
-class NetAnd(Cell):
+class NetAnd(Module):
     def __init__(self):
         super(NetAnd, self).__init__()
         self.logicaland = P.LogicalAnd()
 
-    def construct(self, input_x, input_y):
+    def forward(self, input_x, input_y):
         return self.logicaland(input_x, input_y)
 
 
-class NetOr(Cell):
+class NetOr(Module):
     def __init__(self):
         super(NetOr, self).__init__()
         self.logicalor = P.LogicalOr()
 
-    def construct(self, input_x, input_y):
+    def forward(self, input_x, input_y):
         return self.logicalor(input_x, input_y)
 
 
-class NetNot(Cell):
+class NetNot(Module):
     def __init__(self):
         super(NetNot, self).__init__()
         self.logicalnot = P.LogicalNot()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.logicalnot(input_x)
 
 

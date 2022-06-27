@@ -7,12 +7,12 @@ from luojianet_ms import Tensor
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, transpose_x1, transpose_x2):
         super(Net, self).__init__()
         self.matmul = nn.MatMul(transpose_x1, transpose_x2)
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         return self.matmul(x1, x2)
 
 

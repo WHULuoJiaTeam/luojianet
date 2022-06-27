@@ -18,13 +18,13 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 from luojianet_ms.ops import functional as F
 from luojianet_ms.common.parameter import Parameter
 
 
-class TestOptAssignNet_1(Cell):
+class TestOptAssignNet_1(Module):
     def __init__(self):
         super(TestOptAssignNet_1, self).__init__()
         self.add = P.Add()
@@ -32,21 +32,21 @@ class TestOptAssignNet_1(Cell):
         self.param = Parameter(
             Tensor(np.zeros([2, 2, 2]).astype(np.float32)), name='param')
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         add_res = self.add(x, y)
         F.depend(add_res, F.assign(self.param, add_res))
 
         return self.reduce_max(add_res)
 
 
-class TestOptAssignNet_2(Cell):
+class TestOptAssignNet_2(Module):
     def __init__(self):
         super(TestOptAssignNet_2, self).__init__()
         self.add = P.Add()
         self.param = Parameter(
             Tensor(np.zeros([2, 2, 2]).astype(np.float32)), name='param')
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         add_res = self.add(x, y)
         F.depend(add_res, F.assign(self.param, add_res))
 

@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.common.api import _cell_graph_executor
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.flatten = nn.Flatten()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.flatten(input_x)
 
 

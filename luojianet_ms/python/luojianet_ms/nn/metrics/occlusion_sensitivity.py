@@ -54,14 +54,14 @@ class OcclusionSensitivity(Metric):
         >>> import numpy as np
         >>> from luojianet_ms import nn, Tensor
         >>>
-        >>> class DenseNet(nn.Cell):
+        >>> class DenseNet(nn.Module):
         ...     def __init__(self):
         ...         super(DenseNet, self).__init__()
         ...         w = np.array([[0.1, 0.8, 0.1, 0.1],[1, 1, 1, 1]]).astype(np.float32)
         ...         b = np.array([0.3, 0.6]).astype(np.float32)
         ...         self.dense = nn.Dense(4, 2, weight_init=Tensor(w), bias_init=Tensor(b))
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.dense(x)
         >>>
         >>> model = DenseNet()
@@ -112,7 +112,7 @@ class OcclusionSensitivity(Metric):
         model = inputs[0]
         y_pred = self._convert_data(inputs[1])
         label = self._convert_data(inputs[2])
-        model = validator.check_value_type("model", model, [nn.Cell])
+        model = validator.check_value_type("model", model, [nn.Module])
 
         if y_pred.shape[0] > 1:
             raise RuntimeError(f"For 'OcclusionSensitivity.update', the shape at index 0 of the predicted value "

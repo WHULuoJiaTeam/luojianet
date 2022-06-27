@@ -19,11 +19,11 @@ import pytest
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     '''
     create the test Net
     '''
@@ -35,13 +35,13 @@ class Net(Cell):
         self.conv2d_weight = Parameter(conv2d_weight, "w1")
         self.resize_bilinear = P.ResizeBilinear((16, 16)).shard(strategy2)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.conv2d(x, self.conv2d_weight)
         out = self.resize_bilinear(out)
         return out
 
 
-class Net2(Cell):
+class Net2(Module):
     '''
     create the test Net
     '''
@@ -55,14 +55,14 @@ class Net2(Cell):
         self.mul = P.Mul()
         self.mul_weight = Parameter(mul_weight, "w2")
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.conv2d(x, self.conv2d_weight)
         out = self.resize_neighbor(out)
         out = self.mul(out, self.mul_weight)
         return out
 
 
-class Net3(Cell):
+class Net3(Module):
     '''
     create the test Net
     '''
@@ -74,7 +74,7 @@ class Net3(Cell):
         self.conv2d_weight = Parameter(conv2d_weight, "w1")
         self.resize_bilinear = P.ResizeBilinear((16, 16))
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.conv2d(x, self.conv2d_weight)
         out = self.resize_bilinear(out)
         return out

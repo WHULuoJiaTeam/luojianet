@@ -27,23 +27,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return grad_all(self.network)(x, y)
 
 
@@ -59,13 +59,13 @@ def test_cumprod_semi():
     Description: MatMul->CumProd
     Expectation: Currently, CumProd does not support the axis dimension split. compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul().shard(((16, 1), (1, 1)))
             self.cumprod = P.CumProd().shard(((16, 1),))
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul1(x, y)
             out = self.cumprod(out, 0)
             return out
@@ -87,13 +87,13 @@ def test_cumprod_semi2():
     Description: MatMul->CumProd
     Expectation: Compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul().shard(((16, 1), (1, 1)))
             self.cumprod = P.CumProd().shard(((1, 16),))
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul1(x, y)
             out = self.cumprod(out, 0)
             return out
@@ -114,13 +114,13 @@ def test_cumprod_semi3():
     Description: MatMul->CumProd
     Expectation: Compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul().shard(((16, 1), (1, 1)))
             self.cumprod = P.CumProd().shard(((2, 1),))
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul1(x, y)
             out = self.cumprod(out, 1)
             return out
@@ -141,13 +141,13 @@ def test_cumprod_auto():
     Description: MatMul->CumProd
     Expectation: Compile done without error.
     """
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.matmul1 = P.MatMul().shard(((16, 1), (1, 1)))
             self.cumprod = P.CumProd()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul1(x, y)
             out = self.cumprod(out, -1)
             return out

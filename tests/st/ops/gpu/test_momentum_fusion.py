@@ -23,7 +23,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
-class MomentumFusionNet(nn.Cell):
+class MomentumFusionNet(nn.Module):
     def __init__(self, var, accum):
         super(MomentumFusionNet, self).__init__()
         self.op = P.ApplyMomentum()
@@ -35,7 +35,7 @@ class MomentumFusionNet(nn.Cell):
         self.weight_decay = 0.002
         self.moment = 0.98
 
-    def construct(self, grad):
+    def forward(self, grad):
         wd = self.mul(self.var, self.weight_decay)
         g = self.add((wd, grad))
         return self.op(self.var, self.accum, self.lr, g, self.moment)

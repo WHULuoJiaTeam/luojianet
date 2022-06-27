@@ -25,12 +25,12 @@ context.set_context(mode=context.GRAPH_MODE,
                     device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, pad_dim_size):
         super(Net, self).__init__()
         self.padding = P.Padding(pad_dim_size)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.padding(x)
 
 

@@ -25,7 +25,7 @@ from luojianet_ms.common.api import ms_function
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class NetOneHot(nn.Cell):
+class NetOneHot(nn.Module):
     def __init__(self):
         super(NetOneHot, self).__init__()
         self.on_value = 2.0
@@ -40,7 +40,7 @@ class NetOneHot(nn.Cell):
         self.one_hot_4 = nn.OneHot(1, self.depth_1, self.on_value, self.off_value)
 
     @ms_function
-    def construct(self, indices1, indices2, indices3, indices4):
+    def forward(self, indices1, indices2, indices3, indices4):
         return (self.one_hot_1(indices1), self.one_hot_2(indices2),
                 self.one_hot_3(indices3), self.one_hot_4(indices4))
 

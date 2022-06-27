@@ -29,23 +29,23 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         predict = self.network(x, y)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return grad_all(self.network)(x, y)
 
 
@@ -57,7 +57,7 @@ def compile_net(net, x, y):
 
 # model_parallel test
 def test_two_matmul():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
@@ -66,7 +66,7 @@ def test_two_matmul():
             self.diag = P.Diag()
             self.fill = P.Fill()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             fill = self.diag(self.fill(mstype.float32, (128,), 1.0))
             out1 = self.matmul1(fill, x)
             out2 = self.matmul2(y, fill)
@@ -87,14 +87,14 @@ def test_two_matmul():
 
 
 def test_matmul_mul_broadcast2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.mul = P.Mul().shard(strategy2)
             self.t = Tensor(0.9, ms.float32)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             out = self.mul(out, self.t)
             return out
@@ -111,7 +111,7 @@ def test_matmul_mul_broadcast2():
 
 
 def test_two_matmul1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2, strategy3):
             super().__init__()
             self.matmul1 = P.MatMul().shard(strategy1)
@@ -120,7 +120,7 @@ def test_two_matmul1():
             self.diag = P.Diag()
             self.fill = P.Fill()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             fill = self.diag(self.fill(mstype.float32, (128,), 1.0))
             out1 = self.matmul1(fill, x)
             out2 = self.matmul2(fill, y)
@@ -141,14 +141,14 @@ def test_two_matmul1():
 
 
 def test_matmul_add_tensor():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, strategy2):
             super().__init__()
             self.matmul = P.MatMul().shard(strategy1)
             self.add = P.Add().shard(strategy2)
             self.b = Tensor(0.9, ms.float32)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             out = self.add(out, self.b)
             return out

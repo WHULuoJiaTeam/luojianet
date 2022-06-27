@@ -26,20 +26,20 @@ from luojianet_ms.common.initializer import initializer
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class FullyConnectedNet(nn.Cell):
+class FullyConnectedNet(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(FullyConnectedNet, self).__init__(auto_prefix=False)
         self.linear1 = nn.Dense(input_size, hidden_size, weight_init="XavierUniform")
         self.linear2 = nn.Dense(hidden_size, output_size, weight_init="XavierUniform")
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.relu(self.linear1(x))
         x = self.linear2(x)
         return x
 
 
-class EmaUpdate(nn.Cell):
+class EmaUpdate(nn.Module):
     def __init__(self, policy_net, target_net, tau, period):
         super(EmaUpdate, self).__init__()
         self.tau = tau
@@ -59,7 +59,7 @@ class EmaUpdate(nn.Cell):
         out = P.Assign()(target_param, new_param)
         return out
 
-    def construct(self):
+    def forward(self):
         if self.step % self.period == 0:
             self.hyper_map(F.partial(self.ema, self.tau), self.policy_param, self.target_param)
         return self.assignadd(self.step, 1)
@@ -83,13 +83,13 @@ def test_target_update():
     ema_update()
 
 
-class DenseNet(nn.Cell):
+class DenseNet(nn.Module):
     def __init__(self):
         super(DenseNet, self).__init__()
         self.fc1 = nn.Dense(16, 16)
         self.fc2 = nn.Dense(16, 16)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.fc2(self.fc1(x))
         return out
 
@@ -110,12 +110,12 @@ def test_two_dense_net():
     print("res:", res)
 
 
-class InnerNet(nn.Cell):
+class InnerNet(nn.Module):
     def __init__(self):
         super(InnerNet, self).__init__()
         self.param = Parameter(Tensor([1], ms.float32), name="name_a")
 
-    def construct(self, x):
+    def forward(self, x):
         return x + self.param
 
 
@@ -137,13 +137,13 @@ def test_two_net():
     print("res2:", res2)
 
 
-class OutNet_1(nn.Cell):
+class OutNet_1(nn.Module):
     def __init__(self, net1, net2):
         super(OutNet_1, self).__init__()
         self.param1 = ParameterTuple(net1.get_parameters())
         self.param2 = ParameterTuple(net2.get_parameters())
 
-    def construct(self, x):
+    def forward(self, x):
         return x + self.param1[0] + self.param2[0]
 
 
@@ -165,7 +165,7 @@ def test_inner_out_net_1():
         print("res:", res)
 
 
-class OutNet_2(nn.Cell):
+class OutNet_2(nn.Module):
     def __init__(self, net1, net2):
         super(OutNet_2, self).__init__()
         self.cell_list = nn.CellList()
@@ -174,7 +174,7 @@ class OutNet_2(nn.Cell):
         self.param1 = ParameterTuple(self.cell_list[0].get_parameters())
         self.param2 = ParameterTuple(self.cell_list[1].get_parameters())
 
-    def construct(self, x):
+    def forward(self, x):
         return x + self.param1[0] + self.param2[0]
 
 

@@ -31,7 +31,7 @@ def test_infer_fail_generate_analyze_fail_dat():
     Expectation: success.
     """
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.add = ops.Add()
@@ -42,7 +42,7 @@ def test_infer_fail_generate_analyze_fail_dat():
         def func(self, x, y):
             return self.div(x, y)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             a = self.sub(x, 1)
             b = self.add(a, y)
             c = self.mul(b, self.func(a, a, b))

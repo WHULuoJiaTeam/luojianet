@@ -26,12 +26,12 @@ from luojianet_ms.common.api import _cell_graph_executor
 
 _MSSSIM_WEIGHTS = (0.0448, 0.2856, 0.3001, 0.2363, 0.1333)
 
-class MSSSIMNet(nn.Cell):
+class MSSSIMNet(nn.Module):
     def __init__(self, max_val=1.0, power_factors=_MSSSIM_WEIGHTS, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03):
         super(MSSSIMNet, self).__init__()
         self.net = nn.MSSSIM(max_val, power_factors, filter_size, filter_sigma, k1, k2)
 
-    def construct(self, img1, img2):
+    def forward(self, img1, img2):
         return self.net(img1, img2)
 
 

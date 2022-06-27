@@ -72,7 +72,7 @@ def _dynamic_sink_scenario(dataset, dataset_iter):
     return flag
 
 
-class _DataWrapper(nn.Cell):
+class _DataWrapper(nn.Module):
     """
     Wraps the input network with a dataset which automatically fetches data with 'GetNext' function from the
     dataset channel 'queue_name' and performs the forward computation.
@@ -80,8 +80,8 @@ class _DataWrapper(nn.Cell):
 
     def __init__(self, network, dataset_types, dataset_shapes, queue_name, min_shapes=None, max_shapes=None):
         super(_DataWrapper, self).__init__(auto_prefix=False, flags=network.get_flags())
-        # Also copy the flag in `network` construct
-        flags = getattr(network.__class__.construct, "_luojianet_ms_flags", {})
+        # Also copy the flag in `network` forward
+        flags = getattr(network.__class__.forward, "_luojianet_ms_flags", {})
         self.info = (dataset_types, dataset_shapes)
         self.add_flags(**flags)
         self.get_next = P.GetNext(dataset_types, dataset_shapes, len(dataset_types), queue_name)
@@ -92,7 +92,7 @@ class _DataWrapper(nn.Cell):
             self.get_next.add_prim_attr("max_shapes", max_shapes)
         self.network = network
 
-    def construct(self):
+    def forward(self):
         outputs = self.get_next()
         return self.network(*outputs)
 
@@ -144,12 +144,12 @@ def connect_network_with_dataset(network, dataset_helper):
         The 'GetNext' is required to get data only in sink mode, so this function is not applicable to no-sink mode.
         when dataset_helper's dataset_sink_mode is True, it can only be connected to one network.
     Args:
-        network (Cell): The training network for dataset.
+        network (Module): The training network for dataset.
         dataset_helper (DatasetHelper): A class to process the MindData dataset, it provides the type, shape and queue
             name of the dataset to wrap the `GetNext`.
 
     Returns:
-        Cell, a new network wrapped with 'GetNext' in the case of running the task on Ascend in graph mode, otherwise
+        Module, a new network wrapped with 'GetNext' in the case of running the task on Ascend in graph mode, otherwise
         it is the input network.
 
     Raises:

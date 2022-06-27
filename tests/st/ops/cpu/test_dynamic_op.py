@@ -29,12 +29,12 @@ context.set_context(mode=context.GRAPH_MODE,
                     device_target="CPU")
 
 
-class TileNet(nn.Cell):
+class TileNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.tile = P.Tile()
 
-    def construct(self, x, multiples):
+    def forward(self, x, multiples):
         out = self.tile(x, multiples)
         return out
 
@@ -66,7 +66,7 @@ def test_tile_multiple_tensor_cpu():
         assert (output.asnumpy() == expect[i]).all()
 
 
-class GradTile(nn.Cell):
+class GradTile(nn.Module):
     def __init__(self, network):
         super().__init__()
         self.grad = GradOperation(sens_param=True)
@@ -74,7 +74,7 @@ class GradTile(nn.Cell):
         self.unique = P.Unique()
         self.reshape = P.Reshape()
 
-    def construct(self, input_x, multiples, grad):
+    def forward(self, input_x, multiples, grad):
         dy = self.unique(grad)[0]
         dy = self.reshape(dy, (2, 4))
         return self.grad(self.network)(input_x, multiples, dy)
@@ -100,14 +100,14 @@ def test_tile_multiple_tensor_grad_cpu():
     assert (output.asnumpy() == expect).all()
 
 
-class ConcatOffsetNet(nn.Cell):
+class ConcatOffsetNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.unique = P.Unique()
         self.concat_offset = G.ConcatOffset(3, 0)
         self.reshape = P.Reshape()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         x = self.reshape(self.unique(x)[0], (-1, 1, 2, 1))
         y = self.reshape(self.unique(y)[0], (-1, 1, 2, 1))
         z = self.reshape(self.unique(z)[0], (-1, 1, 2, 1))
@@ -140,14 +140,14 @@ def test_concat_offset_dynamic_cpu():
         assert (out.asnumpy() == expect).all()
 
 
-class ConcatNet(nn.Cell):
+class ConcatNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.unique = P.Unique()
         self.concat = P.Concat()
         self.reshape = P.Reshape()
 
-    def construct(self, x, y, z, shape_tensor):
+    def forward(self, x, y, z, shape_tensor):
         x = self.reshape(x, shape_tensor)
         y = self.reshape(y, shape_tensor)
         z = self.reshape(z, shape_tensor)
@@ -155,7 +155,7 @@ class ConcatNet(nn.Cell):
         return out
 
 
-class GradConcat(nn.Cell):
+class GradConcat(nn.Module):
     def __init__(self, network):
         super().__init__()
         self.grad = GradOperation(sens_param=True)
@@ -163,7 +163,7 @@ class GradConcat(nn.Cell):
         self.unique = P.Unique()
         self.reshape = P.Reshape()
 
-    def construct(self, x, y, z, shape, grad):
+    def forward(self, x, y, z, shape, grad):
         # grad = self.reshape(grad, (-1,))
         dy = self.reshape(self.unique(grad)[0], (-1, 1, 2, 1))
         return self.grad(self.network)(x, y, z, shape, dy)
@@ -191,12 +191,12 @@ def test_concat_dynamic_grad_cpu():
     assert (output.asnumpy() == expect).all()
 
 
-class SliceNet(nn.Cell):
+class SliceNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.slice = P.Slice()
 
-    def construct(self, x, begin, size):
+    def forward(self, x, begin, size):
         return self.slice(x, begin, size)
 
 
@@ -225,7 +225,7 @@ def test_slice_begin_size_tensor_cpu():
     assert (output.asnumpy() == expect).all()
 
 
-class GradSlice(nn.Cell):
+class GradSlice(nn.Module):
     def __init__(self, network):
         super().__init__()
         self.grad = GradOperation(sens_param=True)
@@ -233,7 +233,7 @@ class GradSlice(nn.Cell):
         self.unique = P.Unique()
         self.reshape = P.Reshape()
 
-    def construct(self, input_x, begin, size, grad):
+    def forward(self, input_x, begin, size, grad):
         # grad = self.reshape(grad, (-1,))
         dy = self.unique(grad)[0]
         dy = self.reshape(dy, size)
@@ -272,19 +272,19 @@ def test_slice_begin_size_tensor_grad():
     assert (output.asnumpy() == expect).all()
 
 
-class ReduceMeanNet(nn.Cell):
+class ReduceMeanNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.reduce_mean = P.ReduceMean(keep_dims=True)
         self.reshape = P.Reshape()
         self.tile = P.Tile()
 
-    def construct(self, x, shape):
+    def forward(self, x, shape):
         y = self.reshape(x, shape)
         return self.reduce_mean(y, 0)
 
 
-class GradReduceMean(nn.Cell):
+class GradReduceMean(nn.Module):
     def __init__(self, network):
         super().__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
@@ -292,7 +292,7 @@ class GradReduceMean(nn.Cell):
         self.reshape = P.Reshape()
         self.unique = P.Unique()
 
-    def construct(self, input_x, shape, grad):
+    def forward(self, input_x, shape, grad):
         grad = self.reshape(self.unique(grad)[0], (1, 2))
         return self.grad(self.network)(input_x, shape, grad)
 

@@ -23,13 +23,13 @@ from luojianet_ms import Tensor, Parameter
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, var):
         super(Net, self).__init__()
         self.var = Parameter(var, name="var")
         self.apply_gradient_descent = P.ApplyGradientDescent()
 
-    def construct(self, alpha, delta):
+    def forward(self, alpha, delta):
         return self.apply_gradient_descent(self.var, alpha, delta)
 
 

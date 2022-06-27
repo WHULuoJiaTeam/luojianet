@@ -22,7 +22,7 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """
     Test class: forward pass of bijector.
     """
@@ -31,7 +31,7 @@ class Net(nn.Cell):
         self.origin = msb.ScalarAffine(scale=2.0, shift=1.0)
         self.invert = msb.Invert(self.origin)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.invert.forward(x_), self.origin.inverse(x_)
 
 def test_forward():
@@ -41,7 +41,7 @@ def test_forward():
     tol = 1e-6
     assert (np.abs(ans.asnumpy() - ans2.asnumpy()) < tol).all()
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     """
     Test class: backward pass of bijector.
     """
@@ -50,7 +50,7 @@ class Net1(nn.Cell):
         self.origin = msb.ScalarAffine(scale=2.0, shift=1.0)
         self.invert = msb.Invert(self.origin)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.invert.inverse(x_), self.origin.forward(x_)
 
 def test_backward():
@@ -60,7 +60,7 @@ def test_backward():
     tol = 1e-6
     assert (np.abs(ans.asnumpy() - ans2.asnumpy()) < tol).all()
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """
     Test class: Forward Jacobian.
     """
@@ -69,7 +69,7 @@ class Net2(nn.Cell):
         self.origin = msb.ScalarAffine(scale=2.0, shift=1.0)
         self.invert = msb.Invert(self.origin)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.invert.forward_log_jacobian(x_),\
                self.origin.inverse_log_jacobian(x_)
 
@@ -80,7 +80,7 @@ def test_forward_jacobian():
     tol = 1e-6
     assert (np.abs(ans.asnumpy() - ans2.asnumpy()) < tol).all()
 
-class Net3(nn.Cell):
+class Net3(nn.Module):
     """
     Test class: Backward Jacobian.
     """
@@ -89,7 +89,7 @@ class Net3(nn.Cell):
         self.origin = msb.ScalarAffine(scale=2.0, shift=1.0)
         self.invert = msb.Invert(self.origin)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.invert.inverse_log_jacobian(x_),\
                self.origin.forward_log_jacobian(x_)
 

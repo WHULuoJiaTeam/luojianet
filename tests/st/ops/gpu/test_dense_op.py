@@ -25,12 +25,12 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.composite import GradOperation
 from luojianet_ms.ops.operations import _inner_ops as inner
 
-class BiasAdd(nn.Cell):
+class BiasAdd(nn.Module):
     def __init__(self):
         super(BiasAdd, self).__init__()
         self.ba = P.BiasAdd()
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         return self.ba(x, b)
 
 
@@ -62,17 +62,17 @@ def test_biasadd():
     assert np.all(-diff < error)
 
 
-class GradData(nn.Cell):
+class GradData(nn.Module):
     def __init__(self, network):
         super(GradData, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, inputs, output_grad):
+    def forward(self, inputs, output_grad):
         return self.grad(self.network)(inputs, output_grad)
 
 
-class GradWeight(nn.Cell):
+class GradWeight(nn.Module):
     def __init__(self, network):
         super(GradWeight, self).__init__()
         self.network = network
@@ -80,13 +80,13 @@ class GradWeight(nn.Cell):
         self.grad = C.GradOperation(get_by_list=True,
                                     sens_param=True)
 
-    def construct(self, x, output_grad):
+    def forward(self, x, output_grad):
         weights = self.weights
         grads = self.grad(self.network, weights)(x, output_grad)
         return grads
 
 
-class DenseNet(nn.Cell):
+class DenseNet(nn.Module):
     def __init__(self):
         super(DenseNet, self).__init__()
         w = np.array([[0.1, 0.8, 0.1, 0.1],
@@ -94,7 +94,7 @@ class DenseNet(nn.Cell):
         b = np.array([0.3, 0.6]).astype(np.float32)
         self.dense = nn.Dense(4, 2, weight_init=Tensor(w), bias_init=Tensor(b))
 
-    def construct(self, x):
+    def forward(self, x):
         return self.dense(x)
 
 
@@ -249,13 +249,13 @@ def test_dw_ND():
     assert np.all(-diff < db_error)
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_, bias, dy):
+    def forward(self, input_, bias, dy):
         return self.grad(self.network)(input_, bias, dy)
 
 
@@ -444,13 +444,13 @@ def test_biasadd_4d():
     assert np.all(-diff < error)
 
 
-class BiasAddDynamic(nn.Cell):
+class BiasAddDynamic(nn.Module):
     def __init__(self):
         super(BiasAddDynamic, self).__init__()
         self.ba = P.BiasAdd()
         self.test_dynamic = inner.GpuConvertToDynamicShape()
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         x = self.test_dynamic(x)
         output = self.ba(x, b)
         return output

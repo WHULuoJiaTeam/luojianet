@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class Net5(nn.Cell):
+class Net5(nn.Module):
     def __init__(self):
         super(Net5, self).__init__()
         out_channel = 4
@@ -56,7 +56,7 @@ class Net5(nn.Cell):
             [-3, -2, -3, -16]]]]).astype(np.float32)), [1, 1, 4, 4]), name='y')
         self.get_shape = P.Shape()
 
-    def construct(self):
+    def forward(self):
         return self.conv_input(self.out, self.w, self.get_shape(self.x))
 
 

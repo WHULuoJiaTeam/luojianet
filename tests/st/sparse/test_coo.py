@@ -70,30 +70,30 @@ def test_coo_tensor_with_control_if():
     Description: Test COOTensor computation in while loop.
     Expectation: Success.
     """
-    class COOTensorValuesDouble(nn.Cell):
+    class COOTensorValuesDouble(nn.Module):
 
-        def construct(self, x):
+        def forward(self, x):
             indices = x.indices
             values = x.values * 2
             shape = x.shape
             return COOTensor(indices, values, shape)
 
-    class COOTensorValuesAdd2(nn.Cell):
+    class COOTensorValuesAdd2(nn.Module):
 
-        def construct(self, x):
+        def forward(self, x):
             indices = x.indices
             values = x.values + 2
             shape = x.shape
             return COOTensor(indices, values, shape)
 
-    class COOTensorWithControlIf(nn.Cell):
+    class COOTensorWithControlIf(nn.Module):
         def __init__(self, shape):
             super(COOTensorWithControlIf, self).__init__()
             self.op1 = COOTensorValuesDouble()
             self.op2 = COOTensorValuesAdd2()
             self.shape = shape
 
-        def construct(self, a, b, indices, values):
+        def forward(self, a, b, indices, values):
             x = COOTensor(indices, values, self.shape)
             if a > b:
                 x = self.op1(x)
@@ -124,13 +124,13 @@ def test_coo_tensor_in_while():
     Description: Test COOTensor computation in while loop.
     Expectation: Success.
     """
-    class COOTensorWithControlWhile(nn.Cell):
+    class COOTensorWithControlWhile(nn.Module):
         def __init__(self, shape):
             super(COOTensorWithControlWhile, self).__init__()
             self.shape = shape
 
         @ms_function
-        def construct(self, a, b, indices, values):
+        def forward(self, a, b, indices, values):
             x = COOTensor(indices, values, self.shape)
             while a > b:
                 x = COOTensor(indices, values, self.shape)
@@ -160,12 +160,12 @@ def test_coo_method():
     """
     if get_platform() != "linux":
         return
-    class COOToCSRNet(nn.Cell):
-        def construct(self, coo_tensor):
+    class COOToCSRNet(nn.Module):
+        def forward(self, coo_tensor):
             return coo_tensor.to_csr()
 
-    class COOToDenseNet(nn.Cell):
-        def construct(self, coo_tensor):
+    class COOToDenseNet(nn.Module):
+        def forward(self, coo_tensor):
             return coo_tensor.to_dense()
 
     indices = Tensor([[1, 2], [0, 1]], dtype=mstype.int32)

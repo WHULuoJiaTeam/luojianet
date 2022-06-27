@@ -27,7 +27,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class NetCenteredRMSProp(nn.Cell):
+class NetCenteredRMSProp(nn.Module):
     def __init__(self, lr, decay, momentum, epsilon, var, g, mg, rms, mom):
         super(NetCenteredRMSProp, self).__init__()
         self.rms_opt = P.ApplyCenteredRMSProp()
@@ -41,12 +41,12 @@ class NetCenteredRMSProp(nn.Cell):
         self.rms = rms
         self.mom = mom
 
-    def construct(self):
+    def forward(self):
         return self.rms_opt(self.var, self.mg, self.rms, self.mom, self.g, self.lr, self.decay, self.momentum,
                             self.epsilon)
 
 
-class NetRMSProp(nn.Cell):
+class NetRMSProp(nn.Module):
     def __init__(self, lr, decay, momentum, epsilon, var, g, mg, rms, mom):
         super(NetRMSProp, self).__init__()
         self.lr = lr
@@ -60,7 +60,7 @@ class NetRMSProp(nn.Cell):
         self.mom = mom
         self.rms_opt = P.ApplyRMSProp()
 
-    def construct(self):
+    def forward(self):
         return self.rms_opt(self.var, self.rms, self.mom, self.lr, self.g, self.decay, self.momentum, self.epsilon)
 
 

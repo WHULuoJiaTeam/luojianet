@@ -90,7 +90,7 @@ def create_quant_config(quant_observer=(nn.FakeQuantWithMinMaxObserver, nn.FakeQ
     return quant.QuantConfig(weight=weight_observer, activation=act_observer)
 
 
-class _AddFakeQuantInput(nn.Cell):
+class _AddFakeQuantInput(nn.Module):
     """
     Add FakeQuant OP at input of the network. Only support one input case.
     """
@@ -102,15 +102,15 @@ class _AddFakeQuantInput(nn.Cell):
         self.fake_quant_input.update_parameters_name('fake_quant_input.')
         self.network = network
 
-    def construct(self, data):
+    def forward(self, data):
         data = self.fake_quant_input(data)
         output = self.network(data)
         return output
 
 
-class _AddFakeQuantAfterSubCell(nn.Cell):
+class _AddFakeQuantAfterSubCell(nn.Module):
     """
-    Add FakeQuant OP after of the sub Cell.
+    Add FakeQuant OP after of the sub Module.
     """
 
     def __init__(self, subcell, **kwargs):
@@ -135,7 +135,7 @@ class _AddFakeQuantAfterSubCell(nn.Cell):
                                                                 narrow_range=kwargs.get("narrow_range"),
                                                                 mode=self.mode)
 
-    def construct(self, *data):
+    def forward(self, *data):
         output = self.subcell(*data)
         output = self.fake_quant_act(output)
         return output
@@ -191,7 +191,7 @@ class QuantizationAwareTraining(Quantizer):
     Examples:
         >>> from luojianet_ms.compression.quant import QuantizationAwareTraining
         >>> from luojianet_ms import nn
-        >>> class LeNet5(nn.Cell):
+        >>> class LeNet5(nn.Module):
         ...     def __init__(self, num_class=10, channel=1):
         ...         super(LeNet5, self).__init__()
         ...         self.type = "fusion"
@@ -208,7 +208,7 @@ class QuantizationAwareTraining(Quantizer):
         ...         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         ...         self.flatten = nn.Flatten()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         x = self.conv1(x)
         ...         x = self.max_pool2d(x)
         ...         x = self.conv2(x)
@@ -304,10 +304,10 @@ class QuantizationAwareTraining(Quantizer):
             Please refer to the Examples of class: `luojianet_ms.compression.quant.QuantizationAwareTraining`.
 
         Args:
-            network (Cell): network to be quantized.
+            network (Module): network to be quantized.
 
         Returns:
-            Cell, a quantization aware training network.
+            Module, a quantization aware training network.
 
         Raises:
             KeyError: If the `device_target` set in context is not in `support_device`.
@@ -560,13 +560,13 @@ class QuantizationAwareTraining(Quantizer):
         optimize_option.
 
         Args:
-            network (Cell): Input network.
+            network (Module): Input network.
             strategy (list): The quantization strategy for layers that need to be quantified (eg. [[8], [8],
                 ..., [6], [4], [8]]), currently only the quant_dtype for weights of the dense layer and the
                 convolution layer is supported.
 
         Returns:
-            Cell, a network with mixed bit strategy configured.
+            Module, a network with mixed bit strategy configured.
 
         Raises:
             ValueError: If `OptimizeOption.LEARNED_SCALE` is not in `self.optimize_option`.

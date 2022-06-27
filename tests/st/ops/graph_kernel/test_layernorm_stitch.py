@@ -18,7 +18,7 @@ import numpy as np
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
 import luojianet_ms.nn as nn
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 import pytest
 
@@ -27,14 +27,14 @@ context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 context.set_context(enable_graph_kernel=True)
 
 
-class EmbeddingPostprocessor(Cell):
+class EmbeddingPostprocessor(Module):
     def __init__(self):
         super(EmbeddingPostprocessor, self).__init__()
         self.layernorm = nn.LayerNorm((768,))
         self.add = P.Add()
         self.dropout = nn.Dropout(1 - 0.1)
 
-    def construct(self, word_embeddings, token_type_embeddings, position_embeddings):
+    def forward(self, word_embeddings, token_type_embeddings, position_embeddings):
         output = word_embeddings
         output = self.add(output, token_type_embeddings)
         output = self.add(output, position_embeddings)

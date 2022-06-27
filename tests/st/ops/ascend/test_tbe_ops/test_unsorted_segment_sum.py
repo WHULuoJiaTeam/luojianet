@@ -24,12 +24,12 @@ import luojianet_ms.common.dtype as mstype
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.seg_sum = P.UnsortedSegmentSum()
 
-    def construct(self, x, segment_ids, num_segments):
+    def forward(self, x, segment_ids, num_segments):
         return self.seg_sum(x, segment_ids, num_segments)
 
 

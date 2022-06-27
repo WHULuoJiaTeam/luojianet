@@ -15,7 +15,7 @@
 import numpy as np
 
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 from parallel.utils.utils import compile_net
@@ -23,12 +23,12 @@ from parallel.utils.utils import compile_net
 x_ = Tensor(np.random.normal(size=[32, 8, 8]).astype(np.float32))
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, strategy=None):
         super(Net, self).__init__()
         self.l2_loss = P.L2Loss().shard(strategy)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.l2_loss(x)
 
 

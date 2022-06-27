@@ -18,10 +18,10 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, weight, weight2, strategy1=None, strategy2=None, is_parameter=True):
         super().__init__()
         self.concat = P.Concat(axis=0).shard(strategy1)
@@ -32,26 +32,26 @@ class Net(Cell):
         self.mul = P.Mul().shard(strategy2)
         self.weight2 = Parameter(weight2, "w2")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.concat((self.weight, self.weight2))
         out = self.mul(x, out)
         return out
 
 
-class Net2(Cell):
+class Net2(Module):
     def __init__(self, weight, strategy1=None, strategy2=None, axis=0):
         super().__init__()
         self.mul = P.Mul().shard(strategy1)
         self.concat = P.Concat(axis=axis).shard(strategy2)
         self.weight = Parameter(weight, "w")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.mul(x, b)
         out = self.concat((out, self.weight))
         return out
 
 
-class Net3(Cell):
+class Net3(Module):
     def __init__(self, weight, weight2, weight3, strategy1=None, strategy2=None, is_parameter=True):
         super().__init__()
         self.concat = P.Concat(axis=0).shard(strategy1)
@@ -63,7 +63,7 @@ class Net3(Cell):
         self.weight2 = Parameter(weight2, "w2")
         self.weight3 = Parameter(weight3, "w3")
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.concat((self.weight, self.weight2, self.weight3))
         out = self.mul(x, out)
         return out

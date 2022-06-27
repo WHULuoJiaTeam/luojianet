@@ -113,7 +113,7 @@ class CrossEntropyWithLabelSmooth(LossBase):
         self.mean = P.ReduceMean(False)
         self.cast = P.Cast()
 
-    def construct(self, logit, label):
+    def forward(self, logit, label):
         one_hot_label = self.onehot(self.cast(label, mstype.int32), F.shape(logit)[1],
                                     self.on_value, self.off_value)
         out_loss = self.ce(logit, one_hot_label)

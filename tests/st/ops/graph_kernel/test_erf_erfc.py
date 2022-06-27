@@ -21,20 +21,20 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class ErfNet(nn.Cell):
+class ErfNet(nn.Module):
     def __init__(self):
         super(ErfNet, self).__init__()
         self.erf = P.Erf()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.erf(x)
 
-class ErfcNet(nn.Cell):
+class ErfcNet(nn.Module):
     def __init__(self):
         super(ErfcNet, self).__init__()
         self.erfc = P.Erfc()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.erfc(x)
 
 def get_output(net, inp, enable_graph_kernel=False):

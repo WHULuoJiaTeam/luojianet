@@ -21,25 +21,25 @@ from luojianet_ms import context
 from luojianet_ms.ops import operations as P
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = P.SoftmaxCrossEntropyWithLogits()
         self.network = network
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         predict = self.network(x)
         return self.loss(predict, b)[0]
 
 
 def test_parameter_init():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, strategy1, weight):
             super().__init__()
             self.weight = Parameter(weight, "w1")
             self.matmul = P.MatMul(transpose_a=False, transpose_b=True).shard(strategy1)
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.matmul(x, self.weight)
             return out
 

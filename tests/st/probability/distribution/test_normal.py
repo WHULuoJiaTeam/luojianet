@@ -23,7 +23,7 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Prob(nn.Cell):
+class Prob(nn.Module):
     """
     Test class: probability of Normal distribution.
     """
@@ -31,7 +31,7 @@ class Prob(nn.Cell):
         super(Prob, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.n.prob(x_)
 
 def test_pdf():
@@ -45,7 +45,7 @@ def test_pdf():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_pdf) < tol).all()
 
-class LogProb(nn.Cell):
+class LogProb(nn.Module):
     """
     Test class: log probability of Normal distribution.
     """
@@ -53,7 +53,7 @@ class LogProb(nn.Cell):
         super(LogProb, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.n.log_prob(x_)
 
 def test_log_likelihood():
@@ -68,7 +68,7 @@ def test_log_likelihood():
     assert (np.abs(output.asnumpy() - expect_logpdf) < tol).all()
 
 
-class KL(nn.Cell):
+class KL(nn.Module):
     """
     Test class: kl_loss of Normal distribution.
     """
@@ -76,7 +76,7 @@ class KL(nn.Cell):
         super(KL, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         return self.n.kl_loss('Normal', x_, y_)
 
 
@@ -101,7 +101,7 @@ def test_kl_loss():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_kl_loss) < tol).all()
 
-class Basics(nn.Cell):
+class Basics(nn.Module):
     """
     Test class: mean/sd/mode of Normal distribution.
     """
@@ -109,7 +109,7 @@ class Basics(nn.Cell):
         super(Basics, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([2.0, 4.0]), dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.n.mean(), self.n.sd(), self.n.mode()
 
 def test_basics():
@@ -125,7 +125,7 @@ def test_basics():
     assert (np.abs(mode.asnumpy() - expect_mean) < tol).all()
     assert (np.abs(sd.asnumpy() - expect_sd) < tol).all()
 
-class Sampling(nn.Cell):
+class Sampling(nn.Module):
     """
     Test class: sample of Normal distribution.
     """
@@ -134,7 +134,7 @@ class Sampling(nn.Cell):
         self.n = msd.Normal(np.array([3.0]), np.array([[2.0], [4.0]]), seed=seed, dtype=dtype.float32)
         self.shape = shape
 
-    def construct(self, mean=None, sd=None):
+    def forward(self, mean=None, sd=None):
         return self.n.sample(self.shape, mean, sd)
 
 def test_sample():
@@ -149,7 +149,7 @@ def test_sample():
     output = sample(mean, sd)
     assert output.shape == (2, 3, 3)
 
-class CDF(nn.Cell):
+class CDF(nn.Module):
     """
     Test class: cdf of Normal distribution.
     """
@@ -157,7 +157,7 @@ class CDF(nn.Cell):
         super(CDF, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.n.cdf(x_)
 
 
@@ -172,7 +172,7 @@ def test_cdf():
     tol = 2e-5
     assert (np.abs(output.asnumpy() - expect_cdf) < tol).all()
 
-class LogCDF(nn.Cell):
+class LogCDF(nn.Module):
     """
     Test class: log_cdf of Mormal distribution.
     """
@@ -180,7 +180,7 @@ class LogCDF(nn.Cell):
         super(LogCDF, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.n.log_cdf(x_)
 
 def test_log_cdf():
@@ -194,7 +194,7 @@ def test_log_cdf():
     tol = 5e-5
     assert (np.abs(output.asnumpy() - expect_logcdf) < tol).all()
 
-class SF(nn.Cell):
+class SF(nn.Module):
     """
     Test class: survival function of Normal distribution.
     """
@@ -202,7 +202,7 @@ class SF(nn.Cell):
         super(SF, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.n.survival_function(x_)
 
 def test_survival():
@@ -216,7 +216,7 @@ def test_survival():
     tol = 2e-5
     assert (np.abs(output.asnumpy() - expect_survival) < tol).all()
 
-class LogSF(nn.Cell):
+class LogSF(nn.Module):
     """
     Test class: log survival function of Normal distribution.
     """
@@ -224,7 +224,7 @@ class LogSF(nn.Cell):
         super(LogSF, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.n.log_survival(x_)
 
 def test_log_survival():
@@ -238,7 +238,7 @@ def test_log_survival():
     tol = 2e-5
     assert (np.abs(output.asnumpy() - expect_log_survival) < tol).all()
 
-class EntropyH(nn.Cell):
+class EntropyH(nn.Module):
     """
     Test class: entropy of Normal distribution.
     """
@@ -246,7 +246,7 @@ class EntropyH(nn.Cell):
         super(EntropyH, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([[2.0], [4.0]]), dtype=dtype.float32)
 
-    def construct(self):
+    def forward(self):
         return self.n.entropy()
 
 def test_entropy():
@@ -260,7 +260,7 @@ def test_entropy():
     tol = 1e-6
     assert (np.abs(output.asnumpy() - expect_entropy) < tol).all()
 
-class CrossEntropy(nn.Cell):
+class CrossEntropy(nn.Module):
     """
     Test class: cross entropy between Normal distributions.
     """
@@ -268,7 +268,7 @@ class CrossEntropy(nn.Cell):
         super(CrossEntropy, self).__init__()
         self.n = msd.Normal(np.array([3.0]), np.array([4.0]), dtype=dtype.float32)
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         entropy = self.n.entropy()
         kl_loss = self.n.kl_loss('Normal', x_, y_)
         h_sum_kl = entropy + kl_loss
@@ -286,7 +286,7 @@ def test_cross_entropy():
     tol = 1e-6
     assert (np.abs(diff.asnumpy() - np.zeros(diff.shape)) < tol).all()
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """
     Test class: expand single distribution instance to multiple graphs
     by specifying the attributes.
@@ -296,7 +296,7 @@ class Net(nn.Cell):
         super(Net, self).__init__()
         self.normal = msd.Normal(0., 1., dtype=dtype.float32)
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         kl = self.normal.kl_loss('Normal', x_, y_)
         prob = self.normal.prob(kl)
         return prob

@@ -21,7 +21,7 @@ import numpy as np
 import luojianet_ms as ms
 import luojianet_ms.ops.operations as P
 import luojianet_ms.numpy as msnp
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import ReLU, BatchNorm2d, Conv2d, ParameterUpdate
 from luojianet_ms.nn import Momentum
 from luojianet_ms.nn import SoftmaxCrossEntropyWithLogits
@@ -35,7 +35,7 @@ from tests.security_utils import security_off_wrap
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class _Grad(Cell):
+class _Grad(Module):
     def __init__(self, grad, network, wrt_params=False, real_inputs_count=None):
         super().__init__()
         self.network = network
@@ -46,7 +46,7 @@ class _Grad(Cell):
         if self.wrt_params:
             self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         if self.real_inputs_count is None or self.sens_param is False:
             if self.wrt_params:
                 return self.grad(self.network, self.params)(*inputs)
@@ -112,7 +112,7 @@ def find_files(file, para):
     return out
 
 
-class SideEffectCastAll(Cell):
+class SideEffectCastAll(Module):
     def __init__(self):
         super().__init__()
         self.cast = P.Cast()
@@ -124,7 +124,7 @@ class SideEffectCastAll(Cell):
         self.parameter_b = Parameter(Tensor(inputs2, ms.float32), name="b")
         self.assign = P.Assign()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         self.assign(self.parameter_a, x)
         self.assign(self.parameter_b, y)
         out_a = self.cast(self.parameter_a, self.dtype)
@@ -143,7 +143,7 @@ def test_side_effect_castall():
     assert result == '2'
 
 
-class SideEffectControlFlowAssignDependWhileNet(Cell):
+class SideEffectControlFlowAssignDependWhileNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter1 = Parameter(
@@ -152,7 +152,7 @@ class SideEffectControlFlowAssignDependWhileNet(Cell):
         self.assignadd = P.AssignAdd()
         self.addn = P.AddN()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         self.assign(self.parameter1, x)
         while self.parameter1 < y:
             x = self.addn((x, x))
@@ -181,7 +181,7 @@ def test_side_effect_control_flow_assign_depend_while_net():
     allclose_nparray(out1.asnumpy(), out2.asnumpy(), 0.001, 0.001)
 
 
-class Addn(Cell):
+class Addn(Module):
     def __init__(self):
         super().__init__()
         self.parameter3 = Parameter(Tensor([1.0], ms.float32),
@@ -190,22 +190,22 @@ class Addn(Cell):
                                     name="parameter4")
         self.addn = P.AddN()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         out = self.addn((inputs, self.parameter3, self.parameter4))
         return out
 
 
-class Relu(Cell):
+class Relu(Module):
     def __init__(self):
         super().__init__()
         self.relu = P.ReLU()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         out = self.relu(inputs)
         return out
 
 
-class SideEffectTwoAssignTwoAddnDependencyNet(Cell):
+class SideEffectTwoAssignTwoAddnDependencyNet(Module):
     def __init__(self):
         super().__init__()
         self.parameter1 = Parameter(Tensor([1.0], ms.float32),
@@ -215,7 +215,7 @@ class SideEffectTwoAssignTwoAddnDependencyNet(Cell):
         self.assign = P.Assign()
         self.addN = P.AddN()
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         self.assign(self.parameter1, inputs)
         out = self.addN((inputs, self.parameter1, self.parameter2))
         self.assign(self.parameter2, inputs)
@@ -233,7 +233,7 @@ class SideEffectTwoAssignTwoAddnDependencyNet(Cell):
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_ctrl_while_by_while_and_if_in_first_while():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU()
@@ -247,7 +247,7 @@ def test_ctrl_while_by_while_and_if_in_first_while():
             c = np.full((1,), 7, dtype=np.float32)
             self.c = Parameter(Tensor(c), name="c")
 
-        def construct(self, x):
+        def forward(self, x):
             out = x
             while self.a < 7:
                 if self.a < self.c:
@@ -269,7 +269,7 @@ def test_ctrl_while_by_while_and_if_in_first_while():
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
 def test_ctrl_while_by_while_and_while_in_first_while():
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super().__init__()
             self.relu = P.ReLU()
@@ -283,7 +283,7 @@ def test_ctrl_while_by_while_and_while_in_first_while():
             c = np.full((1,), 7, dtype=np.float32)
             self.c = Parameter(Tensor(c), name="c")
 
-        def construct(self, x):
+        def forward(self, x):
             out = x
             while self.a < self.c:
                 out = self.relu(x)
@@ -303,7 +303,7 @@ def test_ctrl_while_by_while_and_while_in_first_while():
     net(input_me_a)
 
 
-class InplaceNet(Cell):
+class InplaceNet(Module):
     def __init__(self):
         super().__init__()
         self.bn1 = BatchNorm2d(num_features=4, eps=1e-4,
@@ -323,7 +323,7 @@ class InplaceNet(Cell):
         self.conv2d4 = Conv2d(in_channels=4, out_channels=4,
                               kernel_size=2, data_format="NHWC")
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         tmp_c1 = self.conv2d1(input_x)
         tmp_c2 = self.conv2d2(input_x)
         tmp_x = self.bn1(tmp_c1)
@@ -382,16 +382,16 @@ def read_file():
     return content
 
 
-class Add(Cell):
+class Add(Module):
     def __init__(self):
         super().__init__()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.add(x, y)
 
 
-class MixControlNet(Cell):
+class MixControlNet(Module):
     def __init__(self, in_channel, x):
         super().__init__()
         #self._save_graphs(save_graph_flag=True, save_graph_path=".")
@@ -415,7 +415,7 @@ class MixControlNet(Cell):
         self.value = Tensor(np.random.randn(*(3,)), ms.float32)
         self.x = x
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         x = self.x
         z = self.x
         out = self.biasadd(input_x, self.bias)
@@ -477,13 +477,13 @@ def test_auto_mixed_precision_controlflow_auto():
 
 @security_off_wrap
 def test_updatestate_between_assigns():
-    class UpdateState_Assigns(Cell):
+    class UpdateState_Assigns(Module):
         def __init__(self):
             super().__init__()
             self.para1 = Parameter(Tensor(1, dtype=ms.int32), name='para1')
             self.para2 = Parameter(Tensor(3, dtype=ms.int32), name='para2')
 
-        def construct(self, value1, value2):
+        def forward(self, value1, value2):
             self.para1 = value1
             self.para2 = value2
             return self.para2
@@ -502,14 +502,14 @@ def test_updatestate_between_assigns():
 
 @security_off_wrap
 def test_updatestate_between_maketuple_assign():
-    class UpdateState_MakeTuple_Assign(Cell):
+    class UpdateState_MakeTuple_Assign(Module):
         def __init__(self):
             super().__init__()
             self.para1 = Parameter(Tensor(1, dtype=ms.int32), name='para1')
             self.para2 = Parameter(Tensor(3, dtype=ms.int32), name='para2')
             self.para3 = Parameter(Tensor(5, dtype=ms.int32), name='para3')
 
-        def construct(self, value1, value2, value3):
+        def forward(self, value1, value2, value3):
             (self.para1, self.para2) = (value1, value2)
             self.para3 = value3
             return self.para3
@@ -529,14 +529,14 @@ def test_updatestate_between_maketuple_assign():
 
 @security_off_wrap
 def test_updatestate_between_assign_maketuple():
-    class UpdateState_Assign_MakeTuple(Cell):
+    class UpdateState_Assign_MakeTuple(Module):
         def __init__(self):
             super().__init__()
             self.para1 = Parameter(Tensor(1, dtype=ms.int32), name='para1')
             self.para2 = Parameter(Tensor(3, dtype=ms.int32), name='para2')
             self.para3 = Parameter(Tensor(5, dtype=ms.int32), name='para3')
 
-        def construct(self, value1, value2, value3):
+        def forward(self, value1, value2, value3):
             self.para1 = value1
             (self.para2, self.para3) = (value2, value3)
             return self.para3
@@ -564,17 +564,17 @@ def test_cycle_parameter_binding():
     Description: Auto-monad should work properly when cycle parameter binding existed.
     Expectation: Normal output, no core dump.
     """
-    class MyActor(Cell):
-        def construct(self, inputs):
+    class MyActor(Module):
+        def forward(self, inputs):
             return inputs
 
-    class MyCell(Cell):
+    class MyCell(Module):
         def __init__(self, actor_list):
             super().__init__()
             self.zero = Tensor(0, ms.int32)
             self.actor_list = actor_list
 
-        def construct(self, state):
+        def forward(self, state):
             duration = self.zero
             while duration < 2:
                 for n in msnp.arange(3):

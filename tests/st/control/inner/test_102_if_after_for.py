@@ -31,7 +31,7 @@ grad_all = C.GradOperation(get_all=True)
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if_after_for_01():
-    class IfAfterForNet(nn.Cell):
+    class IfAfterForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.relu = nn.ReLU()
@@ -44,7 +44,7 @@ def test_if_after_for_01():
             param_b = np.full((1,), 2, dtype=np.float32)
             self.param_b = Parameter(Tensor(param_b), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             self.assign(self.param_a, x + self.param_a)
             y = self.add(x, self.param_b)
             for _ in range(0, 2):
@@ -56,12 +56,12 @@ def test_if_after_for_01():
             z = self.relu(x + y)
             return z
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([7], mstype.int32)
@@ -85,7 +85,7 @@ def test_if_after_for_01():
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.env_onecard
 def test_if_after_for_02():
-    class IfAfterForNet(nn.Cell):
+    class IfAfterForNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.relu = nn.ReLU()
@@ -96,7 +96,7 @@ def test_if_after_for_02():
             self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
             self.param_b = Parameter(Tensor(11, mstype.int32), name='b')
 
-        def construct(self, x):
+        def forward(self, x):
             self.assign(self.param_a, x + self.param_a)
             y = self.add(x, self.param_b)
             for _ in range(0, 2):
@@ -110,12 +110,12 @@ def test_if_after_for_02():
             z = self.relu(x + y)
             return z
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return grad_all(self.net)(*inputs)
 
     x = Tensor([7], mstype.int32)

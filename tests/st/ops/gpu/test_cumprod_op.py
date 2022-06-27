@@ -45,7 +45,7 @@ def cum_prod(nptype):
     x6 = np.random.rand(1, 1, 1, 1).astype(nptype)
     axis6 = 0
 
-    class CumProd(nn.Cell):
+    class CumProd(nn.Module):
         def __init__(self, nptype):
             super(CumProd, self).__init__()
 
@@ -71,7 +71,7 @@ def cum_prod(nptype):
             self.axis6 = axis6
 
         @ms_function
-        def construct(self):
+        def forward(self):
             return (P.CumProd()(self.x0, self.axis0),
                     P.CumProd()(self.x1, self.axis1),
                     P.CumProd()(self.x2, self.axis2),

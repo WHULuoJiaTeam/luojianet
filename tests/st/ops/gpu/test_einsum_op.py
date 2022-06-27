@@ -20,21 +20,21 @@ import luojianet_ms.ops.operations as P
 from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
-class Einsum(nn.Cell):
+class Einsum(nn.Module):
     def __init__(self, equation):
         super().__init__()
         self.einsum = P.Einsum(equation)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         out = self.einsum(inputs)
         return out
 
-class EinsumGrad(nn.Cell):
+class EinsumGrad(nn.Module):
     def __init__(self, equation):
         super().__init__()
         self.einsum_grad = G.EinsumGrad(equation)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         num = len(inputs)
         inp_data = inputs[0:num - 1]
         dout = inputs[num - 1 : num]

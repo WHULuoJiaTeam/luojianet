@@ -23,7 +23,7 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetArgminWithValue(nn.Cell):
+class NetArgminWithValue(nn.Module):
     def __init__(self):
         super(NetArgminWithValue, self).__init__()
         axis1 = 0
@@ -32,16 +32,16 @@ class NetArgminWithValue(nn.Cell):
         self.argmin2 = P.ArgMinWithValue(axis2)
         self.argmin3 = P.ArgMinWithValue()
 
-    def construct(self, x):
+    def forward(self, x):
         return (self.argmin1(x), self.argmin2(x), self.argmin3(x))
 
 
-class NetArgminWithValueBig(nn.Cell):
+class NetArgminWithValueBig(nn.Module):
     def __init__(self, axis=0):
         super(NetArgminWithValueBig, self).__init__()
         self.argmin = P.ArgMinWithValue(axis)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.argmin(x)
 
 

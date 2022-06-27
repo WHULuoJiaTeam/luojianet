@@ -33,7 +33,7 @@ class BondForce(PrimitiveWithInfer):
     Assume the number of harmonic bonds is m and the number of atoms is n.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -118,7 +118,7 @@ class BondEnergy(PrimitiveWithInfer):
     Assume our system has n atoms and m harmonic bonds.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -206,7 +206,7 @@ class BondAtomEnergy(PrimitiveWithInfer):
     The calculation formula is the same as operator BondEnergy().
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -284,7 +284,7 @@ class BondForceWithAtomEnergy(PrimitiveWithInfer):
     The calculation formula is the same as operator BondForce() and BondEnergy().
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -368,7 +368,7 @@ class BondForceWithAtomVirial(PrimitiveWithInfer):
     The calculation formula of the force part is the same as operator BondForce().
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     The Virial part is as follows:
@@ -461,7 +461,7 @@ class DihedralForce(PrimitiveWithInfer):
     the number of atoms is n.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -563,7 +563,7 @@ class DihedralEnergy(PrimitiveWithInfer):
     Assume our system has n atoms and m dihedral terms.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -666,7 +666,7 @@ class DihedralAtomEnergy(PrimitiveWithInfer):
     energy of each atom.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     The calculation formula is the same as operator DihedralEnergy().
@@ -771,7 +771,7 @@ class DihedralForceWithAtomEnergy(PrimitiveWithInfer):
     The calculation formula is the same as operator DihedralForce() and DihedralEnergy().
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -876,7 +876,7 @@ class AngleForce(PrimitiveWithInfer):
     number of atoms is n.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -971,7 +971,7 @@ class AngleEnergy(PrimitiveWithInfer):
     number of atoms is n.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -1063,7 +1063,7 @@ class AngleAtomEnergy(PrimitiveWithInfer):
     The calculation formula is the same as operator AngleEnergy().
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -1146,7 +1146,7 @@ class AngleForceWithAtomEnergy(PrimitiveWithInfer):
     The calculation formula is the same as operator AngleForce() and AngleEnergy().
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -1234,7 +1234,7 @@ class Dihedral14LJForce(PrimitiveWithInfer):
     for all kinds of atom pairs.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -1337,7 +1337,7 @@ class Dihedral14LJEnergy(PrimitiveWithInfer):
     each necessary dihedral terms on the corresponding atoms.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -1440,7 +1440,7 @@ class Dihedral14LJForceWithDirectCF(PrimitiveWithInfer):
     for each necessary dihedral 1,4 terms.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     The calculation formula of the Lennard-Jones part is the same as operator
@@ -1558,7 +1558,7 @@ class Dihedral14LJCFForceWithAtomEnergy(PrimitiveWithInfer):
     as operator :class:`Dihedral14LJEnergy` and :class:`Dihedral14CFEnergy`.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -1667,7 +1667,7 @@ class Dihedral14LJAtomEnergy(PrimitiveWithInfer):
     The calculation formula is the same as operator Dihedral14LJEnergy().
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -1769,7 +1769,7 @@ class Dihedral14CFEnergy(PrimitiveWithInfer):
     each necessary dihedral terms on the corresponding atoms.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -1867,7 +1867,7 @@ class Dihedral14CFAtomEnergy(PrimitiveWithInfer):
     The calculation formula is the same as operator :class:`Dihedral14CFEnergy`.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -1961,7 +1961,7 @@ class PMEReciprocalForce(PrimitiveWithInfer):
     10.1063/1.470117.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -2044,7 +2044,7 @@ class PMEExcludedForce(PrimitiveWithInfer):
     n, and the length of excluded list is E.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -2128,7 +2128,7 @@ class PMEEnergy(PrimitiveWithInfer):
     Calculate the Coulumb energy of the system using PME method.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -2264,7 +2264,7 @@ class LJEnergy(PrimitiveWithInfer):
     of atom pairs.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -2362,7 +2362,7 @@ class LJForce(PrimitiveWithInfer):
     potential energy for each atom.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     .. math::
@@ -2461,7 +2461,7 @@ class LJForceWithPMEDirectForce(PrimitiveWithInfer):
     LJForce(), and the PME direct part is within PME method.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -2554,7 +2554,7 @@ class MDTemperature(PrimitiveWithInfer):
     Compute the MD temperature.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -2626,7 +2626,7 @@ class MDIterationLeapFrogWithRF(PrimitiveWithInfer):
     ensembles via molecular dynamics. DOI: 10.1063/1.4991621.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Inputs:
@@ -2741,7 +2741,7 @@ class MDIterationLeapFrogLiujian(PrimitiveWithInfer):
     ensembles via molecular dynamics. DOI: 10.1063/1.4991621.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -2836,7 +2836,7 @@ class CrdToUintCrd(PrimitiveWithInfer):
     Convert FP32 coordinate to Uint32 coordinate.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -2882,7 +2882,7 @@ class MDIterationSetupRandState(PrimitiveWithInfer):
     Compute the random state of the iteration.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -2922,7 +2922,7 @@ class TransferCrd(PrimitiveWithInfer):
     Transfer the coordinates to angular and radial.
 
     Because there is a large amount of inputs and each of them are related,
-    there is no way to construct `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
+    there is no way to forward `Examples` using random methods. For details, refer the webpage `SPONGE in LuoJiaNET
     <https://gitee.com/luojianet_ms/mindscience/blob/master/MindSPONGE/docs/simple_formula.md>`_.
 
     Args:
@@ -3064,7 +3064,7 @@ class IFFT3D(PrimitiveWithInfer):
 
 class NeighborListUpdate(PrimitiveWithInfer):
     """
-    Update (or construct if first time) the Verlet neighbor list for the
+    Update (or forward if first time) the Verlet neighbor list for the
     calculation of short-ranged force. Assume the number of atoms is N,
     the number of grids divided is G, the maximum number of atoms in one
     grid is m, the maximum number of atoms in single atom's neighbor list
@@ -3073,7 +3073,7 @@ class NeighborListUpdate(PrimitiveWithInfer):
     Args:
         grid_numbers (int32): the total number of grids divided G.
         atom_numbers (int32): the number of atoms n.
-        not_first_time (int32): whether to construct the neighbor list first time or not.
+        not_first_time (int32): whether to forward the neighbor list first time or not.
         nxy (int32): the total number of grids divided in xy plane.
         excluded_atom_numbers (int32): the total atom numbers in the excluded list E.
         cutoff_square (float32): the cutoff square distance for short-range force calculation.

@@ -32,7 +32,7 @@ from tests.st.tbe_networks.resnet import resnet50
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class LeNet(nn.Cell):
+class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
         self.relu = P.ReLU()
@@ -47,7 +47,7 @@ class LeNet(nn.Cell):
         self.fc3 = nn.Dense(84, 10)
 
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         output = self.conv1(input_x)
         output = self.relu(output)
         output = self.pool(output)

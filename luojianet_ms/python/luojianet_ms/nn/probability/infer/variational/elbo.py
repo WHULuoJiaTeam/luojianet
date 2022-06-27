@@ -16,11 +16,11 @@
 """The Evidence Lower Bound (ELBO)."""
 from luojianet_ms.ops import operations as P
 from ...distribution.normal import Normal
-from ....cell import Cell
+from ....cell import Module
 from ....loss.loss import MSELoss
 
 
-class ELBO(Cell):
+class ELBO(Module):
     r"""
     The Evidence Lower Bound (ELBO).
 
@@ -63,7 +63,7 @@ class ELBO(Cell):
         else:
             raise ValueError('The values of output_dis now only support Normal')
 
-    def construct(self, data, label):
+    def forward(self, data, label):
         recon_x, x, mu, std = data
         reconstruct_loss = self.recon_loss(x, recon_x)
         kl_loss = self.posterior('kl_loss', 'Normal', self.zeros(mu), self.zeros(mu)+1, mu, std)

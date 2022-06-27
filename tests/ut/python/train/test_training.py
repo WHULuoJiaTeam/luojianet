@@ -27,7 +27,7 @@ from ..ut_filter import non_graph_engine
 from ....dataset_mock import MindData
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -38,7 +38,7 @@ class Net(nn.Cell):
         self.flatten = nn.Flatten()
         self.fc = nn.Dense(64 * 222 * 222, 3)  # padding=0
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)
@@ -47,7 +47,7 @@ class Net(nn.Cell):
         return out
 
 
-class LossNet(nn.Cell):
+class LossNet(nn.Module):
     """ LossNet definition """
 
     def __init__(self):
@@ -59,7 +59,7 @@ class LossNet(nn.Cell):
         self.fc = nn.Dense(64 * 222 * 222, 3)  # padding=0
         self.loss = nn.SoftmaxCrossEntropyWithLogits()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.conv(x)
         x = self.bn(x)
         x = self.relu(x)

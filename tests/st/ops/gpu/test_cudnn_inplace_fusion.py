@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class Conv2dBpropInputInplace(nn.Cell):
+class Conv2dBpropInputInplace(nn.Module):
     def __init__(self, w1, w2):
         super(Conv2dBpropInputInplace, self).__init__()
         self.conv2d_1 = P.Conv2DBackpropInput(out_channel=256, kernel_size=1)
@@ -38,7 +38,7 @@ class Conv2dBpropInputInplace(nn.Cell):
         self.maxpool_grad = G.MaxPoolGrad(kernel_size=3, strides=2, pad_mode='SAME')
         self.shape = (32, 64, 56, 56)
 
-    def construct(self, x1, x2, x3):
+    def forward(self, x1, x2, x3):
         dx1 = self.conv2d_1(x1, self.w1, self.shape)
         dx2 = self.conv2d_2(x2, self.w2, self.shape)
 

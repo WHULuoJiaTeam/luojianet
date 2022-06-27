@@ -63,13 +63,13 @@ class CropAndResize(PrimitiveWithInfer):
         ``Ascend`` ``GPU`` ``CPU``
 
     Examples:
-        >>> class CropAndResizeNet(nn.Cell):
+        >>> class CropAndResizeNet(nn.Module):
         ...     def __init__(self, crop_size):
         ...         super(CropAndResizeNet, self).__init__()
         ...         self.crop_and_resize = ops.CropAndResize()
         ...         self.crop_size = crop_size
         ...
-        ...     def construct(self, x, boxes, box_index):
+        ...     def forward(self, x, boxes, box_index):
         ...         return self.crop_and_resize(x, boxes, box_index, self.crop_size)
         ...
         >>> BATCH_SIZE = 1

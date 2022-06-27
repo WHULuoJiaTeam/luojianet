@@ -23,7 +23,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.bn = P.BatchNorm()
@@ -32,7 +32,7 @@ class Net(nn.Cell):
         self.mean = Parameter(initializer('ones', [64]), name='mean')
         self.variance = Parameter(initializer('zeros', [64]), name='variance')
 
-    def construct(self, x):
+    def forward(self, x):
         return self.bn(x, self.scale, self.offset, self.mean, self.variance)[0]
 
 

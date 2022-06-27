@@ -40,7 +40,7 @@ def test_bn2d():
     # 3-channel RGB
     input_data = Tensor(np.random.randint(0, 10, [1, 64, 56, 56]).astype(np.float32))
     # for test in infer lib
-    output = bn.construct(input_data)
+    output = bn.forward(input_data)
 
     output_np = output.asnumpy()
     assert isinstance(output_np[0][0][0][0], (np.float32, np.float64))

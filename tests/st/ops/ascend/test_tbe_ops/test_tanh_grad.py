@@ -24,12 +24,12 @@ from luojianet_ms.train.model import Model
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.tanh_grad = G.TanhGrad()
 
-    def construct(self, y, dy):
+    def forward(self, y, dy):
         return self.tanh_grad(y, dy)
 
 

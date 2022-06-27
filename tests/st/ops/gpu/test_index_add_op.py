@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import composite as C
 
 
-class NetIndexAdd(nn.Cell):
+class NetIndexAdd(nn.Module):
     def __init__(self, x, axis):
         super(NetIndexAdd, self).__init__()
         self.input_x = Parameter(Tensor(x), name='x')
         self.index_add = P.IndexAdd(axis)
 
-    def construct(self, idx, y):
+    def forward(self, idx, y):
         z = self.index_add(self.input_x, idx, y)
         return z
 
@@ -256,14 +256,14 @@ def test_index_add_invalid_inputs():
         _ = net(Tensor(idx), Tensor(y))
 
 
-class IndexAddGradNet(nn.Cell):
+class IndexAddGradNet(nn.Module):
     def __init__(self, network):
         super(IndexAddGradNet, self).__init__()
         self.grad = C.GradOperation(get_all=True, sens_param=True, get_by_list=True)
         self.network = network
         self.params = ParameterTuple(network.trainable_params())
 
-    def construct(self, idx, y, dout):
+    def forward(self, idx, y, dout):
         out = self.grad(self.network, self.params)(idx, y, dout)
         return out
 

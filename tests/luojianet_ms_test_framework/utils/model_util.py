@@ -27,7 +27,7 @@ from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
 
 
-class SquaredLoss(nn.Cell):
+class SquaredLoss(nn.Module):
     """Squared loss function."""
 
     def __init__(self):
@@ -37,7 +37,7 @@ class SquaredLoss(nn.Cell):
         self.two = Tensor(np.array([2.0]).astype(np.float32))
         self.reduce_sum = P.ReduceSum()
 
-    def construct(self, y_hat, y):
+    def forward(self, y_hat, y):
         ret = y_hat - self.reshape(y, self.shape(y_hat))
         return self.reduce_sum((ret * ret) / self.two, (0,))
 
@@ -64,7 +64,7 @@ def update_opt_step(learning_rate, batch_size, parameter, gradient):
     return next_param
 
 
-class SGD(nn.Cell):
+class SGD(nn.Module):
     """SGD optimizer."""
 
     def __init__(self, parameters, learning_rate=0.001, batch_size=1):
@@ -77,13 +77,13 @@ class SGD(nn.Cell):
     def set_params(self, parameters):
         self.parameters = parameters
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         success = self.hyper_map(F.partial(opt_step, self.learning_rate, self.batch_size),
                                  self.parameters, gradients)
         return success
 
 
-class Linreg(nn.Cell):
+class Linreg(nn.Module):
     """Linear regression model."""
 
     def __init__(self, num_features):
@@ -92,7 +92,7 @@ class Linreg(nn.Cell):
         self.w = Parameter(Tensor(np.random.normal(scale=0.01, size=(num_features, 1)).astype(np.float32)), name='w')
         self.b = Parameter(Tensor(np.zeros(shape=(1,)).astype(np.float32)), name='b')
 
-    def construct(self, x):
+    def forward(self, x):
         return self.matmul(x, self.w) + self.b
 
 

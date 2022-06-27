@@ -18,12 +18,12 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 import luojianet_ms.ops.operations as P
 
 def test_case_1():
-    class Net1(Cell):
+    class Net1(Module):
         def __init__(self):
             super(Net1, self).__init__()
             self.sub = ops.Sub()
@@ -31,7 +31,7 @@ def test_case_1():
             self.sum = ops.ReduceSum(keep_dims=False)
             self.add = ops.Add()
             self.pow = ops.Pow()
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             t1 = self.sub(x, y)
             t2 = self.mul(t1, x)
             t3 = self.add(y, t2)
@@ -58,14 +58,14 @@ def test_case_1():
 
 
 def test_case_2():
-    class Net2(Cell):
+    class Net2(Module):
         def __init__(self):
             super(Net2, self).__init__()
             self.sqrt = P.Sqrt()
             self.sum = P.ReduceSum(keep_dims=True)
             self.add = P.Add()
             self.neg = P.Neg()
-        def construct(self, x, y):
+        def forward(self, x, y):
             sqrt_res = self.sqrt(x)
             add_res = self.add(y, sqrt_res)
             neg_res = self.neg(add_res)

@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 """
-train Conv2dBnFoldQuant Cell
+train Conv2dBnFoldQuant Module
 """
 
 import pytest
@@ -25,12 +25,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.common import set_seed
 from luojianet_ms.compression.quant import create_quant_config
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, qconfig):
         super(Net, self).__init__()
         self.conv = nn.Conv2dBnFoldQuant(2, 3, kernel_size=(2, 2), stride=(1, 1),
                                          pad_mode='valid', quant_config=qconfig)
-    def construct(self, x):
+    def forward(self, x):
         return self.conv(x)
 
 def test_conv2d_bn_fold_quant():

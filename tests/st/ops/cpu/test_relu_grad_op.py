@@ -26,7 +26,7 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class NetReluGrad(nn.Cell):
+class NetReluGrad(nn.Module):
     def __init__(self):
         super(NetReluGrad, self).__init__()
         self.relu_grad = G.ReluGrad()
@@ -37,7 +37,7 @@ class NetReluGrad(nn.Cell):
                                                            [0, 1, 0],
                                                            [1, 1, 1]]]]).astype(np.float32)), [1, 1, 3, 3]), name='dy')
 
-    def construct(self):
+    def forward(self):
         return self.relu_grad(self.dy, self.x)
 
 

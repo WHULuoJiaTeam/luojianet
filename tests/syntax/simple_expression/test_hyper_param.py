@@ -16,16 +16,16 @@
 
 import luojianet_ms as ms
 from luojianet_ms import Tensor, Parameter
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 
 
 def test_hyper_param():
     """
     Feature: Resolve parameter.
-    Description: The name of parameter in construct is the same with the name of parameter of class init.
-    Expectation: self.a is different from a in construct.
+    Description: The name of parameter in forward is the same with the name of parameter of class init.
+    Expectation: self.a is different from a in forward.
     """
-    class HyperParamNet(Cell):
+    class HyperParamNet(Module):
         def __init__(self):
             super(HyperParamNet, self).__init__()
             self.a = Parameter(Tensor(1, ms.float32), name="a")
@@ -35,7 +35,7 @@ def test_hyper_param():
         def func_inner(self, c):
             return self.a + self.b + c
 
-        def construct(self, a, b):
+        def forward(self, a, b):
             self.a = a
             self.b = b
             return self.func_inner(self.c)
@@ -52,9 +52,9 @@ def test_hyper_param_with_control_sink():
     """
     Feature: Resolve parameter.
     Description: Parameters whose name are the same between different graphs do not affect each other.
-    Expectation: self.a is different from a in construct.
+    Expectation: self.a is different from a in forward.
     """
-    class HyperParamNet(Cell):
+    class HyperParamNet(Module):
         def __init__(self):
             super(HyperParamNet, self).__init__()
             self.a = Parameter(Tensor(1, ms.float32), name="a")
@@ -67,7 +67,7 @@ def test_hyper_param_with_control_sink():
         def func_inner_2(self, a, c):
             return a - self.b + c
 
-        def construct(self, a, b):
+        def forward(self, a, b):
             self.b = b
             if a > self.b:
                 return self.func_inner_2(a, self.c)

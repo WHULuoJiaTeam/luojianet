@@ -25,22 +25,22 @@ import luojianet_ms.nn as nn
 import luojianet_ms.context as context
 
 
-class DTypeNet(nn.Cell):
+class DTypeNet(nn.Module):
     def __init__(self):
         super(DTypeNet, self).__init__()
         self.dtype = P.DType()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.dtype(x)
 
 
-class DTypeDynamicNet(nn.Cell):
+class DTypeDynamicNet(nn.Module):
     def __init__(self):
         super(DTypeDynamicNet, self).__init__()
         self.d = inner.GpuConvertToDynamicShape()
         self.dtype = P.DType()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.d(x)
         return self.dtype(x)
 

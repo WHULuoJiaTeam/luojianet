@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from luojianet_ms import Tensor, context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops as ops
 
 from parallel.utils.utils import compile_net
@@ -13,12 +13,12 @@ input_weight_tensor_ = Tensor(np.random.normal(size=[8, 8]).astype(np.float32))
 input_weight_float_ = 0.5
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, strategy=None):
         super(Net, self).__init__()
         self.lerp = ops.Lerp().shard(strategy)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         output = self.lerp(*inputs)
         return output
 

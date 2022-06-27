@@ -24,13 +24,13 @@ context.set_context(mode=context.GRAPH_MODE,
                     device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.mask = P.DropoutGenMask(10, 28)
         self.shape = P.Shape()
 
-    def construct(self, x_, y_):
+    def forward(self, x_, y_):
         shape_x = self.shape(x_)
         return self.mask(shape_x, y_)
 

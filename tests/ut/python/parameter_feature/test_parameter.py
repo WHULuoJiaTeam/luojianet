@@ -19,7 +19,7 @@ import luojianet_ms.context as context
 import luojianet_ms.ops.composite as C
 from luojianet_ms import Tensor, Parameter
 from luojianet_ms import nn
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE)
@@ -29,22 +29,22 @@ grad_all_with_sens = C.GradOperation(sens_param=True)
 
 
 def test_parser_three_default_mixed_args_subnet():
-    class SubNetDefaultMixedArgs(Cell):
+    class SubNetDefaultMixedArgs(Module):
         def __init__(self):
             super().__init__()
 
-        def construct(self, y, x=3, x1=None, x2=(1, 2)):
+        def forward(self, y, x=3, x1=None, x2=(1, 2)):
             if x == 3:
                 if x1 == None:
                     return y
             return -y
 
-    class NetOut(Cell):
+    class NetOut(Module):
         def __init__(self):
             super(NetOut, self).__init__()
             self.net_inside = SubNetDefaultMixedArgs()
 
-        def construct(self, x, y=3):
+        def forward(self, x, y=3):
             z = self.net_inside(x)
 
             return z
@@ -57,20 +57,20 @@ def test_parser_three_default_mixed_args_subnet():
 
 # pylint: disable=keyword-arg-before-vararg
 def test_net_vararg_kwonlyarg_kwarg():
-    class FirstNet(Cell):
+    class FirstNet(Module):
         def __init__(self):
             super(FirstNet, self).__init__()
             self.net = SecondNet()
 
-        def construct(self, x=1, z=2 + 2 + 4, y=3):
+        def forward(self, x=1, z=2 + 2 + 4, y=3):
             c = self.net(22, 33, x, y, z, 2, 3, 4, 5, key1=10, key2=20, key3=30, key4=40)
             return c
 
-    class SecondNet(Cell):
+    class SecondNet(Module):
         def __init__(self):
             super(SecondNet, self).__init__()
 
-        def construct(self, x, y=2, p=5, q=40, *var, key1=1, key2=3, **kwargs):
+        def forward(self, x, y=2, p=5, q=40, *var, key1=1, key2=3, **kwargs):
             a = x - y
             b = p * q
             c = a / b
@@ -84,20 +84,20 @@ def test_net_vararg_kwonlyarg_kwarg():
 
 # pylint: disable=keyword-arg-before-vararg
 def test_net_vararg_normal_input():
-    class FirstNet(Cell):
+    class FirstNet(Module):
         def __init__(self):
             super(FirstNet, self).__init__()
             self.net = SecondNet()
 
-        def construct(self, x=1, z=2 + 2 + 4, y=3):
+        def forward(self, x=1, z=2 + 2 + 4, y=3):
             c = self.net(22, 33, x, y, z, 2, 3, 4, 5, key1=10, key2=20, key3=30, key4=40)
             return c
 
-    class SecondNet(Cell):
+    class SecondNet(Module):
         def __init__(self):
             super(SecondNet, self).__init__()
 
-        def construct(self, x, y=2, p=5, q=40, *var, key1=1, key2=3, **kwargs):
+        def forward(self, x, y=2, p=5, q=40, *var, key1=1, key2=3, **kwargs):
             a = x - y
             b = p * q
             c = a / b
@@ -111,7 +111,7 @@ def test_net_vararg_normal_input():
 
 
 def test_prim_vararg_kwonlyarg():
-    class FirstNet(Cell):
+    class FirstNet(Module):
         def __init__(self):
             super(FirstNet, self).__init__()
             self.max = P.Maximum()
@@ -120,21 +120,21 @@ def test_prim_vararg_kwonlyarg():
             self.x = Tensor(np.ones((2, 3, 4), np.float32))
             self.y = Tensor(np.ones((2, 3, 4), np.float32))
 
-        def construct(self):
+        def forward(self):
             a = self.max(self.x, self.y)
             b = self.min(self.x, self.y)
             t = {"x": a, "y": b}
             c = self.net(t["x"], t["y"], a, b, z=a, r=b)
             return c
 
-    class SecondNet(Cell):
+    class SecondNet(Module):
         def __init__(self):
             super(SecondNet, self).__init__()
             self.addN = P.AddN()
             self.max = P.Maximum()
             self.add = P.Add()
 
-        def construct(self, x, y, *args, z=0, r=1):
+        def forward(self, x, y, *args, z=0, r=1):
             c = self.max(args[0], args[1])
             d = self.addN(args)
             e = self.max(*args)
@@ -146,7 +146,7 @@ def test_prim_vararg_kwonlyarg():
 
 
 def test_no_vararg():
-    class FirstNet(Cell):
+    class FirstNet(Module):
         def __init__(self):
             super(FirstNet, self).__init__()
             self.max = P.Maximum()
@@ -155,18 +155,18 @@ def test_no_vararg():
             self.x = Tensor(np.ones((2, 3, 4), np.float32))
             self.y = Tensor(np.ones((2, 3, 4), np.float32))
 
-        def construct(self):
+        def forward(self):
             t = {"x": self.x, "y": self.y}
             a = self.max(self.x, self.y)
             b = self.min(self.x, self.y)
             c = self.net(a, b, z=a, r=b)
             return c
 
-    class SecondNet(Cell):
+    class SecondNet(Module):
         def __init__(self):
             super(SecondNet, self).__init__()
 
-        def construct(self, x, y, *, z=0, r=1):
+        def forward(self, x, y, *, z=0, r=1):
             ret = x + y + z + r
             return ret
 
@@ -175,7 +175,7 @@ def test_no_vararg():
 
 
 def test_net_variable_and_weights():
-    class FirstNet(Cell):
+    class FirstNet(Module):
         def __init__(self):
             super(FirstNet, self).__init__()
             self.max = P.Maximum()
@@ -185,14 +185,14 @@ def test_net_variable_and_weights():
             self.y = Tensor(np.ones((3, 4), np.float32))
             self.weight = Parameter(Tensor(np.ones((2, 3, 4)).astype(np.float32)), "w1", requires_grad=True)
 
-        def construct(self, *args):
+        def forward(self, *args):
             t = (self.x, self.y)
             a = self.max(self.x, self.weight)
             b = self.min(self.weight, args[0])
             c = self.net(a, b, *t)
             return c
 
-    class SecondNet(Cell):
+    class SecondNet(Module):
         def __init__(self):
             super(SecondNet, self).__init__()
             self.addN = P.AddN()
@@ -200,7 +200,7 @@ def test_net_variable_and_weights():
             self.add = P.Add()
             self.weight = Parameter(Tensor(np.ones((2, 3, 4), np.float32)), "w2", requires_grad=True)
 
-        def construct(self, a, b, *args):
+        def forward(self, a, b, *args):
             c = self.max(args[0], a)
             d = self.addN(args)
             ret = a + b + c + d + self.weight
@@ -214,7 +214,7 @@ def test_net_variable_and_weights():
 
 
 def test_net_vargs_expand():
-    class InputBackward(Cell):
+    class InputBackward(Module):
         """ InputBackward definition """
 
         def __init__(self, network, c1=None, c2=None):
@@ -225,14 +225,14 @@ def test_net_vargs_expand():
             self.c1 = c1
             self.c2 = c2
 
-        def construct(self, *inputs):
+        def forward(self, *inputs):
             return self.grad(self.network)(*inputs)
 
-    class AddNet(Cell):
+    class AddNet(Module):
         def __init__(self):
             super(AddNet, self).__init__()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return x + y
 
     net = InputBackward(AddNet())
@@ -245,7 +245,7 @@ def test_net_vargs_expand():
 
 
 def test_mixed_precision_const_parameter():
-    class NetLoss(Cell):
+    class NetLoss(Module):
         def __init__(self):
             super(NetLoss, self).__init__()
             self.shape = P.Shape()
@@ -253,7 +253,7 @@ def test_mixed_precision_const_parameter():
             self.up_sample2 = P.ResizeBilinear((28, 28))
             self.up_sample3 = P.ResizeBilinear((36, 36))
 
-        def construct(self, x, y, z, *args):
+        def forward(self, x, y, z, *args):
             ret = 0
             if args[0] == self.shape(z)[2]:
                 if args[0] == 14:
@@ -267,13 +267,13 @@ def test_mixed_precision_const_parameter():
             ret = ret * z
             return ret
 
-    class NetMain(Cell):
+    class NetMain(Module):
         def __init__(self, loss_fn):
             super(NetMain, self).__init__()
             self.loss_fn = loss_fn
             self.shape = P.Shape()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             size_x = self.shape(x)[2]
             size_y = self.shape(y)[2]
             ret = self.loss_fn(x, y, z, size_x, size_y)
@@ -289,21 +289,21 @@ def test_mixed_precision_const_parameter():
 
 
 def test_pass_args_by_key_ward_way():
-    class KeyWardNet(Cell):
+    class KeyWardNet(Module):
         def __init__(self):
             super(KeyWardNet, self).__init__()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             return x + y - z
 
-    class GradNet(Cell):
+    class GradNet(Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.grad = C.GradOperation(get_all=True, sens_param=True)
             self.net = net
             self.sens = Tensor(np.ones((3, 3, 4), np.float32))
 
-        def construct(self, x, y, z, sens):
+        def forward(self, x, y, z, sens):
             return self.grad(self.net)(x, y, z, sens)
 
     x = Tensor(np.ones((1, 3, 4), np.float32))
@@ -323,12 +323,12 @@ def test_none_input():
     Expectation: no error
     """
 
-    class Net(Cell):
+    class Net(Module):
         def __init__(self):
             super(Net, self).__init__()
             self.op = nn.ResizeBilinear()
 
-        def construct(self, a, b, c, d):
+        def forward(self, a, b, c, d):
             return self.op(a, b, c, d)
 
     x = Tensor(np.array([1, 2, 3, 4]).astype(np.float32).reshape((1, 1, 2, 2,)))

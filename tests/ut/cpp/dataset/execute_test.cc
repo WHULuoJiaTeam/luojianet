@@ -398,7 +398,7 @@ TEST_F(MindDataTestExecute, TestTransformInput2) {
   // With this way of creating TensorTransforms, we don't need to explicitly delete the object created with the
   // "new" keyword. When the shared pointer goes out of scope the object destructor will be called.
 
-  // Read image, construct MSTensor from dataset tensor
+  // Read image, forward MSTensor from dataset tensor
   std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
   luojianet_ms::dataset::Tensor::CreateFromFile("data/dataset/apple.jpg", &de_tensor);
   auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
@@ -427,7 +427,7 @@ TEST_F(MindDataTestExecute, TestTransformInput3) {
   MS_LOG(INFO) << "Doing MindDataTestExecute-TestTransformInput3.";
   // Test Execute with transform op input using API constructors, with auto pointers
 
-  // Read image, construct MSTensor from dataset tensor
+  // Read image, forward MSTensor from dataset tensor
   std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
   luojianet_ms::dataset::Tensor::CreateFromFile("data/dataset/apple.jpg", &de_tensor);
   auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
@@ -458,7 +458,7 @@ TEST_F(MindDataTestExecute, TestTransformInputSequential) {
   // Test Execute with transform op input using API constructors, with auto pointers;
   // Apply 2 transformations sequentially, including single non-vector Transform op input
 
-  // Read image, construct MSTensor from dataset tensor
+  // Read image, forward MSTensor from dataset tensor
   std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
   luojianet_ms::dataset::Tensor::CreateFromFile("data/dataset/apple.jpg", &de_tensor);
   auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
@@ -494,7 +494,7 @@ TEST_F(MindDataTestExecute, TestTransformDecodeResizeCenterCrop1) {
   MS_LOG(INFO) << "Doing MindDataTestExecute-TestTransformDecodeResizeCenterCrop1.";
   // Test Execute with Decode, Resize and CenterCrop transform ops input using API constructors, with shared pointers
 
-  // Read image, construct MSTensor from dataset tensor
+  // Read image, forward MSTensor from dataset tensor
   std::shared_ptr<luojianet_ms::dataset::Tensor> de_tensor;
   luojianet_ms::dataset::Tensor::CreateFromFile("data/dataset/apple.jpg", &de_tensor);
   auto image = luojianet_ms::MSTensor(std::make_shared<luojianet_ms::dataset::DETensor>(de_tensor));
@@ -2367,7 +2367,7 @@ TEST_F(MindDataTestExecute, TestSpectralCentroidWithWrongArg) {
 }
 
 /// Feature: Execute Construct Demo1
-/// Description: demonstrate how to construct a Execute
+/// Description: demonstrate how to forward a Execute
 /// Expectation: Construct Execute object and run
 TEST_F(MindDataTestExecute, TestConstructorDemo1) {
   MS_LOG(INFO) << "Doing MindDataTestExecute-TestConstructorDemo1.";
@@ -2388,7 +2388,7 @@ TEST_F(MindDataTestExecute, TestConstructorDemo1) {
 }
 
 /// Feature: Execute Construct Demo2
-/// Description: demonstrate how to construct a Execute
+/// Description: demonstrate how to forward a Execute
 /// Expectation: Construct Execute object and run
 TEST_F(MindDataTestExecute, TestConstructorDemo2) {
   MS_LOG(INFO) << "Doing MindDataTestExecute-TestConstructorDemo2.";
@@ -2414,7 +2414,7 @@ TEST_F(MindDataTestExecute, TestConstructorDemo2) {
 }
 
 /// Feature: Execute Construct Demo3
-/// Description: demonstrate how to construct a Execute
+/// Description: demonstrate how to forward a Execute
 /// Expectation: Construct Execute object and run
 TEST_F(MindDataTestExecute, TestConstructorDemo3) {
   MS_LOG(INFO) << "Doing MindDataTestExecute-TestConstructorDemo3.";
@@ -2437,7 +2437,7 @@ TEST_F(MindDataTestExecute, TestConstructorDemo3) {
 }
 
 /// Feature: Execute Construct Demo4
-/// Description: demonstrate how to construct a Execute
+/// Description: demonstrate how to forward a Execute
 /// Expectation: Construct Execute object and run
 TEST_F(MindDataTestExecute, TestConstructorDemo4) {
   MS_LOG(INFO) << "Doing MindDataTestExecute-TestConstructorDemo4.";

@@ -18,7 +18,7 @@ import numpy as np
 import pytest
 import luojianet_ms.nn as nn
 import luojianet_ms.ops.operations as P
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms import context
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.ops.composite import GradOperation
@@ -51,21 +51,21 @@ class HookBase(MetaFactory):
         output = mul(grad, y)
         return (output,)
 
-class FinalNet(nn.Cell, HookBase):
+class FinalNet(nn.Module, HookBase):
     def __init__(self):
         super().__init__()
         HookBase.__init__(self)
         self.conv = nn.Conv2d(1, 3, 3)
         self.relu = nn.ReLU()
 
-    def construct(self, x, flag):
+    def forward(self, x, flag):
         if flag:
             x = self.conv(x)
         else:
             x = self.relu(x)
         return self.relu(x)
 
-class _Grad(Cell):
+class _Grad(Module):
     def __init__(self, grad, network, wrt_params=False, real_inputs_count=None):
         super().__init__()
         self.network = network
@@ -76,7 +76,7 @@ class _Grad(Cell):
         if self.wrt_params:
             self.params = ParameterTuple(self.network.trainable_params())
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         if self.wrt_params:
             if self.real_inputs_count is None or self.sens_param is False:
                 return self.grad(self.network, self.params)(*inputs)
@@ -94,26 +94,26 @@ class GradOfAllInputs(_Grad):
         super().__init__(grad=GradOperation(get_all=True, sens_param=sens_param),
                          network=network, real_inputs_count=real_inputs_count)
 
-class MsMul4(nn.Cell):
-    def construct(self, input_mul):
+class MsMul4(nn.Module):
+    def forward(self, input_mul):
         out = input_mul * 2
         return out
 
-class MsMul(nn.Cell):
+class MsMul(nn.Module):
     def __init__(self):
         super().__init__()
         self.mul = P.Mul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.mul(x, y)
         return x
 
-class MsAdd4(nn.Cell):
-    def construct(self, input_add):
+class MsAdd4(nn.Module):
+    def forward(self, input_add):
         out = input_add + 4
         return out
 
-class MsOneInputNet(nn.Cell, HookBase):
+class MsOneInputNet(nn.Module, HookBase):
     def __init__(self):
         super().__init__()
         HookBase.__init__(self)
@@ -121,25 +121,25 @@ class MsOneInputNet(nn.Cell, HookBase):
         self.mul = MsMul4()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.add(x)
         x = self.mul(x)
         out = self.relu(x)
         return out
 
-class MsMultiInputNet(nn.Cell, HookBase):
+class MsMultiInputNet(nn.Module, HookBase):
     def __init__(self):
         super().__init__()
         HookBase.__init__(self)
         self.mul1 = MsMul()
         self.mul2 = MsMul4()
-    def construct(self, x, y):
+    def forward(self, x, y):
         a = self.mul1(x, y)
         b = self.mul2(x)
         output = self.mul1(a, b)
         return output
 
-class MsNetWithParameter(nn.Cell, HookBase):
+class MsNetWithParameter(nn.Module, HookBase):
     def __init__(self):
         super().__init__()
         HookBase.__init__(self)
@@ -150,30 +150,30 @@ class MsNetWithParameter(nn.Cell, HookBase):
                                weight_init=Tensor(np.ones([8, 4, 1, 1]).astype(np.float32)),
                                bias_init=Tensor(np.ones([8]).astype(np.float32)))
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         output = self.conv2(x)
         return output
 
-class MsNetWithCellinCell(nn.Cell, HookBase):
+class MsNetWithCellinCell(nn.Module, HookBase):
     def __init__(self):
         super().__init__()
         HookBase.__init__(self)
         self.net1 = MsOneInputNet()
         self.mul = MsMul4()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.net1(x)
         output = self.mul(x)
         return output
 
-class MsSingleOpNetWithBprop(nn.Cell, HookBase):
+class MsSingleOpNetWithBprop(nn.Module, HookBase):
     def __init__(self):
         super().__init__()
         HookBase.__init__(self)
         self.op = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.op(x)
 
     def bprop(self, x, out, dout):
@@ -181,25 +181,25 @@ class MsSingleOpNetWithBprop(nn.Cell, HookBase):
         mul = P.Mul()
         return mul(x, y)
 
-class MsNetHasBpropInChild(nn.Cell, HookBase):
+class MsNetHasBpropInChild(nn.Module, HookBase):
     def __init__(self):
         super().__init__()
         HookBase.__init__(self)
         self.add = MsAdd4()
         self.bprop_net = MsSingleOpNetWithBprop()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.add(x)
         return self.bprop_net(x)
 
-class MsMultiOpNetWithBprop(nn.Cell, HookBase):
+class MsMultiOpNetWithBprop(nn.Module, HookBase):
     def __init__(self):
         super().__init__()
         HookBase.__init__(self)
         self.mul = MsMul4()
         self.relu = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.mul(x)
         return self.relu(x)
 

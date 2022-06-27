@@ -28,7 +28,7 @@ from tests.luojianet_ms_test_framework.pipeline.forward.compile_forward \
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class TupleGraphNet(nn.Cell):
+class TupleGraphNet(nn.Module):
     def __init__(self):
         super(TupleGraphNet, self).__init__()
         self.conv1 = nn.Conv2d(3, 1, 3, pad_mode='same')
@@ -36,11 +36,11 @@ class TupleGraphNet(nn.Cell):
         self.conv3 = nn.Conv2d(3, 3, 3, pad_mode='same')
         self.layers = (self.conv1, self.conv2, self.conv3)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.layers[0](x)
 
 
-class NestTupleGraphNet(nn.Cell):
+class NestTupleGraphNet(nn.Module):
     def __init__(self):
         super(NestTupleGraphNet, self).__init__()
         self.conv1 = nn.Conv2d(3, 1, 3, pad_mode='same')
@@ -49,16 +49,16 @@ class NestTupleGraphNet(nn.Cell):
         self.layers = ((self.conv1, self.conv2),
                        (self.conv2, self.conv1, self.conv3))
 
-    def construct(self, x):
+    def forward(self, x):
         return self.layers[0][1](x)
 
 
-class InTupleNet(nn.Cell):
+class InTupleNet(nn.Module):
     def __init__(self):
         super(InTupleNet, self).__init__()
         self.tuple_ = (1, 2, 3, 4, 5, "ok")
 
-    def construct(self, x):
+    def forward(self, x):
         ret = x
         if 2 in self.tuple_:
             ret = x + x
@@ -67,28 +67,28 @@ class InTupleNet(nn.Cell):
         return ret
 
 
-class TensorInTuple(nn.Cell):
+class TensorInTuple(nn.Module):
     def __init__(self):
         super(TensorInTuple, self).__init__()
         self.t1 = Tensor(1, mstype.float32)
         self.t2 = Tensor(2, mstype.float32)
         self.tuple_ = (self.t1, self.t2)
 
-    def construct(self, x):
+    def forward(self, x):
         ret = x
         if self.t1 in self.tuple_:
             ret = x + x
         return ret
 
 
-class TensorNotInTuple(nn.Cell):
+class TensorNotInTuple(nn.Module):
     def __init__(self):
         super(TensorNotInTuple, self).__init__()
         self.t1 = Tensor(1, mstype.float32)
         self.t2 = Tensor(2, mstype.float32)
         self.tuple_ = (self.t1, self.t2)
 
-    def construct(self, x):
+    def forward(self, x):
         ret = x
         if self.t1 not in self.tuple_:
             ret = x + x

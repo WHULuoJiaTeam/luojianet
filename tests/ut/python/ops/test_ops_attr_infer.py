@@ -47,13 +47,13 @@ class FakeOp(PrimitiveWithInfer):
 # test the normal case that should generate independent primitive because of different
 # generated attributes after inference
 def test_conv2d_same_primitive():
-    class Conv2DSameNet(nn.Cell):
+    class Conv2DSameNet(nn.Module):
         def __init__(self):
             super(Conv2DSameNet, self).__init__()
             self.conv1 = nn.Conv2d(16, 64, (1, 41), (1, 4), "same", 0, 1, has_bias=True)
             self.conv2 = nn.Conv2d(16, 64, (1, 41), (1, 4), "same", 0, 1, has_bias=True)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             r1 = self.conv1(x)
             r2 = self.conv2(y)
             return (r1, r2)
@@ -98,20 +98,20 @@ def test_remove_and_fv_2():
 # The graph with free variables used as argument is not supported yet
 # because of the limit of inference specialize system
 def test_conv2d_op_with_argi_1():
-    class Conv2dNet(nn.Cell):
+    class Conv2dNet(nn.Module):
         def __init__(self):
             super(Conv2dNet, self).__init__()
 
-        def construct(self, op, x):
+        def forward(self, op, x):
             return op(x)
 
-    class OpsNet(nn.Cell):
+    class OpsNet(nn.Module):
         def __init__(self, net):
             super(OpsNet, self).__init__()
             self.opnet = net
             self.conv2 = nn.Conv2d(16, 64, (1, 41), (1, 4), "same", 0, 1, has_bias=True)
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             conv_op = self.conv2
             a = self.opnet(conv_op, x)
             b = self.opnet(conv_op, y)
@@ -124,28 +124,28 @@ def test_conv2d_op_with_argi_1():
 
 
 def test_conv2d_op_with_arg():
-    class FackOpNet(nn.Cell):
+    class FackOpNet(nn.Module):
         def __init__(self):
             super(FackOpNet, self).__init__()
             self.op = FakeOp()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return self.op(x, y)
 
-    class OpNet(nn.Cell):
+    class OpNet(nn.Module):
         def __init__(self):
             super(OpNet, self).__init__()
 
-        def construct(self, op, x, y):
+        def forward(self, op, x, y):
             return op(x, y)
 
-    class OpsNet(nn.Cell):
+    class OpsNet(nn.Module):
         def __init__(self, net):
             super(OpsNet, self).__init__()
             self.opnet = net
             self.op = FackOpNet()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             op = self.op
             a = self.opnet(op, x, y)
             b = self.opnet(op, y, x)
@@ -158,28 +158,28 @@ def test_conv2d_op_with_arg():
 
 
 def test_conv2d_op_with_arg_same_input():
-    class FackOpNet(nn.Cell):
+    class FackOpNet(nn.Module):
         def __init__(self):
             super(FackOpNet, self).__init__()
             self.op = FakeOp()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return self.op(x, y)
 
-    class OpNet(nn.Cell):
+    class OpNet(nn.Module):
         def __init__(self):
             super(OpNet, self).__init__()
 
-        def construct(self, op, x, y):
+        def forward(self, op, x, y):
             return op(x, y)
 
-    class OpsNet(nn.Cell):
+    class OpsNet(nn.Module):
         def __init__(self, net):
             super(OpsNet, self).__init__()
             self.opnet = net
             self.op = FackOpNet()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             op = self.op
             a = self.opnet(op, x, x)
             b = self.opnet(op, y, x)
@@ -193,12 +193,12 @@ def test_conv2d_op_with_arg_same_input():
 
 # test op with partial
 def test_op_as_partial():
-    class OpAsPartial(nn.Cell):
+    class OpAsPartial(nn.Module):
         def __init__(self):
             super(OpAsPartial, self).__init__()
             self.op = FakeOp()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             partial_op = F.partial(self.op, x)
             a = partial_op(y)
             b = partial_op(z)
@@ -213,23 +213,23 @@ def test_op_as_partial():
 
 # test op with partial
 def test_op_as_partial_inside():
-    class OpAsPartial(nn.Cell):
+    class OpAsPartial(nn.Module):
         def __init__(self):
             super(OpAsPartial, self).__init__()
             self.op = FakeOp()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             partial_op = F.partial(self.op, x)
             a = partial_op(y)
             b = partial_op(z)
             return a, b
 
-    class OuterNet(nn.Cell):
+    class OuterNet(nn.Module):
         def __init__(self):
             super(OuterNet, self).__init__()
             self.net = OpAsPartial()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             a, b = self.net(x, y, z)
             return a, b
 
@@ -242,12 +242,12 @@ def test_op_as_partial_inside():
 
 # test op with partial case 2
 def test_op_as_partial_independent():
-    class OpAsPartial(nn.Cell):
+    class OpAsPartial(nn.Module):
         def __init__(self):
             super(OpAsPartial, self).__init__()
             self.op = FakeOp()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             partial_op1 = F.partial(self.op, x)
             a = partial_op1(y)
             partial_op2 = F.partial(self.op, x)
@@ -262,12 +262,12 @@ def test_op_as_partial_independent():
 
 
 def test_nest_partial():
-    class NestPartial(nn.Cell):
+    class NestPartial(nn.Module):
         def __init__(self):
             super(NestPartial, self).__init__()
             self.op = FakeOp()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             partial_op1 = F.partial(self.op)
             partial_op2 = F.partial(partial_op1, x)
             a = partial_op2(y)
@@ -286,20 +286,20 @@ def test_nest_partial():
 # high order argument
 # op and op args as network arguments
 def test_op_with_arg_as_input():
-    class WithOpArgNet(nn.Cell):
+    class WithOpArgNet(nn.Module):
         def __init__(self):
             super(WithOpArgNet, self).__init__()
 
-        def construct(self, op, x, y):
+        def forward(self, op, x, y):
             return op(x, y)
 
-    class OpsNet(nn.Cell):
+    class OpsNet(nn.Module):
         def __init__(self, net):
             super(OpsNet, self).__init__()
             self.opnet = net
             self.op = FakeOp()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             op = self.op
             a = self.opnet(op, x, z)
             b = self.opnet(op, x, y)
@@ -316,20 +316,20 @@ def test_op_with_arg_as_input():
 # because of the limit of inference specialize system
 @pytest.mark.skip("poly in infer")
 def test_partial_as_arg():
-    class PartialArgNet(nn.Cell):
+    class PartialArgNet(nn.Module):
         def __init__(self):
             super(PartialArgNet, self).__init__()
 
-        def construct(self, partial_op, y):
+        def forward(self, partial_op, y):
             return partial_op(y)
 
-    class OpsNet(nn.Cell):
+    class OpsNet(nn.Module):
         def __init__(self, net):
             super(OpsNet, self).__init__()
             self.partial_net = net
             self.op = FakeOp()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             partial_op = F.partial(self.op, x)
             a = self.partial_net(partial_op, z)
             b = self.partial_net(partial_op, y)

@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend", mode=context.GRAPH_MODE, variable_memory_max_size="31GB")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.relu = P.ReLU()
 
     @ms_function
-    def construct(self, x):
+    def forward(self, x):
         return self.relu(x)
 
 

@@ -23,28 +23,28 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class Unique(nn.Cell):
+class Unique(nn.Module):
     def __init__(self):
         super(Unique, self).__init__()
         self.unique_cpu = P.Unique().add_prim_attr("primitive_target", "CPU")
 
-    def construct(self, x):
+    def forward(self, x):
         x, y = self.unique_cpu(x)
         return (x, y)
 
 
-class UniqueSquare(nn.Cell):
+class UniqueSquare(nn.Module):
     def __init__(self):
         super(UniqueSquare, self).__init__()
         self.unique_cpu = P.Unique().add_prim_attr("primitive_target", "CPU")
         self.square = P.Square()
 
-    def construct(self, x):
+    def forward(self, x):
         x, _ = self.unique_cpu(x)
         return self.square(x)
 
 
-class UniqueReshapeAdd(nn.Cell):
+class UniqueReshapeAdd(nn.Module):
     def __init__(self):
         super(UniqueReshapeAdd, self).__init__()
         self.unique_cpu = P.Unique()
@@ -53,7 +53,7 @@ class UniqueReshapeAdd(nn.Cell):
         self.reshape = P.Reshape()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x, _ = self.unique_cpu(x)
         x = self.reshape(x, (3, 1))
         y, _ = self.unique(y)

@@ -39,14 +39,14 @@ def test_cholesky_grad(shape, data_type):
     context.set_context(mode=context.GRAPH_MODE)
     dtype, epsilon, error = data_type
 
-    class CholeskyNet(nn.Cell):
+    class CholeskyNet(nn.Module):
         def __init__(self):
             super(CholeskyNet, self).__init__()
             self.mean = ops.ReduceMean()
             # Input arg clean not supports grad right now, just default clean to True.
             self.cholesky = Cholesky(clean=True)
 
-        def construct(self, a):
+        def forward(self, a):
             c = self.cholesky(a)
             return self.mean(c)
 
@@ -76,13 +76,13 @@ def test_cho_factor_grad(lower, shape, data_type):
     context.set_context(mode=context.GRAPH_MODE)
     dtype, epsilon, error = data_type
 
-    class ChoFactorNet(nn.Cell):
+    class ChoFactorNet(nn.Module):
         def __init__(self, lower):
             super(ChoFactorNet, self).__init__()
             self.mean = ops.ReduceMean()
             self.lower = lower
 
-        def construct(self, a):
+        def forward(self, a):
             c, _ = cho_factor(a, self.lower)
             return self.mean(c)
 
@@ -116,13 +116,13 @@ def test_cho_solve_grad(lower, shape, data_type):
     context.set_context(mode=context.GRAPH_MODE)
     dtype, epsilon, error = data_type
 
-    class ChoSolveNet(nn.Cell):
+    class ChoSolveNet(nn.Module):
         def __init__(self, lower):
             super(ChoSolveNet, self).__init__()
             self.mean = ops.ReduceMean()
             self.lower = lower
 
-        def construct(self, c, b):
+        def forward(self, c, b):
             c_lower = (c, self.lower)
             output = cho_solve(c_lower, b)
             return self.mean(output)
@@ -154,7 +154,7 @@ def test_eigh_grad(compute_eigenvectors, lower, shape, data_type):
     onp.random.seed(0)
     dtype, epsilon, error = data_type
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.mean = ops.ReduceMean()
@@ -163,7 +163,7 @@ def test_eigh_grad(compute_eigenvectors, lower, shape, data_type):
             self.lower = lower
             self.eigh = Eigh(compute_eigenvectors, lower)
 
-        def construct(self, a):
+        def forward(self, a):
             res = None
             if self.compute_eigenvectors:
                 w, v = self.eigh(a)
@@ -200,14 +200,14 @@ def test_trsm_grad(shapes, trans, lower, unit_diagonal, data_type):
     onp.random.seed(0)
     dtype, epsilon, error = data_type
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.mean = ops.ReduceMean()
             self.sum = ops.ReduceSum()
             self.trsm = SolveTriangular(lower, unit_diagonal, trans)
 
-        def construct(self, a, b):
+        def forward(self, a, b):
             x = self.trsm(a, b)
             return self.sum(x) + self.mean(x)
 

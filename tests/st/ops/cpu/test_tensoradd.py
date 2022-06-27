@@ -24,12 +24,12 @@ from luojianet_ms.ops import operations as P
 
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
-class TensorAdd(nn.Cell):
+class TensorAdd(nn.Module):
     def __init__(self):
         super(TensorAdd, self).__init__()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         res = self.add(x, y)
         return res
 

@@ -33,7 +33,7 @@ batch_size = 32
 mini_batch = total // batch_size
 
 
-class LeNet(nn.Cell):
+class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
 
@@ -55,7 +55,7 @@ class LeNet(nn.Cell):
         weight3 = Tensor(np.ones([10, 84]).astype(np.float32) * 0.01)
         self.fc3 = nn.Dense(84, 10, weight_init=weight3)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         output = self.conv1(input_x)
         output = self.relu(output)
         output = self.pool(output)

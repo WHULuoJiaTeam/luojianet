@@ -25,12 +25,12 @@ from luojianet_ms.ops.operations import _inner_ops as ops
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.stitch = ops.DynamicStitch()
 
-    def construct(self, indices, data):
+    def forward(self, indices, data):
         return self.stitch(indices, data)
 
 @pytest.mark.level0

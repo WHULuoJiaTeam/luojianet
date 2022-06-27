@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.WARNING)
 
 
 # pylint: disable=abstract-method
-class NetMissConstruct(nn.Cell):
+class NetMissConstruct(nn.Module):
     """ NetMissConstruct definition """
 
     def __init__(self):
@@ -47,7 +47,7 @@ class NetMissConstruct(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2)
         self.flatten = P.Flatten()
 
-    # TestCase: Mis-spelled 'construct' to 'construtc'
+    # TestCase: Mis-spelled 'forward' to 'construtc'
     def construtc(self, x):
         x = self.max_pool2d(self.relu(self.conv1(x)))
         x = self.max_pool2d(self.relu(self.conv2(x)))
@@ -65,36 +65,36 @@ def test_net_without_construct():
     _cell_graph_executor.compile(net, inp)
 
 
-class NetAddN(nn.Cell):
+class NetAddN(nn.Module):
     """net for test AddN"""
 
     def __init__(self):
         super(NetAddN, self).__init__()
         self.net = P.AddN()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.net(x)
 
 
-class NetSplit(nn.Cell):
+class NetSplit(nn.Module):
     "net for test Split"
 
     def __init__(self):
         super(NetSplit, self).__init__()
         self.net = P.Split(1, 2)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.net(x)
 
 
-class NetBatchMatMul(nn.Cell):
+class NetBatchMatMul(nn.Module):
     """net for test BatchMatMul"""
 
     def __init__(self):
         super(NetBatchMatMul, self).__init__()
         self.op = P.BatchMatMul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.op(x, y)
 
 

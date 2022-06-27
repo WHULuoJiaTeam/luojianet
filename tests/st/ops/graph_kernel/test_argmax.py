@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class ArgMax(nn.Cell):
+class ArgMax(nn.Module):
     def __init__(self, axis):
         super(ArgMax, self).__init__()
         self.arg_max = P.Argmax(axis=axis)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.arg_max(x)
 
 

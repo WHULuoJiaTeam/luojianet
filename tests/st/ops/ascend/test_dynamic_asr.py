@@ -70,13 +70,13 @@ def compare_acc(outputs, expects):
     return True
 
 
-class GradNetWrtX(nn.Cell):
+class GradNetWrtX(nn.Module):
     def __init__(self, network):
         super(GradNetWrtX, self).__init__()
         self.grad = ops.GradOperation(get_all=True, sens_param=True)
         self.network = network
 
-    def construct(self, input_, output_grad):
+    def forward(self, input_, output_grad):
         return self.grad(self.network)(input_, output_grad)
 
 
@@ -124,7 +124,7 @@ class CustomDense(nn.Dense):
         self.indices_1 = Tensor(np.array([[-1]]), mstype.int32)
         self.indices_2 = Tensor(np.array([[2]]), mstype.int32)
 
-    def construct(self, x):
+    def forward(self, x):
         if -1 in x.shape:
             x_dyn_shape = self.dyn_shape(x)
             x_dyn_shape = self.cast(x_dyn_shape, mstype.float16)
@@ -163,7 +163,7 @@ class CustomDense(nn.Dense):
         return x
 
 
-class BatchNorm1d(nn.Cell):
+class BatchNorm1d(nn.Module):
     def __init__(self, channels):
         super(BatchNorm1d, self).__init__()
         self.expand_dims = ops.ExpandDims()
@@ -171,7 +171,7 @@ class BatchNorm1d(nn.Cell):
         self.reshape = ops.Reshape()
         self.batchnorm = nn.BatchNorm2d(channels)
 
-    def construct(self, x):
+    def forward(self, x):
         x_shape = self.shape(x)
         x = self.expand_dims(x, 2)
         x = self.expand_dims(x, 3)
@@ -180,7 +180,7 @@ class BatchNorm1d(nn.Cell):
         return out
 
 
-class Positional(nn.Cell):
+class Positional(nn.Module):
     def __init__(self, d_model: int, max_len: int = 5000):
         super().__init__()
         self.d_model = d_model
@@ -203,7 +203,7 @@ class Positional(nn.Cell):
         self.end = Tensor((self.pe.shape[0], 0, self.pe.shape[2]), mstype.float32)
 
 
-    def construct(self, x: Tensor, offset: int = 0):
+    def forward(self, x: Tensor, offset: int = 0):
         if -1 not in x.shape:
             pos_emb = self.pe[:, offset: offset + x.shape[1]]
         else:

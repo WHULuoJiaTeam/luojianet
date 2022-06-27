@@ -24,7 +24,7 @@ context.set_context(enable_sparse=True,
                     mode=context.GRAPH_MODE)
 
 
-class NetWithEmbeddingLookUp(nn.Cell):
+class NetWithEmbeddingLookUp(nn.Module):
     def __init__(self, vocab_size, embedding_size, target="CPU"):
         super(NetWithEmbeddingLookUp, self).__init__()
         self.embedding_lookup =  \
@@ -32,7 +32,7 @@ class NetWithEmbeddingLookUp(nn.Cell):
                                            embedding_size=embedding_size,
                                            param_init="ones", target=target)
 
-    def construct(self, indices):
+    def forward(self, indices):
         out = self.embedding_lookup(indices)
         return out
 

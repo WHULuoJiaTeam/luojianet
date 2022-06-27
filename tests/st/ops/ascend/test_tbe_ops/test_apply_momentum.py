@@ -21,7 +21,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.apply_momentum = P.ApplyMomentum(gradient_scale=1024.0)
@@ -36,7 +36,7 @@ class Net(nn.Cell):
         self.momentum = Parameter(initializer(
             'normal', [1,]), name='momentum')
 
-    def construct(self):
+    def forward(self):
         return self.apply_momentum(self.variable, self.accumulation, self.learning_rate, self.gradient, self.momentum)
 
 

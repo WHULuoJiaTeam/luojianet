@@ -195,8 +195,8 @@ class WaitedDSCallback(Callback, DSCallback):
         ...         self.events.append(event)
         >>>
         >>> # custom network
-        >>> class Net(nn.Cell):
-        ...     def construct(self, x, y):
+        >>> class Net(nn.Module):
+        ...     def forward(self, x, y):
         ...         return x
         >>>
         >>> # define a parameter that needs to be synchronized between data pipeline and network training
@@ -207,7 +207,7 @@ class WaitedDSCallback(Callback, DSCallback):
         >>> my_cb2 = MyMSCallback(events)
         >>> arr = [1, 2, 3, 4]
         >>>
-        >>> # construct data pipeline
+        >>> # forward data pipeline
         >>> data = ds.NumpySlicesDataset((arr, arr), column_names=["c1", "c2"], shuffle=False)
         >>> # map the data callback object into the pipeline
         >>> data = data.map(operations=(lambda x: x), callbacks=my_cb1)

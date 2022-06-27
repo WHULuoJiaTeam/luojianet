@@ -86,12 +86,12 @@ def test_fallback_abs_numpy():
 def test_fallback_abs_cell_construct_tensor():
     """
     Feature: JIT Fallback
-    Description: Test abs(Tensor) the tensor is construct in construct function in graph mode
+    Description: Test abs(Tensor) the tensor is forward in forward function in graph mode
     Expectation: No exception
     """
 
-    class TestCell(nn.Cell):
-        def construct(self):
+    class TestCell(nn.Module):
+        def forward(self):
             x = Tensor([-1, 2])
             return abs(x)
 
@@ -103,12 +103,12 @@ def test_fallback_abs_cell_construct_tensor():
 def test_fallback_abs_cell_variable_tensor():
     """
     Feature: JIT Fallback
-    Description: Test abs(Tensor) a variable tensor in construct function in graph mode
+    Description: Test abs(Tensor) a variable tensor in forward function in graph mode
     Expectation: No exception
     """
 
-    class TestCell(nn.Cell):
-        def construct(self, y):
+    class TestCell(nn.Module):
+        def forward(self, y):
             x = Tensor([-1, 2])
             return abs(x + y)
 
@@ -119,16 +119,16 @@ def test_fallback_abs_cell_variable_tensor():
 def test_fallback_abs_cell_init_tensor():
     """
     Feature: JIT Fallback
-    Description: Test abs(Tensor) the tensor is construct in construct function in graph mode
+    Description: Test abs(Tensor) the tensor is forward in forward function in graph mode
     Expectation: No exception
     """
 
-    class TestCell(nn.Cell):
+    class TestCell(nn.Module):
         def __init__(self):
             super(TestCell, self).__init__()
             self.x = Tensor([-1, 2])
 
-        def construct(self):
+        def forward(self):
             return abs(self.x)
 
     test_cell = TestCell()
@@ -138,7 +138,7 @@ def test_fallback_abs_cell_init_tensor():
 def test_fallback_abs_ms_function_tensor():
     """
     Feature: JIT Fallback
-    Description: Test abs(Tensor) the tensor is construct in ms_function
+    Description: Test abs(Tensor) the tensor is forward in ms_function
     Expectation: No exception
     """
 
@@ -153,7 +153,7 @@ def test_fallback_abs_ms_function_tensor():
 def test_fallback_isolated_node():
     """
     Feature: JIT Fallback
-    Description: Test abs(Tensor) the tensor is construct in ms_function
+    Description: Test abs(Tensor) the tensor is forward in ms_function
     Expectation: No exception
     """
 

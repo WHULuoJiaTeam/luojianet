@@ -21,12 +21,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.relu_grad = G.ReluGrad()
 
-    def construct(self, y_backprop, x):
+    def forward(self, y_backprop, x):
         return self.relu_grad(y_backprop, x)
 
 

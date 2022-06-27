@@ -23,13 +23,13 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.common.parameter import Parameter
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, param):
         super(Net, self).__init__()
         self.lamb_apply_weight_assign = P.LambApplyWeightAssign()
         self.param = Parameter(param, name='param')
 
-    def construct(self, w_norm, g_norm, lr, update):
+    def forward(self, w_norm, g_norm, lr, update):
         return self.lamb_apply_weight_assign(w_norm, g_norm, lr, update, self.param)
 
 

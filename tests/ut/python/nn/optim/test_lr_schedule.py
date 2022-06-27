@@ -17,7 +17,7 @@
 import numpy as np
 
 from luojianet_ms import Parameter, ParameterTuple, Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn.optim import Optimizer
 from luojianet_ms.ops.operations import BiasAdd, MatMul
 import luojianet_ms.ops.composite as C
@@ -26,7 +26,7 @@ import luojianet_ms.ops.composite as C
 grad_by_list = C.GradOperation(get_by_list=True)
 
 
-class Net(Cell):
+class Net(Module):
     """ Net definition """
 
     def __init__(self):
@@ -36,17 +36,17 @@ class Net(Cell):
         self.matmul = MatMul()
         self.biasAdd = BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         return x
 
 
-class _TrainOneStepCell(Cell):
+class _TrainOneStepCell(Module):
     """ _TrainOneStepCell definition """
 
     def __init__(self, network, optimizer):
         """
-        Append an optimizer to the training network after that the construct
+        Append an optimizer to the training network after that the forward
         function can be called to create the backward graph.
         Arguments:
             network: The training network.
@@ -64,7 +64,7 @@ class _TrainOneStepCell(Cell):
         self.has_lr_schedule = False
         self.optimizer = optimizer
 
-    def construct(self, data, label, *args):
+    def forward(self, data, label, *args):
         weights = self.weights
         grads = grad_by_list(self.network, weights)(data, label)
         if self.lr_schedule:

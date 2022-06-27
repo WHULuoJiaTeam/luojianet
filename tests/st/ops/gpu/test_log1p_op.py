@@ -25,12 +25,12 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
-class NetLog1p(nn.Cell):
+class NetLog1p(nn.Module):
     def __init__(self):
         super(NetLog1p, self).__init__()
         self.log1p = P.Log1p()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.log1p(x)
 
 

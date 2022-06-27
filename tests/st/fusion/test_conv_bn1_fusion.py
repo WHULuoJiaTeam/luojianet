@@ -28,13 +28,13 @@ num_class = 10
 batch_size = 32
 
 
-class MsWrapper(nn.Cell):
+class MsWrapper(nn.Module):
     def __init__(self, network):
         super(MsWrapper, self).__init__(auto_prefix=False)
         self._network = network
 
     @ms_function
-    def construct(self, *args):
+    def forward(self, *args):
         return self._network(*args)
 
 
@@ -54,7 +54,7 @@ def me_train_tensor(net, input_np, label_np, epoch_size=2):
 
 
 def test_conv_bn_add_relu_fusion():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.conv = nn.Conv2d(input_channel, output_channel,
@@ -68,7 +68,7 @@ def test_conv_bn_add_relu_fusion():
             self.reshape = P.Reshape()
             self.dense = nn.Dense(output_channel, num_class)
 
-        def construct(self, input_x):
+        def forward(self, input_x):
             output = self.conv(input_x)
             output = self.bn(output)
             output = self.add(output, self.conv1(input_x))
@@ -85,7 +85,7 @@ def test_conv_bn_add_relu_fusion():
 
 
 def test_conv_bn_relu_fusion():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.conv = nn.Conv2d(input_channel, output_channel,
@@ -96,7 +96,7 @@ def test_conv_bn_relu_fusion():
             self.reshape = P.Reshape()
             self.dense = nn.Dense(output_channel, num_class)
 
-        def construct(self, input_x):
+        def forward(self, input_x):
             output = self.conv(input_x)
             output = self.bn(output)
             output = self.relu(output)
@@ -112,7 +112,7 @@ def test_conv_bn_relu_fusion():
 
 
 def test_conv_bn_fusion():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.conv = nn.Conv2d(input_channel, output_channel,
@@ -122,7 +122,7 @@ def test_conv_bn_fusion():
             self.reshape = P.Reshape()
             self.dense = nn.Dense(output_channel, num_class)
 
-        def construct(self, input_x):
+        def forward(self, input_x):
             output = self.conv(input_x)
             output = self.bn(output)
             output = self.mean(output, (-2, -1))

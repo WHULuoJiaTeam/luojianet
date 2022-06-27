@@ -55,7 +55,7 @@ def create_mnist_dataset(mode='train', num_samples=2, batch_size=2):
     return mnist_ds
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     """
     Lenet network
 
@@ -89,8 +89,8 @@ class LeNet5(nn.Cell):
         self.tensor_summary = P.TensorSummary()
         self.channel = Tensor(num_channel)
 
-    def construct(self, x):
-        """construct."""
+    def forward(self, x):
+        """forward."""
         self.image_summary('image', x)
         x = self.conv1(x)
         self.histogram_summary('histogram', x)

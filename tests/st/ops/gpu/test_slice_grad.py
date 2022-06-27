@@ -25,14 +25,14 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.PYNATIVE_MODE, device_target='GPU')
 
 
-class SliceGrad(nn.Cell):
+class SliceGrad(nn.Module):
     def __init__(self):
         super(SliceGrad, self).__init__()
 
         self.slicegrad = G.SliceGrad()
 
     @ms_function
-    def construct(self, dy, x):
+    def forward(self, dy, x):
         return self.slicegrad(dy, x, (0, 1, 0), (2, 1, 3))
 
 

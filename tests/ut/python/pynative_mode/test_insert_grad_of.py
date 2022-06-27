@@ -94,13 +94,13 @@ def test_InsertGradientOf_2():
 
 
 def test_print_shape_type():
-    class Mul(nn.Cell):
+    class Mul(nn.Module):
         def __init__(self):
             super(Mul, self).__init__()
             self.print_shape_type = PrintShapeTypeCell()
             self.print_shape_type_gradient = PrintGradShapeTypeCell("Gradients")
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             z = x * y
             self.print_shape_type("Forward", z)
             self.print_shape_type_gradient(z)
@@ -113,7 +113,7 @@ def test_print_shape_type():
 def test_cell_assign():
     context.set_context(mode=context.GRAPH_MODE)
 
-    class GradNetWrap(nn.Cell):
+    class GradNetWrap(nn.Module):
         """ GradNetWrap definition """
 
         def __init__(self, net):
@@ -121,10 +121,10 @@ def test_cell_assign():
             self.net = net
             self.weights = luojianet_ms.ParameterTuple(net.get_parameters())
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return grad_by_list(self.net, self.weights)(x, y)
 
-    class Mul(nn.Cell):
+    class Mul(nn.Module):
         def __init__(self):
             super(Mul, self).__init__()
             self.matrix_w = luojianet_ms.Parameter(Tensor(np.ones([2, 2], np.float32)), name="matrix_w")
@@ -135,7 +135,7 @@ def test_cell_assign():
             self.matrix_g = dout + self.matrix_g
             return dout
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             z = x * self.matrix_w
             z = self.get_g(z)
             z = z * y

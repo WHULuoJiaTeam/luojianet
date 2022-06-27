@@ -19,7 +19,7 @@ import numpy as np
 from luojianet_ms import Tensor, Model
 from luojianet_ms import context
 from luojianet_ms.nn import AvgPool2d
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import Flatten
 from luojianet_ms.nn import ReLU
 from luojianet_ms.nn import SequentialCell
@@ -29,12 +29,12 @@ from ...ut_filter import non_graph_engine
 # pylint: disable=W0212
 
 
-class Net3(Cell):
+class Net3(Module):
     def __init__(self):
         super().__init__()
         self.tuple = (ReLU(), ReLU())
 
-    def construct(self, x):
+    def forward(self, x):
         for op in self.tuple:
             x = op(x)
         return x
@@ -50,12 +50,12 @@ def test_cell_list():
     model.predict(input_me)
 
 
-class SequenceNet(Cell):
+class SequenceNet(Module):
     def __init__(self):
         super().__init__()
         self.seq = SequentialCell([AvgPool2d(3, 1), ReLU(), Flatten()])
         self.values = list(self.seq._cells.values())
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.seq(x)
         return x

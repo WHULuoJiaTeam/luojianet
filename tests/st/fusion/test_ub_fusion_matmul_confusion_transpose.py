@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.matmul = P.MatMul()
@@ -32,7 +32,7 @@ class Net(nn.Cell):
         self.reshape = P.Reshape()
         self.bias_add = P.BiasAdd()
 
-    def construct(self, x, y, z):
+    def forward(self, x, y, z):
         res = self.matmul(x, y)
         res = self.bias_add(res, z)
         res = self.reshape(res, (24, 512, 16, 64))

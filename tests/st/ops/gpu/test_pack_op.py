@@ -26,7 +26,7 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 
 
-class StackNet(nn.Cell):
+class StackNet(nn.Module):
     def __init__(self, nptype):
         super(StackNet, self).__init__()
 
@@ -39,7 +39,7 @@ class StackNet(nn.Cell):
             Tensor(np.arange(16).reshape(2, 2, 2, 2).astype(nptype)), [2, 2, 2, 2]), name='x2')
 
     @ms_function
-    def construct(self):
+    def forward(self):
         return self.stack((self.x1, self.x2))
 
 

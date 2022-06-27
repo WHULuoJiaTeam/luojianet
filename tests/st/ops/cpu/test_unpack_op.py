@@ -26,7 +26,7 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, nptype):
         super(Net, self).__init__()
 
@@ -70,7 +70,7 @@ class Net(nn.Cell):
         self.x1 = Parameter(initializer(Tensor(self.data_np), [3, 3, 2, 2, 2]), name='x1')
 
     @ms_function
-    def construct(self):
+    def forward(self):
         return self.unstack(self.x1)
 
 

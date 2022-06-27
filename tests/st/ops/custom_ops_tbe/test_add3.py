@@ -24,14 +24,14 @@ from luojianet_ms import Tensor
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """Net definition"""
 
     def __init__(self):
         super(Net, self).__init__()
         self.add3 = CusAdd3(1.0)
 
-    def construct(self, input1, input2):
+    def forward(self, input1, input2):
         return self.add3(input1, input2)
 
 

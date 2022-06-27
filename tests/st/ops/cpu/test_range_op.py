@@ -23,12 +23,12 @@ import luojianet_ms.nn as nn
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class OpNetWrapper(nn.Cell):
+class OpNetWrapper(nn.Module):
     def __init__(self, op):
         super(OpNetWrapper, self).__init__()
         self.op = op
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.op(*inputs)
 
 

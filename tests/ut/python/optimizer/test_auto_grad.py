@@ -26,20 +26,20 @@ from luojianet_ms.common.parameter import Parameter, ParameterTuple
 grad_all = C.GradOperation(get_all=True)
 grad_by_list = C.GradOperation(get_by_list=True)
 
-class CropAndResizeNet(nn.Cell):
+class CropAndResizeNet(nn.Module):
     def __init__(self, crop_size):
         super(CropAndResizeNet, self).__init__()
         self.crop_and_resize = P.CropAndResize()
         self.crop_size = crop_size
 
-    def construct(self, x, boxes, box_indices):
+    def forward(self, x, boxes, box_indices):
         return self.crop_and_resize(x, boxes, box_indices, self.crop_size)
 
     def bprop(self, x, boxes, box_indices, out, dout):
         return x, boxes, box_indices
 
 
-class TestUserDefinedBpropNet(nn.Cell):
+class TestUserDefinedBpropNet(nn.Module):
     def __init__(self, in_channel, out_channel):
         super(TestUserDefinedBpropNet, self).__init__()
         self.relu = nn.ReLU()
@@ -49,19 +49,19 @@ class TestUserDefinedBpropNet(nn.Cell):
         self.boxes = Tensor(np.ones((128, 4)).astype(np.float32))
         self.box_indices = Tensor(np.ones((128,)).astype(np.int32))
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.relu(x)
         x = self.conv(x)
         x = self.crop(x, self.boxes, self.box_indices)
         return x
 
 
-class TestUserDefinedBpropGradNet(nn.Cell):
+class TestUserDefinedBpropGradNet(nn.Module):
     def __init__(self, net):
         super(TestUserDefinedBpropGradNet, self).__init__()
         self.net = net
 
-    def construct(self, x):
+    def forward(self, x):
         return grad_all(self.net)(x)
 
 
@@ -73,20 +73,20 @@ def test_user_defined_bprop():
     grad_net(x)
 
 
-class TwoInputBPropOperator(nn.Cell):
+class TwoInputBPropOperator(nn.Module):
     def __init__(self):
         super().__init__()
         self.op = P.Mul()
         self.add = P.Add()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.op(x, y)
 
     def bprop(self, x, y, out, dout):
         return self.add(5, x), self.add(y, 9)
 
 
-class BPropOperatatorNet(nn.Cell):
+class BPropOperatatorNet(nn.Module):
     def __init__(self, mul_size):
         super().__init__()
         mul_np = np.full(mul_size, 0.1, dtype=np.float32)
@@ -97,7 +97,7 @@ class BPropOperatatorNet(nn.Cell):
         self.floor_div = P.FloorDiv()
         self.bn = nn.BatchNorm1d(num_features=96)
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         x = self.mul(inputs, self.mul_weight)
         x = self.floor_div(x, self.floordiv_weight)
         x = self.bn(x)
@@ -110,34 +110,34 @@ def test_user_defined_bprop_with_u():
     grad_net(x)
 
 
-class SinNet(nn.Cell):
+class SinNet(nn.Module):
     def __init__(self):
         super(SinNet, self).__init__()
         self.sin = ops.Sin()
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.sin(x)
         return out
 
 
-class SinGrad(nn.Cell):
+class SinGrad(nn.Module):
     def __init__(self, network):
         super(SinGrad, self).__init__()
         self.grad = ops.GradOperation()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         gout = self.grad(self.network)(x)
         return gout
 
 
-class SinGradSec(nn.Cell):
+class SinGradSec(nn.Module):
     def __init__(self, network):
         super(SinGradSec, self).__init__()
         self.grad = ops.GradOperation()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         gout = self.grad(self.network)(x)
         return gout
 
@@ -154,10 +154,10 @@ def test_second_grad_with_j_primitive():
 # A CNode being used as FV is MapMorphism after MapMorphism of call-site CNode;
 def test_ad_fv_cnode_order():
     context.set_context(mode=context.GRAPH_MODE)
-    class Net(nn.Cell):
+    class Net(nn.Module):
         # cnode xay is not being MapMorphism when cnode second_level() is being MapMorphism and
         # BackPropagateFv as MapMorphism is started from output node and from left to right order.
-        def construct(self, x, y):
+        def forward(self, x, y):
             def first_level():
                 xay = x + y
 
@@ -179,13 +179,13 @@ def test_ad_fv_cnode_order():
 # True and False branch of switch have different number of parameters.
 def test_if_branch_with_different_params():
     context.set_context(mode=context.GRAPH_MODE)
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.weight1 = Parameter(Tensor(np.array([1.0], dtype=np.float32)), name="weight1")
             self.weight2 = Parameter(Tensor(np.array([2.0], dtype=np.float32)), name="weight2")
 
-        def construct(self, idx, end, x):
+        def forward(self, idx, end, x):
             out = x
             if idx < end:
                 out = out + self.weight1 * self.weight2
@@ -193,13 +193,13 @@ def test_if_branch_with_different_params():
                 out = out + self.weight1
             return out
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.weights = ParameterTuple(net.trainable_params())
 
-        def construct(self, idx, end, x):
+        def forward(self, idx, end, x):
             return grad_by_list(self.net, self.weights)(idx, end, x)
 
     idx = Tensor(np.array((0), dtype=np.int32))
@@ -216,25 +216,25 @@ def test_if_branch_with_different_params():
 # because weight1 in Net may use old_parameter other than replicated one.
 def test_limit_lift_fv_scope():
     context.set_context(mode=context.GRAPH_MODE)
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.weight1 = Parameter(Tensor(np.array([1.0], dtype=np.float32)), name="weight1")
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             def inner_add(a, b):
                 return a + b
 
             out = inner_add(x, y) + self.weight1
             return out
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.weights = ParameterTuple(net.trainable_params())
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             def inner_grad_add(a, b):
                 return a + b
 
@@ -253,17 +253,17 @@ def test_limit_lift_fv_scope():
 
 
 def test_same_primal_used_by_multi_j():
-    class Net(nn.Cell):
-        def construct(self, x):
+    class Net(nn.Module):
+        def forward(self, x):
             return x
 
-    class GradNet(nn.Cell):
+    class GradNet(nn.Module):
         def __init__(self, net):
             super(GradNet, self).__init__()
             self.net = net
             self.grad = ops.GradOperation()
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.net(x)
             gout = self.grad(self.net)(x)
             gout1 = self.grad(self.net)(x)
@@ -277,7 +277,7 @@ def test_same_primal_used_by_multi_j():
 
 def test_same_primal_used_by_multi_j_with_monad1():
     context.set_context(mode=context.GRAPH_MODE)
-    class AdamNet(nn.Cell):
+    class AdamNet(nn.Module):
         def __init__(self, var, m, v):
             super(AdamNet, self).__init__()
             self.apply_adam = P.Adam()
@@ -285,18 +285,18 @@ def test_same_primal_used_by_multi_j_with_monad1():
             self.m = Parameter(m, name="m")
             self.v = Parameter(v, name="v")
 
-        def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
+        def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
             self.apply_adam(self.var, self.m, self.v, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad)
             return self.var
 
-    class AdamGradNet(nn.Cell):
+    class AdamGradNet(nn.Module):
         def __init__(self, network):
             super(AdamGradNet, self).__init__()
             self.grad_fn = ops.GradOperation(sens_param=True)
             self.sens = [Tensor(np.ones([3, 3, 3]).astype(np.float32)), Tensor(np.ones([3, 3, 3]).astype(np.float32))]
             self.network = network
 
-        def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
+        def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
             out = self.network(beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad)
             gout1 = self.grad_fn(self.network)(beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad, self.sens[0])
             gout2 = self.grad_fn(self.network)(beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad, self.sens[1])
@@ -319,7 +319,7 @@ def test_same_primal_used_by_multi_j_with_monad1():
 
 def test_same_primal_used_by_multi_j_with_monad2():
     context.set_context(mode=context.GRAPH_MODE)
-    class AdamNet(nn.Cell):
+    class AdamNet(nn.Module):
         def __init__(self, var, m, v):
             super(AdamNet, self).__init__()
             self.apply_adam = P.Adam()
@@ -327,18 +327,18 @@ def test_same_primal_used_by_multi_j_with_monad2():
             self.m = Parameter(m, name="m")
             self.v = Parameter(v, name="v")
 
-        def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
+        def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
             self.apply_adam(self.var, self.m, self.v, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad)
             return self.var
 
-    class AdamGradNet(nn.Cell):
+    class AdamGradNet(nn.Module):
         def __init__(self, network):
             super(AdamGradNet, self).__init__()
             self.grad = ops.GradOperation(sens_param=True)
             self.sens = [Tensor(np.ones([3, 3, 3]).astype(np.float32)), Tensor(np.ones([3, 3, 3]).astype(np.float32))]
             self.network = network
 
-        def construct(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
+        def forward(self, beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad):
             out = self.network(beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad)
             grad_fn = self.grad(self.network)
             gout1 = grad_fn(beta1_power, beta2_power, lr, beta1, beta2, epsilon, grad, self.sens[0])
@@ -361,20 +361,20 @@ def test_same_primal_used_by_multi_j_with_monad2():
 
 
 def test_grad_args_type_error1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.matmul = P.MatMul()
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             return out
 
-    class GradNetWrtX(nn.Cell):
+    class GradNetWrtX(nn.Module):
         def __init__(self, net):
             super(GradNetWrtX, self).__init__()
             self.net = net
             self.grad_op = ops.GradOperation(get_all=2)
-        def construct(self, x, y):
+        def forward(self, x, y):
             gradient_function = self.grad_op(self.net)
             return gradient_function(x, y)
 
@@ -387,20 +387,20 @@ def test_grad_args_type_error1():
 
 
 def test_grad_args_type_error2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.matmul = P.MatMul()
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             return out
 
-    class GradNetWrtX(nn.Cell):
+    class GradNetWrtX(nn.Module):
         def __init__(self, net):
             super(GradNetWrtX, self).__init__()
             self.net = net
             self.grad_op = ops.GradOperation(get_by_list=2)
-        def construct(self, x, y):
+        def forward(self, x, y):
             gradient_function = self.grad_op(self.net)
             return gradient_function(x, y)
 
@@ -413,20 +413,20 @@ def test_grad_args_type_error2():
 
 
 def test_grad_args_type_error3():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.matmul = P.MatMul()
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.matmul(x, y)
             return out
 
-    class GradNetWrtX(nn.Cell):
+    class GradNetWrtX(nn.Module):
         def __init__(self, net):
             super(GradNetWrtX, self).__init__()
             self.net = net
             self.grad_op = ops.GradOperation(sens_param=2)
-        def construct(self, x, y):
+        def forward(self, x, y):
             gradient_function = self.grad_op(self.net)
             return gradient_function(x, y)
 
@@ -439,20 +439,20 @@ def test_grad_args_type_error3():
 
 
 def test_grad_net_is_none():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.add = P.Add()
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.add(x, y)
             return out
 
-    class GradNetWrtX(nn.Cell):
+    class GradNetWrtX(nn.Module):
         def __init__(self, net):
             super(GradNetWrtX, self).__init__()
             self.net = P.Add()
             self.grad_op = ops.GradOperation()
-        def construct(self, x, y):
+        def forward(self, x, y):
             gradient_function = self.grad_op(None)
             return gradient_function(x, y)
 
@@ -461,24 +461,24 @@ def test_grad_net_is_none():
     try:
         GradNetWrtX(Net())(x, y)
     except Exception as e:
-        assert "For 'GradOperation', the first argument must be a 'Function' or 'Cell', but got" in str(e)
+        assert "For 'GradOperation', the first argument must be a 'Function' or 'Module', but got" in str(e)
 
 
 def test_grad_missing_net():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.add = P.Add()
-        def construct(self, x, y):
+        def forward(self, x, y):
             out = self.add(x, y)
             return out
 
-    class GradNetWrtX(nn.Cell):
+    class GradNetWrtX(nn.Module):
         def __init__(self, net):
             super(GradNetWrtX, self).__init__()
             self.net = net
             self.grad_op = ops.GradOperation()
-        def construct(self, x, y):
+        def forward(self, x, y):
             gradient_function = self.grad_op()
             return gradient_function(x, y)
 
@@ -491,23 +491,23 @@ def test_grad_missing_net():
 
 
 def test_user_defined_bprop_inputs_size_error():
-    class BpropUserDefinedNet(nn.Cell):
+    class BpropUserDefinedNet(nn.Module):
         def __init__(self):
             super(BpropUserDefinedNet, self).__init__()
             self.zeros_like = P.ZerosLike()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return x + y
 
         def bprop(self, out):
             return self.zeros_like(out), self.zeros_like(out)
 
-    class BpropUserDefinedGradNet(nn.Cell):
+    class BpropUserDefinedGradNet(nn.Module):
         def __init__(self, net):
             super(BpropUserDefinedGradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return grad_all(self.net)(x, y)
 
     net = BpropUserDefinedNet()
@@ -517,29 +517,29 @@ def test_user_defined_bprop_inputs_size_error():
     try:
         grad_net(x, y)
     except Exception as e:
-        assert "The function 'bprop' of Primitive or Cell requires at least 2 params 'out' and 'dout', but got only"\
+        assert "The function 'bprop' of Primitive or Module requires at least 2 params 'out' and 'dout', but got only"\
                in str(e)
 
 
 def test_user_defined_bprop_net_has_parameter():
-    class BpropUserDefinedNet(nn.Cell):
+    class BpropUserDefinedNet(nn.Module):
         def __init__(self):
             super(BpropUserDefinedNet, self).__init__()
             self.zeros_like = P.ZerosLike()
             self.x = Parameter(Tensor(np.array([2.0], dtype=np.float32)), name="x")
 
-        def construct(self, y):
+        def forward(self, y):
             return self.x + y
 
         def bprop(self, y, out, dout):
             return (self.zeros_like(out),)
 
-    class BpropUserDefinedGradNet(nn.Cell):
+    class BpropUserDefinedGradNet(nn.Module):
         def __init__(self, net):
             super(BpropUserDefinedGradNet, self).__init__()
             self.net = net
 
-        def construct(self, y):
+        def forward(self, y):
             return grad_all(self.net)(y)
 
     net = BpropUserDefinedNet()
@@ -548,28 +548,28 @@ def test_user_defined_bprop_net_has_parameter():
     try:
         grad_net(y)
     except Exception as e:
-        assert "The Cell with user defined 'bprop' function in scope" in str(e)
+        assert "The Module with user defined 'bprop' function in scope" in str(e)
         assert "does not support Parameter data type." in str(e)
 
 
 def test_user_defined_bprop_inputs_size_error1():
-    class BpropUserDefinedNet(nn.Cell):
+    class BpropUserDefinedNet(nn.Module):
         def __init__(self):
             super(BpropUserDefinedNet, self).__init__()
             self.zeros_like = P.ZerosLike()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return x + y
 
         def bprop(self, x, y, out):
             return self.zeros_like(out), self.zeros_like(out)
 
-    class BpropUserDefinedGradNet(nn.Cell):
+    class BpropUserDefinedGradNet(nn.Module):
         def __init__(self, net):
             super(BpropUserDefinedGradNet, self).__init__()
             self.net = net
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return grad_all(self.net)(x, y)
 
     net = BpropUserDefinedNet()
@@ -579,7 +579,7 @@ def test_user_defined_bprop_inputs_size_error1():
     try:
         grad_net(x, y)
     except TypeError as e:
-        assert "The params of function 'bprop' of Primitive or Cell requires the forward inputs as well as the 'out' " \
+        assert "The params of function 'bprop' of Primitive or Module requires the forward inputs as well as the 'out' " \
                "and 'dout'." in str(e)
 
 
@@ -587,22 +587,22 @@ def test_grad_hook():
     def var_hook_function(grad_out):
         assert grad_out[0].asnumpy().shape == (32, 120)
 
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.add = P.Add()
             self.hook = P.HookBackward(var_hook_function)
-        def construct(self, x, y):
+        def forward(self, x, y):
             x = self.hook(x)
             out = self.add(x, y)
             return out
 
-    class GradNetWrtX(nn.Cell):
+    class GradNetWrtX(nn.Module):
         def __init__(self, net):
             super(GradNetWrtX, self).__init__()
             self.net = net
             self.grad_op = ops.GradOperation()
-        def construct(self, x, y):
+        def forward(self, x, y):
             gradient_function = self.grad_op(self.net)
             return gradient_function(x, y)
 

@@ -24,12 +24,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_scalar_usub():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, x):
             super(Net, self).__init__()
             self.x = x
 
-        def construct(self):
+        def forward(self):
             ret = -self.x
             return ret
 
@@ -38,11 +38,11 @@ def test_scalar_usub():
 
 
 def test_tensor_usub():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             ret = -x
             return ret
 
@@ -52,12 +52,12 @@ def test_tensor_usub():
 
 
 def test_scalar_uadd():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self, x):
             super(Net, self).__init__()
             self.x = x
 
-        def construct(self):
+        def forward(self):
             ret = +self.x
             return ret
 

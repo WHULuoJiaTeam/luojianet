@@ -15,7 +15,7 @@
 # ============================================================================
 
 """
-Operators can be used in the construct function of Cell.
+Operators can be used in the forward function of Module.
 
 Examples:
 

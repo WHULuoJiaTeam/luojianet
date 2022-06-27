@@ -63,7 +63,7 @@ class Dataset(MindData):
         self.index = 0
 
 
-class ReshapeNet(nn.Cell):
+class ReshapeNet(nn.Module):
     def __init__(self, strategy0, strategy1, strategy2):
         super(ReshapeNet, self).__init__()
         self.relu = P.ReLU().shard(strategy0)
@@ -71,7 +71,7 @@ class ReshapeNet(nn.Cell):
         self.matmul = P.MatMul().shard(strategy2)
         self.matmul_weight = Parameter(Tensor(np.ones([25088, 256]), dtype=ms.float32), name="weight")
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.relu(x)
         x = self.reshape(x, (256, 25088))
         x = self.matmul(x, self.matmul_weight)
@@ -180,27 +180,27 @@ def test_reshape_auto():
     reshape_common(ParallelMode.AUTO_PARALLEL, strategy0, strategy1, strategy2, strategy_loss)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         predict = self.network(x)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         return grad_all(self.network)(x)
 
 
-class ReshapeNet1(nn.Cell):
+class ReshapeNet1(nn.Module):
     def __init__(self, strategy0):
         super(ReshapeNet1, self).__init__()
         self.reshape = P.Reshape()
@@ -208,14 +208,14 @@ class ReshapeNet1(nn.Cell):
         self.matmul_weight = Parameter(Tensor(np.ones([25088, 256]), dtype=ms.float32), name="weight")
         self.reshape2 = P.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.reshape(x, (256, 25088))
         x = self.matmul(x, self.matmul_weight)
         x = self.reshape2(x, (256 * 256,))
         return x
 
 
-class ReshapeNet2(nn.Cell):
+class ReshapeNet2(nn.Module):
     def __init__(self, strategy0):
         super(ReshapeNet2, self).__init__()
         self.reshape = P.Reshape()
@@ -225,7 +225,7 @@ class ReshapeNet2(nn.Cell):
         self.reduce_sum = P.ReduceSum(keep_dims=True)
         self.reshape3 = P.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.reshape(x, (256, 25088))
         x = self.matmul(x, self.matmul_weight)
         x = self.reshape2(x, (256 * 256,))
@@ -234,7 +234,7 @@ class ReshapeNet2(nn.Cell):
         return x
 
 
-class ReshapeNet3(nn.Cell):
+class ReshapeNet3(nn.Module):
     def __init__(self, strategy0):
         super(ReshapeNet3, self).__init__()
         self.reshape = P.Reshape()
@@ -244,7 +244,7 @@ class ReshapeNet3(nn.Cell):
         self.reduce_sum = P.ReduceSum(keep_dims=False)
         self.reshape3 = P.Reshape()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.reshape(x, (256, 25088))
         x = self.matmul(x, self.matmul_weight)
         x = self.reshape2(x, (256 * 256,))
@@ -253,7 +253,7 @@ class ReshapeNet3(nn.Cell):
         return x
 
 
-class ReshapeNet4(nn.Cell):
+class ReshapeNet4(nn.Module):
     def __init__(self, strategy0):
         super(ReshapeNet4, self).__init__()
         self.reshape = P.Reshape()
@@ -261,14 +261,14 @@ class ReshapeNet4(nn.Cell):
         self.matmul = P.MatMul().shard(strategy0)
         self.matmul_weight = Parameter(Tensor(np.ones([25088, 256]), dtype=ms.float32), name="weight")
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.reshape(x, (256, 25088))
         w = self.reshape2(self.matmul_weight, (25088, 256))
         x = self.matmul(x, w)
         return x
 
 
-class ReshapeNet5(nn.Cell):
+class ReshapeNet5(nn.Module):
     def __init__(self, strategy0):
         super(ReshapeNet5, self).__init__()
         self.reshape = P.Reshape()
@@ -276,14 +276,14 @@ class ReshapeNet5(nn.Cell):
         self.matmul1_weight = Parameter(Tensor(np.ones([25088, 256]), dtype=ms.float32), name="weight")
         self.matmul2 = P.MatMul().shard(strategy0)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.reshape(x, (256, 25088))
         matmul1_o = self.matmul1(x, self.matmul1_weight)
         matmul2_o = self.matmul2(matmul1_o, x)
         return matmul2_o
 
 
-class ReshapeNet6(nn.Cell):
+class ReshapeNet6(nn.Module):
     def __init__(self, strategy0):
         super(ReshapeNet6, self).__init__()
         self.reshape = P.Reshape()
@@ -293,7 +293,7 @@ class ReshapeNet6(nn.Cell):
         self.matmul2 = P.MatMul().shard(strategy0)
         self.add = P.Add()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.reshape(x, (256, 25088))
         matmul1_1_o = self.matmul1_1(x, self.matmul1_weight)
         matmul1_2_o = self.matmul1_2(x, self.matmul1_weight)
@@ -382,16 +382,16 @@ def test_reshape_net6_2():
     reshape_net2(_VirtualDatasetCell(ReshapeNet6(((1, 8), (8, 2)))))
 
 
-class TrainOneStepCell(nn.Cell):
+class TrainOneStepCell(nn.Module):
     """
     Network training package class.
 
-    Append an optimizer to the training network after that the construct function
+    Append an optimizer to the training network after that the forward function
     can be called to create the backward graph.
 
     Args:
-        network (Cell): The training network.
-        optimizer (Cell): Optimizer for updating the weights.
+        network (Module): The training network.
+        optimizer (Module): Optimizer for updating the weights.
         sens (Number): The adjust parameter. Default: 1.0.
 
     Examples:
@@ -412,7 +412,7 @@ class TrainOneStepCell(nn.Cell):
                                     sens_param=True)
         self.sens = sens
 
-    def construct(self, data):
+    def forward(self, data):
         weights = self.weights
         loss = self.network(data)
         sens = P.Fill()(P.DType()(loss), P.Shape()(loss), self.sens)
@@ -464,14 +464,14 @@ def test_reshape_common2_5():
     reshape_common2(ParallelMode.SEMI_AUTO_PARALLEL, _VirtualDatasetCell(ReshapeNet3(((1, 8), (8, 2)))))
 
 
-class BatchNormReshapeNet(nn.Cell):
+class BatchNormReshapeNet(nn.Module):
     def __init__(self):
         super(BatchNormReshapeNet, self).__init__()
         self.batch_norm = nn.BatchNorm1d(512, affine=False)
         self.reshape = P.Reshape()
         self.prelu = nn.PReLU(channel=256)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.batch_norm(x)
         x = self.reshape(x, (512, 256))
         x = self.prelu(x)
@@ -499,7 +499,7 @@ def fc_with_initialize(input_channels, out_channels):
     return nn.Dense(input_channels, out_channels).add_flags_recursive(fp16=True)
 
 
-class BNReshapeDenseBNNet(nn.Cell):
+class BNReshapeDenseBNNet(nn.Module):
     def __init__(self):
         super(BNReshapeDenseBNNet, self).__init__()
         self.batch_norm = bn_with_initialize(2)
@@ -508,7 +508,7 @@ class BNReshapeDenseBNNet(nn.Cell):
         self.batch_norm2 = nn.BatchNorm1d(512, affine=False)
         self.fc = fc_with_initialize(2 * 32 * 32, 512)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.batch_norm(x)
         x = self.reshape(x, (16, 2 * 32 * 32))
         x = self.fc(x)
@@ -528,7 +528,7 @@ def test_bn_reshape_dense_bn_train():
     compile_net(net, input_)
 
 
-class ParallelReduceMeanNet(nn.Cell):
+class ParallelReduceMeanNet(nn.Module):
     def __init__(self, conv_in_channel, conv_out_channel,
                  reducemean_keep_dims=False, reducemean_axis=-1, strategy=None):
         super().__init__()
@@ -542,14 +542,14 @@ class ParallelReduceMeanNet(nn.Cell):
         if strategy is not None:
             self.reduce_mean.shard(strategy)
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         x = self.conv(inputs)
         x = self.reduce_mean(x, self.reducemean_axis)
         x = self.flat(x)
         return x
 
 
-class CrossEntropyLoss(nn.Cell):
+class CrossEntropyLoss(nn.Module):
     def __init__(self, reduction='mean'):
         super(CrossEntropyLoss, self).__init__()
 
@@ -557,7 +557,7 @@ class CrossEntropyLoss(nn.Cell):
         self.cross_entropy = SoftmaxCrossEntropyWithLogits()
         self.reduction = reduction
 
-    def construct(self, logits, label):
+    def forward(self, logits, label):
         loss = self.cross_entropy(logits, label)
         if self.reduction == 'mean':
             loss = self.reduce_mean(loss, (-1,))
@@ -603,7 +603,7 @@ def test_flatten_reshape2(parallel_mode="auto_parallel"):
     model.train(epoch_size, dataset, dataset_sink_mode=False)
 
 
-class ParallelReshapeNet(nn.Cell):
+class ParallelReshapeNet(nn.Module):
     def __init__(self, dense_in_channel, dense_out_channel, shape, strategy=None):
         super().__init__()
         self.flat = nn.Flatten()
@@ -616,7 +616,7 @@ class ParallelReshapeNet(nn.Cell):
         self.shape = shape
         self.reshape.shard(strategy)
 
-    def construct(self, inputs):
+    def forward(self, inputs):
         x = self.flat(inputs)
         x = self.dense(x)
         x = self.reshape(x, self.shape)
@@ -644,12 +644,12 @@ def test_flatten_reshape3(parallel_mode="auto_parallel"):
     model.train(epoch_size, dataset, dataset_sink_mode=False)
 
 
-class CrossEntropyLoss2(nn.Cell):
+class CrossEntropyLoss2(nn.Module):
     def __init__(self, reduction='mean'):
         super(CrossEntropyLoss2, self).__init__()
         self.cross_entropy = SoftmaxCrossEntropyWithLogits(reduction=reduction)
 
-    def construct(self, logits, label):
+    def forward(self, logits, label):
         loss = self.cross_entropy(logits, label)
         return loss
 

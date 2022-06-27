@@ -26,7 +26,7 @@ class LossScaleManager:
 
     Derived class needs to implement all of its methods. `get_loss_scale` is used to get current loss scale value.
     `update_loss_scale` is used to update loss scale value, `update_loss_scale` will be called during the training.
-    `get_update_cell` is used to get the instance of :class:`luojianet_ms.nn.Cell` that is used to update the loss scale,
+    `get_update_cell` is used to get the instance of :class:`luojianet_ms.nn.Module` that is used to update the loss scale,
     the instance will be called during the training. Currently, the `get_update_cell` is mostly used.
 
     For example, :class:`luojianet_ms.FixedLossScaleManager` and :class:`luojianet_ms.DynamicLossScaleManager`.
@@ -42,7 +42,7 @@ class LossScaleManager:
             overflow (bool): Whether the overflow occurs during the training.
         """
     def get_update_cell(self):
-        """Get the instance of :class:`luojianet_ms.nn.Cell` that is used to update the loss scale."""
+        """Get the instance of :class:`luojianet_ms.nn.Module` that is used to update the loss scale."""
 
 
 class FixedLossScaleManager(LossScaleManager):
@@ -106,7 +106,7 @@ class FixedLossScaleManager(LossScaleManager):
 
     def get_update_cell(self):
         """
-        Returns the instance of :class:`luojianet_ms.nn.Cell` that used to update the loss scale which will be called at
+        Returns the instance of :class:`luojianet_ms.nn.Module` that used to update the loss scale which will be called at
         :class:`luojianet_ms.nn.TrainOneStepWithLossScaleCell`. As the loss scale is fixed in this class, the instance
         will do nothing.
 
@@ -200,7 +200,7 @@ class DynamicLossScaleManager(LossScaleManager):
 
     def get_update_cell(self):
         """
-        Returns the instance of :class:`luojianet_ms.nn.Cell` that is used to update the loss scale which will be called at
+        Returns the instance of :class:`luojianet_ms.nn.Module` that is used to update the loss scale which will be called at
         :class:`luojianet_ms.nn.TrainOneStepWithLossScaleCell`.
 
         Returns:

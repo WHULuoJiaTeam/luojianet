@@ -19,15 +19,15 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops.operations import _grad_ops as G
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, axis=0, epsilon=1e-12):
         super(Net, self).__init__()
         self.norm_grad = G.L2NormalizeGrad(axis=axis, epsilon=epsilon)
 
-    def construct(self, x, out, dout):
+    def forward(self, x, out, dout):
         return self.norm_grad(x, out, dout)
 
 

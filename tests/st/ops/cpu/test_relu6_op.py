@@ -25,20 +25,20 @@ from luojianet_ms.ops.operations import _grad_ops as G
 
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
-class NetReLU6(nn.Cell):
+class NetReLU6(nn.Module):
     def __init__(self):
         super(NetReLU6, self).__init__()
         self.relu6 = P.ReLU6()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.relu6(x)
 
-class NetReLU6Grad(nn.Cell):
+class NetReLU6Grad(nn.Module):
     def __init__(self):
         super(NetReLU6Grad, self).__init__()
         self.relu6_grad = G.ReLU6Grad()
 
-    def construct(self, x, dy):
+    def forward(self, x, dy):
         return self.relu6_grad(dy, x)
 
 @pytest.mark.level0

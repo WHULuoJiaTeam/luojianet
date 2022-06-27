@@ -27,12 +27,12 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.initializer import initializer
 
 
-class ControlSimpleIf(nn.Cell):
+class ControlSimpleIf(nn.Module):
     def __init__(self):
         super().__init__()
         self.addn = op.AddN()
 
-    def construct(self, x, y, z, input1, input2):
+    def forward(self, x, y, z, input1, input2):
         addn1 = self.addn([input1, input1, input1])
         addn2 = self.addn([input2, input2, input2])
         addn11 = self.addn([addn1, addn1, addn1])
@@ -48,14 +48,14 @@ class ControlSimpleIf(nn.Cell):
         return out_me
 
 
-class ControlSimpleIfWithAssign(nn.Cell):
+class ControlSimpleIfWithAssign(nn.Module):
     def __init__(self, input_shape):
         super().__init__()
         self.addn = op.AddN()
         self.assign = op.Assign()
         self.input_data = Parameter(initializer(1, input_shape, mstype.float32), name="var")
 
-    def construct(self, x, y, input_data):
+    def forward(self, x, y, input_data):
         if x > y:
             out = self.addn([input_data, input_data, input_data])
         else:
@@ -63,10 +63,10 @@ class ControlSimpleIfWithAssign(nn.Cell):
         return out
 
 
-class ControlIfinIf(nn.Cell):
+class ControlIfinIf(nn.Module):
     """pass"""
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         if x > y:
             x = x + 1
             if y < 0:
@@ -79,12 +79,12 @@ class ControlIfinIf(nn.Cell):
         return x
 
 
-class ControlIfbyIfbyIf(nn.Cell):
+class ControlIfbyIfbyIf(nn.Module):
     def __init__(self):
         super().__init__()
         self.addn = op.AddN()
 
-    def construct(self, x, y, cond1, cond2, input_data):
+    def forward(self, x, y, cond1, cond2, input_data):
         tri_in = self.addn([input_data, input_data, input_data])
         if x > y:
             addn_1 = self.addn([tri_in, tri_in])
@@ -101,12 +101,12 @@ class ControlIfbyIfbyIf(nn.Cell):
         return out
 
 
-class ControlSimpleWhile(nn.Cell):
+class ControlSimpleWhile(nn.Module):
     def __init__(self):
         super().__init__()
         self.addn = op.AddN()
 
-    def construct(self, x, y, input_data):
+    def forward(self, x, y, input_data):
         out = input_data
         while x:
             out = self.addn([input_data, input_data, input_data])
@@ -114,13 +114,13 @@ class ControlSimpleWhile(nn.Cell):
         return out
 
 
-class ControlMixedWhileIf(nn.Cell):
+class ControlMixedWhileIf(nn.Module):
     def __init__(self):
         super().__init__()
         self.assign = op.Assign()
         self.var = Parameter(initializer(1, (1), mstype.float32), name="var")
 
-    def construct(self, x, y, z, c2, c4):
+    def forward(self, x, y, z, c2, c4):
         out = c4
         self.assign(self.var, c4)
         while x < c2:
@@ -158,36 +158,36 @@ class ControlMixedWhileIf(nn.Cell):
         return out
 
 
-class AndOperation(nn.Cell):
+class AndOperation(nn.Module):
     def __init__(self):
         super().__init__()
         self.reduce_sum = op.ReduceSum()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x_sum = self.reduce_sum(x)
         y_sum = self.reduce_sum(y)
         out = x_sum and y_sum
         return out
 
 
-class OrOperation(nn.Cell):
+class OrOperation(nn.Module):
     def __init__(self):
         super().__init__()
         self.reduce_sum = op.ReduceSum()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x_sum = self.reduce_sum(x)
         y_sum = self.reduce_sum(y)
         out = x_sum or y_sum
         return out
 
 
-class NotOperation(nn.Cell):
+class NotOperation(nn.Module):
     def __init__(self):
         super().__init__()
         self.reduce_sum = op.ReduceSum()
 
-    def construct(self, x):
+    def forward(self, x):
         x_sum = self.reduce_sum(x)
         return not x_sum
 
@@ -325,7 +325,7 @@ def test_control_flow_ref():
     Description: If the return value of subgraph is Ref, should run graph mode with kernelbykernel.
     Expectation: No exception.
     """
-    class IFFuncNet(nn.Cell):
+    class IFFuncNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.param_a = Parameter(Tensor(1, ms.float32), name="a")
@@ -337,7 +337,7 @@ def test_control_flow_ref():
                 return self.param_a
             return self.param_b
 
-        def construct(self, x):
+        def forward(self, x):
             out = self.one
             F.assign(self.param_a, 3)
             out += self.subfunc(x)

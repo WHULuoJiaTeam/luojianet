@@ -107,7 +107,7 @@ class BertLearningRate(lr_schedules.LearningRateSchedule):
         self.one = Tensor(np.array([1.0]).astype(np.float32))
         self.cast = P.Cast()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         is_warmup = self.cast(self.greater(self.warmup_steps, global_step), mstype.float32)
         warmup_lr = self.warmup_lr(global_step)
         decay_lr = self.decay_lr(global_step)
@@ -120,7 +120,7 @@ def test_bert_train():
     the main function
     """
 
-    class ModelBert(nn.Cell):
+    class ModelBert(nn.Module):
         """
         ModelBert definition
         """
@@ -131,7 +131,7 @@ def test_bert_train():
             self.train_network = BertTrainOneStepCell(network, self.optimizer)
             self.train_network.set_train()
 
-        def construct(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6):
+        def forward(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6):
             return self.train_network(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 
     version = os.getenv('VERSION', 'large')
@@ -148,14 +148,14 @@ def test_bert_train():
 
 
 def test_bert_withlossscale_train():
-    class ModelBert(nn.Cell):
+    class ModelBert(nn.Module):
         def __init__(self, network, optimizer=None):
             super(ModelBert, self).__init__()
             self.optimizer = optimizer
             self.train_network = BertTrainOneStepWithLossScaleCell(network, self.optimizer)
             self.train_network.set_train()
 
-        def construct(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7):
+        def forward(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7):
             return self.train_network(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 
     version = os.getenv('VERSION', 'base')
@@ -173,7 +173,7 @@ def test_bert_withlossscale_train():
 
 
 def bert_withlossscale_manager_train():
-    class ModelBert(nn.Cell):
+    class ModelBert(nn.Module):
         def __init__(self, network, optimizer=None):
             super(ModelBert, self).__init__()
             self.optimizer = optimizer
@@ -183,7 +183,7 @@ def bert_withlossscale_manager_train():
                                                                    scale_update_cell=update_cell)
             self.train_network.set_train()
 
-        def construct(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6):
+        def forward(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6):
             return self.train_network(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 
     version = os.getenv('VERSION', 'base')
@@ -200,7 +200,7 @@ def bert_withlossscale_manager_train():
 
 
 def bert_withlossscale_manager_train_feed():
-    class ModelBert(nn.Cell):
+    class ModelBert(nn.Module):
         def __init__(self, network, optimizer=None):
             super(ModelBert, self).__init__()
             self.optimizer = optimizer
@@ -210,7 +210,7 @@ def bert_withlossscale_manager_train_feed():
                                                                    scale_update_cell=update_cell)
             self.train_network.set_train()
 
-        def construct(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7):
+        def forward(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7):
             return self.train_network(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 
     version = os.getenv('VERSION', 'base')

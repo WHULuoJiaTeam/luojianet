@@ -17,7 +17,7 @@ import pytest
 
 from luojianet_ms import Tensor, context
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 from parallel.utils.utils import ParallelValidator
@@ -36,17 +36,17 @@ _rois = Tensor(
                np.random.uniform(low=0, high=FEATURES_HEIGHT / SPATIAL_SCALE, size=[NUM_ROIS, 4]).astype(np.float32))))
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, pooled_h, pooled_w, spatial_scale, strategy=None):
         super(Net, self).__init__()
         self.roi_align = P.ROIAlign(pooled_h, pooled_w, spatial_scale).shard(strategy)
 
-    def construct(self, features, rois):
+    def forward(self, features, rois):
         output = self.roi_align(features, rois)
         return output
 
 
-def compile_net(net: Cell, *inputs):
+def compile_net(net: Module, *inputs):
     net.set_auto_parallel()
     net.set_train()
     phase, _ = _cell_graph_executor.compile(net, *inputs, auto_parallel_mode=True)

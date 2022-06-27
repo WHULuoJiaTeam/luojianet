@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms.context import ParallelMode
 from luojianet_ms.communication._comm_helper import GlobalComm
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, input_channel, out_channel):
         super(Net, self).__init__()
         weight_init1 = np.ones([64, 128]).astype(np.float32)
@@ -36,7 +36,7 @@ class Net(nn.Cell):
         self.fc = P.MatMul(transpose_b=True)
         self.dense = Dense(input_channel, out_channel)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.dense(x)
         x = self.fc(x, self.weight1)
         x = self.fc(x, self.weight2)

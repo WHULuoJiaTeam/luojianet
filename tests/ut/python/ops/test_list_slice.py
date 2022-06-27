@@ -18,7 +18,7 @@ import numpy as np
 
 import luojianet_ms.ops.operations as P
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
 from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config_input_list
@@ -26,7 +26,7 @@ from ....luojianet_ms_test_framework.pipeline.forward.verify_exception \
     import pipeline_for_verify_exception_for_case_by_case_config
 
 
-class NetWork_1(Cell):
+class NetWork_1(Module):
     """ NetWork_1 definition """
 
     def __init__(self):
@@ -36,7 +36,7 @@ class NetWork_1(Cell):
         self.index_1 = Tensor([5])
         self.index_3 = Tensor([True])
 
-    def construct(self, tensor_list):
+    def forward(self, tensor_list):
         tensor_list_slice0 = tensor_list[:]
         tensor_list_slice1 = tensor_list[:self.index_0]
         tensor_list_slice2 = tensor_list[self.index_3:]
@@ -49,7 +49,7 @@ class NetWork_1(Cell):
         return ret
 
 
-class NetWork_2(Cell):
+class NetWork_2(Module):
     """ NetWork_2 definition """
 
     def __init__(self):
@@ -58,7 +58,7 @@ class NetWork_2(Cell):
         self.step = Tensor([-1])
         self.index_0 = Tensor(-6)
 
-    def construct(self, tensor_list):
+    def forward(self, tensor_list):
         tensor_list_slice0 = tensor_list[::self.step]
         tensor_list_slice1 = tensor_list[-1::-1]
         tensor_list_slice2 = tensor_list[:-4:-1]
@@ -73,7 +73,7 @@ class NetWork_2(Cell):
         return ret
 
 
-class NetWorkSliceStepZero(Cell):
+class NetWorkSliceStepZero(Module):
     """ NetWorkSliceStepZero definition """
 
     def __init__(self):
@@ -82,51 +82,51 @@ class NetWorkSliceStepZero(Cell):
         self.stop = 3
         self.step = 0
 
-    def construct(self, tensor_list):
+    def forward(self, tensor_list):
         tensor_list_slice = tensor_list[self.start:self.stop:self.step]
         return tensor_list_slice
 
 
-class NetWorkOutOfBounds(Cell):
+class NetWorkOutOfBounds(Module):
     """ NetWork_3 definition """
 
     def __init__(self):
         super(NetWorkOutOfBounds, self).__init__()
         self.index = 100
 
-    def construct(self, tensor_list):
+    def forward(self, tensor_list):
         return tensor_list[self.index]
 
 
-class NetWorkTensorSizeGreaterThanTwo(Cell):
+class NetWorkTensorSizeGreaterThanTwo(Module):
     """ NetWork_3 definition """
 
     def __init__(self):
         super(NetWorkTensorSizeGreaterThanTwo, self).__init__()
         self.index_0 = Tensor([2, 3])
 
-    def construct(self, tensor_list):
+    def forward(self, tensor_list):
         return tensor_list[1:self.index_0]
 
 
-class NetWorkTensorDtypeFloat(Cell):
+class NetWorkTensorDtypeFloat(Module):
     """ NetWork_3 definition """
 
     def __init__(self):
         super(NetWorkTensorDtypeFloat, self).__init__()
         self.index_0 = Tensor([2.1])
 
-    def construct(self, tensor_list):
+    def forward(self, tensor_list):
         return tensor_list[1:self.index_0]
 
-class NewWorkSliceVarTensorError(Cell):
+class NewWorkSliceVarTensorError(Module):
     """ error Network definition """
 
     def __init__(self):
         super(NewWorkSliceVarTensorError, self).__init__()
         self.index_0 = Tensor(2)
 
-    def construct(self, tensor_list, y):
+    def forward(self, tensor_list, y):
         x = y + self.index_0
         return tensor_list[1:x]
 

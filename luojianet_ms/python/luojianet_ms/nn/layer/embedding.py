@@ -32,7 +32,7 @@ from luojianet_ms._checkparam import Validator as validator
 from luojianet_ms.ops.primitive import constexpr
 from .basic import ClipByNorm
 from .math import Range
-from ..cell import Cell
+from ..cell import Module
 
 __all__ = ['Embedding', 'EmbeddingLookup', 'MultiFieldEmbeddingLookup']
 
@@ -49,7 +49,7 @@ def _check_input_dtype(input_dtype, param_name, allow_dtypes, cls_name):
     validator.check_type_name(param_name, input_dtype, allow_dtypes, cls_name)
 
 
-class Embedding(Cell):
+class Embedding(Module):
     r"""
     A simple lookup table that stores embeddings of a fixed dictionary and size.
 
@@ -128,7 +128,7 @@ class Embedding(Cell):
         self.reshape = P.Reshape()
         self.get_shp = P.Shape()
 
-    def construct(self, ids):
+    def forward(self, ids):
         extended_ids = self.expand(ids, -1)
         out_shape = self.get_shp(ids) + (self.embedding_size,)
         flat_ids = self.reshape_flat(extended_ids, self.shp_flat)
@@ -154,7 +154,7 @@ def _make_axis_range(start, end):
     return axis
 
 
-class EmbeddingLookup(Cell):
+class EmbeddingLookup(Module):
     r"""
     Returns a slice of the input tensor based on the specified indices.
 
@@ -357,7 +357,7 @@ class EmbeddingLookup(Cell):
         if _is_role_worker():
             _insert_hash_table_size(self.embedding_table.name, vocab_cache_size, embedding_size, vocab_size)
 
-    def construct(self, indices):
+    def forward(self, indices):
         if self.target == "CPU":
             out = self.embeddinglookup(self.embedding_table, indices, 0)
         else:
@@ -526,7 +526,7 @@ class MultiFieldEmbeddingLookup(EmbeddingLookup):
         # Min value for fp32
         self.negative_inf_value = -3.402823466E+38
 
-    def construct(self, input_indices, input_values, field_ids):
+    def forward(self, input_indices, input_values, field_ids):
 
         _check_input_2d(F.shape(input_indices), "input_indices", self.cls_name)
         _check_input_2d(F.shape(input_values), "input_values", self.cls_name)

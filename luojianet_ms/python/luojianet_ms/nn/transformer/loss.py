@@ -21,7 +21,7 @@ from luojianet_ms.common.tensor import Tensor
 import luojianet_ms.common.dtype as mstype
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import functional as F
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn.loss.loss import _check_is_tensor
 from luojianet_ms.parallel._utils import _get_parallel_mode, _is_sharding_propagation
 from luojianet_ms.context import ParallelMode
@@ -31,7 +31,7 @@ from .op_parallel_config import default_dpmp_config, OpParallelConfig
 __all__ = ["CrossEntropyLoss"]
 
 
-class CrossEntropyLoss(Cell):
+class CrossEntropyLoss(Module):
     """
     Calculate the cross entropy loss.
 
@@ -122,7 +122,7 @@ class CrossEntropyLoss(Cell):
             self.add2 = P.Add()
             self.div2 = P.RealDiv()
 
-    def construct(self, logits, label, input_mask):
+    def forward(self, logits, label, input_mask):
         self._check_input(logits, label, input_mask)
 
         # the shape is [bs*seq_length, vocab_size]

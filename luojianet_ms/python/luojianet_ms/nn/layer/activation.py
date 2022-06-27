@@ -23,7 +23,7 @@ from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.ops import functional as F
 from luojianet_ms.ops import operations as P
-from ..cell import Cell
+from ..cell import Module
 
 __all__ = ['Softmax',
            'LogSoftmax',
@@ -46,7 +46,7 @@ __all__ = ['Softmax',
            ]
 
 
-class CELU(Cell):
+class CELU(Module):
     r"""
     Continuously differentiable exponential linear units activation function.
 
@@ -92,11 +92,11 @@ class CELU(Cell):
         super(CELU, self).__init__()
         self.celu = P.CeLU(alpha=alpha)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.celu(x)
 
 
-class Softmax(Cell):
+class Softmax(Module):
     r"""
     Softmax activation function. It is a two-category function :class:`luojianet_ms.nn.Sigmoid` in the promotion of
     multi-classification, the purpose is to show the results of multi-classification in the form of probability.
@@ -145,11 +145,11 @@ class Softmax(Cell):
         super(Softmax, self).__init__()
         self.softmax = P.Softmax(axis)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.softmax(x)
 
 
-class LogSoftmax(Cell):
+class LogSoftmax(Module):
     r"""
     LogSoftmax activation function.
 
@@ -196,11 +196,11 @@ class LogSoftmax(Cell):
         super(LogSoftmax, self).__init__()
         self.log_softmax = P.LogSoftmax(axis)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.log_softmax(x)
 
 
-class ELU(Cell):
+class ELU(Module):
     r"""
     Exponential Linear Unit activation function.
 
@@ -249,11 +249,11 @@ class ELU(Cell):
         super(ELU, self).__init__()
         self.elu = P.Elu(alpha)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.elu(x)
 
 
-class ReLU(Cell):
+class ReLU(Module):
     r"""
     Rectified Linear Unit activation function.
 
@@ -295,11 +295,11 @@ class ReLU(Cell):
         super(ReLU, self).__init__()
         self.relu = P.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.relu(x)
 
 
-class ReLU6(Cell):
+class ReLU6(Module):
     r"""
     Compute ReLU6 activation function.
 
@@ -339,11 +339,11 @@ class ReLU6(Cell):
         super(ReLU6, self).__init__()
         self.relu6 = P.ReLU6()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.relu6(x)
 
 
-class LeakyReLU(Cell):
+class LeakyReLU(Module):
     r"""
     Leaky ReLU activation function.
 
@@ -392,13 +392,13 @@ class LeakyReLU(Cell):
         if self.alpha > 1:
             self.select_op = P.Minimum()
 
-    def construct(self, x):
+    def forward(self, x):
         alpha_array = P.Cast()(F.scalar_to_array(self.alpha), P.DType()(x))
         out = self.select_op(alpha_array * x, x)
         return out
 
 
-class Tanh(Cell):
+class Tanh(Module):
     r"""
     Tanh activation function.
 
@@ -437,11 +437,11 @@ class Tanh(Cell):
         super(Tanh, self).__init__()
         self.tanh = P.Tanh()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.tanh(x)
 
 
-class GELU(Cell):
+class GELU(Module):
     r"""
     Gaussian error linear unit activation function.
 
@@ -512,14 +512,14 @@ class GELU(Cell):
             self.const1 = Tensor(1.0, mstype.float32)
             self.const2 = Tensor(2.0, mstype.float32)
 
-    def construct(self, x):
+    def forward(self, x):
         if self.approximate:
             return self.gelu(x)
         return x * F.cast(self.const0, x.dtype) * (F.cast(self.const1, x.dtype) + \
             self.erf(x / self.sqrt(F.cast(self.const2, x.dtype))))
 
 
-class FastGelu(Cell):
+class FastGelu(Module):
     r"""
     Fast Gaussian error linear unit activation function.
 
@@ -563,11 +563,11 @@ class FastGelu(Cell):
         super(FastGelu, self).__init__()
         self.fast_gelu = P.FastGeLU()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.fast_gelu(x)
 
 
-class Sigmoid(Cell):
+class Sigmoid(Module):
     r"""
     Sigmoid activation function.
 
@@ -609,11 +609,11 @@ class Sigmoid(Cell):
         super(Sigmoid, self).__init__()
         self.sigmoid = P.Sigmoid()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.sigmoid(x)
 
 
-class PReLU(Cell):
+class PReLU(Module):
     r"""
     PReLU activation function.
 
@@ -701,7 +701,7 @@ class PReLU(Cell):
         self.relu = P.ReLU()
         self.assign = P.Assign()
 
-    def construct(self, x):
+    def forward(self, x):
         u = self.relu(self.w)
         v = self.prelu(x, F.cast(u, x.dtype))
         if self.training:
@@ -709,7 +709,7 @@ class PReLU(Cell):
         return v
 
 
-class HSwish(Cell):
+class HSwish(Module):
     r"""
     Hard swish activation function.
 
@@ -748,11 +748,11 @@ class HSwish(Cell):
         super(HSwish, self).__init__()
         self.hswish = P.HSwish()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.hswish(x)
 
 
-class HSigmoid(Cell):
+class HSigmoid(Module):
     r"""
     Hard sigmoid activation function. Calculates the output according to the input elements.
 
@@ -788,11 +788,11 @@ class HSigmoid(Cell):
         super(HSigmoid, self).__init__()
         self.hsigmoid = P.HSigmoid()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.hsigmoid(input_x)
 
 
-class LogSigmoid(Cell):
+class LogSigmoid(Module):
     r"""
     Logsigmoid activation function.
 
@@ -835,7 +835,7 @@ class LogSigmoid(Cell):
         self.rec = P.Reciprocal()
         self.log = P.Log()
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         neg_input = self.mul(input_x, -1)
         exp_neg_input = self.exp(neg_input)
         exp_neg_input_1 = self.add(exp_neg_input, 1)
@@ -844,7 +844,7 @@ class LogSigmoid(Cell):
         return ret
 
 
-class SoftShrink(Cell):
+class SoftShrink(Module):
     r"""
     Applies the SoftShrink function element-wise.
 
@@ -888,12 +888,12 @@ class SoftShrink(Cell):
         super(SoftShrink, self).__init__()
         self.softshrink = P.SoftShrink(lambd)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         output = self.softshrink(input_x)
         return output
 
 
-class HShrink(Cell):
+class HShrink(Module):
     r"""
     Hard Shrink activation function. Calculates the output according to the input elements.
 
@@ -939,7 +939,7 @@ class HShrink(Cell):
         super(HShrink, self).__init__()
         self.hshrink = P.HShrink(lambd)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         return self.hshrink(input_x)
 
 

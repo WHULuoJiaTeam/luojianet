@@ -292,7 +292,7 @@ TEST_F(TestCostGraph, test_ConstructConnectedComponents) {
   entire_cost_graph.AddOperator(matmul4);
   entire_cost_graph.AddEdge(matmul1, matmul2, edge_m1_m2);
   entire_cost_graph.AddEdge(matmul3, matmul4, edge_m3_m4);
-  // test for successfully construct connected components
+  // test for successfully forward connected components
   std::vector<std::shared_ptr<CostGraph>> connected_coms =
     entire_cost_graph.ConstructConnectedComponents(entire_cost_graph.GetOperators());
   ASSERT_EQ(connected_coms.size(), 2);

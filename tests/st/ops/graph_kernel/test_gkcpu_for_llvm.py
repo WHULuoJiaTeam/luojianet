@@ -20,17 +20,17 @@ import numpy as np
 import pytest
 import luojianet_ms.context as context
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 import luojianet_ms.ops.operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.add = P.Add()
         self.mul = P.Mul()
 
-    def construct(self, x0, x1):
+    def forward(self, x0, x1):
         add_res = self.add(x1, x0)
         res = self.mul(add_res, x1)
         return res

@@ -23,13 +23,13 @@ from luojianet_ms.common.parameter import Parameter
 grad_all = C.GradOperation(get_all=True)
 
 
-class IfAfterIfInForNet(nn.Cell):
+class IfAfterIfInForNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def forward(self, x):
         out = x + self.param_b
         for _ in range(4):
             if out <= 20:
@@ -40,13 +40,13 @@ class IfAfterIfInForNet(nn.Cell):
         return out
 
 
-class IfAfterIfInForNet1(nn.Cell):
+class IfAfterIfInForNet1(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.func(x)
         if x < self.param_b:
             out -= self.param_b
@@ -61,13 +61,13 @@ class IfAfterIfInForNet1(nn.Cell):
         return out
 
 
-class IfAfterIfInForNet2(nn.Cell):
+class IfAfterIfInForNet2(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.func(x)
         if x < self.param_b:
             out -= self.param_b
@@ -86,13 +86,13 @@ class IfAfterIfInForNet2(nn.Cell):
         return x
 
 
-class IfAfterIfInForNet3(nn.Cell):
+class IfAfterIfInForNet3(nn.Module):
     def __init__(self):
         super().__init__()
         self.param_a = Parameter(Tensor(5, mstype.int32), name='a')
         self.param_b = Parameter(Tensor(4, mstype.int32), name='b')
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.func(x)
         if x < self.param_b:
             out -= self.param_b
@@ -111,12 +111,12 @@ class IfAfterIfInForNet3(nn.Cell):
         return self.param_b
 
 
-class GradNet(nn.Cell):
+class GradNet(nn.Module):
     def __init__(self, net):
         super(GradNet, self).__init__()
         self.net = net
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return grad_all(self.net)(*inputs)
 
 

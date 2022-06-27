@@ -21,7 +21,7 @@ from luojianet_ms.ops import operations as P
 from luojianet_ms import Tensor
 
 
-class Proposal(nn.Cell):
+class Proposal(nn.Module):
     """
     Proposal subnet.
 
@@ -134,7 +134,7 @@ class Proposal(nn.Cell):
         self.min_float_num = -65500.0
         self.topK_mask = Tensor(self.min_float_num * np.ones(total_max_topk_input, np.float32))
 
-    def construct(self, rpn_cls_score_total, rpn_bbox_pred_total, anchor_list):
+    def forward(self, rpn_cls_score_total, rpn_bbox_pred_total, anchor_list):
         proposals_tuple = ()
         masks_tuple = ()
         for img_id in range(self.batch_size):

@@ -2024,7 +2024,7 @@ class TextBaseDataset(Dataset):
         Examples:
             >>> from luojianet_ms.dataset.text import SentencePieceModel
             >>>
-            >>> # You can construct any text dataset as source, take TextFileDataset as example.
+            >>> # You can forward any text dataset as source, take TextFileDataset as example.
             >>> dataset = ds.TextFileDataset("/path/to/sentence/piece/vocab/file", shuffle=False)
             >>> dataset = dataset.build_sentencepiece_vocab(["text"], 5000, 0.9995, SentencePieceModel.UNIGRAM, {})
         """

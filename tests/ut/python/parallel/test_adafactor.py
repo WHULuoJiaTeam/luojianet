@@ -17,12 +17,12 @@ import numpy as np
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor, Parameter
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell, TrainOneStepCell
+from luojianet_ms.nn import Module, TrainOneStepCell
 from luojianet_ms.nn.optim.adafactor import AdaFactor
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self, add_weight, matmul_weight, bias, strategy1=None, strategy2=None):
         super().__init__()
         self.add = P.TensorAdd()
@@ -33,7 +33,7 @@ class Net(Cell):
         self.bias = Parameter(bias, "bias")
         self.reshape = P.Reshape()
 
-    def construct(self, x, b):
+    def forward(self, x, b):
         out = self.add(x, self.add_weight)
         out = self.reshape(out, (64, 32))
         out = self.matmul(out, self.mul_weight)

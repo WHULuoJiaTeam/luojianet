@@ -21,13 +21,13 @@ from luojianet_ms import context
 context.set_context(mode=context.GRAPH_MODE)
 
 
-class IdentityIsNot(nn.Cell):
+class IdentityIsNot(nn.Module):
     def __init__(self, x, y):
         super(IdentityIsNot, self).__init__()
         self.x = x
         self.y = y
 
-    def construct(self):
+    def forward(self):
         in_v = self.x is not self.y
         return in_v
 

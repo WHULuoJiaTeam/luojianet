@@ -25,7 +25,7 @@ from luojianet_ms.common.api import ms_function
 
 context.set_context(mode=context.PYNATIVE_MODE, device_target='CPU')
 
-class NetNorm(nn.Cell):
+class NetNorm(nn.Module):
     def __init__(self):
         super(NetNorm, self).__init__()
 
@@ -35,7 +35,7 @@ class NetNorm(nn.Cell):
         self.norm_4 = nn.Norm(axis=-1, keep_dims=True)
 
     @ms_function
-    def construct(self, indices):
+    def forward(self, indices):
         return (self.norm_1(indices),
                 self.norm_2(indices),
                 self.norm_3(indices),

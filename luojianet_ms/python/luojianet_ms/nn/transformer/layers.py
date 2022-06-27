@@ -28,7 +28,7 @@ import luojianet_ms.common.dtype as mstype
 from luojianet_ms.common.seed import _get_graph_seed
 from luojianet_ms.ops import operations as P
 from luojianet_ms._extends import cell_attr_register
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms.nn.layer.activation import get_activation
 from luojianet_ms.ops import functional as F
 from luojianet_ms._checkparam import Validator
@@ -189,7 +189,7 @@ def _check_input_shape_value(input_shape, dim, param_name, cls_name, target_valu
     _LayerInputCheck.check_shape_value_on_axis(input_shape, dim, param_name, cls_name, target_value)
 
 
-class _LayerNorm(Cell):
+class _LayerNorm(Module):
     r"""
         A self-defined layer norm operation using reduce sum and reduce mean
 
@@ -229,7 +229,7 @@ class _LayerNorm(Cell):
         self.add2 = P.Add()
         self.real_div = P.RealDiv()
 
-    def construct(self, x):
+    def forward(self, x):
         r"""
           x : batch x seq_length x hidden_size
         """
@@ -275,7 +275,7 @@ class _LayerNorm(Cell):
         return self
 
 
-class _Linear(Cell):
+class _Linear(Module):
     r"""
     The dense connected layer. Once the parallel mode is enabled, the input shape should be
     3-D tensor.
@@ -315,7 +315,7 @@ class _Linear(Cell):
     Raises:
         TypeError: If `in_channels` or `out_channels` is not an int.
         TypeError: If `has_bias` is not a bool.
-        TypeError: If `activation` is not one of str, Cell, Primitive, None.
+        TypeError: If `activation` is not one of str, Module, Primitive, None.
         ValueError: If length of shape of `weight_init` is not equal to 2 or shape[0] of `weight_init`
                     is not equal to `out_channels` or shape[1] of `weight_init` is not equal to `in_channels`.
         ValueError: If length of shape of `bias_init` is not equal to 1
@@ -380,7 +380,7 @@ class _Linear(Cell):
         self.dtype = compute_dtype
         self.cast = P.Cast()
 
-    def construct(self, x):
+    def forward(self, x):
         out_shape = P.Shape()(x)[:-1] + (self.out_channels,)
         x = P.Reshape()(x, (-1, self.in_channels))
         if self.expert_flag:
@@ -430,7 +430,7 @@ class _Linear(Cell):
         return self
 
 
-class _Dropout(nn.Cell):
+class _Dropout(nn.Module):
     r"""
         A Dropout Implements with P.DropoutGenMask and  P.DropoutDoMask for parallel training.
     """
@@ -457,7 +457,7 @@ class _Dropout(nn.Cell):
         else:
             self.dropout = P.Dropout(keep_prob)
 
-    def construct(self, x):
+    def forward(self, x):
         r"""
            Input: a tensor
            Returns: a tensor
@@ -489,7 +489,7 @@ class _Dropout(nn.Cell):
             self.dropout.shard(strategy)
 
 
-class FixedSparseAttention(nn.Cell):
+class FixedSparseAttention(nn.Module):
     """
     Fixed Sparse Attention Layer
 
@@ -686,7 +686,7 @@ class FixedSparseAttention(nn.Cell):
 
         return local_mask, global_mask
 
-    def construct(self, q, k, v, attention_mask):
+    def forward(self, q, k, v, attention_mask):
         _check_shape_equal(F.shape(q), "q", self.cls_name,
                            [self.batch_size, self.seq_length, self.hidden_size])
         _check_input_dtype(F.dtype(q), "q", [mstype.float16], self.cls_name)

@@ -75,11 +75,11 @@ class LogNormal(msd.TransformedDistribution):
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms.nn.probability.distribution as msd
         >>> from luojianet_ms import Tensor
-        >>> class Prob(nn.Cell):
+        >>> class Prob(nn.Module):
         ...     def __init__(self):
         ...         super(Prob, self).__init__()
         ...         self.ln = msd.LogNormal(np.array([0.3]), np.array([[0.2], [0.4]]), dtype=luojianet_ms.float32)
-        ...     def construct(self, x_):
+        ...     def forward(self, x_):
         ...         return self.ln.prob(x_)
         >>> pdf = Prob()
         >>> output = pdf(Tensor([1.0, 2.0], dtype=luojianet_ms.float32))

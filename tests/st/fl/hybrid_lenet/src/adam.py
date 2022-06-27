@@ -293,7 +293,7 @@ class AdamWeightDecayForBert(Optimizer):
         self.op_reshape = P.Reshape()
         self.op_shape = P.Shape()
 
-    def construct(self, gradients, overflow):
+    def forward(self, gradients, overflow):
         """AdamWeightDecayForBert"""
         lr = self.get_lr()
         cond = self.op_cast(F.fill(mstype.int32, self.op_shape(self.beta1), 1) *\
@@ -399,7 +399,7 @@ class AdamWeightDecayOp(Optimizer):
         self.moments2 = self.parameters.clone(prefix="adam_v", init='zeros')
         self.hyper_map = C.HyperMap()
 
-    def construct(self, gradients):
+    def forward(self, gradients):
         """AdamWeightDecayOp"""
         lr = self.get_lr()
         if self.is_group:

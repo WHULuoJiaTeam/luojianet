@@ -22,7 +22,7 @@ from luojianet_ms import dtype
 
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """
     Test class: forward pass of bijector.
     """
@@ -30,7 +30,7 @@ class Net(nn.Cell):
         super(Net, self).__init__()
         self.bijector = msb.Softplus(sharpness=2.0)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.bijector.forward(x_)
 
 def test_forward():
@@ -41,7 +41,7 @@ def test_forward():
     tol = 1e-6
     assert (np.abs(ans.asnumpy() - expected) < tol).all()
 
-class Net1(nn.Cell):
+class Net1(nn.Module):
     """
     Test class: backward pass of bijector.
     """
@@ -49,7 +49,7 @@ class Net1(nn.Cell):
         super(Net1, self).__init__()
         self.bijector = msb.Softplus(sharpness=2.0)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.bijector.inverse(x_)
 
 def test_backward():
@@ -60,7 +60,7 @@ def test_backward():
     tol = 1e-6
     assert (np.abs(ans.asnumpy() - expected) < tol).all()
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     """
     Test class: Forward Jacobian.
     """
@@ -68,7 +68,7 @@ class Net2(nn.Cell):
         super(Net2, self).__init__()
         self.bijector = msb.Softplus(sharpness=2.0)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.bijector.forward_log_jacobian(x_)
 
 def test_forward_jacobian():
@@ -79,7 +79,7 @@ def test_forward_jacobian():
     tol = 1e-6
     assert (np.abs(ans.asnumpy() - expected) < tol).all()
 
-class Net3(nn.Cell):
+class Net3(nn.Module):
     """
     Test class: Backward Jacobian.
     """
@@ -87,7 +87,7 @@ class Net3(nn.Cell):
         super(Net3, self).__init__()
         self.bijector = msb.Softplus(sharpness=2.0)
 
-    def construct(self, x_):
+    def forward(self, x_):
         return self.bijector.inverse_log_jacobian(x_)
 
 def test_backward_jacobian():

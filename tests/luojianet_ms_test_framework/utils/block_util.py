@@ -14,7 +14,7 @@
 # limitations under the License.
 # ============================================================================
 
-"""Utils for Cell related computation."""
+"""Utils for Module related computation."""
 
 # pylint: disable=missing-docstring
 
@@ -36,7 +36,7 @@ def get_uniform_with_shape(shape):
 
 
 def set_block_param_with_rand(net, rand_func=None):
-    if not isinstance(net, nn.Cell) or rand_func is None:
+    if not isinstance(net, nn.Module) or rand_func is None:
         return
     net.init_parameters_data()
     for param in net.trainable_params():
@@ -64,16 +64,16 @@ def run_block(net, *inputs, rand_func=None, training=True):
     return net(*inputs)
 
 
-class IthOutputCell(nn.Cell):
+class IthOutputCell(nn.Module):
     def __init__(self, network, output_index):
-        if isinstance(network, nn.Cell):
+        if isinstance(network, nn.Module):
             super(IthOutputCell, self).__init__(auto_prefix=False)
         else:
             super(IthOutputCell, self).__init__()
         self.network = network
         self.output_index = output_index
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         predict = self.network(*inputs)[self.output_index]
         return predict
 
@@ -85,14 +85,14 @@ def get_output_cell(network, num_input, output_index, training=True):
     return net
 
 
-class OutputReduceSumCell(nn.Cell):
+class OutputReduceSumCell(nn.Module):
     def __init__(self, network, output_num):
         super(OutputReduceSumCell, self).__init__()
         self.output_num = output_num
         self.network = network
         self.reduce_sum = P.ReduceSum()
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         if self.output_num == 1:
             return self.reduce_sum(self.network(*inputs), None)
         ret = F.make_tuple()
@@ -109,7 +109,7 @@ def get_output_reduce_cell(network, output_num, training=True):
     return net
 
 
-class InputOpNet(nn.Cell):
+class InputOpNet(nn.Module):
     def __init__(self, op, c1=None, c2=None, c3=None, c4=None):
         super(InputOpNet, self).__init__()
         self.op = op
@@ -118,7 +118,7 @@ class InputOpNet(nn.Cell):
         self.c3 = c3
         self.c4 = c4
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         raise NotImplementedError
 
     def construct0_c0_fake(self, data):
@@ -227,24 +227,24 @@ class InputOpNet(nn.Cell):
 
 
 def gen_net(op, input_num, training=True, desc_const=(), const_first=False, add_fake_input=False):
-    if isinstance(op, nn.Cell):
+    if isinstance(op, nn.Module):
         return op
     net = InputOpNet(op, *desc_const)
     if const_first:
         fn_name = 'constructc%d_%d' % (len(desc_const), input_num)
     else:
-        fn_name = 'construct%d_c%d' % (input_num, len(desc_const))
+        fn_name = 'forward%d_c%d' % (input_num, len(desc_const))
     if add_fake_input:
         fn_name += '_fake'
     f = getattr(net, fn_name)
-    setattr(net, "construct", f)
+    setattr(net, "forward", f)
     set_block_training(net, training)
     return net
 
 
-class OperationBackward(nn.Cell):
+class OperationBackward(nn.Module):
     def __init__(self, network, grad_op, sens):
-        if isinstance(network, nn.Cell):
+        if isinstance(network, nn.Module):
             super(OperationBackward, self).__init__(auto_prefix=False)
         else:
             super(OperationBackward, self).__init__()
@@ -252,26 +252,26 @@ class OperationBackward(nn.Cell):
         self.grad = grad_op
         self.sens = sens
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.grad(self.network)(*inputs, self.sens)
 
 
-class OperationBackwardWithNoSens(nn.Cell):
+class OperationBackwardWithNoSens(nn.Module):
     def __init__(self, network, grad_op):
-        if isinstance(network, nn.Cell):
+        if isinstance(network, nn.Module):
             super(OperationBackwardWithNoSens, self).__init__(auto_prefix=False)
         else:
             super(OperationBackwardWithNoSens, self).__init__()
         self.network = network
         self.grad = grad_op
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.grad(self.network)(*inputs)
 
 
-class NNBackward(nn.Cell):
+class NNBackward(nn.Module):
     def __init__(self, network, grad_op, sens):
-        if isinstance(network, nn.Cell):
+        if isinstance(network, nn.Module):
             super(NNBackward, self).__init__(auto_prefix=False)
         else:
             super(NNBackward, self).__init__()
@@ -280,13 +280,13 @@ class NNBackward(nn.Cell):
         self.params = ParameterTuple(network.trainable_params())
         self.sens = sens
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.grad(self.network, self.params)(*inputs, self.sens)
 
 
-class NNBackwardWithNoSens(nn.Cell):
+class NNBackwardWithNoSens(nn.Module):
     def __init__(self, network, grad_op):
-        if isinstance(network, nn.Cell):
+        if isinstance(network, nn.Module):
             super(NNBackwardWithNoSens, self).__init__(auto_prefix=False)
         else:
             super(NNBackwardWithNoSens, self).__init__()
@@ -294,13 +294,13 @@ class NNBackwardWithNoSens(nn.Cell):
         self.grad = grad_op
         self.params = ParameterTuple(network.trainable_params())
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         return self.grad(self.network, self.params)(*inputs)
 
 
 def gen_grad_net(net, grad_op, input_num, sens=None, training=True, desc_const=(),
                  const_first=False, add_fake_input=False):
-    if not isinstance(net, nn.Cell):
+    if not isinstance(net, nn.Module):
         net = gen_net(net, input_num, desc_const=desc_const, const_first=const_first, add_fake_input=add_fake_input)
     if grad_op.get_by_list:
         if grad_op.sens_param:
@@ -317,12 +317,12 @@ def gen_grad_net(net, grad_op, input_num, sens=None, training=True, desc_const=(
 
 
 def set_block_training(net, training=True):
-    if isinstance(net, nn.Cell):
+    if isinstance(net, nn.Module):
         net.set_train(training)
 
 
 def set_block_phase(net, phase='train'):
-    if isinstance(net, nn.Cell):
+    if isinstance(net, nn.Module):
         net.phase = phase
 
 

@@ -25,12 +25,12 @@ from luojianet_ms.train.model import Model
 context.set_context(device_target="Ascend")
 
 
-class Max(nn.Cell):
+class Max(nn.Module):
     def __init__(self, dtype):
         super(Max, self).__init__()
         self.max = P.Maximum()
 
-    def construct(self, inputa, inputb):
+    def forward(self, inputa, inputb):
         return self.max(inputa, inputb)
 
 

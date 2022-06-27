@@ -21,13 +21,13 @@ from luojianet_ms import Tensor
 from luojianet_ms import context
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.value1 = [Tensor([1, 2, 3]), Tensor([4, 5, 6])]
         self.value2 = [Tensor([7, 8, 9]), Tensor([10, 11, 12])]
 
-    def construct(self):
+    def forward(self):
         return self.value1 + self.value2
 
 def test_list_add_list():

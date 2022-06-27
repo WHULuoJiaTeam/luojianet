@@ -25,12 +25,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_transpose():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.transpose()
 
     net = Net()
@@ -38,12 +38,12 @@ def test_transpose():
 
 
 def test_transpose_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.transpose(1, 0)
 
     net = Net()
@@ -51,12 +51,12 @@ def test_transpose_1():
 
 
 def test_transpose_2():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.transpose([1, 0])
 
     net = Net()
@@ -64,12 +64,12 @@ def test_transpose_2():
 
 
 def test_transpose_3():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.transpose((1, 0))
 
     net = Net()
@@ -77,12 +77,12 @@ def test_transpose_3():
 
 
 def test_transpose_error():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.transpose(0, 2, 1)
 
     net = Net()
@@ -91,12 +91,12 @@ def test_transpose_error():
 
 
 def test_transpose_error_1():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = Tensor([[1, 2, 3], [4, 5, 6]], dtype=mstype.float32)
 
-        def construct(self):
+        def forward(self):
             return self.value.transpose(1.0, 0)
 
     net = Net()

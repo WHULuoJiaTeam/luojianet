@@ -18,7 +18,7 @@ import numpy as np
 
 from luojianet_ms import context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.nn import ReLU
 from luojianet_ms.ops import composite as C
 from luojianet_ms.ops.operations import Add
@@ -27,7 +27,7 @@ context.set_context(mode=context.GRAPH_MODE)
 grad = C.GradOperation(get_all=True, sens_param=True)
 
 
-class TensorAddNetMe(Cell):
+class TensorAddNetMe(Module):
     """ TensorAddNetMe definition """
 
     def __init__(self):
@@ -35,7 +35,7 @@ class TensorAddNetMe(Cell):
         self.relu = ReLU()
         self.add = Add()
 
-    def construct(self, inputA, inputB):
+    def forward(self, inputA, inputB):
         inputA = self.relu(inputA)
         inputB = self.relu(inputB)
         x = self.add(inputA, inputB)
@@ -43,14 +43,14 @@ class TensorAddNetMe(Cell):
         return x
 
 
-class GradWrap2(Cell):
+class GradWrap2(Module):
     """ GradWrap2 definition """
 
     def __init__(self, network):
         super(GradWrap2, self).__init__()
         self.network = network
 
-    def construct(self, inputA, inputB, sens):
+    def forward(self, inputA, inputB, sens):
         gout = grad(self.network)(inputA, inputB, sens)
         return gout
 

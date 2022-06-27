@@ -140,7 +140,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_0) {
   auto context = MsContext::GetInstance();
   MS_EXCEPTION_IF_NULL(context);
   context->set_param<std::string>(MS_CTX_DEVICE_TARGET, kAscendDevice);
-  // construct before graph
+  // forward before graph
   auto before_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(before_fg != nullptr);
 
@@ -154,7 +154,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_0) {
   // run pass
   DynamicShapeConvertPass(before_fg);
 
-  // construct after graph
+  // forward after graph
   auto after_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(after_fg != nullptr);
   auto after_p = TestCreateParameter(after_fg, "p", TestCreateTensor(kFloat32, std::vector<int64_t>{1, 10}));
@@ -202,7 +202,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_1) {
   auto context = MsContext::GetInstance();
   MS_EXCEPTION_IF_NULL(context);
   context->set_param<std::string>(MS_CTX_DEVICE_TARGET, kAscendDevice);
-  // construct before graph
+  // forward before graph
   auto before_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(before_fg != nullptr);
 
@@ -214,7 +214,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_1) {
   // run pass
   DynamicShapeConvertPass(before_fg);
 
-  // construct after graph
+  // forward after graph
   auto after_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(after_fg != nullptr);
   auto after_p = TestCreateParameter(after_fg, "p", TestCreateTensor(kFloat32, std::vector<int64_t>{1, 10}));
@@ -265,7 +265,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_2) {
   auto context = MsContext::GetInstance();
   MS_EXCEPTION_IF_NULL(context);
   context->set_param<std::string>(MS_CTX_DEVICE_TARGET, kAscendDevice);
-  // construct before graph
+  // forward before graph
   auto before_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(before_fg != nullptr);
 
@@ -287,7 +287,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_2) {
   // run pass
   DynamicShapeConvertPass(before_fg);
 
-  // construct after graph
+  // forward after graph
   auto after_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(after_fg != nullptr);
 
@@ -337,7 +337,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_3) {
   auto context = MsContext::GetInstance();
   MS_EXCEPTION_IF_NULL(context);
   context->set_param<std::string>(MS_CTX_DEVICE_TARGET, kAscendDevice);
-  // construct before graph
+  // forward before graph
   auto before_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(before_fg != nullptr);
 
@@ -371,7 +371,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_3) {
   // run pass
   DynamicShapeConvertPass(before_fg);
 
-  // construct after graph
+  // forward after graph
   auto after_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(after_fg != nullptr);
 
@@ -492,7 +492,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_with_depend) {
   auto context = MsContext::GetInstance();
   MS_EXCEPTION_IF_NULL(context);
   context->set_param<std::string>(MS_CTX_DEVICE_TARGET, kAscendDevice);
-  // construct before graph
+  // forward before graph
   auto before_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(before_fg != nullptr);
 
@@ -509,7 +509,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_with_depend) {
   // run pass
   DynamicShapeConvertPass(before_fg);
 
-  // construct after graph
+  // forward after graph
   auto after_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(after_fg != nullptr);
   auto after_p = TestCreateParameter(after_fg, "p", TestCreateTensor(kFloat32, std::vector<int64_t>{1, 10}));
@@ -579,7 +579,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_with_monad) {
   auto context = MsContext::GetInstance();
   MS_EXCEPTION_IF_NULL(context);
   context->set_param<std::string>(MS_CTX_DEVICE_TARGET, kAscendDevice);
-  // construct before graph
+  // forward before graph
   auto before_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(before_fg != nullptr);
 
@@ -603,7 +603,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_with_monad) {
   // run pass
   DynamicShapeConvertPass(before_fg);
 
-  // construct after graph
+  // forward after graph
   auto after_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(after_fg != nullptr);
   auto after_v = TestCreateParameter(after_fg, "v", TestCreateTensor(kFloat32, std::vector<int64_t>{1, 10}));
@@ -654,7 +654,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_sync) {
   auto context = MsContext::GetInstance();
   MS_EXCEPTION_IF_NULL(context);
   context->set_param<std::string>(MS_CTX_DEVICE_TARGET, kAscendDevice);
-  // construct before graph
+  // forward before graph
   auto before_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(before_fg != nullptr);
 
@@ -679,7 +679,7 @@ TEST_F(TestDynamicShapePass, test_dynamic_shape_pass_sync) {
   // run pass
   DynamicShapeConvertPass(before_fg);
 
-  // construct after graph
+  // forward after graph
   auto after_fg = std::make_shared<session::KernelGraph>();
   ASSERT_TRUE(after_fg != nullptr);
 

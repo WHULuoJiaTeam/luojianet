@@ -54,7 +54,7 @@ def _conv_bn_relu(in_channel,
     )
 
 
-class YoloBlock(nn.Cell):
+class YoloBlock(nn.Module):
     """
     YoloBlock for YOLOv3.
 
@@ -85,7 +85,7 @@ class YoloBlock(nn.Cell):
 
         self.conv6 = nn.Conv2d(out_chls_2, out_channels, kernel_size=1, stride=1, has_bias=True)
 
-    def construct(self, x):
+    def forward(self, x):
         c1 = self.conv0(x)
         c2 = self.conv1(c1)
 
@@ -99,7 +99,7 @@ class YoloBlock(nn.Cell):
         return c5, out
 
 
-class YOLOv3(nn.Cell):
+class YOLOv3(nn.Module):
     """
      YOLOv3 Network.
 
@@ -108,7 +108,7 @@ class YOLOv3(nn.Cell):
 
      Args:
          backbone_shape: List. Darknet output channels shape.
-         backbone: Cell. Backbone Network.
+         backbone: Module. Backbone Network.
          out_channel: Integer. Output channel.
 
      Returns:
@@ -136,7 +136,7 @@ class YOLOv3(nn.Cell):
                                     out_channels=out_channel)
         self.concat = P.Concat(axis=1)
 
-    def construct(self, x):
+    def forward(self, x):
         # input_shape of x is (batch_size, 3, h, w)
         # feature_map1 is (batch_size, backbone_shape[2], h/8, w/8)
         # feature_map2 is (batch_size, backbone_shape[3], h/16, w/16)
@@ -159,7 +159,7 @@ class YOLOv3(nn.Cell):
         return big_object_output, medium_object_output, small_object_output
 
 
-class DetectionBlock(nn.Cell):
+class DetectionBlock(nn.Module):
     """
      YOLOv3 detection Network. It will finally output the detection result.
 
@@ -197,7 +197,7 @@ class DetectionBlock(nn.Cell):
         self.concat = P.Concat(axis=-1)
         self.conf_training = is_training
 
-    def construct(self, x, input_shape):
+    def forward(self, x, input_shape):
         num_batch = P.Shape()(x)[0]
         grid_size = P.Shape()(x)[2:4]
 
@@ -238,14 +238,14 @@ class DetectionBlock(nn.Cell):
         return self.concat((box_xy, box_wh, box_confidence, box_probs))
 
 
-class Iou(nn.Cell):
+class Iou(nn.Module):
     """Calculate the iou of boxes"""
     def __init__(self):
         super(Iou, self).__init__()
         self.min = P.Minimum()
         self.max = P.Maximum()
 
-    def construct(self, box1, box2):
+    def forward(self, box1, box2):
         # box1: pred_box [batch, gx, gy, anchors, 1,      4] ->4: [x_center, y_center, w, h]
         # box2: gt_box   [batch, 1,  1,  1,       maxbox, 4]
         # convert to topLeft and rightDown
@@ -272,7 +272,7 @@ class Iou(nn.Cell):
         return iou
 
 
-class YoloLossBlock(nn.Cell):
+class YoloLossBlock(nn.Module):
     """
     Loss block cell of YOLOV3 network.
     """
@@ -298,7 +298,7 @@ class YoloLossBlock(nn.Cell):
         self.confidenceLoss = ConfidenceLoss()
         self.classLoss = ClassLoss()
 
-    def construct(self, grid, prediction, pred_xy, pred_wh, y_true, gt_box, input_shape):
+    def forward(self, grid, prediction, pred_xy, pred_wh, y_true, gt_box, input_shape):
         # prediction : origin output from yolo
         # pred_xy: (sigmoid(xy)+grid)/grid_size
         # pred_wh: (exp(wh)*anchors)/input_shape
@@ -349,7 +349,7 @@ class YoloLossBlock(nn.Cell):
         return loss / batch_size
 
 
-class YOLOV3DarkNet53(nn.Cell):
+class YOLOV3DarkNet53(nn.Module):
     """
     Darknet based YOLOV3 network.
 
@@ -357,7 +357,7 @@ class YOLOV3DarkNet53(nn.Cell):
         is_training: Bool. Whether train or not.
 
     Returns:
-        Cell, cell instance of Darknet based YOLOV3 neural network.
+        Module, cell instance of Darknet based YOLOV3 neural network.
 
     Examples:
         YOLOV3DarkNet53(True)
@@ -380,7 +380,7 @@ class YOLOV3DarkNet53(nn.Cell):
         self.detect_2 = DetectionBlock('m', is_training=is_training)
         self.detect_3 = DetectionBlock('s', is_training=is_training)
 
-    def construct(self, x, input_shape):
+    def forward(self, x, input_shape):
         big_object_output, medium_object_output, small_object_output = self.feature_map(x)
         output_big = self.detect_1(big_object_output, input_shape)
         output_me = self.detect_2(medium_object_output, input_shape)
@@ -389,7 +389,7 @@ class YOLOV3DarkNet53(nn.Cell):
         return output_big, output_me, output_small
 
 
-class YoloWithLossCell(nn.Cell):
+class YoloWithLossCell(nn.Module):
     """YOLOV3 loss."""
     def __init__(self, network):
         super(YoloWithLossCell, self).__init__()
@@ -399,7 +399,7 @@ class YoloWithLossCell(nn.Cell):
         self.loss_me = YoloLossBlock('m', self.config)
         self.loss_small = YoloLossBlock('s', self.config)
 
-    def construct(self, x, y_true_0, y_true_1, y_true_2, gt_0, gt_1, gt_2, input_shape):
+    def forward(self, x, y_true_0, y_true_1, y_true_2, gt_0, gt_1, gt_2, input_shape):
         yolo_out = self.yolo_network(x, input_shape)
         loss_l = self.loss_big(*yolo_out[0], y_true_0, gt_0, input_shape)
         loss_m = self.loss_me(*yolo_out[1], y_true_1, gt_1, input_shape)
@@ -407,7 +407,7 @@ class YoloWithLossCell(nn.Cell):
         return loss_l + loss_m + loss_s
 
 
-class TrainingWrapper(nn.Cell):
+class TrainingWrapper(nn.Module):
     """Training wrapper."""
     def __init__(self, network, optimizer, sens=1.0):
         super(TrainingWrapper, self).__init__(auto_prefix=False)
@@ -430,7 +430,7 @@ class TrainingWrapper(nn.Cell):
                 degree = get_group_size()
             self.grad_reducer = nn.DistributedGradReducer(optimizer.parameters, mean, degree)
 
-    def construct(self, *args):
+    def forward(self, *args):
         weights = self.weights
         loss = self.network(*args)
         sens = P.Fill()(P.DType()(loss), P.Shape()(loss), self.sens)

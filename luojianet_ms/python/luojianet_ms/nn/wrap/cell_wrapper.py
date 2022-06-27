@@ -29,7 +29,7 @@ from ...ops import composite as C
 from ...ops import functional as F
 from ...ops import operations as P
 from ...ops.operations.comm_ops import _VirtualDataset
-from ..cell import Cell
+from ..cell import Module
 from .grad_reducer import DistributedGradReducer
 
 _get_datatype = C.MultitypeFuncGraph("_get_datatype")
@@ -67,16 +67,16 @@ def _tensors_cast_datatype(datatype, param):
     return F.cast(param, datatype)
 
 
-class WithLossCell(Cell):
+class WithLossCell(Module):
     r"""
-    Cell with loss function.
+    Module with loss function.
 
-    Wraps the network with loss function. This Cell accepts data and label as inputs and
+    Wraps the network with loss function. This Module accepts data and label as inputs and
     the computed loss will be returned.
 
     Args:
-        backbone (Cell): The backbone network to wrap.
-        loss_fn (Cell): The loss function used to compute loss.
+        backbone (Module): The backbone network to wrap.
+        loss_fn (Module): The loss function used to compute loss.
 
     Inputs:
         - **data** (Tensor) - Tensor of shape :math:`(N, \ldots)`.
@@ -108,7 +108,7 @@ class WithLossCell(Cell):
         self._backbone = backbone
         self._loss_fn = loss_fn
 
-    def construct(self, data, label):
+    def forward(self, data, label):
         out = self._backbone(data)
         return self._loss_fn(out, label)
 
@@ -118,25 +118,25 @@ class WithLossCell(Cell):
         Get the backbone network.
 
         Returns:
-            Cell, the backbone network.
+            Module, the backbone network.
         """
         return self._backbone
 
 
-class WithGradCell(Cell):
+class WithGradCell(Module):
     r"""
-    Cell that returns the gradients.
+    Module that returns the gradients.
 
     Wraps the network with backward cell to compute gradients. A network with a loss function is necessary
     as argument. If loss function in None, the network must be a wrapper of network and loss function. This
-    Cell accepts '\*inputs' as inputs and returns gradients for each trainable parameter.
+    Module accepts '\*inputs' as inputs and returns gradients for each trainable parameter.
 
     Note:
         Run in PyNative mode.
 
     Args:
-        network (Cell): The target network to wrap. The network only supports single output.
-        loss_fn (Cell): Primitive loss function used to compute gradients. Default: None.
+        network (Module): The target network to wrap. The network only supports single output.
+        loss_fn (Module): Primitive loss function used to compute gradients. Default: None.
         sens (Union[None, Tensor, Scalar, Tuple ...]): The sensitive for backpropagation, the type and shape
             must be same as the `network` output. If None, we will fill one to a same type shape of
             output value. Default: None.
@@ -178,7 +178,7 @@ class WithGradCell(Cell):
             self.network_with_loss = WithLossCell(self.network, self.loss_fn)
         self.network_with_loss.set_train()
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         weights = self.weights
         if self.sens is None:
             grads = self.grad(self.network_with_loss, weights)(*inputs)
@@ -187,15 +187,15 @@ class WithGradCell(Cell):
         return grads
 
 
-class ForwardValueAndGrad(Cell):
+class ForwardValueAndGrad(Module):
     r"""
     Encapsulate training network.
 
-    Including the network and a gradient function. The resulting Cell is trained with input '\*inputs'.
+    Including the network and a gradient function. The resulting Module is trained with input '\*inputs'.
     The backward graph will be created in the gradient function to calculating gradient.
 
     Args:
-        network (Cell): The training network.
+        network (Module): The training network.
         weights (ParameterTuple): The parameters of the training network that need to calculate the gradient.
             Default: None.
         get_all (bool): If True, get all the gradients with respect to inputs. Default: False.
@@ -227,13 +227,13 @@ class ForwardValueAndGrad(Cell):
         >>> import numpy as np
         >>> from luojianet_ms import Tensor, nn, common, ops, ParameterTuple, Parameter
         >>>
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...    def __init__(self):
         ...        super(Net, self).__init__()
         ...        self.weight = Parameter(Tensor(np.ones([2, 2]).astype(np.float32)), name="weight")
         ...        self.matmul = ops.MatMul()
         ...
-        ...    def construct(self, x):
+        ...    def forward(self, x):
         ...        out = self.matmul(x, self.weight)
         ...        return out
         ...
@@ -255,7 +255,7 @@ class ForwardValueAndGrad(Cell):
 
     def __init__(self, network, weights=None, get_all=False, get_by_list=False, sens_param=False):
         super(ForwardValueAndGrad, self).__init__(auto_prefix=False)
-        if not isinstance(network, (Cell, FunctionType, MethodType)):
+        if not isinstance(network, (Module, FunctionType, MethodType)):
             raise TypeError(f"For 'ForwardValueAndGrad', "
                             f"the argument 'network' should be cell, function type or method type, "
                             f"but got '{type(network)}'")
@@ -270,7 +270,7 @@ class ForwardValueAndGrad(Cell):
                             f"when 'get_by_list' is set to True, the argument 'weights' should be "
                             f"ParameterTuple type, but got '{type(weights)}'")
         self.network = network
-        if isinstance(network, Cell):
+        if isinstance(network, Module):
             self.network.set_grad()
         self.weights = weights
         self.get_all = get_all
@@ -278,7 +278,7 @@ class ForwardValueAndGrad(Cell):
         self.sens_param = sens_param
         self.grad = C.GradOperation(get_all=self.get_all, get_by_list=self.get_by_list, sens_param=self.sens_param)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         grad_inputs = inputs
         if self.sens_param:
             inputs = inputs[:-1]
@@ -290,17 +290,17 @@ class ForwardValueAndGrad(Cell):
         return loss, grads
 
 
-class TrainOneStepCell(Cell):
+class TrainOneStepCell(Module):
     r"""
     Network training package class.
 
-    Wraps the `network` with the `optimizer`. The resulting Cell is trained with input '\*inputs'.
-    The backward graph will be created in the construct function to update the parameter. Different
+    Wraps the `network` with the `optimizer`. The resulting Module is trained with input '\*inputs'.
+    The backward graph will be created in the forward function to update the parameter. Different
     parallel modes are available for training.
 
     Args:
-        network (Cell): The training network. The network only supports single output.
-        optimizer (Union[Cell]): Optimizer for updating the network parameters.
+        network (Module): The training network. The network only supports single output.
+        optimizer (Union[Module]): Optimizer for updating the network parameters.
         sens (numbers.Number): The scaling number to be filled as the input of backpropagation. Default value is 1.0.
 
     Inputs:
@@ -324,13 +324,13 @@ class TrainOneStepCell(Cell):
         >>> train_net = nn.TrainOneStepCell(loss_net, optim)
         >>>
         >>> #2) Using user-defined WithLossCell
-        >>> class MyWithLossCell(Cell):
+        >>> class MyWithLossCell(Module):
         ...    def __init__(self, backbone, loss_fn):
         ...        super(MyWithLossCell, self).__init__(auto_prefix=False)
         ...        self._backbone = backbone
         ...        self._loss_fn = loss_fn
         ...
-        ...    def construct(self, x, y, label):
+        ...    def forward(self, x, y, label):
         ...        out = self._backbone(x, y)
         ...        return self._loss_fn(out, label)
         ...
@@ -370,7 +370,7 @@ class TrainOneStepCell(Cell):
             else:
                 self.grad_reducer = DistributedGradReducer(self.weights, self.mean, self.degree)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         loss = self.network(*inputs)
         sens = F.fill(loss.dtype, loss.shape, self.sens)
         grads = self.grad(self.network, self.weights)(*inputs, sens)
@@ -379,9 +379,9 @@ class TrainOneStepCell(Cell):
         return loss
 
 
-class GetNextSingleOp(Cell):
+class GetNextSingleOp(Module):
     """
-    Cell to run for getting the next operation.
+    Module to run for getting the next operation.
 
     For detailed information, refer to `luojianet_ms.ops.GetNext`.
 
@@ -420,11 +420,11 @@ class GetNextSingleOp(Cell):
         super(GetNextSingleOp, self).__init__()
         self.get_next = P.GetNext(dataset_types, dataset_shapes, len(dataset_types), queue_name)
 
-    def construct(self):
+    def forward(self):
         return self.get_next()
 
 
-class _VirtualDatasetCell(Cell):
+class _VirtualDatasetCell(Module):
     """
     Wrap the network with virtual dataset to convert data parallel layout to model parallel layout.
 
@@ -436,7 +436,7 @@ class _VirtualDatasetCell(Cell):
         Only used in semi auto parallel and auto parallel mode.
 
     Args:
-        backbone (Cell): The target network to wrap.
+        backbone (Module): The target network to wrap.
 
     Examples:
         >>> net = Net()
@@ -448,7 +448,7 @@ class _VirtualDatasetCell(Cell):
         self._backbone = backbone
         self._virtual_dataset = _VirtualDataset()
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         output = self._virtual_dataset(*inputs)
         return self._backbone(*output)
 
@@ -462,7 +462,7 @@ def _check_shape_value_on_axis_divided_by_target_value(input_shape, dim, param_n
     return True
 
 
-class _MicroBatch(Cell):
+class _MicroBatch(Module):
     """
     transform mini-batch to micro-batch in pipeline parallel.
 
@@ -475,7 +475,7 @@ class _MicroBatch(Cell):
         self.micro_size = micro_size
         self.strided_slice = P.StridedSlice()
 
-    def construct(self, i, *inputs):
+    def forward(self, i, *inputs):
         micro_inputs = ()
         for each_input in inputs:
             input_shape = self.shape(each_input)
@@ -495,12 +495,12 @@ class _MicroBatch(Cell):
         return micro_inputs
 
 
-class MicroBatchInterleaved(Cell):
+class MicroBatchInterleaved(Module):
     """
     Wrap the network with Batch Size.
 
     Args:
-        network (Cell): The target network to wrap.
+        network (Module): The target network to wrap.
         interleave_num (int): split num of batch size. Default: 2.
 
     Supported Platforms:
@@ -526,7 +526,7 @@ class MicroBatchInterleaved(Cell):
             interleave_data.strided_slice.add_prim_attr("strided_slice_flag", True)
             self.interleave_inputs.append(interleave_data)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         output = 0.0
         for i in range(self.interleave_num):
             interleave_input = self.interleave_inputs[i](i, *inputs)
@@ -534,7 +534,7 @@ class MicroBatchInterleaved(Cell):
         return output
 
 
-class PipelineCell(Cell):
+class PipelineCell(Module):
     """
     Wrap the network with Micro Batch.
 
@@ -542,7 +542,7 @@ class PipelineCell(Cell):
         micro_size must be greater or equal to pipeline stages.
 
     Args:
-        network (Cell): The target network to wrap.
+        network (Module): The target network to wrap.
         micro_size (int): MicroBatch size.
 
     Supported Platforms:
@@ -564,7 +564,7 @@ class PipelineCell(Cell):
             self.add = P.Add().add_prim_attr("pipeline_end", i)
             self.add_list.append(self.add)
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         ret = None
         for i in range(self.micro_size):
             micro_input = self.micro_inputs[i](i, *inputs)
@@ -592,7 +592,7 @@ class _TrainPipelineAccuStepCell(TrainOneStepCell):
         self.hyper_map = ops.HyperMap()
         self.opt_shard = _get_enable_parallel_optimizer()
 
-    def construct(self, *inputs):
+    def forward(self, *inputs):
         weights = self.weights
         loss = self.network(*inputs)
         sens = ops.Fill()(ops.DType()(loss), ops.Shape()(loss), self.sens)
@@ -608,7 +608,7 @@ class _TrainPipelineAccuStepCell(TrainOneStepCell):
         return loss
 
 
-class VirtualDatasetCellTriple(Cell):
+class VirtualDatasetCellTriple(Module):
     """
     Wrap the network with virtual dataset to convert data parallel layout to model parallel layout.
 
@@ -621,7 +621,7 @@ class VirtualDatasetCellTriple(Cell):
         _VirtualDatasetCell.
 
     Args:
-        backbone (Cell): The target network to wrap.
+        backbone (Module): The target network to wrap.
 
     Examples:
         >>> net = Net()
@@ -633,19 +633,19 @@ class VirtualDatasetCellTriple(Cell):
         logger.warning("WARN_DEPRECATED: The usage of VirtualDatasetCellTriple is deprecated.")
         self._backbone = backbone
 
-    def construct(self, a, b, c):
+    def forward(self, a, b, c):
         return self._backbone(a, b, c)
 
 
-class WithEvalCell(Cell):
+class WithEvalCell(Module):
     r"""
     Wraps the forward network with the loss function.
 
     It returns loss, forward output and label to calculate the metrics.
 
     Args:
-        network (Cell): The forward network.
-        loss_fn (Cell): The loss function.
+        network (Module): The forward network.
+        loss_fn (Module): The loss function.
         add_cast_fp32 (bool): Whether to adjust the data type to float32. Default: False.
 
     Inputs:
@@ -675,7 +675,7 @@ class WithEvalCell(Cell):
         self._loss_fn = loss_fn
         self.add_cast_fp32 = validator.check_value_type("add_cast_fp32", add_cast_fp32, [bool], self.cls_name)
 
-    def construct(self, data, label):
+    def forward(self, data, label):
         outputs = self._network(data)
         if self.add_cast_fp32:
             label = F.mixed_precision_cast(mstype.float32, label)
@@ -684,11 +684,11 @@ class WithEvalCell(Cell):
         return loss, outputs, label
 
 
-class ParameterUpdate(Cell):
+class ParameterUpdate(Module):
     """
-    Cell that updates parameter.
+    Module that updates parameter.
 
-    With this Cell, one can manually update `param` with the input `Tensor`.
+    With this Module, one can manually update `param` with the input `Tensor`.
 
     Args:
         param (Parameter): The parameter to be updated manually.
@@ -728,12 +728,12 @@ class ParameterUpdate(Cell):
             raise TypeError("For 'ParameterUpdate', 'param' must be 'Parameter', but got {}.".format(type(param)))
         self._param = param
 
-    def construct(self, x):
+    def forward(self, x):
         F.assign(self._param, x)
         return x
 
 
-class _BroadCastCell(Cell):
+class _BroadCastCell(Module):
     """
     Broadcast the parameters from device 0 to other devices.
 
@@ -754,7 +754,7 @@ class _BroadCastCell(Cell):
         else:
             self.broadcast = P.Broadcast(0)
 
-    def construct(self):
+    def forward(self):
         datatypes = self.map_(F.partial(_get_datatype), self.params)
         params = self.map_(F.partial(_cast_datatype, mstype.float32), self.params)
         params = self.broadcast(params)

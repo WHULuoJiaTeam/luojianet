@@ -21,13 +21,13 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class RandomChoiceWithMaskNet(nn.Cell):
+class RandomChoiceWithMaskNet(nn.Module):
     def __init__(self):
         super(RandomChoiceWithMaskNet, self).__init__()
         self.random_choice_with_mask = P.RandomChoiceWithMask(count=4, seed=1)
         self.random_choice_with_mask.add_prim_attr("cust_aicpu", "luojianet_ms_aicpu_kernels")
 
-    def construct(self, x):
+    def forward(self, x):
         return self.random_choice_with_mask(x)
 
 

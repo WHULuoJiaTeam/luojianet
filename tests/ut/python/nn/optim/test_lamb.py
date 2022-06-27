@@ -37,7 +37,7 @@ class LambLearningRate(LearningRateSchedule):
         self.one = Tensor(np.array([1.0]).astype(np.float32))
         self.cast = P.Cast()
 
-    def construct(self, global_step):
+    def forward(self, global_step):
         is_warmup = self.cast(self.greater(self.warmup_steps, global_step), mstype.float32)
         warmup_lr = self.warmup_lr(global_step)
         decay_lr = self.decay_lr(global_step)
@@ -45,7 +45,7 @@ class LambLearningRate(LearningRateSchedule):
         return lr
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     """ Net definition """
 
     def __init__(self):
@@ -55,19 +55,19 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         return x
 
 
-class NetWithoutWeight(nn.Cell):
+class NetWithoutWeight(nn.Module):
     """ NetWithoutWeight definition """
 
     def __init__(self):
         super(NetWithoutWeight, self).__init__()
         self.matmul = P.MatMul()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.matmul(x, x)
         return x
 

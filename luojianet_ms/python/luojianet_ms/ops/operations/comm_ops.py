@@ -62,12 +62,12 @@ class ReduceOp:
         >>> import luojianet_ms.nn as nn
         >>>
         >>> init()
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.allreduce_sum = ops.AllReduce(ReduceOp.SUM)
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.allreduce_sum(x)
         ...
         >>> input_ = Tensor(np.ones([2, 8]).astype(np.float32))
@@ -137,12 +137,12 @@ class AllReduce(PrimitiveWithInfer):
         >>> import luojianet_ms.ops as ops
         >>>
         >>> init()
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.allreduce_sum = ops.AllReduce(ReduceOp.SUM)
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.allreduce_sum(x)
         ...
         >>> input_ = Tensor(np.ones([2, 8]).astype(np.float32))
@@ -214,12 +214,12 @@ class AllGather(PrimitiveWithInfer):
         >>>
         >>> context.set_context(mode=context.GRAPH_MODE)
         >>> init()
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.allgather = ops.AllGather()
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.allgather(x)
         ...
         >>> input_x = Tensor(np.ones([2, 8]).astype(np.float32))
@@ -415,12 +415,12 @@ class ReduceScatter(PrimitiveWithInfer):
         >>>
         >>> context.set_context(mode=context.GRAPH_MODE)
         >>> init()
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.reducescatter = ops.ReduceScatter(ReduceOp.SUM)
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.reducescatter(x)
         ...
         >>> input_ = Tensor(np.ones([8, 8]).astype(np.float32))
@@ -558,12 +558,12 @@ class Broadcast(PrimitiveWithInfer):
         >>>
         >>> context.set_context(mode=context.GRAPH_MODE)
         >>> init()
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.broadcast = ops.Broadcast(1)
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         return self.broadcast((x,))
         ...
         >>> input_x = Tensor(np.ones([2, 4]).astype(np.int32))
@@ -688,7 +688,7 @@ class NeighborExchange(Primitive):
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms.ops as ops
         >>> import numpy as np
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.neighborexchange = ops.NeighborExchange(send_rank_ids=[1], recv_rank_ids=[1],
@@ -696,7 +696,7 @@ class NeighborExchange(Primitive):
         ...                                                      recv_type=ms.float32)
         ...
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         out = self.neighborexchange((x,))
         ...
         >>> context.set_context(mode=context.GRAPH_MODE, device_target='Ascend')
@@ -765,12 +765,12 @@ class AlltoAll(PrimitiveWithInfer):
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms.ops as ops
         >>> import numpy as np
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.alltoall = ops.AlltoAll(split_count = 8, split_dim = -2, concat_dim = -1)
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         out = self.alltoall(x)
         ...         return out
         ...
@@ -859,7 +859,7 @@ class NeighborExchangeV2(Primitive):
         >>> import luojianet_ms.nn as nn
         >>> import luojianet_ms.ops as ops
         >>> import numpy as np
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         ...     def __init__(self):
         ...         super(Net, self).__init__()
         ...         self.neighborexchangev2 = ops.NeighborExchangeV2(send_rank_ids=[-1, -1, -1, -1, 1, -1, -1, -1],
@@ -868,7 +868,7 @@ class NeighborExchangeV2(Primitive):
         ...                                                          recv_lens=[0, 1, 0, 0],
         ...                                                          data_format="NCHW")
         ...
-        ...     def construct(self, x):
+        ...     def forward(self, x):
         ...         out = self.neighborexchangev2(x)
         ...         return out
         ...

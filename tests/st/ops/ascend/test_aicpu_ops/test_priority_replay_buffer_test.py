@@ -23,7 +23,7 @@ from luojianet_ms.ops.operations._rl_inner_ops import PriorityReplayBufferCreate
 from luojianet_ms.ops.operations._rl_inner_ops import PriorityReplayBufferSample, PriorityReplayBufferUpdate
 
 
-class PriorityReplayBuffer(nn.Cell):
+class PriorityReplayBuffer(nn.Module):
     def __init__(self, capacity, alpha, beta, sample_size, shapes, dtypes, seed0, seed1):
         super(PriorityReplayBuffer, self).__init__()
         handle = PriorityReplayBufferCreate(capacity, alpha, beta, shapes, dtypes, seed0, seed1)().asnumpy().item()

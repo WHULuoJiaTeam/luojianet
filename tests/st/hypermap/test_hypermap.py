@@ -37,13 +37,13 @@ def double_elements_fg_for_tensor_list(x, y):
     return x + y[0]
 
 
-class HyperMapNet(nn.Cell):
+class HyperMapNet(nn.Module):
     def __init__(self, fg):
         super(HyperMapNet, self).__init__()
         self.common_map = C.HyperMap()
         self.fg = fg
 
-    def construct(self, nest_tensor_list):
+    def forward(self, nest_tensor_list):
         output = self.common_map(self.fg, *nest_tensor_list)
         return output
 

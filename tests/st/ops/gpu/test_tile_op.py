@@ -21,11 +21,11 @@ from luojianet_ms.common.api import ms_function
 from luojianet_ms.common.initializer import initializer
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops.operations import Tile
 
 
-class TileNet(Cell):
+class TileNet(Module):
     def __init__(self, numpy_input):
         super(TileNet, self).__init__()
         self.Tile = Tile()
@@ -33,7 +33,7 @@ class TileNet(Cell):
         self.input_parameter = Parameter(initializer(Tensor(numpy_input), numpy_input.shape), name='x')
 
     @ms_function
-    def construct(self, mul):
+    def forward(self, mul):
         return self.Tile(self.input_parameter, mul)
 
 

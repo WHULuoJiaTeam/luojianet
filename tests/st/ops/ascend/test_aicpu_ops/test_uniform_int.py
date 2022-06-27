@@ -23,13 +23,13 @@ from luojianet_ms.common import dtype as mstype
 context.set_context(mode=context.GRAPH_MODE, device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, shape, seed=0, seed2=0):
         super(Net, self).__init__()
         self.uniformint = P.UniformInt(seed=seed)
         self.shape = shape
 
-    def construct(self, minval, maxval):
+    def forward(self, minval, maxval):
         return self.uniformint(self.shape, minval, maxval)
 
 

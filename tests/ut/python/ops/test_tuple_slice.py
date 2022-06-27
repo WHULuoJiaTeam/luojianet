@@ -18,7 +18,7 @@ import numpy as np
 
 import luojianet_ms.ops.operations as P
 from luojianet_ms import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from ....luojianet_ms_test_framework.luojianet_ms_test import luojianet_ms_test
 from ....luojianet_ms_test_framework.pipeline.forward.compile_forward \
     import pipeline_for_compile_forward_ge_graph_for_case_by_case_config
@@ -26,7 +26,7 @@ from ....luojianet_ms_test_framework.pipeline.forward.verify_exception \
     import pipeline_for_verify_exception_for_case_by_case_config
 
 
-class NetWork_1(Cell):
+class NetWork_1(Module):
     """ NetWork_1 definition """
 
     def __init__(self):
@@ -36,7 +36,7 @@ class NetWork_1(Cell):
         self.index_1 = Tensor([5])
         self.index_3 = Tensor([True])
 
-    def construct(self, tensor_tuple):
+    def forward(self, tensor_tuple):
         tensor_tuple_slice0 = tensor_tuple[:]
         tensor_tuple_slice1 = tensor_tuple[:self.index_0]
         tensor_tuple_slice2 = tensor_tuple[self.index_3:]
@@ -49,7 +49,7 @@ class NetWork_1(Cell):
         return ret
 
 
-class NetWork_2(Cell):
+class NetWork_2(Module):
     """ NetWork_2 definition """
 
     def __init__(self):
@@ -58,7 +58,7 @@ class NetWork_2(Cell):
         self.step = Tensor([-1])
         self.index_0 = Tensor(-6)
 
-    def construct(self, tensor_tuple):
+    def forward(self, tensor_tuple):
         tensor_tuple_slice0 = tensor_tuple[::self.step]
         tensor_tuple_slice1 = tensor_tuple[-1::-1]
         tensor_tuple_slice2 = tensor_tuple[:-4:-1]
@@ -73,46 +73,46 @@ class NetWork_2(Cell):
         return ret
 
 
-class NetWorkSliceStepZero(Cell):
+class NetWorkSliceStepZero(Module):
     """ NetWork_3 definition """
 
     def __init__(self):
         super(NetWorkSliceStepZero, self).__init__()
 
-    def construct(self, tensor_tuple):
+    def forward(self, tensor_tuple):
         tensor_tuple_slice = tensor_tuple[0:3:0]
         return tensor_tuple_slice
 
 
-class NetWorkOutOfBounds(Cell):
+class NetWorkOutOfBounds(Module):
     """ NetWork_3 definition """
 
     def __init__(self):
         super(NetWorkOutOfBounds, self).__init__()
 
-    def construct(self, tensor_tuple):
+    def forward(self, tensor_tuple):
         return tensor_tuple[100]
 
 
-class NetWorkTensorSizeGreaterThanTwo(Cell):
+class NetWorkTensorSizeGreaterThanTwo(Module):
     """ NetWork_3 definition """
 
     def __init__(self):
         super(NetWorkTensorSizeGreaterThanTwo, self).__init__()
         self.index_0 = Tensor([2, 3])
 
-    def construct(self, tensor_tuple):
+    def forward(self, tensor_tuple):
         return tensor_tuple[1:self.index_0]
 
 
-class NetWorkTensorDtypeFloat(Cell):
+class NetWorkTensorDtypeFloat(Module):
     """ NetWork_3 definition """
 
     def __init__(self):
         super(NetWorkTensorDtypeFloat, self).__init__()
         self.index_0 = Tensor([2.1])
 
-    def construct(self, tensor_tuple):
+    def forward(self, tensor_tuple):
         return tensor_tuple[1:self.index_0]
 
 

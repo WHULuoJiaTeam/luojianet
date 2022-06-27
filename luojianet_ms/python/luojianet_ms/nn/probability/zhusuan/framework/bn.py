@@ -22,7 +22,7 @@ from luojianet_ms.common import dtype as mstype
 from luojianet_ms.ops import operations as P
 
 
-class BayesianNet(nn.Cell):
+class BayesianNet(nn.Module):
     """
     We currently support 3 types of variables: x = observation, z = latent, y = condition.
     A Bayeisian Network models a generative process for certain variables: p(x,z|y) or p(z|x,y) or p(x|z,y)
@@ -84,9 +84,9 @@ class BayesianNet(nn.Cell):
             self.bernoulli_dist('log_prob', sample, probs), 1)
         return sample, log_prob
 
-    def construct(self, *inputs, **kwargs):
+    def forward(self, *inputs, **kwargs):
         """
-        We currently fix the parameters of the construct function.
+        We currently fix the parameters of the forward function.
         Args:
             the inputs must consist of 3 variables in order.
             x: data sample, observation

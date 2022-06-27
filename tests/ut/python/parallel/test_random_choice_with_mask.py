@@ -18,14 +18,14 @@ import pytest
 import luojianet_ms as ms
 from luojianet_ms import context, Tensor
 from luojianet_ms.common.api import _cell_graph_executor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
 _input_x = Tensor(np.ones([512, 4]), ms.bool_)
 
 
-class Net(Cell):
+class Net(Module):
     """
     Create the test net.
     """
@@ -33,12 +33,12 @@ class Net(Cell):
         super(Net, self).__init__()
         self.random_choice_with_mask = P.RandomChoiceWithMask().shard(strategy)
 
-    def construct(self, input_x):
+    def forward(self, input_x):
         x = self.random_choice_with_mask(input_x)
         return x
 
 
-def compile_net(net: Cell, *inputs):
+def compile_net(net: Module, *inputs):
     net.set_auto_parallel()
     net.set_train()
     _cell_graph_executor.compile(net, *inputs)

@@ -123,12 +123,12 @@ def test_branch_value_compatible():
     Description: test branch value must be compatible with the other branch.
     Expectation: Join Failed
     """
-    class IfInWhileNet(nn.Cell):
+    class IfInWhileNet(nn.Module):
         def __init__(self):
             super().__init__()
             self.expand_dims = ops.ExpandDims()
 
-        def construct(self, x, y, i):
+        def forward(self, x, y, i):
             out = x
             while i < 3:
                 if x + i < y:

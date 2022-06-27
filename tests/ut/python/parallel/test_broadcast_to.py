@@ -23,7 +23,7 @@ from luojianet_ms.nn import TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, weight1, strategy1=None, strategy2=None, is_parameter=True):
         super(Net, self).__init__()
         self.shape = (8, 48, 64)
@@ -34,13 +34,13 @@ class Net(nn.Cell):
         else:
             self.weight1 = weight1
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.broadcast(self.weight1)
         out = self.mul(x, out)
         return out
 
 
-class MatMulNet(nn.Cell):
+class MatMulNet(nn.Module):
     def __init__(self, weight1, strategy1=None, strategy2=None, strategy3=None, is_parameter=True):
         super(MatMulNet, self).__init__()
         self.shape = (8, 64, 64)
@@ -52,7 +52,7 @@ class MatMulNet(nn.Cell):
         else:
             self.weight1 = weight1
 
-    def construct(self, x1, x2):
+    def forward(self, x1, x2):
         out = self.broadcast(x2)
         out = self.matmul(x1, out)
         out = self.mul(out, self.weight1)

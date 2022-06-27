@@ -25,7 +25,7 @@ from luojianet_ms.ops.operations import _grad_ops as G
 context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 
 
-class NetROIAlignGrad(nn.Cell):
+class NetROIAlignGrad(nn.Module):
     def __init__(self, xdiff_shape, pooled_height, pooled_width, spatial_scale, sample_num):
         super(NetROIAlignGrad, self).__init__()
         self.roiAlignGrad = G.ROIAlignGrad(
@@ -35,7 +35,7 @@ class NetROIAlignGrad(nn.Cell):
             spatial_scale,
             sample_num)
 
-    def construct(self, dy, rois):
+    def forward(self, dy, rois):
         return self.roiAlignGrad(dy, rois)
 
 

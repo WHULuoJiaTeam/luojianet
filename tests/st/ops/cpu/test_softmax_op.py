@@ -26,7 +26,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target='CPU')
 
 
-class NetSoftmax(nn.Cell):
+class NetSoftmax(nn.Module):
     def __init__(self):
         super(NetSoftmax, self).__init__()
         self.softmax = P.Softmax(axis=-1)
@@ -35,7 +35,7 @@ class NetSoftmax(nn.Cell):
                              [0.6, 1, 0.4]]).astype(np.float32))
         self.x = Parameter(initializer(x, x.shape), name='x')
 
-    def construct(self):
+    def forward(self):
         return self.softmax(self.x)
 
 
@@ -54,7 +54,7 @@ def test_softmax():
     assert np.all(diff < error)
 
 
-class NetSoftmax1(nn.Cell):
+class NetSoftmax1(nn.Module):
     def __init__(self):
         super(NetSoftmax1, self).__init__()
         self.softmax = P.Softmax(axis=-2)
@@ -63,7 +63,7 @@ class NetSoftmax1(nn.Cell):
                              [0.6, 1, 0.4]]).astype(np.float32))
         self.x = Parameter(initializer(x, x.shape), name='x')
 
-    def construct(self):
+    def forward(self):
         return self.softmax(self.x)
 
 

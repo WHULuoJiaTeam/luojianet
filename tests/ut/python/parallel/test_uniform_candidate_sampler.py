@@ -24,7 +24,7 @@ from luojianet_ms.nn import TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, embedding_weight, num_true, num_sampled, unique, range_max, seed, remove_accidential,
                  strategy1=None):
         super(Net, self).__init__()
@@ -38,7 +38,7 @@ class Net(nn.Cell):
         self.reduce_sum2 = P.ReduceSum()
         self.reduce_sum3 = P.ReduceSum()
 
-    def construct(self, x):
+    def forward(self, x):
         out1, out2, out3 = self.sampler(x)
         lookup = self.gatherv2(self.embedding_table, out1, 0)
         loss = out1 - out3
@@ -49,7 +49,7 @@ class Net(nn.Cell):
         return loss4
 
 
-class Net2(nn.Cell):
+class Net2(nn.Module):
     def __init__(self, mul_weight, num_true, num_sampled, unique, range_max, seed, remove_accidential,
                  strategy1=None):
         super(Net2, self).__init__()
@@ -61,7 +61,7 @@ class Net2(nn.Cell):
         if strategy1:
             self.sampler.shard(strategy1)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.mul(x, self.weight)
         x = self.cast(x, ms.int32)
         _, out2, _ = self.sampler(x)

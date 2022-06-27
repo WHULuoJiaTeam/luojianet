@@ -22,12 +22,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops import operations as P
 
 
-class NetNeg(nn.Cell):
+class NetNeg(nn.Module):
     def __init__(self):
         super(NetNeg, self).__init__()
         self.neg = P.Neg()
 
-    def construct(self, x):
+    def forward(self, x):
         return self.neg(x)
 
 

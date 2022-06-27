@@ -37,12 +37,12 @@ def generate_probs(seed, shape):
     return probs
 
 
-class CategoricalProb(nn.Cell):
+class CategoricalProb(nn.Module):
     def __init__(self, probs, seed=10, dtype=ms.int32, name='Categorical'):
         super().__init__()
         self.b = msd.Categorical(probs, seed, dtype, name)
 
-    def construct(self, value, probs=None):
+    def forward(self, value, probs=None):
         out1 = self.b.prob(value, probs)
         out2 = self.b.log_prob(value, probs)
         out3 = self.b.cdf(value, probs)

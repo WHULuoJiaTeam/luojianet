@@ -29,7 +29,7 @@ IMAGE_SHAPE = (-1, 1, 32, 32)
 image_path = os.path.join('/home/workspace/luojianet_ms_dataset/mnist', "train")
 
 
-class Encoder(nn.Cell):
+class Encoder(nn.Module):
     def __init__(self, num_classes):
         super(Encoder, self).__init__()
         self.fc1 = nn.Dense(1024 + num_classes, 400)
@@ -38,7 +38,7 @@ class Encoder(nn.Cell):
         self.concat = ops.Concat(axis=1)
         self.one_hot = nn.OneHot(depth=num_classes)
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = self.flatten(x)
         y = self.one_hot(y)
         input_x = self.concat((x, y))
@@ -47,14 +47,14 @@ class Encoder(nn.Cell):
         return input_x
 
 
-class Decoder(nn.Cell):
+class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
         self.fc2 = nn.Dense(400, 1024)
         self.sigmoid = nn.Sigmoid()
         self.reshape = ops.Reshape()
 
-    def construct(self, z):
+    def forward(self, z):
         z = self.fc2(z)
         z = self.reshape(z, IMAGE_SHAPE)
         z = self.sigmoid(z)
@@ -65,7 +65,7 @@ class CVAEWithLossCell(nn.WithLossCell):
     """
     Rewrite WithLossCell for CVAE
     """
-    def construct(self, data, label):
+    def forward(self, data, label):
         out = self._backbone(data, label)
         return self._loss_fn(out, label)
 

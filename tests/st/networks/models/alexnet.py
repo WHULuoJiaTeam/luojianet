@@ -16,7 +16,7 @@ import luojianet_ms.nn as nn
 from luojianet_ms.ops import operations as P
 
 
-class AlexNet(nn.Cell):
+class AlexNet(nn.Module):
     def __init__(self, num_classes=10):
         super(AlexNet, self).__init__()
         self.batch_size = 32
@@ -32,7 +32,7 @@ class AlexNet(nn.Cell):
         self.fc2 = nn.Dense(4096, 4096)
         self.fc3 = nn.Dense(4096, num_classes)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)

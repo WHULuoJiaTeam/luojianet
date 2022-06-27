@@ -22,12 +22,12 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_abs():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
             self.value = ms.Tensor([1, -2, 3])
 
-        def construct(self):
+        def forward(self):
             return self.value.abs()
 
     net = Net()
@@ -35,11 +35,11 @@ def test_abs():
 
 
 def test_abs_parameter():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             return x.abs()
 
     net = Net()

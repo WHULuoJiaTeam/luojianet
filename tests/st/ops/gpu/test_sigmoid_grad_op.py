@@ -23,12 +23,12 @@ from luojianet_ms import Tensor
 from luojianet_ms.ops.operations import _grad_ops as G
 
 
-class NetSigmoidGrad(nn.Cell):
+class NetSigmoidGrad(nn.Module):
     def __init__(self):
         super(NetSigmoidGrad, self).__init__()
         self.sigmoid_grad = G.SigmoidGrad()
 
-    def construct(self, y, dy):
+    def forward(self, y, dy):
         return self.sigmoid_grad(y, dy)
 
 

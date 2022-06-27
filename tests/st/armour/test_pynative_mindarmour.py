@@ -21,7 +21,7 @@ import pytest
 
 import luojianet_ms.nn as nn
 from luojianet_ms import context, Tensor
-from luojianet_ms.nn import Cell, WithLossCell, TrainOneStepCell
+from luojianet_ms.nn import Module, WithLossCell, TrainOneStepCell
 from luojianet_ms.nn.optim.momentum import Momentum
 from luojianet_ms.common.initializer import TruncatedNormal
 from luojianet_ms.ops.composite import GradOperation
@@ -47,7 +47,7 @@ def fc_with_initialize(input_channels, out_channels):
     return nn.Dense(input_channels, out_channels, weight, bias)
 
 
-class LeNet(nn.Cell):
+class LeNet(nn.Module):
     """
     Lenet network
     Args:
@@ -69,7 +69,7 @@ class LeNet(nn.Cell):
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.flatten = nn.Flatten()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.max_pool2d(x)
@@ -85,26 +85,26 @@ class LeNet(nn.Cell):
         return x
 
 
-class GradWithSens(Cell):
+class GradWithSens(Module):
     def __init__(self, network):
         super(GradWithSens, self).__init__()
         self.grad = GradOperation(get_all=False,
                                   sens_param=True)
         self.network = network
 
-    def construct(self, inputs, weight):
+    def forward(self, inputs, weight):
         gout = self.grad(self.network)(inputs, weight)
         return gout
 
 
-class GradWrapWithLoss(Cell):
+class GradWrapWithLoss(Module):
     def __init__(self, network):
         super(GradWrapWithLoss, self).__init__()
         self._grad_all = GradOperation(get_all=True,
                                        sens_param=False)
         self._network = network
 
-    def construct(self, inputs, labels):
+    def forward(self, inputs, labels):
         gout = self._grad_all(self._network)(inputs, labels)
         return gout[0]
 

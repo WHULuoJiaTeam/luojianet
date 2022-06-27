@@ -33,14 +33,14 @@ def add(x, y):
     return add1(x, y)
 
 
-class Func(nn.Cell):
+class Func(nn.Module):
     def __init__(self):
         super(Func, self).__init__()
         self.alloc_status = P.NPUAllocFloatStatus()
         self.get_status = P.NPUGetFloatStatus()
         self.clear_status = P.NPUClearFloatStatus()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         init = self.alloc_status()
         sum_ = add(x, y)
         product = mul1(x, y)
@@ -59,7 +59,7 @@ class Func(nn.Cell):
 grad_s = C.GradOperation(get_all=True, sens_param=True)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.func = Func()
@@ -67,7 +67,7 @@ class Net(nn.Cell):
         self.get_status = P.NPUGetFloatStatus()
         self.clear_status = P.NPUClearFloatStatus()
 
-    def construct(self, x, y, sens):
+    def forward(self, x, y, sens):
         init = self.alloc_status()
         sum1 = add(x, y)
         dx = grad_s(self.func)(x, y, sens)
@@ -100,7 +100,7 @@ def test_sens():
     _ = net(x, y, sens)
 
 
-class Net_hyper(nn.Cell):
+class Net_hyper(nn.Module):
     def __init__(self):
         super(Net_hyper, self).__init__()
         self.func = Func()
@@ -108,7 +108,7 @@ class Net_hyper(nn.Cell):
         self.get_status = P.NPUGetFloatStatus()
         self.clear_status = P.NPUClearFloatStatus()
 
-    def construct(self, x, y, sens):
+    def forward(self, x, y, sens):
         init = self.alloc_status()
         add1 = add(x, y)
         sum1 = C.hyper_add([add1, add1], [x, y])
@@ -136,7 +136,7 @@ def test_hyper_add():
 
 
 def test_keep_order_io_effect_exception_return_dtype():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super().__init__()
             self.alloc_status = P.NPUAllocFloatStatus()
@@ -147,7 +147,7 @@ def test_keep_order_io_effect_exception_return_dtype():
             self.sub = P.Sub()
             self.neg = P.Neg()
 
-        def construct(self, x):
+        def forward(self, x):
             init = self.alloc_status()
             clear_status = self.clear_status(init)
             x = F.depend(x, clear_status)

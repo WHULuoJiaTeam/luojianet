@@ -25,11 +25,11 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_len_a_3D_tensor():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x, y):
+        def forward(self, x, y):
             return len(x), len(y)
 
     net = Net()
@@ -40,11 +40,11 @@ def test_len_a_3D_tensor():
 
 
 def test_len_a_0D_tensor():
-    class Net(nn.Cell):
+    class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
-        def construct(self, x):
+        def forward(self, x):
             return len(x)
 
     net = Net()

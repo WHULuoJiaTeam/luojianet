@@ -33,7 +33,7 @@ def setup_teardown():
     context.set_context(enable_sparse=False)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.weight = Parameter(Tensor(np.ones([64, 10]).astype(np.float32)), name='weight')
@@ -41,7 +41,7 @@ class Net(nn.Cell):
         self.matmul = P.MatMul()
         self.biasAdd = P.BiasAdd()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.biasAdd(self.matmul(x, self.weight), self.bias)
         return x
 

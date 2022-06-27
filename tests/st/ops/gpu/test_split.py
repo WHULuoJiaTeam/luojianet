@@ -22,22 +22,22 @@ from luojianet_ms.ops.operations import _inner_ops as inner
 from luojianet_ms.ops import operations as P
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, axis=0, out_nums=1):
         super(Net, self).__init__()
         self.split = P.Split(axis, out_nums)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.split(x)
 
 
-class NetDynamic(nn.Cell):
+class NetDynamic(nn.Module):
     def __init__(self, axis=0, out_nums=1):
         super(NetDynamic, self).__init__()
         self.conv = inner.GpuConvertToDynamicShape()
         self.split = P.Split(axis, out_nums)
 
-    def construct(self, x):
+    def forward(self, x):
         x_conv = self.conv(x)
         x_split = self.split(x_conv)
         return x_split

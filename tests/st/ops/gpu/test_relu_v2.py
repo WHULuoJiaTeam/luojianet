@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 import luojianet_ms.ops.operations._grad_ops as G
 
 
-class ReluNet(nn.Cell):
+class ReluNet(nn.Module):
     def __init__(self):
         super(ReluNet, self).__init__()
         self.relu = P.ReLU()
         self.relu_grad = G.ReluGrad()
 
-    def construct(self, x, dy):
+    def forward(self, x, dy):
         y = self.relu(x)
         dx = self.relu_grad(dy, y)
         return y, dx
@@ -60,14 +60,14 @@ def test_ReluV2():
     assert np.allclose(dx.asnumpy(), expect_dx)
 
 
-class AddReluNet(nn.Cell):
+class AddReluNet(nn.Module):
     def __init__(self):
         super(AddReluNet, self).__init__()
         self.add = P.Add()
         self.relu = P.ReLU()
         self.relu_grad = G.ReluGrad()
 
-    def construct(self, x1, x2, dy):
+    def forward(self, x1, x2, dy):
         y = self.add(x1, x2)
         y = self.relu(y)
         dx = self.relu_grad(dy, y)
@@ -101,14 +101,14 @@ def test_AddRelu():
     assert np.allclose(y.asnumpy(), expect_y)
     assert np.allclose(dx1.asnumpy(), expect_dx)
 
-class AddReluGradNet(nn.Cell):
+class AddReluGradNet(nn.Module):
     def __init__(self):
         super(AddReluGradNet, self).__init__()
         self.add = P.Add()
         self.relu = P.ReLU()
         self.relu_grad = G.ReluGrad()
 
-    def construct(self, x, dy1, dy2):
+    def forward(self, x, dy1, dy2):
         y = self.relu(x)
         dy = self.add(dy1, dy2)
         dx = self.relu_grad(dy, y)

@@ -24,7 +24,7 @@ from luojianet_ms.ops import operations as P
 context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 
-class TestScatterAddNet(nn.Cell):
+class TestScatterAddNet(nn.Module):
     def __init__(self, lock, inputx, indices, updates):
         super(TestScatterAddNet, self).__init__()
         self.scatter_add = P.ScatterAdd(use_locking=lock)
@@ -32,7 +32,7 @@ class TestScatterAddNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def forward(self):
         out = self.scatter_add(self.inputx, self.indices, self.updates)
         return out
 
@@ -225,7 +225,7 @@ def test_scatter_add_disordered_int32():
     np.testing.assert_array_almost_equal(output.asnumpy(), expected)
 
 
-class TestScatterSubNet(nn.Cell):
+class TestScatterSubNet(nn.Module):
     def __init__(self, lock, inputx, indices, updates):
         super(TestScatterSubNet, self).__init__()
         self.scatter_sub = P.ScatterSub(use_locking=lock)
@@ -233,7 +233,7 @@ class TestScatterSubNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def forward(self):
         out = self.scatter_sub(self.inputx, self.indices, self.updates)
         return out
 
@@ -314,7 +314,7 @@ def test_scatter_sub_small_float32_use_locking_false():
     np.testing.assert_array_almost_equal(output.asnumpy(), expected)
 
 
-class TestScatterMulNet(nn.Cell):
+class TestScatterMulNet(nn.Module):
     def __init__(self, lock, inputx, indices, updates):
         super(TestScatterMulNet, self).__init__()
         self.scatter_mul = P.ScatterMul(use_locking=lock)
@@ -322,7 +322,7 @@ class TestScatterMulNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def forward(self):
         out = self.scatter_mul(self.inputx, self.indices, self.updates)
         return out
 
@@ -380,7 +380,7 @@ def test_scatter_mul_small_float32_use_locking_false():
     np.testing.assert_array_almost_equal(output.asnumpy(), expected)
 
 
-class TestScatterDivNet(nn.Cell):
+class TestScatterDivNet(nn.Module):
     def __init__(self, lock, inputx, indices, updates):
         super(TestScatterDivNet, self).__init__()
         self.scatter_div = P.ScatterDiv(use_locking=lock)
@@ -388,7 +388,7 @@ class TestScatterDivNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def forward(self):
         out = self.scatter_div(self.inputx, self.indices, self.updates)
         return out
 
@@ -446,7 +446,7 @@ def test_scatter_div_small_float32_use_locking_false():
     np.testing.assert_array_almost_equal(output.asnumpy(), expected)
 
 
-class TestScatterMaxNet(nn.Cell):
+class TestScatterMaxNet(nn.Module):
     def __init__(self, lock, inputx, indices, updates):
         super(TestScatterMaxNet, self).__init__()
         self.scatter_max = P.ScatterMax(use_locking=lock)
@@ -454,7 +454,7 @@ class TestScatterMaxNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def forward(self):
         out = self.scatter_max(self.inputx, self.indices, self.updates)
         return out
 
@@ -512,7 +512,7 @@ def test_scatter_max_small_float32_use_locking_false():
     np.testing.assert_array_almost_equal(output.asnumpy(), expected)
 
 
-class TestScatterMinNet(nn.Cell):
+class TestScatterMinNet(nn.Module):
     def __init__(self, lock, inputx, indices, updates):
         super(TestScatterMinNet, self).__init__()
         self.scatter_min = P.ScatterMin(use_locking=lock)
@@ -520,7 +520,7 @@ class TestScatterMinNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def forward(self):
         out = self.scatter_min(self.inputx, self.indices, self.updates)
         return out
 
@@ -578,7 +578,7 @@ def test_scatter_min_small_float32_use_locking_false():
     np.testing.assert_array_almost_equal(output.asnumpy(), expected)
 
 
-class TestScatterUpdateNet(nn.Cell):
+class TestScatterUpdateNet(nn.Module):
     def __init__(self, lock, inputx, indices, updates):
         super(TestScatterUpdateNet, self).__init__()
         self.scatter_update = P.ScatterUpdate(use_locking=lock)
@@ -586,7 +586,7 @@ class TestScatterUpdateNet(nn.Cell):
         self.indices = Parameter(indices, name="indices")
         self.updates = Parameter(updates, name="updates")
 
-    def construct(self):
+    def forward(self):
         out = self.scatter_update(self.inputx, self.indices, self.updates)
         return out
 

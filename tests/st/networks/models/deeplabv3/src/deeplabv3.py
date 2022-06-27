@@ -22,7 +22,7 @@ from .backbone.resnet_deeplab import _conv_bn_relu, resnet50_dl, _deep_conv_bn_r
     DepthwiseConv2dNative, SpaceToBatch, BatchToSpace
 
 
-class ASPPSampleBlock(nn.Cell):
+class ASPPSampleBlock(nn.Module):
     """ASPP sample block."""
     def __init__(self, feature_shape, scale_size, output_stride):
         super(ASPPSampleBlock, self).__init__()
@@ -30,11 +30,11 @@ class ASPPSampleBlock(nn.Cell):
         sample_w = (feature_shape[1] * scale_size + 1) / output_stride + 1
         self.sample = P.ResizeBilinear((int(sample_h), int(sample_w)), align_corners=True)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.sample(x)
 
 
-class ASPP(nn.Cell):
+class ASPP(nn.Module):
     """
     ASPP model for DeepLabv3.
 
@@ -122,7 +122,7 @@ class ASPP(nn.Cell):
         self.feature_shape = feature_shape
         self.concat = P.Concat(axis=1)
 
-    def construct(self, x, scale_index=0):
+    def forward(self, x, scale_index=0):
         aspp0 = self.aspp0(x)
         aspp1 = self.global_poolings[scale_index](x)
         aspp1 = self.conv_bn(aspp1)
@@ -140,7 +140,7 @@ class ASPP(nn.Cell):
         return output
 
 
-class DecoderSampleBlock(nn.Cell):
+class DecoderSampleBlock(nn.Module):
     """Decoder sample block."""
     def __init__(self, feature_shape, scale_size=1.0, decoder_output_stride=4):
         super(DecoderSampleBlock, self).__init__()
@@ -148,11 +148,11 @@ class DecoderSampleBlock(nn.Cell):
         sample_w = (feature_shape[1] * scale_size + 1) / decoder_output_stride + 1
         self.sample = P.ResizeBilinear((int(sample_h), int(sample_w)), align_corners=True)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.sample(x)
 
 
-class Decoder(nn.Cell):
+class Decoder(nn.Module):
     """
     Decode module for DeepLabv3.
     Args:
@@ -210,7 +210,7 @@ class Decoder(nn.Cell):
             self.samples.append(DecoderSampleBlock(feature_shape, scale_size, decoder_output_stride))
         self.samples = nn.CellList(self.samples)
 
-    def construct(self, x, low_level_feature, scale_index):
+    def forward(self, x, low_level_feature, scale_index):
         low_level_feature = self.feature_projection(low_level_feature)
         low_level_feature = self.samples[scale_index](low_level_feature)
         x = self.samples[scale_index](x)
@@ -222,13 +222,13 @@ class Decoder(nn.Cell):
         return output
 
 
-class SingleDeepLabV3(nn.Cell):
+class SingleDeepLabV3(nn.Module):
     """
     DeepLabv3 Network.
     Args:
         num_classes (int): Class number.
         feature_shape (list): Input image shape, [N,C,H,W].
-        backbone (Cell): Backbone Network.
+        backbone (Module): Backbone Network.
         channel (int): Resnet output channel.
         depth (int): ASPP block depth.
         scale_sizes (list): Input scales for multi-scale feature extraction.
@@ -314,7 +314,7 @@ class SingleDeepLabV3(nn.Cell):
                                    decoder_output_stride=decoder_output_stride,
                                    fine_tune_batch_norm=fine_tune_batch_norm)
 
-    def construct(self, x, scale_index=0):
+    def forward(self, x, scale_index=0):
         x = (2.0 / 255.0) * x - 1.0
         x = self.pad(x)
         low_level_feature, feature_map = self.net(x)
@@ -331,7 +331,7 @@ class SingleDeepLabV3(nn.Cell):
         return feature_map
 
 
-class SampleBlock(nn.Cell):
+class SampleBlock(nn.Module):
     """Sample block."""
     def __init__(self,
                  feature_shape,
@@ -341,11 +341,11 @@ class SampleBlock(nn.Cell):
         sample_w = np.ceil(float(feature_shape[3]) * scale_size)
         self.sample = P.ResizeBilinear((int(sample_h), int(sample_w)), align_corners=True)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.sample(x)
 
 
-class DeepLabV3(nn.Cell):
+class DeepLabV3(nn.Module):
     """DeepLabV3 model."""
     def __init__(self, num_classes, feature_shape, backbone, channel, depth, infer_scale_sizes, atrous_rates,
                  decoder_output_stride, output_stride, fine_tune_batch_norm, image_pyramid):
@@ -386,7 +386,7 @@ class DeepLabV3(nn.Cell):
                                                int(feature_shape[3])),
                                               align_corners=True)
 
-    def construct(self, x):
+    def forward(self, x):
         logits = ()
         if self.training:
             if len(self.image_pyramid) >= 1:
@@ -440,7 +440,7 @@ def deeplabv3_resnet50(num_classes, feature_shape, image_pyramid,
         fine_tune_batch_norm (bool): 'Fine tune the batch norm parameters or not'
 
     Returns:
-        Cell, cell instance of ResNet50 based DeepLabv3 neural network.
+        Module, cell instance of ResNet50 based DeepLabv3 neural network.
 
     Examples:
         >>> deeplabv3_resnet50(100, [1,3,224,224],[1.0],[1.0])

@@ -23,7 +23,7 @@ from luojianet_ms.common.initializer import initializer
 from luojianet_ms import Tensor, Parameter
 from luojianet_ms.ops import operations as P
 from luojianet_ms.ops import functional as F
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms import context
 from luojianet_ms.nn.wrap.cell_wrapper import _VirtualDatasetCell
 from luojianet_ms.parallel import set_algo_parameters
@@ -63,7 +63,7 @@ def set_parallel_configure_for_layer(network, layer_id, offset, layers):
     network.set_comm_fusion(int((layer_id + offset) / dis) + 1)
 
 
-class _LayerNorm(Cell):
+class _LayerNorm(Module):
     def __init__(self, normalized_shape, eps=1e-5, param_init_type=mstype.float32):
         super(_LayerNorm, self).__init__()
         if normalized_shape[0] <= 1024:
@@ -86,7 +86,7 @@ class _LayerNorm(Cell):
         self.add2 = P.Add()
         self.real_div = P.RealDiv()
 
-    def construct(self, x):
+    def forward(self, x):
         if self.is_self_defined:
             mean = self.mean(x, -1)
             diff = self.sub1(x, mean)
@@ -114,7 +114,7 @@ class _LayerNorm(Cell):
         return self
 
 
-class _Linear(Cell):
+class _Linear(Module):
     def __init__(self,
                  in_channels,
                  out_channels,
@@ -143,7 +143,7 @@ class _Linear(Cell):
         self.dtype = compute_dtype
         self.cast = P.Cast()
 
-    def construct(self, x):
+    def forward(self, x):
         out_shape = P.Shape()(x)[:-1] + (self.out_channels,)
         x = P.Reshape()(x, (-1, self.in_channels))
         weight = self.cast(self.weight, self.dtype)
@@ -173,7 +173,7 @@ class _Linear(Cell):
         return self
 
 
-class FeedForward(Cell):
+class FeedForward(Module):
     def __init__(self, hidden_size,
                  ffn_hidden_size,
                  dropout_rate,
@@ -199,7 +199,7 @@ class FeedForward(Cell):
         self.dropout_3d = nn.Dropout(1 - dropout_rate)
         self.cast = P.Cast()
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.cast(x, mstype.float16)
         hidden = self.mapping(x)
         output = self.projection(hidden)
@@ -210,7 +210,7 @@ class FeedForward(Cell):
         return output
 
 
-class MultiHeadAttention(Cell):
+class MultiHeadAttention(Module):
     def __init__(self, batch_size,
                  src_seq_length,
                  tgt_seq_length,
@@ -267,7 +267,7 @@ class MultiHeadAttention(Cell):
         self.dtype = compute_dtype
         self.softmax_dtype = softmax_compute_type
 
-    def construct(self, query_tensor, key_tensor, value_tensor, attention_mask, key_past=None,
+    def forward(self, query_tensor, key_tensor, value_tensor, attention_mask, key_past=None,
                   value_past=None, batch_valid_length=None):
         query_tensor, key_tensor, value_tensor, batch_size, ori_shape = self._convert_to_2d_tensor(query_tensor,
                                                                                                    key_tensor,
@@ -345,7 +345,7 @@ class MultiHeadAttention(Cell):
         return attention_merge
 
 
-class TransformerEncoderLayer(Cell):
+class TransformerEncoderLayer(Module):
     def __init__(self,
                  batch_size,
                  hidden_size,
@@ -384,7 +384,7 @@ class TransformerEncoderLayer(Cell):
         self.key_past = None
         self.value_past = None
 
-    def construct(self, x, input_mask, init_reset=True, batch_valid_length=None):
+    def forward(self, x, input_mask, init_reset=True, batch_valid_length=None):
         x_shape = F.shape(x)
         x = F.reshape(x, (-1, x_shape[-1]))
         input_x = self.layernorm1(x)
@@ -410,7 +410,7 @@ class TransformerEncoderLayer(Cell):
         return output, layer_present
 
 
-class TransformerEncoder(Cell):
+class TransformerEncoder(Module):
     def __init__(self,
                  batch_size,
                  num_layers,
@@ -447,7 +447,7 @@ class TransformerEncoder(Cell):
                         offset=offset)
             self.blocks.append(block)
 
-    def construct(self, hidden_states, attention_mask, init_reset=True, batch_valid_length=None):
+    def forward(self, hidden_states, attention_mask, init_reset=True, batch_valid_length=None):
         present_layer = ()
         for i in range(self.num_layers):
             hidden_states, present = self.blocks[i](hidden_states,
@@ -458,19 +458,19 @@ class TransformerEncoder(Cell):
         return hidden_states, present_layer
 
 
-class VocabEmbedding(Cell):
+class VocabEmbedding(Module):
     def __init__(self, vocab_size, embedding_size, param_init='normal'):
         super(VocabEmbedding, self).__init__()
         self.embedding_table = Parameter(initializer(param_init, [vocab_size, embedding_size]),
                                          name='embedding_table', parallel_optimizer=False)
         self.gather = P.GatherV2().shard(((1, 1), (2, 1)))
 
-    def construct(self, input_ids):
+    def forward(self, input_ids):
         output = self.gather(self.embedding_table, input_ids, 0)
         return output, self.embedding_table
 
 
-class EmbeddingLayer(nn.Cell):
+class EmbeddingLayer(nn.Module):
     def __init__(self):
         super(EmbeddingLayer, self).__init__()
         self.word_embedding = VocabEmbedding(vocab_size=40000, embedding_size=2560)
@@ -478,7 +478,7 @@ class EmbeddingLayer(nn.Cell):
         self.add = P.Add()
         self.dropout = nn.Dropout(0.9)
 
-    def construct(self, input_ids, input_position, init_reset, batch_valid_length):
+    def forward(self, input_ids, input_position, init_reset, batch_valid_length):
         word_embedding, word_table = self.word_embedding(input_ids)
         position_embedding, _ = self.position_embedding(input_position)
         embed = self.add(word_embedding, position_embedding)
@@ -508,7 +508,7 @@ class QueryLayer(TransformerEncoderLayer):
                                          hidden_act=hidden_act,
                                          softmax_compute_type=softmax_compute_type)
 
-    def construct(self, x, query_vector, input_mask, init_reset=True, batch_valid_length=None):
+    def forward(self, x, query_vector, input_mask, init_reset=True, batch_valid_length=None):
         input_x = self.layernorm1(x)
         input_x = F.cast(input_x, self.dtype)
         attention, layer_present = self.attention(query_vector, input_x, input_x, input_mask,
@@ -526,7 +526,7 @@ class QueryLayer(TransformerEncoderLayer):
         return output, layer_present
 
 
-class PanGuHead(Cell):
+class PanGuHead(Module):
     def __init__(self,
                  hidden_size,
                  compute_type=mstype.float16):
@@ -536,13 +536,13 @@ class PanGuHead(Cell):
         self.dtype = compute_type
         self.cast = P.Cast()
 
-    def construct(self, state, embed):
+    def forward(self, state, embed):
         state = P.Reshape()(state, (-1, self.hidden_size))
         logits = self.matmul(self.cast(state, self.dtype), self.cast(embed, self.dtype))
         return logits
 
 
-class PanguAlphaRawModel(Cell):
+class PanguAlphaRawModel(Module):
     def __init__(self):
         super(PanguAlphaRawModel, self).__init__()
         self.embedding = EmbeddingLayer()
@@ -575,7 +575,7 @@ class PanguAlphaRawModel(Cell):
         self.top_query_layer.set_comm_fusion(4)
         self.dtype = mstype.float16
 
-    def construct(self, input_ids,
+    def forward(self, input_ids,
                   input_position,
                   encoder_masks,
                   init_reset=True,
@@ -601,14 +601,14 @@ class PanguAlphaRawModel(Cell):
         return x
 
 
-class PanguAlphaModel(nn.Cell):
+class PanguAlphaModel(nn.Module):
     def __init__(self):
         super(PanguAlphaModel, self).__init__()
         self.head = PanGuHead(hidden_size=2560)
         self.backbone = PanguAlphaRawModel()
         self.backbone.embedding.word_embedding.embedding_table.add_pipeline_stage(0)
 
-    def construct(self, input_ids, input_position, attention_mask,
+    def forward(self, input_ids, input_position, attention_mask,
                   init_reset=True, batch_valid_length=None):
         output_states, word_table = self.backbone(input_ids, input_position, attention_mask,
                                                   init_reset, batch_valid_length)
@@ -616,7 +616,7 @@ class PanguAlphaModel(nn.Cell):
         return logits
 
 
-class CrossEntropyLoss(Cell):
+class CrossEntropyLoss(Module):
     def __init__(self):
         super(CrossEntropyLoss, self).__init__()
         dp = 2
@@ -641,7 +641,7 @@ class CrossEntropyLoss(Cell):
         self.add2 = P.Add()
         self.div2 = P.RealDiv()
 
-    def construct(self, logits, label, input_mask):
+    def forward(self, logits, label, input_mask):
         logits = F.cast(logits, mstype.float32)
         _, logit_max = self.max(logits)
         logit_sub = self.sub(logits, logit_max)
@@ -665,7 +665,7 @@ class CrossEntropyLoss(Cell):
         return loss
 
 
-class PanGUAlphaWithLoss(Cell):
+class PanGUAlphaWithLoss(Module):
     def __init__(self, network, loss):
         super(PanGUAlphaWithLoss, self).__init__(auto_prefix=False)
         self.batch_size = 32
@@ -680,7 +680,7 @@ class PanGUAlphaWithLoss(Cell):
         self.slice2 = P.StridedSlice()
         self.micro_batch_step = 1
 
-    def construct(self, input_ids, input_position=None, attention_mask=None):
+    def forward(self, input_ids, input_position=None, attention_mask=None):
         tokens = self.slice(input_ids, (0, 0), (self.batch_size, -1), (1, 1))
         input_position = self.slice(input_position, (0, 0), (self.batch_size, self.len), (1, 1))
         decoder_attention_masks = self.slice2(attention_mask, (0, 0, 0), (self.batch_size, self.len, self.len),

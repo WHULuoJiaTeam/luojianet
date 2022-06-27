@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from luojianet_ms import context
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.common.api import _cell_graph_executor
 
 
@@ -22,7 +22,7 @@ class ParallelValidator:
     Validator for distribute operator.
 
     Args:
-        net (Cell): `auto_parallel_mode` = True for networks where compile has been executed.
+        net (Module): `auto_parallel_mode` = True for networks where compile has been executed.
 
     Examples:
         >>> from luojianet_ms.common.api import _cell_graph_executor
@@ -120,7 +120,7 @@ class ParallelValidator:
         return self._graph_info_dict[graph_name]
 
 
-def compile_net(net: Cell, *inputs, auto_parallel_mode=False):
+def compile_net(net: Module, *inputs, auto_parallel_mode=False):
     net.set_auto_parallel()
     net.set_train()
     phase, _ = _cell_graph_executor.compile(net, *inputs, auto_parallel_mode=auto_parallel_mode)

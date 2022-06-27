@@ -26,27 +26,27 @@ from tests.ut.python.ops.test_math_ops import VirtualLoss
 grad_all = C.GradOperation(get_all=True)
 
 
-class NetWithLoss(nn.Cell):
+class NetWithLoss(nn.Module):
     def __init__(self, network):
         super(NetWithLoss, self).__init__()
         self.loss = VirtualLoss()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         predict = self.network(x)
         return self.loss(predict)
 
 
-class GradWrap(nn.Cell):
+class GradWrap(nn.Module):
     def __init__(self, network):
         super(GradWrap, self).__init__()
         self.network = network
 
-    def construct(self, x):
+    def forward(self, x):
         return grad_all(self.network)(x)
 
 
-class CustomDense(nn.Cell):
+class CustomDense(nn.Module):
     def __init__(self, row, column):
         super(CustomDense, self).__init__()
         self.weight = Parameter(Tensor(np.ones([row, column]).astype(np.float32) * 0.01), "w", requires_grad=True)
@@ -55,7 +55,7 @@ class CustomDense(nn.Cell):
         self.add2 = P.Add()
         self.activation3 = nn.ReLU()
 
-    def construct(self, x):
+    def forward(self, x):
         mat_output = self.matmul1(x, self.weight)
         add_output = self.add2(mat_output, self.bias)
         output = self.activation3(add_output)
@@ -63,7 +63,7 @@ class CustomDense(nn.Cell):
         return output
 
 
-class DenseMutMulNet(nn.Cell):
+class DenseMutMulNet(nn.Module):
     def __init__(self):
         super(DenseMutMulNet, self).__init__()
         self.fc1 = CustomDense(4096, 4096)
@@ -76,7 +76,7 @@ class DenseMutMulNet(nn.Cell):
         self.matmul1 = P.MatMul()
         self.matmul2 = P.MatMul()
 
-    def construct(self, x):
+    def forward(self, x):
         q = self.fc1(x)
         k = self.fc2(x)
         v = self.fc3(x)
@@ -87,7 +87,7 @@ class DenseMutMulNet(nn.Cell):
         return s
 
 
-class MultiTransformer(nn.Cell):
+class MultiTransformer(nn.Module):
     def __init__(self, layer_nums=1):
         super(MultiTransformer, self).__init__()
         self.layer = self._make_layer(layer_nums)
@@ -99,7 +99,7 @@ class MultiTransformer(nn.Cell):
 
         return nn.SequentialCell(layers)
 
-    def construct(self, x):
+    def forward(self, x):
         out = self.layer(x)
         return out
 

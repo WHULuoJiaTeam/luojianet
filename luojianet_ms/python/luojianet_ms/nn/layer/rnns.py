@@ -23,7 +23,7 @@ import luojianet_ms.common.dtype as mstype
 from luojianet_ms.ops.primitive import constexpr
 from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.common.parameter import ParameterTuple, Parameter
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms import log as logger
 from luojianet_ms._checkparam import Validator as validator
 from luojianet_ms.ops.operations._rl_inner_ops import CudnnGRU
@@ -109,7 +109,7 @@ def get_hidden(output, seq_length):
     return P.GatherNd()(output, indices)
 
 
-class _DynamicRNNBase(Cell):
+class _DynamicRNNBase(Module):
     '''Dynamic RNN module to compute RNN cell by timesteps'''
 
     def __init__(self, mode):
@@ -181,7 +181,7 @@ class _DynamicRNNBase(Cell):
         outputs = P.Stack()(outputs)
         return outputs, state_t
 
-    def construct(self, x, h, seq_length, w_ih, w_hh, b_ih, b_hh):
+    def forward(self, x, h, seq_length, w_ih, w_hh, b_ih, b_hh):
         x_dtype = x.dtype
         w_ih = w_ih.astype(x_dtype)
         w_hh = w_hh.astype(x_dtype)
@@ -209,7 +209,7 @@ class _DynamicRNNTanh(_DynamicRNNBase):
         super().__init__(mode)
 
 
-class _DynamicGRUCPUGPU(Cell):
+class _DynamicGRUCPUGPU(Module):
     '''Dynamic GRU module on CPU and GPU'''
 
     def __init__(self):
@@ -217,7 +217,7 @@ class _DynamicGRUCPUGPU(Cell):
         self.concat = P.Concat()
         self.is_gpu = context.get_context("device_target") == "GPU"
 
-    def construct(self, x, h_0, seq_length, w_ih, w_hh, b_ih, b_hh):
+    def forward(self, x, h_0, seq_length, w_ih, w_hh, b_ih, b_hh):
         gate_size, input_size = w_ih.shape
         hidden_size = gate_size // 3
         if self.is_gpu and seq_length is None:
@@ -246,7 +246,7 @@ class _DynamicGRUCPUGPU(Cell):
         return output, h_n
 
 
-class _DynamicGRUAscend(Cell):
+class _DynamicGRUAscend(Module):
     '''Dynamic GRU module on Ascend'''
 
     def __init__(self):
@@ -255,7 +255,7 @@ class _DynamicGRUAscend(Cell):
         self.transpose = P.Transpose()
         self.dtype = mstype.float16
 
-    def construct(self, x, h_0, seq_length, w_ih, w_hh, b_ih, b_hh):
+    def forward(self, x, h_0, seq_length, w_ih, w_hh, b_ih, b_hh):
         if b_ih is None:
             b_ih = P.Zeros()(w_ih.shape[0], w_ih.dtype)
             b_hh = P.Zeros()(w_ih.shape[0], w_ih.dtype)
@@ -274,7 +274,7 @@ class _DynamicGRUAscend(Cell):
         return outputs, h
 
 
-class _DynamicLSTMCPUGPU(Cell):
+class _DynamicLSTMCPUGPU(Module):
     '''Dynamic LSTM module on CPU and GPU'''
 
     def __init__(self):
@@ -282,7 +282,7 @@ class _DynamicLSTMCPUGPU(Cell):
         self.concat = P.Concat()
         self.is_gpu = context.get_context("device_target") == "GPU"
 
-    def construct(self, x, h_0, seq_length, w_ih, w_hh, b_ih, b_hh):
+    def forward(self, x, h_0, seq_length, w_ih, w_hh, b_ih, b_hh):
         gate_size, input_size = w_ih.shape
         hidden_size = gate_size // 4
         if seq_length is not None:
@@ -319,7 +319,7 @@ class _DynamicLSTMCPUGPU(Cell):
         return output, (h_n, c_n)
 
 
-class _DynamicLSTMAscend(Cell):
+class _DynamicLSTMAscend(Module):
     '''Dynamic LSTM module on Ascend'''
 
     def __init__(self):
@@ -332,7 +332,7 @@ class _DynamicLSTMAscend(Cell):
         self.split = P.Split(axis=0, output_num=4)
         self.dtype = mstype.float16
 
-    def construct(self, x, h_0, seq_length, w_ih, w_hh, b_ih, b_hh):
+    def forward(self, x, h_0, seq_length, w_ih, w_hh, b_ih, b_hh):
         w_ih_i, w_ih_f, w_ih_g, w_ih_o = self.split(w_ih)
         w_hh_i, w_hh_f, w_hh_g, w_hh_o = self.split(w_hh)
         w_ih = self.concat_dim0((w_ih_i, w_ih_g, w_ih_f, w_ih_o))
@@ -364,7 +364,7 @@ class _DynamicLSTMAscend(Cell):
         return outputs, (h, c)
 
 
-class _RNNBase(Cell):
+class _RNNBase(Module):
     '''Basic class for RNN operators'''
 
     def __init__(self, mode, input_size, hidden_size, num_layers=1, has_bias=True,
@@ -535,7 +535,7 @@ class _RNNBase(Cell):
         h_n = P.Concat(0)(h_n)
         return output, h_n.view(h.shape)
 
-    def construct(self, x, hx=None, seq_length=None):
+    def forward(self, x, hx=None, seq_length=None):
         '''Defines the RNN like operators performed'''
         max_batch_size = x.shape[0] if self.batch_first else x.shape[1]
         num_directions = 2 if self.bidirectional else 1

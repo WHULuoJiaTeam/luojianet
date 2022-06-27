@@ -24,23 +24,23 @@ from luojianet_ms.ops.composite import GradOperation
 context.set_context(device_target="Ascend")
 
 
-class Grad(nn.Cell):
+class Grad(nn.Module):
     def __init__(self, network):
         super(Grad, self).__init__()
         self.grad = GradOperation(get_all=True, sens_param=True)
         self.network = network
 
     @ms_function
-    def construct(self, input_, output_grad):
+    def forward(self, input_, output_grad):
         return self.grad(self.network)(input_, output_grad)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.simplemean = P.ReduceMean(keep_dims=True)
 
-    def construct(self, x):
+    def forward(self, x):
         return self.simplemean(x, (-2, -1))
 
 

@@ -20,12 +20,12 @@ from luojianet_ms.ops import operations as P
 import luojianet_ms.nn as nn
 import luojianet_ms.context as context
 
-class GatherNdNet(nn.Cell):
+class GatherNdNet(nn.Module):
     def __init__(self):
         super(GatherNdNet, self).__init__()
         self.gathernd = P.GatherNd()
 
-    def construct(self, x, indices):
+    def forward(self, x, indices):
         return self.gathernd(x, indices)
 
 

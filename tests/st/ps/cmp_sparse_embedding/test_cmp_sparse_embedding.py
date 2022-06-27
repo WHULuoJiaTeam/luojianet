@@ -39,7 +39,7 @@ context.set_context(
 context.set_ps_context(enable_ps=True)
 
 
-class LeNet5(nn.Cell):
+class LeNet5(nn.Module):
     def __init__(self, num_class=10):
         super(LeNet5, self).__init__()
         self.cast = P.Cast()
@@ -48,7 +48,7 @@ class LeNet5(nn.Cell):
         self.relu = nn.ReLU()
         self.fc = nn.Dense(12, num_class)
 
-    def construct(self, x):
+    def forward(self, x):
         x = self.cast(x, mstype.int32)
         x = self.embedding(x)
         x = self.flatten(x)

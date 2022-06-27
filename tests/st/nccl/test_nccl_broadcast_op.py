@@ -31,7 +31,7 @@ size = get_group_size()
 x = np.ones([3, 1, 3, 3]).astype(np.float32) * 0.01 * (rank + 1)
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.x1 = Parameter(initializer(Tensor(x), x.shape), name='x1')
@@ -42,7 +42,7 @@ class Net(nn.Cell):
         self.broadcast2 = P.Broadcast(1)
         self.broadcast3 = P.Broadcast(2)
 
-    def construct(self):
+    def forward(self):
         return (self.broadcast1((self.x1,)),
                 self.broadcast2((self.x2,)),
                 self.broadcast3((self.x3,)))

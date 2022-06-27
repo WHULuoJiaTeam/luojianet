@@ -23,7 +23,7 @@ from luojianet_ms.common.tensor import Tensor
 from luojianet_ms.common.parameter import Parameter
 from luojianet_ms.common.initializer import initializer, Uniform
 from luojianet_ms.ops.primitive import constexpr
-from luojianet_ms.nn.cell import Cell
+from luojianet_ms.nn.cell import Module
 from luojianet_ms._checkparam import Validator as validator
 
 __all__ = ['LSTMCell', 'GRUCell', 'RNNCell']
@@ -138,7 +138,7 @@ def _gru_cell(inputs, hidden, w_ih, w_hh, b_ih, b_hh):
     return hy
 
 
-class RNNCellBase(Cell):
+class RNNCellBase(Module):
     '''Basic class for RNN Cells'''
     def __init__(self, input_size: int, hidden_size: int, has_bias: bool, num_chunks: int):
         super().__init__()
@@ -217,7 +217,7 @@ class RNNCell(RNNCellBase):
         validator.check_string(nonlinearity, self._non_linearity, "nonlinearity", self.cls_name)
         self.nonlinearity = nonlinearity
 
-    def construct(self, x, hx):
+    def forward(self, x, hx):
         _check_is_tensor('x', x, self.cls_name)
         _check_is_tensor('hx', hx, self.cls_name)
         _check_input_dtype(x.dtype, "x", [mstype.float32, mstype.float16], self.cls_name)
@@ -290,7 +290,7 @@ class LSTMCell(RNNCellBase):
         super().__init__(input_size, hidden_size, has_bias, num_chunks=4)
         self.support_non_tensor_inputs = True
 
-    def construct(self, x, hx):
+    def forward(self, x, hx):
         _check_is_tensor('x', x, self.cls_name)
         _check_is_tuple('hx', hx, self.cls_name)
         _check_tuple_length('hx', hx, 2, self.cls_name)
@@ -305,7 +305,7 @@ class LSTMCell(RNNCellBase):
 
     def _check_construct_args(self, *inputs, **kwargs):
         if len(inputs) == 4:
-            raise ValueError(f"For '{self.cls_name}', the number of input args of construct is {len(inputs)}, if you "
+            raise ValueError(f"For '{self.cls_name}', the number of input args of forward is {len(inputs)}, if you "
                              f"are using the implementation of `nn.LSTMCell` from old LuoJiaNET version(<1.6), "
                              f"please notice that: LSTMCell has been changed from 'single LSTM layer' to "
                              f"'single LSTM cell', if you still need use single LSTM layer, "
@@ -372,7 +372,7 @@ class GRUCell(RNNCellBase):
     def __init__(self, input_size: int, hidden_size: int, has_bias: bool = True):
         super().__init__(input_size, hidden_size, has_bias, num_chunks=3)
 
-    def construct(self, x, hx):
+    def forward(self, x, hx):
         _check_is_tensor('x', x, self.cls_name)
         _check_is_tensor('hx', hx, self.cls_name)
         _check_input_dtype(x.dtype, "x", [mstype.float32, mstype.float16], self.cls_name)

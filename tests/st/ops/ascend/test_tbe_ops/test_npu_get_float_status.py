@@ -24,13 +24,13 @@ from luojianet_ms.ops import operations as P
 context.set_context(device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.npu_get_float_status = P.NPUGetFloatStatus()
 
     @ms_function
-    def construct(self, x1):
+    def forward(self, x1):
         return self.npu_get_float_status(x1)
 
 

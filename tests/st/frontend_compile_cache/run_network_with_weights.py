@@ -23,14 +23,14 @@ from luojianet_ms import dtype as mstype
 from luojianet_ms.ops import operations as P
 
 
-class NetWithWeights(nn.Cell):
+class NetWithWeights(nn.Module):
     def __init__(self):
         super(NetWithWeights, self).__init__()
         self.matmul = P.MatMul()
         self.a = Parameter(Tensor(np.array([2.0], np.float32)), name='a')
         self.z = Parameter(Tensor(np.array([1.0], np.float32)), name='z')
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         x = x * self.z
         y = y * self.a
         out = self.matmul(x, y)

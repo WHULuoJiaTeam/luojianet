@@ -32,8 +32,8 @@ class VAEAnomalyDetection:
     between the X and the reconstruction of X. If the score is high, the X is mostly outlier.
 
     Args:
-        encoder(Cell): The Deep Neural Network (DNN) model defined as encoder.
-        decoder(Cell): The DNN model defined as decoder.
+        encoder(Module): The Deep Neural Network (DNN) model defined as encoder.
+        decoder(Module): The DNN model defined as decoder.
         hidden_size(int): The size of encoder's output tensor. Default: 400.
         latent_size(int): The size of the latent space. Default: 20.
 
@@ -54,7 +54,7 @@ class VAEAnomalyDetection:
             epochs (int): Total number of iterations on the data. Default: 5.
 
         Returns:
-            Cell, the trained model.
+            Module, the trained model.
         """
         net_loss = ELBO()
         optimizer = Adam(params=self.vae.trainable_params(), learning_rate=0.001)

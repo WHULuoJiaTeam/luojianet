@@ -26,21 +26,21 @@ context.set_context(mode=context.GRAPH_MODE)
 
 
 def test_cast_op_attr():
-    class CastNet(nn.Cell):
+    class CastNet(nn.Module):
         def __init__(self):
             super(CastNet, self).__init__()
             self.cast = P.Cast()
 
-        def construct(self, x, t):
+        def forward(self, x, t):
             return self.cast(x, t)
 
-    class CastTypeTest(nn.Cell):
+    class CastTypeTest(nn.Module):
         def __init__(self, net):
             super(CastTypeTest, self).__init__()
             self.net = net
             self.cast = P.Cast()
 
-        def construct(self, x, y, z):
+        def forward(self, x, y, z):
             cast_op = self.cast
             t1 = cast_op(x, mstype.float32)
             t2 = cast_op(y, mstype.int32)

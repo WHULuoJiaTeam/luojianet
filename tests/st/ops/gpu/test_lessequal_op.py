@@ -19,16 +19,16 @@ import pytest
 
 import luojianet_ms.context as context
 from luojianet_ms.common.tensor import Tensor
-from luojianet_ms.nn import Cell
+from luojianet_ms.nn import Module
 from luojianet_ms.ops import operations as P
 
 
-class Net(Cell):
+class Net(Module):
     def __init__(self):
         super(Net, self).__init__()
         self.lessequal = P.LessEqual()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.lessequal(x, y)
 
 

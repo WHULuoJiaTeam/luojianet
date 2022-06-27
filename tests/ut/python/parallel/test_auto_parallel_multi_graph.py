@@ -18,23 +18,23 @@ import luojianet_ms as ms
 import luojianet_ms.context as context
 from luojianet_ms.common.api import _cell_graph_executor
 from luojianet_ms import Tensor, Parameter
-from luojianet_ms.nn import Cell, TrainOneStepCell, Momentum
+from luojianet_ms.nn import Module, TrainOneStepCell, Momentum
 from luojianet_ms.ops import operations as P
 
 
-class TwoInputBprop(Cell):
+class TwoInputBprop(Module):
     def __init__(self):
         super().__init__()
         self.op = P.Mul()
 
-    def construct(self, x, y):
+    def forward(self, x, y):
         return self.op(x, y)
 
     def bprop(self, x, y, out, dout):
         return x * 5, y * 8
 
 
-class ParallelFloorDivBpropNet(Cell):
+class ParallelFloorDivBpropNet(Module):
     def __init__(self, mul_size, test_size, strategy=None, strategy2=None):
         super().__init__()
         mul_np = np.full(mul_size, 0.5, dtype=np.float32)
@@ -47,7 +47,7 @@ class ParallelFloorDivBpropNet(Cell):
             self.mul.op.shard(strategy2)
             self.floor_div.shard(strategy)
 
-    def construct(self, inputs, label):
+    def forward(self, inputs, label):
         x = self.mul(inputs, self.mul_weight)
         x = self.floor_div(x, self.floordiv_weight)
         return x

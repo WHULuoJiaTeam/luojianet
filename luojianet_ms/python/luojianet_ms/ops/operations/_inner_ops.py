@@ -450,13 +450,13 @@ class Send(PrimitiveWithInfer):
         >>> import numpy as np
         >>>
         >>> init()
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         >>>     def __init__(self):
         >>>         super(Net, self).__init__()
         >>>         self.depend = ops.Depend()
         >>>         self.send = ops.Send(st_tag=0, dest_rank=8, group="hccl_world_group")
         >>>
-        >>>     def construct(self, x):
+        >>>     def forward(self, x):
         >>>         out = self.depend(x, self.send(x))
         >>>         return out
         >>>
@@ -507,13 +507,13 @@ class Receive(PrimitiveWithInfer):
         >>> import numpy as np
         >>>
         >>> init()
-        >>> class Net(nn.Cell):
+        >>> class Net(nn.Module):
         >>>     def __init__(self):
         >>>         super(Net, self).__init__()
         >>>         self.recv = ops.Receive(st_tag=0, src_rank=0, shape=[2, 8], dtype=np.float32,
         >>>                               group="hccl_world_group")
         >>>
-        >>>     def construct(self):
+        >>>     def forward(self):
         >>>         out = self.recv()
         >>>         return out
         >>>
@@ -663,14 +663,14 @@ class GpuConvertToDynamicShape(PrimitiveWithCheck):
 
     Examples:
           >>> # make a model, since dynamic shape operators must be in GRAPH_MODE
-          >>> class TestDynamicShapeReshapeNet(nn.Cell):
+          >>> class TestDynamicShapeReshapeNet(nn.Module):
           >>>     def __init__(self):
           >>>         super(TestDynamicShapeReshapeNet, self).__init__()
           >>>         self.convert_to_dynamic_shape = inner.GpuConvertToDynamicShape()
           >>>         # suppose we are testing Reshape op
           >>>         self.reshape = P.Reshape()
           >>>
-          >>>     def construct(self, input, new_shape):
+          >>>     def forward(self, input, new_shape):
           >>>         dynamic_shape_input = self.convert_to_dynamic_shape(input)
           >>>         reshaped_input = self.reshape(input, new_shape)
           >>>
@@ -707,13 +707,13 @@ class ErrorOnDynamicShapeInput(PrimitiveWithInfer):
 
     Examples:
           >>> # make a model, since dynamic shape operators must be in GRAPH_MODE
-          >>> class AssertDynamicShapeNet(nn.Cell):
+          >>> class AssertDynamicShapeNet(nn.Module):
           >>>     def __init__(self):
           >>>         super(AssertDynamicShapeNet, self).__init__()
           >>>         self.convert_to_dynamic_shape = inner.GpuConvertToDynamicShape()
           >>>         self.error_on_dynamic_shape_input = inner.ErrorOnDynamicShapeInput()
           >>>
-          >>>     def construct(self, input, new_shape):
+          >>>     def forward(self, input, new_shape):
           >>>         dynamic_shape_input = self.convert_to_dynamic_shape(input)
           >>>         self.error_on_dynamic_shape_input(dynamic_shape_input)
           >>>
@@ -1753,10 +1753,10 @@ class ParallelResizeBilinear(PrimitiveWithInfer):
 
 class CellBackwardHook(PrimitiveWithInfer):
     r"""
-    This operator is used to hook input gradient and output gradient of Cell object.
+    This operator is used to hook input gradient and output gradient of Module object.
 
     Note:
-        This operator is only used in backward hook function of Cell object in pynative mode.
+        This operator is only used in backward hook function of Module object in pynative mode.
 
     Args:
         cell_id (str): Used to identify which cell obj the hook function registered on. For example, 'nn.Add()' is a

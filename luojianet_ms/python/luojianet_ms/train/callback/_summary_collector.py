@@ -1085,10 +1085,10 @@ class SummaryCollector(Callback):
         Get the backbone network.
 
         Args:
-            network (Cell): The train network.
+            network (Module): The train network.
 
         Returns:
-            Union[Cell, None], backbone network, if parse failed, will return None.
+            Union[Module, None], backbone network, if parse failed, will return None.
         """
         backbone = None
         backbone_key = '_backbone'
@@ -1110,7 +1110,7 @@ class SummaryCollector(Callback):
             cb_params (_InternalCallbackParam): Callback parameters.
 
         Returns:
-            Union[Cell, None], a Cell object, if parse failed, will return None.
+            Union[Module, None], a Module object, if parse failed, will return None.
         """
         loss_fn = cb_params.loss_fn
         if loss_fn is not None:

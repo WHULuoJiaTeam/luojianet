@@ -25,13 +25,13 @@ context.set_context(mode=context.GRAPH_MODE,
                     device_target="Ascend")
 
 
-class Net(nn.Cell):
+class Net(nn.Module):
     def __init__(self, pad_num):
         super(Net, self).__init__()
         self.unique_with_pad = P.UniqueWithPad()
         self.pad_num = pad_num
 
-    def construct(self, x):
+    def forward(self, x):
         return self.unique_with_pad(x, self.pad_num)
 
 

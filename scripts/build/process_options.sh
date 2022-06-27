@@ -109,7 +109,7 @@ process_options()
       T)
         check_on_off $OPTARG T
         export ENABLE_THIRD="$OPTARG"
-        echo "Clean the third party dependencies CMake cache files" ;;
+        echo "Clean the third party dependencies CMake cache files: ${OPTARG}" ;;
       *)
         echo "Unknown option ${opt}!"
         usage

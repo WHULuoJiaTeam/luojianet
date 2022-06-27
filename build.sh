@@ -29,13 +29,12 @@ source ./scripts/build/process_options.sh
 source ./scripts/build/parse_device.sh
 source ./scripts/build/build_luojianet_ms.sh
 
-#remove default patches for third party library
-PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
-if [ -d $LIB_FOLDER ]; then
-     rm -rf $PATCHES_FOLDER
-fi
-
 if [[ "XENABLE_THIRD" = "Xon" ]]; then
+  #remove default patches for third party library
+  PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
+  if [ -d $PATCHES_FOLDER ]; then
+       rm -rf $PATCHES_FOLDER
+  fi
   DEPS_FOLDER="${BUILD_PATH}/luojianet_ms/_deps"
   if [ -d $DEPS_FOLDER ]; then
       rm -rf $DEPS_FOLDER/*-src

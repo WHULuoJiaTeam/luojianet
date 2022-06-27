@@ -107,7 +107,8 @@ process_options()
         export TENSORRT_HOME="$CASE_SENSIVE_ARG"
         echo "Link Tensor-RT library. Path: ${CASE_SENSIVE_ARG}" ;;
       T)
-        export ENABLE_THIRD="on"
+        check_on_off $OPTARG T
+        export ENABLE_THIRD="$OPTARG"
         echo "Clean the third party dependencies CMake cache files" ;;
       *)
         echo "Unknown option ${opt}!"

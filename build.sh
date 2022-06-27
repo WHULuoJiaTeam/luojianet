@@ -32,11 +32,11 @@ source ./scripts/build/build_luojianet_ms.sh
 if [[ "XENABLE_THIRD" = "Xon" ]]; then
   #remove default patches for third party library
   PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
-  if [ -d $PATCHES_FOLDER ]; then
+  if [[ -d $PATCHES_FOLDER ]]; then
        rm -rf $PATCHES_FOLDER
   fi
   DEPS_FOLDER="${BUILD_PATH}/luojianet_ms/_deps"
-  if [ -d $DEPS_FOLDER ]; then
+  if [[ -d $DEPS_FOLDER ]]; then
       rm -rf $DEPS_FOLDER/*-src
       rm -rf $DEPS_FOLDER/*-build
       rm -rf $DEPS_FOLDER/*-subbuild/CMake*

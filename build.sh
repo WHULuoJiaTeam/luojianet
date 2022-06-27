@@ -29,24 +29,6 @@ source ./scripts/build/process_options.sh
 source ./scripts/build/parse_device.sh
 source ./scripts/build/build_luojianet_ms.sh
 
-if [[ "XENABLE_THIRD" = "Xon" ]]; then
-  #remove default patches for third party library
-  PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
-  # if [[ -d $PATCHES_FOLDER ]]; then
-  rm -rf $PATCHES_FOLDER
-  # fi
-  DEPS_FOLDER="${BUILD_PATH}/luojianet_ms/_deps"
-  # if [[ -d $DEPS_FOLDER ]]; then
-  rm -rf $DEPS_FOLDER/*-src
-  rm -rf $DEPS_FOLDER/*-build
-  rm -rf $DEPS_FOLDER/*-subbuild/CMake*
-  rm -rf $DEPS_FOLDER/*-subbuild/Make*
-  rm -rf $DEPS_FOLDER/*-subbuild/cmake*
-  rm -rf $DEPS_FOLDER/*-subbuild/*-populate-prefix/src/*-stamp
-  rm -rf ${BUILD_PATH}/luojianet_ms/cmake*
-  rm -rf ${BUILD_PATH}/luojianet_ms/CMake*
-  # fi
-if
 
 # check value of input is 'on' or 'off'
 # usage: check_on_off arg_value arg_name
@@ -92,6 +74,27 @@ echo "---------------- LuoJiaNET: build start ----------------"
 init_default_options
 process_options "$@"
 parse_device
+
+if [[ "XENABLE_THIRD" = "Xon" ]]; then
+  #remove default patches for third party library
+  PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
+  echo "folder: $PATCHES_FOLDER"
+  # # if [[ -d $PATCHES_FOLDER ]]; then
+  # rm -rf $PATCHES_FOLDER
+  # # fi
+  # DEPS_FOLDER="${BUILD_PATH}/luojianet_ms/_deps"
+  # # if [[ -d $DEPS_FOLDER ]]; then
+  # rm -rf $DEPS_FOLDER/*-src
+  # rm -rf $DEPS_FOLDER/*-build
+  # rm -rf $DEPS_FOLDER/*-subbuild/CMake*
+  # rm -rf $DEPS_FOLDER/*-subbuild/Make*
+  # rm -rf $DEPS_FOLDER/*-subbuild/cmake*
+  # rm -rf $DEPS_FOLDER/*-subbuild/*-populate-prefix/src/*-stamp
+  # rm -rf ${BUILD_PATH}/luojianet_ms/cmake*
+  # rm -rf ${BUILD_PATH}/luojianet_ms/CMake*
+  # # fi
+if
+
 
 if [[ "X$COMPILE_LITE" = "Xon" ]]; then
   export COMPILE_MINDDATA_LITE

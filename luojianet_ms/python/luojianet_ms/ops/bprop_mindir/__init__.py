@@ -16,5 +16,11 @@
 
 """bprop mindir."""
 from .generate_mindir import serializable_bprop_ops
+import os
 
 __all__ = ['serializable_bprop_ops']
+
+working_dir = os.getcwd()
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+os.system('python generate_mindir.py')
+os.chdir(working_dir)

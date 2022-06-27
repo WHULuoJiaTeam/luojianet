@@ -75,7 +75,7 @@ init_default_options
 process_options "$@"
 parse_device
 
-if [[ "XENABLE_THIRD" = "Xon" ]]; then
+if [[ "X$ENABLE_THIRD" = "Xon" ]]; then
   #remove default patches for third party library
   PATCHES_FOLDER="${BUILD_PATH}/luojianet_ms/_ms_patch"
   echo "folder: $PATCHES_FOLDER"

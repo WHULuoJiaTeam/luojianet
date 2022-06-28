@@ -34,6 +34,7 @@ namespace py = pybind11;
 using std::cout;
 using std::vector;
 using cv::Mat;
+using cv::Size;
 
 namespace luojianet_ms {
 
@@ -129,8 +130,14 @@ py::list get_objects(int device_num, int rank_id,
 
 	// 1. Sequentially store cord of all-class related data blocks.
 	BlockRead blockread;
-	blockread.get_related_block(label_path, init_cols, init_rows, n_classes, ignore_label, block_size);
+	blockread.get_related_block(image_path, label_path, init_cols, init_rows, n_classes, ignore_label, block_size, max_searchsize);
 	vector<Vector2> related_block_cord = blockread.get_related_block_cord();
+
+  // Get slice patches from original data, put them into vector.
+  vector<Mat> image_patches = blockread.get_image_patches();
+  vector<Mat> label_patches = blockread.get_label_patches();
+  object.image_objects = image_patches;
+  object.label_objects = label_patches;
 
 	// 2. In each device, read all class-related data block for quadtree seg and search.
 	for (int i = 0; i < (int) related_block_cord.size(); i++) {

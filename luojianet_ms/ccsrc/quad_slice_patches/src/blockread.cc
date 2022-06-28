@@ -23,22 +23,46 @@ BlockRead::BlockRead() {}
 
 BlockRead::~BlockRead() {}
 
-void BlockRead::get_related_block(string& label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size) {
-	get_class_attribute(label_path, init_cols, init_rows, n_classes, ignore_label, block_size);
+//void BlockRead::get_related_block(string& label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size) {
+//  get_class_attribute(label_path, init_cols, init_rows, n_classes, ignore_label, block_size);
+//  search_related_block(init_cols, init_rows, block_size);
+//  store_related_blockcord(block_size);
+//}
+
+void BlockRead::get_related_block(string& image_path, string& label_path,
+                                  int init_cols, int init_rows, int n_classes, int ignore_label, int block_size,
+                                  int max_searchsize) {
+	get_class_attribute(image_path, label_path, init_cols, init_rows, n_classes, ignore_label, block_size, max_searchsize);
 	search_related_block(init_cols, init_rows, block_size);
 	store_related_blockcord(block_size);
 }
 
+//// Function used in 'get_class_attribute'.
+//Mat make_label_border(Mat& label, int block_size) {
+//  int w = label.cols;
+//  int h = label.rows;
+//  int pad_h = block_size - h;
+//  int pad_w = block_size - w;
+//  if (pad_h > 0 || pad_w > 0) {
+//    copyMakeBorder(label, label, 0, pad_h, 0, pad_w, BORDER_CONSTANT, Scalar::all(255));
+//  }
+//  return label;
+//}
+
 // Function used in 'get_class_attribute'.
-Mat make_label_border(Mat& label, int block_size) {
-	int w = label.cols;
-	int h = label.rows;
+pair<Mat, Mat> make_border(Mat& image, Mat& label, const int block_size) {
+  pair<Mat, Mat> border_result;
+	int w = image.cols;
+	int h = image.rows;
 	int pad_h = block_size - h;
 	int pad_w = block_size - w;
 	if (pad_h > 0 || pad_w > 0) {
-		copyMakeBorder(label, label, 0, pad_h, 0, pad_w, BORDER_CONSTANT, Scalar::all(255));
+    copyMakeBorder(image, image, 0, pad_h, 0, pad_w, BORDER_CONSTANT, Scalar::all(0));  // default image value to pad.
+		copyMakeBorder(label, label, 0, pad_h, 0, pad_w, BORDER_CONSTANT, Scalar::all(255));  // default label value (ignore label) to pad.
 	}
-	return label;
+  border_result.first = image;
+  border_result.second = label;
+	return border_result;
 }
 
 // Function used in 'get_class_attribute'.
@@ -68,42 +92,144 @@ void BlockRead::quick_statistic_class(Mat& label, int block_index, int n_classes
 	}
 }
 
+// Funtion used in 'get_class_attribute'.
+void BlockRead::get_slice_patches(Mat& image, Mat& label, int max_searchsize) {
+  // Ignore zero-matrix block_size data.
+  Mat gray_image;
+  cvtColor(image, gray_image, COLOR_BGR2GRAY);
+  if (cv::countNonZero(gray_image) < 1) {
+    return;
+  }
+
+  int rows = image.rows;
+  int cols = image.cols;
+  const int patch_size = max_searchsize;
+  for (int i = 0; i < rows; i += patch_size) {
+    for (int j = 0; j < cols; j += patch_size) {
+      int current_row_patch_size = patch_size;
+      int current_col_patch_size = patch_size;
+      if (i + patch_size > rows) {
+        current_row_patch_size = rows - i;
+      }
+      if (j + patch_size > cols) {
+        current_col_patch_size = cols - j;
+      }
+
+      Rect roi(j, i, current_col_patch_size, current_row_patch_size);
+      Mat image_patch = image(roi);
+      Mat label_patch = label(roi);
+
+      // If need, make border the data patch, to size (max_searchsize, max_searchsize).
+      pair<Mat, Mat> patch_border_result = make_border(image_patch, label_patch, patch_size);
+
+      // Ignore poor-information matrix.
+      Mat gray_image_patch;
+      cvtColor(patch_border_result.first, gray_image_patch, COLOR_BGR2GRAY);
+      double info_ratio = (double)countNonZero(gray_image_patch) / (double)(gray_image_patch.rows * gray_image_patch.cols);
+      if (info_ratio < 0.1) {
+        continue;
+      }
+
+      // For numpy, convert datatype to the CV_8U.
+      Mat image_patch_8UC3(patch_size, patch_size, CV_8UC3);
+      patch_border_result.first.copyTo(image_patch_8UC3);
+
+      Mat label_patch_8UC1(patch_size, patch_size, CV_8UC1);
+      patch_border_result.second.copyTo(label_patch_8UC1);
+
+      image_patches.push_back(image_patch_8UC3);
+      label_patches.push_back(label_patch_8UC1);
+    }
+  }
+}
+
 /// Get the class attribute matrix of bif_input data:
 /// block_index	    class1       class2    ...
 ///      0        true/false   true/false
 ///      1        true/false   true/false
 ///     ...
-void BlockRead::get_class_attribute(string& label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size) {
-	int block_num = ceil((float)init_cols / (float)block_size) * ceil((float)init_rows / (float)block_size);
-	Mat_<uchar> all_class_attribute(block_num, n_classes, uchar(0));
-	all_class_attribute.copyTo(class_attribute);
+//void BlockRead::get_class_attribute(string& label_path, int init_cols, int init_rows, int n_classes, int ignore_label, int block_size) {
+//	int block_num = ceil((float)init_cols / (float)block_size) * ceil((float)init_rows / (float)block_size);
+//	Mat_<uchar> all_class_attribute(block_num, n_classes, uchar(0));
+//	all_class_attribute.copyTo(class_attribute);
+//
+//	int block_index = 0;
+//	GDAL2CV gdal2cv;
+//	for (int i = 0; i < init_rows; i += block_size) {
+//		for (int j = 0; j < init_cols; j += block_size) {
+//			int current_block_rows = block_size;
+//			int current_block_cols = block_size;
+//			if (i + block_size > init_rows) {
+//				current_block_rows = init_rows - i;
+//			}
+//			if (j + block_size > init_cols) {
+//				current_block_cols = init_cols - j;
+//			}
+//			Mat label = gdal2cv.gdal_read(label_path, j, i, current_block_cols, current_block_rows);
+//
+//			// Make border the residule block to standard BLOCK_SIZE for quick statistic.
+//			if (label.rows < block_size || label.cols < block_size) {
+//				Mat label_border = make_label_border(label, block_size);
+//				quick_statistic_class(label_border, block_index, n_classes, ignore_label);
+//			}
+//			else {
+//				quick_statistic_class(label, block_index, n_classes, ignore_label);
+//			}
+//			block_index++;
+//		}
+//	}
+//	//cv::imwrite("class_attribute.tif", class_attribute);
+//}
 
-	int block_index = 0;
-	GDAL2CV gdal2cv;
-	for (int i = 0; i < init_rows; i += block_size) {
-		for (int j = 0; j < init_cols; j += block_size) {
-			int current_block_rows = block_size;
-			int current_block_cols = block_size;
-			if (i + block_size > init_rows) {
-				current_block_rows = init_rows - i;
-			}
-			if (j + block_size > init_cols) {
-				current_block_cols = init_cols - j;
-			}
-			Mat label = gdal2cv.gdal_read(label_path, j, i, current_block_cols, current_block_rows);
+/// Get the class attribute matrix of bif_input data:
+/// block_index	    class1       class2    ...
+///      0        true/false   true/false
+///      1        true/false   true/false
+///     ...
+void BlockRead::get_class_attribute(string& image_path, string& label_path,
+                                    int init_cols, int init_rows, int n_classes, int ignore_label, int block_size,
+                                    int max_searchsize) {
+  int block_num = ceil((float)init_cols / (float)block_size) * ceil((float)init_rows / (float)block_size);
+  Mat_<uchar> all_class_attribute(block_num, n_classes, uchar(0));
+  all_class_attribute.copyTo(class_attribute);
+  
+  int block_index = 0;
+  GDAL2CV gdal2cv;
+  for (int i = 0; i < init_rows; i += block_size) {
+  	for (int j = 0; j < init_cols; j += block_size) {
+  		int current_block_rows = block_size;
+  		int current_block_cols = block_size;
+  		if (i + block_size > init_rows) {
+  			current_block_rows = init_rows - i;
+  		}
+  		if (j + block_size > init_cols) {
+  			current_block_cols = init_cols - j;
+  		}
+      Mat image = gdal2cv.gdal_read(image_path, j, i, current_block_cols, current_block_rows);
+  		Mat label = gdal2cv.gdal_read(label_path, j, i, current_block_cols, current_block_rows);
+  
+  		// Make border the residule block to standard BLOCK_SIZE for quick statistic.
+  		if (image.rows < block_size || image.cols < block_size) {
+        pair<Mat, Mat> border_result = make_border(image, label, block_size);
+        Mat image_border = border_result.first;
+  			Mat label_border = border_result.second;
 
-			// Make border the residule block to standard BLOCK_SIZE for quick statistic.
-			if (label.rows < block_size || label.cols < block_size) {
-				Mat label_border = make_label_border(label, block_size);
-				quick_statistic_class(label_border, block_index, n_classes, ignore_label);
-			}
-			else {
-				quick_statistic_class(label, block_index, n_classes, ignore_label);
-			}
-			block_index++;
-		}
-	}
-	//cv::imwrite("class_attribute.tif", class_attribute);
+        // Get slice pathces from block data.
+        get_slice_patches(image_border, label_border, max_searchsize);
+
+  			quick_statistic_class(label_border, block_index, n_classes, ignore_label);
+
+  		}
+  		else {
+        // Get slice pathces from block data.
+        get_slice_patches(image, label, max_searchsize);
+
+  			quick_statistic_class(label, block_index, n_classes, ignore_label);
+  		}
+  		block_index++;
+  	}
+  }
+  //cv::imwrite("class_attribute.tif", class_attribute);
 }
 
 // Function used in 'search_related_block' for 8-neighbours search.

@@ -279,10 +279,11 @@ void QuadTree::get_multiscale_object(Mat& ori_level_image, Mat& ori_level_label,
 			Mat image_object = ori_level_image(Range(ori_mini_rect.LBx(), ori_mini_rect.UBx()), Range(ori_mini_rect.LBy(), ori_mini_rect.UBy()));
 			Mat label_object = ori_level_label(Range(ori_mini_rect.LBx(), ori_mini_rect.UBx()), Range(ori_mini_rect.LBy(), ori_mini_rect.UBy()));
 
-			// Ignore zero-matrix.
+      // Ignore poor-information matrix.
       Mat gray_image_object;
       cvtColor(image_object, gray_image_object, COLOR_BGR2GRAY);
-      if (cv::countNonZero(gray_image_object) < 1) {
+      double info_ratio = (double)countNonZero(gray_image_object) / (double)(gray_image_object.rows * gray_image_object.cols);
+      if (info_ratio < 0.1) {
         continue;
       }
 

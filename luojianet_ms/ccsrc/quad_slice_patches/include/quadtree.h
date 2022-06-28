@@ -32,6 +32,7 @@ using std::queue;
 using std::random_device;
 using std::mt19937;
 using std::vector;
+using std::pair;
 using cv::Mat;
 using cv::Mat_;
 using cv::cvtColor;
@@ -123,6 +124,7 @@ class QuadTree {
 	//vector<QuadNode*> allnode_quadsearch_result;
 
 	vector<Mat_<uchar>> top_level_mask;  // masks for grid search results.
+
 	vector<Mat> image_objects;  // random_search image results.
 	vector<Mat> label_objects;  // random_search label results.
 };

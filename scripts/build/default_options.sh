@@ -65,4 +65,5 @@ init_default_options()
   export ENABLE_SYM_FILE="off"
   export ENABLE_FAST_HASH_TABLE="on"
   export ENABLE_THIRD="off"
+  export ENABLE_RS="on"
 }

@@ -21,7 +21,7 @@ set -e
 process_options()
 {
   # Process the options
-  while getopts 'drvj:c:t:hb:s:a:g:p:ie:l:I:RP:D:zM:V:K:B:En:A:S:k:W:F:H:L:T:y' opt
+  while getopts 'drvj:c:t:hb:s:a:g:p:ie:l:I:RP:D:zM:V:K:B:En:A:S:k:W:F:H:L:T:G:y' opt
   do
     CASE_SENSIVE_ARG=${OPTARG}
     OPTARG=$(echo ${OPTARG} | tr '[A-Z]' '[a-z]')
@@ -109,6 +109,10 @@ process_options()
       T)
         check_on_off $OPTARG T
         export ENABLE_THIRD="$OPTARG"
+        echo "Clean the third party dependencies CMake cache files: ${OPTARG}" ;;
+      G)
+        check_on_off $OPTARG G
+        export ENABLE_RS="$OPTARG"
         echo "Clean the third party dependencies CMake cache files: ${OPTARG}" ;;
       *)
         echo "Unknown option ${opt}!"

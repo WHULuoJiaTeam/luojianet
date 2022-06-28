@@ -58,6 +58,11 @@ set(jpeg_turbo_LIBPATH ${jpeg_turbo_LIBPATH}/../bin/)
 set(sqlite_LIBPATH ${sqlite_LIBPATH}/../bin/)
 set(tinyxml2_LIBPATH ${tinyxml2_LIBPATH}/../bin/)
 
+if(ENABLE_RS)
+  set(gdal_ext_LIBPATH ${CMAKE_SOURCE_DIR}/third_party/GDAL_win/bin/)
+  set(gdal_extra_LIBPATH ${CMAKE_SOURCE_DIR}/third_party/GDAL_win/third_party/bin/)
+endif()
+
 message("offline debugger does not support windows system temporarily")
 
 # set package files
@@ -66,6 +71,14 @@ install(
   DESTINATION ${INSTALL_BASE_DIR}
   COMPONENT luojianet_ms
 )
+
+if(ENABLE_RS)
+    install(
+            TARGETS geobject
+            DESTINATION ${INSTALL_BASE_DIR}
+            COMPONENT luojianet_ms
+    )
+endif()
 
 install(
   TARGETS luojianet_ms_shared_lib
@@ -183,6 +196,54 @@ install(
   DESTINATION ${INSTALL_LIB_DIR}
   COMPONENT luojianet_ms
 )
+
+if(ENABLE_RS)
+    #	file(GLOB SQLITE_LIB_LIST "${sqlite_LIBPATH}/*")
+    #	install(
+    #			FILES ${SQLITE_LIB_LIST}
+    #			DESTINATION ${INSTALL_LIB_DIR}
+    #			COMPONENT luojianet_ms
+    #	)
+    #
+    #	file(GLOB PROJ_LIB_LIST "${proj_LIBPATH}/proj*")
+    #	install(
+    #			FILES ${PROJ_LIB_LIST}
+    #			DESTINATION ${INSTALL_LIB_DIR}
+    #			COMPONENT luojianet_ms
+    #	)
+
+    file(GLOB GDAL_LIB_LIST "${gdal_ext_LIBPATH}/*.dll")
+    install(
+            FILES ${GDAL_LIB_LIST}
+            DESTINATION ${INSTALL_LIB_DIR}
+            COMPONENT luojianet_ms
+    )
+
+    file(GLOB GDAL_EXTRA_LIB_LIST "${gdal_extra_LIBPATH}/*.dll")
+    install(
+            FILES ${GDAL_EXTRA_LIB_LIST}
+            DESTINATION ${INSTALL_LIB_DIR}
+            COMPONENT luojianet_ms
+    )
+
+    # file(GLOB GDAL_LIB_LIST "${gdal_LIBPATH}/gdal*")
+    # message("gdal_LIBPATH: ${gdal_LIBPATH}")
+    # install(
+    # FILES ${GDAL_LIB_LIST}
+    # DESTINATION ${INSTALL_LIB_DIR}
+    # COMPONENT luojianet_ms
+    # )
+
+    # copy over python files
+    file(GLOB_RECURSE MDP_PY_FILES ${CMAKE_SOURCE_DIR}/dataset_plugin/*.py)
+
+    install(
+            FILES ${MDP_PY_FILES} ${CMAKE_SOURCE_DIR}/setup.py
+            DESTINATION ${INSTALL_PY_DIR}
+            COMPONENT luojianet_ms
+    )
+endif()
+
 
 # set python files
 file(GLOB MS_PY_LIST ${CMAKE_SOURCE_DIR}/luojianet_ms/python/luojianet_ms/*.py)

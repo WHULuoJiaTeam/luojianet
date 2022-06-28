@@ -1,5 +1,10 @@
 file(GLOB_RECURSE _CURRENT_SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cc")
 set_property(SOURCE ${_CURRENT_SRC_FILES} PROPERTY COMPILE_DEFINITIONS SUBMODULE_ID=luojianet_ms::SubModuleId::SM_MD)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+if(MINGW OR UNIX)
+	set(CMAKE_CXX_FLAGS
+		  "${CMAKE_CXX_FLAGS} -Wno-unused-result -Wno-delete-incomplete -Wno-unused-variable")
+endif()
 set(DATASET_CORE_SRC_FILES
         client.cc
         config_manager.cc
@@ -13,6 +18,8 @@ set(DATASET_CORE_SRC_FILES
         tensor_helpers.cc
         tensor_row.cc
         tensor_shape.cc
+        GDALOpenCV.cc
+        GLCM_utils.cc
         )
 
 if(ENABLE_ACL)

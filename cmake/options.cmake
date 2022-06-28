@@ -28,6 +28,7 @@ option(BUILD_DEV_MODE "LuoJiaNET build nightly dev mode" OFF)
 option(ENABLE_FAST_HASH_TABLE "Enable use fast hash table instead of std ones" ON)
 option(USE_LLVM "use llvm" OFF)
 option(USE_MS_THREADPOOL_FOR_DNNL "use ms threadpool for onednn ops" ON)
+option(ENABLE_RS "use gitee" ON)
 
 if(NOT CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(USE_MS_THREADPOOL_FOR_DNNL OFF)

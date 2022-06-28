@@ -22,6 +22,7 @@ SET BUILD_PATH=%BASE_PATH%/build
 SET threads=8
 SET ENABLE_GITEE=ON
 SET ENABLE_THIRD=OFF
+SET ENABLE_RS=ON
 
 set VERSION_STR=''
 for /f "tokens=1" %%a in (version.txt) do (set VERSION_STR=%%a)
@@ -89,7 +90,7 @@ IF "%1%" == "lite" (
             -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - MinGW Makefiles" "%BASE_PATH%/luojianet_ms/lite"
     )
 ) ELSE (
-    cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CPU=ON -DENABLE_MINDDATA=ON -DUSE_GLOG=ON -DENABLE_GITEE=%ENABLE_GITEE% ^
+    cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CPU=ON -DENABLE_MINDDATA=ON -DUSE_GLOG=ON -DENABLE_GITEE=%ENABLE_GITEE% -DENABLE_RS=%ENABLE_RS%^
           -G "CodeBlocks - MinGW Makefiles" ../..
 )
 IF NOT %errorlevel% == 0 (

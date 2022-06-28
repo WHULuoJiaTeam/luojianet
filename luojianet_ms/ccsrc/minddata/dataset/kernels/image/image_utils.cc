@@ -29,6 +29,7 @@
 #include "minddata/dataset/kernels/image/math_utils.h"
 #include "minddata/dataset/kernels/image/resize_cubic_op.h"
 
+#ifdef ENABLE_RS
 #include "gdal_priv.h"
 #include "gdal.h"
 #include <opencv2/highgui/highgui.hpp>
@@ -37,7 +38,7 @@
 #include <cstdio>
 #include "minddata/dataset/core/GDALOpenCV.h"
 #include "minddata/dataset/core/GLCM_utils.h"
-
+#endif
 
 const int32_t MAX_INT_PRECISION = 16777216;  // float int precision is 16777216
 const int32_t DEFAULT_NUM_HEIGHT = 1;
@@ -269,7 +270,7 @@ cv::Mat gabor_kernal_wiki(cv::Size ksize, double theta, double sigma,
 			);
 			double v = exponent * cos(2 * CV_PI / lambd * x_alpha + psi);
 			if (ktype == CV_32F)
-			{  
+			{
 				kernel.at<float>(y + ymax, x + xmax) = (float)v;
 			}
 			else
@@ -279,7 +280,7 @@ cv::Mat gabor_kernal_wiki(cv::Size ksize, double theta, double sigma,
 	return kernel;
 }
 
-void  gabor_filter(bool if_opencv_kernal, cv::Mat gray_img, cv::Mat& gabor_img, cv::Mat gabor_tmp, 
+void  gabor_filter(bool if_opencv_kernal, cv::Mat gray_img, cv::Mat& gabor_img, cv::Mat gabor_tmp,
                   int k, float sigma, float gamma, float lambda, float psi){
 	int ddepth = CV_8U;
 	double theta[4] = {
@@ -289,7 +290,7 @@ void  gabor_filter(bool if_opencv_kernal, cv::Mat gray_img, cv::Mat& gabor_img, 
 		CV_PI / 4 * 3,
 	};
 
-	cv::Size ksize = cv::Size(k, k); 
+	cv::Size ksize = cv::Size(k, k);
 	cv::Mat gabor_kernel;
 	gabor_img = cv::Mat::zeros(gray_img.size(), CV_8UC1);
 	for (int i = 0; i < 4; i++)
@@ -1973,6 +1974,7 @@ Status ValidateImageRank(const std::string &op_name, int32_t rank) {
   return Status::OK();
 }
 
+#ifdef ENABLE_RS
 //RS index
 //ANDWI
 Status ANDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output) {
@@ -1982,14 +1984,14 @@ Status ANDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] ANDWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("ANDWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -2097,14 +2099,14 @@ Status AWEI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] AWEI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("AWEI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -2149,7 +2151,7 @@ Status AWEI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
             GDALGetRasterBand(m_outPoDataSet, 2);
         GDALRasterBandH hMir1 =
             GDALGetRasterBand(m_outPoDataSet, 3);
-        GDALRasterBandH hMir2 = 
+        GDALRasterBandH hMir2 =
             GDALGetRasterBand(m_outPoDataSet, 4);
 
     float *green = new float[nImgSizeX * nImgSizeY];
@@ -2188,7 +2190,7 @@ Status AWEI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
             GDALGetRasterBand(m_outPoDataSet, 3);
         GDALRasterBandH hMir1 =
             GDALGetRasterBand(m_outPoDataSet, 4);
-        GDALRasterBandH hMir2 = 
+        GDALRasterBandH hMir2 =
             GDALGetRasterBand(m_outPoDataSet, 5);
 
     float *blue = new float[nImgSizeX * nImgSizeY];
@@ -2250,15 +2252,15 @@ Status BMI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] BMI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("BMI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
-    GDALAllRegister(); 
+
+    GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
 
@@ -2292,9 +2294,9 @@ Status BMI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     }
 
     GDALRasterBandH HH =
-        GDALGetRasterBand(m_outPoDataSet, 1); 
+        GDALGetRasterBand(m_outPoDataSet, 1);
     GDALRasterBandH VV =
-        GDALGetRasterBand(m_outPoDataSet, 2); 
+        GDALGetRasterBand(m_outPoDataSet, 2);
 
     float *bufferhh = new float[nImgSizeX * nImgSizeY];
     float *buffervv = new float[nImgSizeX * nImgSizeY];
@@ -2341,16 +2343,16 @@ Status CIWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] CIWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("CIWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
-    GDALDataset *m_outPoDataSet; 
+    GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
 
     int OPenCVty = imgMat->at(0).type();
@@ -2382,8 +2384,8 @@ Status CIWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       }
     }
 
-    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4); 
-    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3); 
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
 
     float *nir = new float[nImgSizeX * nImgSizeY];
     float *red = new float[nImgSizeX * nImgSizeY];
@@ -2411,7 +2413,7 @@ Status CIWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -2432,14 +2434,14 @@ Status CSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] CSI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("CSI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -2474,9 +2476,9 @@ Status CSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     }
 
     GDALRasterBandH HH =
-        GDALGetRasterBand(m_outPoDataSet, 1); 
+        GDALGetRasterBand(m_outPoDataSet, 1);
     GDALRasterBandH VV =
-        GDALGetRasterBand(m_outPoDataSet, 2); 
+        GDALGetRasterBand(m_outPoDataSet, 2);
 
     float *bufferhh = new float[nImgSizeX * nImgSizeY];
     float *buffervv = new float[nImgSizeX * nImgSizeY];
@@ -2523,14 +2525,14 @@ Status EWI_W(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] EWI_W: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("EWI_W", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -2626,15 +2628,15 @@ Status EWI_Y(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] EWI_Y: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("EWI_Y", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
-    GDALAllRegister(); 
+
+    GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
 
@@ -2723,14 +2725,14 @@ Status FNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] FNDWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("FNDWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -2827,7 +2829,7 @@ int rotateImage(const cv::Mat &src, cv::Mat &dst, const double angle, const int 
     }
     else {
 
-        double alpha = -angle * CV_PI / 180.0;//convert angle to radian format 
+        double alpha = -angle * CV_PI / 180.0;//convert angle to radian format
 
         cv::Point2f srcP[3];
         cv::Point2f dstP[3];
@@ -2952,14 +2954,14 @@ Status GNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] GNDWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("GNDWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -3065,7 +3067,7 @@ Status LBP(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     cv::Mat input_img;
     cv::cvtColor(color_img, input_img, cv::COLOR_BGR2GRAY);
     cv::Mat output_img;
-    
+
     switch (N){
     case 0:
         output_img = OLBP(input_img);
@@ -3180,14 +3182,14 @@ Status MCIWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] MCIWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("MCIWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -3277,14 +3279,14 @@ Status MNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] MNDWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("MNDWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -3371,14 +3373,14 @@ Status NDPI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] NDPI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("NDPI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -3465,21 +3467,21 @@ Status NDVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] NDVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("NDVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
 
     int OPenCVty = imgMat->at(0).type();
     GCDataType GCty = static_cast<GDALOpenCV *>(nullptr)->OPenCVType2GCType(OPenCVty);
-    
+
     poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
     if (poDriver == NULL){
       RETURN_STATUS_UNEXPECTED("[ERROR]: Failed to create a new file.");
@@ -3535,7 +3537,7 @@ Status NDVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -3556,14 +3558,14 @@ Status NDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] NDWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("NDWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -3647,14 +3649,14 @@ Status NWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] NWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("NWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -3694,7 +3696,7 @@ Status NWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
         GDALGetRasterBand(m_outPoDataSet, 2);
     GDALRasterBandH hMir1 =
         GDALGetRasterBand(m_outPoDataSet, 3);
-    GDALRasterBandH hMir2 = 
+    GDALRasterBandH hMir2 =
         GDALGetRasterBand(m_outPoDataSet, 4);
 
     float *blue = new float[nImgSizeX * nImgSizeY];
@@ -3750,14 +3752,14 @@ Status PSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] PSI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("PSI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -3792,9 +3794,9 @@ Status PSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     }
 
     GDALRasterBandH HH =
-        GDALGetRasterBand(m_outPoDataSet, 1); 
+        GDALGetRasterBand(m_outPoDataSet, 1);
     GDALRasterBandH HV =
-        GDALGetRasterBand(m_outPoDataSet, 2); 
+        GDALGetRasterBand(m_outPoDataSet, 2);
 
     float *bufferhh = new float[nImgSizeX * nImgSizeY];
     float *bufferhv = new float[nImgSizeX * nImgSizeY];
@@ -3841,14 +3843,14 @@ Status RFDI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] RFDI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("RFDI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -3883,9 +3885,9 @@ Status RFDI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
     }
 
     GDALRasterBandH HH =
-        GDALGetRasterBand(m_outPoDataSet, 1); 
+        GDALGetRasterBand(m_outPoDataSet, 1);
     GDALRasterBandH HV =
-        GDALGetRasterBand(m_outPoDataSet, 2); 
+        GDALGetRasterBand(m_outPoDataSet, 2);
 
     float *bufferhh = new float[nImgSizeX * nImgSizeY];
     float *bufferhv = new float[nImgSizeX * nImgSizeY];
@@ -3932,14 +3934,14 @@ Status RVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] RVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("RVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4002,7 +4004,7 @@ Status RVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -4023,14 +4025,14 @@ Status SRWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] SRWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("SRWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4115,14 +4117,14 @@ Status DVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] DVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("DVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4182,7 +4184,7 @@ Status DVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -4203,14 +4205,14 @@ Status EVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] EVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("EVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4277,7 +4279,7 @@ Status EVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -4298,14 +4300,14 @@ Status MBWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] MBWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("MBWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4407,14 +4409,14 @@ Status MSAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] MSAVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("MSAVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4474,7 +4476,7 @@ Status MSAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -4495,14 +4497,14 @@ Status OSAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] OSAVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("OSAVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4565,7 +4567,7 @@ Status OSAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -4586,14 +4588,14 @@ Status VSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] VSI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("VSI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4628,11 +4630,11 @@ Status VSI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     }
 
     GDALRasterBandH HH =
-        GDALGetRasterBand(m_outPoDataSet, 1); 
+        GDALGetRasterBand(m_outPoDataSet, 1);
     GDALRasterBandH HV =
-        GDALGetRasterBand(m_outPoDataSet, 2); 
+        GDALGetRasterBand(m_outPoDataSet, 2);
     GDALRasterBandH VV =
-        GDALGetRasterBand(m_outPoDataSet, 3); 
+        GDALGetRasterBand(m_outPoDataSet, 3);
 
     float *bufferhh = new float[nImgSizeX * nImgSizeY];
     float *bufferhv = new float[nImgSizeX * nImgSizeY];
@@ -4683,14 +4685,14 @@ Status WDRVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] WDRVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("WDRVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4774,14 +4776,14 @@ Status WI_F(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] WI_F: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("WI_F", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4883,14 +4885,14 @@ Status WI_H(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] WI_H: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("WI_H", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -4980,14 +4982,14 @@ Status WNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outp
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] WNDWI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("WNDWI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -5077,14 +5079,14 @@ Status RDVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] RDVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("RDVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -5147,7 +5149,7 @@ Status RDVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -5168,14 +5170,14 @@ Status RVI_SAR(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *ou
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] RVI_SAR: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("RVI_SAR", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -5210,11 +5212,11 @@ Status RVI_SAR(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *ou
     }
 
     GDALRasterBandH HH =
-        GDALGetRasterBand(m_outPoDataSet, 1); 
+        GDALGetRasterBand(m_outPoDataSet, 1);
     GDALRasterBandH HV =
-        GDALGetRasterBand(m_outPoDataSet, 2); 
+        GDALGetRasterBand(m_outPoDataSet, 2);
     GDALRasterBandH VV =
-        GDALGetRasterBand(m_outPoDataSet, 3); 
+        GDALGetRasterBand(m_outPoDataSet, 3);
 
     float *bufferhh = new float[nImgSizeX * nImgSizeY];
     float *bufferhv = new float[nImgSizeX * nImgSizeY];
@@ -5265,14 +5267,14 @@ Status SAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] SAVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("SAVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -5335,7 +5337,7 @@ Status SAVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -5356,14 +5358,14 @@ Status TVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       RETURN_STATUS_UNEXPECTED("[Internal ERROR] TVI: load image failed.");
     }
     RETURN_IF_NOT_OK(ValidateImageRank("TVI", input_cv->Rank()));
-    
+
     cv::Mat input_img = input_cv->mat();
     const int nBandCount = input_img.channels();
     const int nImgSizeX = input_img.cols;
     const int nImgSizeY = input_img.rows;
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(input_img, *imgMat);
-    
+
     GDALAllRegister();
     GDALDataset *m_outPoDataSet;
     GDALDriver *poDriver;
@@ -5397,8 +5399,8 @@ Status TVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
       }
     }
 
-    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4); 
-    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3); 
+    GDALRasterBandH hNir = GDALGetRasterBand(m_outPoDataSet, 4);
+    GDALRasterBandH hRed = GDALGetRasterBand(m_outPoDataSet, 3);
 
     float *nir = new float[nImgSizeX * nImgSizeY];
     float *red = new float[nImgSizeX * nImgSizeY];
@@ -5426,7 +5428,7 @@ Status TVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
     RETURN_IF_NOT_OK(CVTensor::CreateFromMat(output_img, input_cv->Rank(), &output_cv));
     RETURN_UNEXPECTED_IF_NULL(output_cv);
     *output = std::static_pointer_cast<Tensor>(output_cv);
-    
+
     imgMat->clear();
     delete imgMat;
     imgMat = NULL;
@@ -5438,5 +5440,6 @@ Status TVI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output
   }
   return Status::OK();
 }
+#endif //ENABLE_RS
 }  // namespace dataset
 }  // namespace luojianet_ms

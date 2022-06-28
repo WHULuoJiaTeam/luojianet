@@ -1,3 +1,4 @@
+#ifdef ENABLE_RS
 #ifndef CALGLCM_H
 #define CALGLCM_H
 
@@ -70,3 +71,4 @@ public:
 };
 
 #endif // CALGLCM_H
+#endif

@@ -20,7 +20,6 @@ LuoJiaNET通过导入context某块，调用context.set_context`来配置运行�
 
 # In[ ]:
 
-
 import os
 import argparse
 from luojianet_ms import context

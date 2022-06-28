@@ -1,3 +1,5 @@
+
+#ifdef ENABLE_RS
 #include "GLCM_utils.h"
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgproc/types_c.h>
@@ -508,3 +510,4 @@ void CALGLCM::CalcuTextureImages(Mat src, Mat& imgEnergy, Mat& imgContrast, Mat&
 		imgHomogenity.convertTo(imgHomogenity, CV_8UC1);
 	}
 }
+#endif

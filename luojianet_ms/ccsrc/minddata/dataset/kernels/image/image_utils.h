@@ -391,6 +391,7 @@ Status ComputePatchSize(const std::shared_ptr<CVTensor> &input_cv,
 /// \param[in] rank refers to the rank of input image shape.
 Status ValidateImageRank(const std::string &op_name, int32_t rank);
 
+#ifdef ENABLE_RS
 ///****************************///
 ///RS index
 
@@ -590,6 +591,8 @@ Status WI_H(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *outpu
 /// \param[out] patch_size Size of patch
 /// \param[in] alpha stand for constant (0.45~0.55), the default value is 0.45.
 Status WNDWI(const std::shared_ptr<Tensor> &input, std::shared_ptr<Tensor> *output, const float &alpha);
+
+#endif //ENABLE_RS
 }  // namespace dataset
 }  // namespace luojianet_ms
 #endif  // LUOJIANET_MS_CCSRC_MINDDATA_DATASET_KERNELS_IMAGE_IMAGE_UTILS_H_

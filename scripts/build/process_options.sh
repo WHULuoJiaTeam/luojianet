@@ -113,7 +113,7 @@ process_options()
       G)
         check_on_off $OPTARG G
         export ENABLE_RS="$OPTARG"
-        echo "Clean the third party dependencies CMake cache files: ${OPTARG}" ;;
+        echo "Enable remote sensing image processing: ${OPTARG}" ;;
       *)
         echo "Unknown option ${opt}!"
         usage

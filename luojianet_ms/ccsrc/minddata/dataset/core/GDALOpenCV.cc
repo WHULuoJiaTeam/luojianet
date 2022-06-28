@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#ifdef ENABLE_RS
 #include "GDALOpenCV.h"
- 
+
 GDALOpenCV::GDALOpenCV(const std::string fileName)
 {
     m_poDataSet = NULL;
@@ -24,7 +24,7 @@ GDALOpenCV::GDALOpenCV(const std::string fileName)
     m_poDataSet = (GDALDataset*)GDALOpen(fileName.c_str(),GA_ReadOnly);
     m_outPoDataSet = NULL;
 }
- 
+
 GDALOpenCV::~GDALOpenCV(void)
 {
     if(m_poDataSet!=NULL)
@@ -34,9 +34,9 @@ GDALOpenCV::~GDALOpenCV(void)
     m_patchIndex->clear();
     delete m_patchIndex;
     m_patchIndex = NULL;
- 
+
 }
- 
+
 void GDALOpenCV::Initialization()
 {
     if(!m_poDataSet)
@@ -45,31 +45,31 @@ void GDALOpenCV::Initialization()
     m_imgWidth = m_poDataSet->GetRasterXSize();  // 影像列
     m_bandNum = m_poDataSet->GetRasterCount(); // 影像波段数
     m_overlappedPixel = -1;     //  重复像素个数
- 
+
     GDALRasterBand *pBand = m_poDataSet->GetRasterBand(1);
     GDALDataType gdalTy = pBand->GetRasterDataType();
     m_dataType = GDALType2GCType(gdalTy);
- 
+
     m_patchSize.width = m_imgWidth;
     m_patchSize.height = m_imgHeigth;
- 
+
     m_patchIndex = new std::vector<PatchIndex>(1);
     PatchIndex tmp = {1,0,0,m_imgWidth,m_imgHeigth};
     m_patchIndex->at(0) = tmp;
 }
- 
+
 bool GDALOpenCV::GDAL2Mat(cv::Mat &img)
 {
     if(!m_poDataSet)
         return false;
- 
+
     GDALRasterBand *pBand = NULL;  // 波段
     void *pafBuffer = AllocateMemory(m_dataType,m_imgHeigth*m_imgWidth);  // 开辟内存
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(m_bandNum);   // 存储各波段
     cv::Mat *tmpMat = NULL;  // 临时存储一个波段
- 
+
     int iBand = 0; // 波段标记
-    while(iBand<m_bandNum)       
+    while(iBand<m_bandNum)
     {
         pBand = m_poDataSet->GetRasterBand(++iBand);
         pBand->RasterIO(GF_Read,0,0,m_imgWidth,m_imgHeigth,pafBuffer,m_imgWidth,
@@ -80,28 +80,28 @@ bool GDALOpenCV::GDAL2Mat(cv::Mat &img)
         tmpMat = NULL;
     }
     cv::merge(*imgMat,img);
- 
+
     // 内存管理
     delete pafBuffer;   pafBuffer = NULL;
     imgMat->clear(); delete imgMat;  imgMat = NULL;
- 
+
     return true;
 }
- 
- 
+
+
 bool GDALOpenCV::Mat2File( const std::string outFileName,cv::Mat &img,
                           const int flag /*= 1*/ )
 {
     if(img.empty())
         return false;
- 
+
     const int nBandCount=img.channels();
     const int nImgSizeX=img.cols;
     const int nImgSizeY=img.rows;
- 
+
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(nBandCount);
     cv::split(img,*imgMat);
- 
+
     GDALAllRegister();
     //GDALDataset *poDataset;   //GDAL数据集
     GDALDriver *poDriver;     //驱动，用于创建新的文件
@@ -123,10 +123,10 @@ bool GDALOpenCV::Mat2File( const std::string outFileName,cv::Mat &img,
     default:
         return 0;
     }
- 
+
     int OPenCVty = imgMat->at(0).type();
     GCDataType GCty = OPenCVType2GCType(OPenCVty);
- 
+
     poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat.c_str());
     if(poDriver == NULL)
         return 0;
@@ -139,7 +139,7 @@ bool GDALOpenCV::Mat2File( const std::string outFileName,cv::Mat &img,
         m_poDataSet->GetGeoTransform(dGeotransform);
         m_outPoDataSet->SetGeoTransform(dGeotransform);
     }
- 
+
     //  循环写入文件
     GDALRasterBand *pBand = NULL;
     void *ppafScan = AllocateMemory(GCty,nImgSizeX*nImgSizeY);
@@ -157,13 +157,13 @@ bool GDALOpenCV::Mat2File( const std::string outFileName,cv::Mat &img,
         CPLErr err = pBand->RasterIO(GF_Write,0,0,nImgSizeX,nImgSizeY,ppafScan,
             nImgSizeX,nImgSizeY,GCType2GDALType(GCty),0,0);
     }
- 
+
     delete ppafScan;    ppafScan = NULL;
     imgMat->clear();delete imgMat;imgMat = NULL;
     return 1;
 }
- 
- 
+
+
 int GDALOpenCV::GetImgToPatchNum()
 {
     if(m_patchSize.width >= m_imgWidth || m_patchSize.height >= m_imgHeigth)
@@ -174,11 +174,11 @@ int GDALOpenCV::GetImgToPatchNum()
     //////////////分块数确定////////////////////////
     int rPatchNum = cvCeil((m_imgHeigth*1.0 -m_patchSize.height)/(m_patchSize.height - m_overlappedPixel)) + 1;
     int cPatchNum = cvCeil((m_imgWidth*1.0 - m_patchSize.width)/(m_patchSize.width - m_overlappedPixel)) +1;
- 
+
     PatchIndex tmpPatchIndex;
     int rowBegin = 0;
     int colBegin = 0;
- 
+
     m_patchIndex->clear();
     for(int i = 0;i != rPatchNum; i++)
     {
@@ -202,7 +202,7 @@ int GDALOpenCV::GetImgToPatchNum()
                 tmpPatchIndex.iPatch = 24;
             else
                 tmpPatchIndex.iPatch = 31;
- 
+
             tmpPatchIndex.row_begin = rowBegin;
             tmpPatchIndex.col_begin = colBegin;
             if(rowBegin+m_patchSize.height > m_imgHeigth)
@@ -221,8 +221,8 @@ int GDALOpenCV::GetImgToPatchNum()
     }
     return (int)m_patchIndex->size();
 }
- 
- 
+
+
 void GDALOpenCV::GetROIFromPatchIndex(const int index,cv::Mat &img)
 {
     int patchNum = (int)m_patchIndex->size();
@@ -233,12 +233,12 @@ void GDALOpenCV::GetROIFromPatchIndex(const int index,cv::Mat &img)
     int patchColBegin = curPatchIndex.col_begin;
     int patchWidth = curPatchIndex.width;
     int patchHeight = curPatchIndex.heigth;
- 
+
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(m_bandNum);// 存储读取的每个波段数据
     void *pafBuffer = AllocateMemory(m_dataType,patchWidth*patchHeight); // 内存分配
     GDALRasterBand *pBand = NULL;
     cv::Mat *tmpMat = NULL;
- 
+
     int iBand = 0; // 波段标记
     while(iBand<m_bandNum)
     {
@@ -251,36 +251,36 @@ void GDALOpenCV::GetROIFromPatchIndex(const int index,cv::Mat &img)
         tmpMat = NULL;
     }
     cv::merge(*imgMat,img);
- 
+
     delete pafBuffer;pafBuffer = NULL;
     //delete pBand;pBand = NULL;
     imgMat->clear();delete imgMat;imgMat = NULL;
 }
- 
- 
+
+
 bool GDALOpenCV::SetROIMatToFileByIndex( const std::string outFileName,cv::Mat &img,
                                         const int index,const int flag /*= 1*/ )
 {
     if(!outFileName.c_str() || img.empty())
         return false;
- 
+
     const int nBandCount=img.channels();
     const int nImgSizeX=img.cols;
     const int nImgSizeY=img.rows;
- 
+
     PatchIndex tmpPatchIndex = m_patchIndex->at(index-1);
     if(tmpPatchIndex.heigth != nImgSizeY || tmpPatchIndex.width != nImgSizeX)
         return false;
- 
+
     std::vector<cv::Mat> *imgMat = new std::vector<cv::Mat>(m_bandNum);
     cv::split(img,*imgMat);
- 
+
     const int ty = (*imgMat).at(0).type();
- 
+
     GDALAllRegister();
     //GDALDataset *poDataset = NULL;   //GDAL数据集
     GDALDriver *poDriver = NULL;      //驱动，用于创建新的文件
- 
+
     ////////////////////////////////
     ///flag：1 ====》TIFF
     ///      2 ====》HFA
@@ -299,7 +299,7 @@ bool GDALOpenCV::SetROIMatToFileByIndex( const std::string outFileName,cv::Mat &
     default:
         return 0;
     }
- 
+
     poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat.c_str());
     int OPenCVty = imgMat->at(0).type();
     GCDataType GCty = OPenCVType2GCType(OPenCVty);
@@ -315,23 +315,23 @@ bool GDALOpenCV::SetROIMatToFileByIndex( const std::string outFileName,cv::Mat &
         m_outPoDataSet->SetGeoTransform(dGeotransform);
     }
     //  循环写入文件
-    GDALRasterBand *pBand = NULL;  
+    GDALRasterBand *pBand = NULL;
     int n1 = nImgSizeY;
     int nc = nImgSizeX;
     int overPix = int(m_overlappedPixel/2);
- 
+
     void *ppafScan = NULL;
     int curCol = 0;
     int curRow = 0;
-     
+
     for(int i = 1;i<=nBandCount;i++)
     {
         pBand = m_outPoDataSet->GetRasterBand(i);
         cv::Mat tmpMat;
         tmpMat = imgMat->at(i-1);
         // 文件的写入
-        if(tmpPatchIndex.iPatch == 11)     
-        {  
+        if(tmpPatchIndex.iPatch == 11)
+        {
             curCol = nImgSizeX-overPix;
             curRow = nImgSizeY - overPix;
             cv::Rect r1(0,0,curCol,curRow);
@@ -348,7 +348,7 @@ bool GDALOpenCV::SetROIMatToFileByIndex( const std::string outFileName,cv::Mat &
             delete newMat;newMat = NULL;
         }
         if(tmpPatchIndex.iPatch == 12)
-        {  
+        {
             curCol = nImgSizeX-overPix;
             curRow = nImgSizeY - overPix;
             cv::Rect r1(overPix,0,curCol,curRow);
@@ -488,7 +488,7 @@ bool GDALOpenCV::SetROIMatToFileByIndex( const std::string outFileName,cv::Mat &
     imgMat->clear();delete imgMat;imgMat = NULL;
     return 1;
 }
- 
+
 GCDataType GDALOpenCV::GDALType2GCType( const GDALDataType ty )
 {
     switch(ty)
@@ -512,7 +512,7 @@ GCDataType GDALOpenCV::GDALType2GCType( const GDALDataType ty )
         return GC_ERRType;
     }
 }
- 
+
 GCDataType GDALOpenCV::OPenCVType2GCType( const int ty )
 {
     switch(ty)
@@ -534,7 +534,7 @@ GCDataType GDALOpenCV::OPenCVType2GCType( const int ty )
         return GC_ERRType;
     }
 }
- 
+
 GDALDataType GDALOpenCV::GCType2GDALType( const GCDataType ty )
 {
     switch(ty)
@@ -558,7 +558,7 @@ GDALDataType GDALOpenCV::GCType2GDALType( const GCDataType ty )
         return GDT_TypeCount;
     }
 }
- 
+
 int GDALOpenCV::GCType2OPenCVType( const GCDataType ty )
 {
     switch(ty)
@@ -580,7 +580,7 @@ int GDALOpenCV::GCType2OPenCVType( const GCDataType ty )
         return -1;
     }
 }
- 
+
 void* GDALOpenCV::AllocateMemory(const GCDataType lDataType,const long long lSize )
 {
     assert(0!=lSize);
@@ -614,7 +614,7 @@ void* GDALOpenCV::AllocateMemory(const GCDataType lDataType,const long long lSiz
     }
     return pvData;
 }
- 
+
 void* GDALOpenCV::SetMemCopy( void *dst,const void *src,
                              const GCDataType lDataType,
                              const long long lSize )
@@ -640,3 +640,5 @@ void* GDALOpenCV::SetMemCopy( void *dst,const void *src,
         return NULL;
     }
 }
+
+#endif

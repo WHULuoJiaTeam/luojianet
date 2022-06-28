@@ -57,6 +57,9 @@ build_luojianet_ms()
     if [[ "X$ENABLE_GITEE" = "Xon" ]]; then
         CMAKE_ARGS="${CMAKE_ARGS} -DENABLE_GITEE=ON"
     fi
+    if [[ "X$ENABLE_RS" = "Xon" ]]; then
+        CMAKE_ARGS="${CMAKE_ARGS} -DENABLE_RS=ON"
+    fi
     CMAKE_ARGS="${CMAKE_ARGS} -DENABLE_DUMP_IR=${ENABLE_DUMP_IR}"
     CMAKE_ARGS="${CMAKE_ARGS} -DENABLE_PYTHON=${ENABLE_PYTHON}"
     if [[ "X$ENABLE_MPI" = "Xon" ]]; then

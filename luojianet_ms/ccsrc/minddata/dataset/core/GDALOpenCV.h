@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+#ifdef ENABLE_RS
 #pragma once
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -23,7 +24,7 @@
 #include <string>
 #include <math.h>
 #include <iostream>
- 
+
 /***********************************************************/
 // GCDataType:GDAL和OpenCV数据类型转换的中间格式
 // GC_Byte   =======  GDT_Byte   =======  CV_8U  =======  unsigned char
@@ -44,7 +45,7 @@ typedef enum{
     GC_Float64 = 6,
     GC_ERRType = 7
 } GCDataType;
- 
+
 class GDALOpenCV
 {
     /***********************************************************/
@@ -66,12 +67,12 @@ class GDALOpenCV
         int width;       // 影像块的宽度
         int heigth;     // 影像块的高度
     } PatchIndex;
- 
- 
+
+
 public:
     GDALOpenCV(const std::string fileName);  // 唯一构造函数
     ~GDALOpenCV(void);   // 析构函数
-     
+
 public:
     void Initialization();   // 初始化  实际上为获取影像格式;
     cv::Size SetPatchSize(const int r,const int c)  // 设置分块大小
@@ -79,31 +80,31 @@ public:
         m_patchSize.width = c;  m_patchSize.height = r;
         return m_patchSize;
     };
- 
+
     void SetOverlappedPixel(const int num)
     {
         m_overlappedPixel = num;
     };
- 
- 
+
+
     bool GDAL2Mat(cv::Mat &img);  // 影像读取为Mat格式  不分块
     bool Mat2File(const std::string outFileName,cv::Mat &img,const int flag = 1);  // Mat文件输出为影像
     //  flag = 默认为1  输出TIFF   另外还支持ENVI 和 ARDAS数据格式
- 
+
     int GetImgToPatchNum();  // 返回影像分块数  和  获取影像分块信息
     void GetROIFromPatchIndex(const int,cv::Mat &);  //  获取对应块编号的影像
     bool SetROIMatToFileByIndex(const std::string outFile,cv::Mat &img,
-        const int index,const int flag = 1); // 影像分块写入  有待改进  具体细节有点商榷 
- 
+        const int index,const int flag = 1); // 影像分块写入  有待改进  具体细节有点商榷
+
     GCDataType GDALType2GCType(const GDALDataType ty); // GDAL Type ==========> GDALOpenCV Type
     GDALDataType GCType2GDALType(const GCDataType ty); //  GDALOpenCV Type ==========> GDAL Type
     GCDataType OPenCVType2GCType(const int ty); // OPenCV Type ==========> GDALOpenCV Type
     int GCType2OPenCVType(const GCDataType ty); // GDALOpenCV Type ==========> OPenCV Type
-    
+
     void* SetMemCopy(void *dst,const void *src,const GCDataType lDataType,const long long lSize);
     void* AllocateMemory(const GCDataType lDataType,const long long lSize);   // 智能分配内存
 
- 
+
 public:
     GCDataType m_dataType;  // 数据类型
     int m_imgWidth; // 影像宽度   列数
@@ -118,10 +119,12 @@ private:
     std::vector<PatchIndex> *m_patchIndex;//分块标识
     int m_overlappedPixel;
 };
- 
- 
+
+
 //////////////////////////////////////////////////////////
 //    使用说明：
 /////////////////////////////////////////////////////////
 //   GDALOpenCV gdalOpenCV(fileName);
 //   gdalOpenCV.Initialization();
+
+#endif

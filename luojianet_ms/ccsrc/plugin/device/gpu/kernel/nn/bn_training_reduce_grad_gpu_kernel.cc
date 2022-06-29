@@ -16,7 +16,7 @@
  */
 
 #include "plugin/device/gpu/kernel/nn/bn_training_reduce_grad_gpu_kernel.h"
-
+#if 0
 namespace luojianet_ms {
 namespace kernel {
 MS_REG_GPU_KERNEL_ONE(BNTrainingReduceGrad,
@@ -43,3 +43,4 @@ MS_REG_GPU_KERNEL_ONE(BNTrainingReduceGrad,
                       BNTraingReduceGradGpuKernelMod, half)
 }  // namespace kernel
 }  // namespace luojianet_ms
+#endif

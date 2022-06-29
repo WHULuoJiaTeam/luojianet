@@ -27,7 +27,6 @@
 #include "plugin/device/gpu/kernel/gpu_kernel.h"
 #include "plugin/device/gpu/kernel/gpu_kernel_factory.h"
 
-#if 0
 namespace luojianet_ms {
 namespace kernel {
 constexpr size_t kInputSize = 7;
@@ -37,7 +36,7 @@ constexpr size_t kHeightIndex = 2;
 constexpr size_t kWidthIndex = 3;
 
 template <typename T>
-class BNTraingReduceGradGpuKernelMod : public DeprecatedNativeGpuKernelMod {
+class BNTraingReduceGradGpuKernelMod : public NativeGpuKernelMod {
  public:
   BNTraingReduceGradGpuKernelMod() { ResetResource(); }
   ~BNTraingReduceGradGpuKernelMod() override = default;
@@ -137,7 +136,5 @@ class BNTraingReduceGradGpuKernelMod : public DeprecatedNativeGpuKernelMod {
 };
 }  // namespace kernel
 }  // namespace luojianet_ms
-
-#endif
 
 #endif  // MINDSPORE_CCSRC_BACKEND_KERNEL_COMPILER_GPU_NN_BN_TRAINING_REDUCE_GRAD_GPU_KERNEL_H_

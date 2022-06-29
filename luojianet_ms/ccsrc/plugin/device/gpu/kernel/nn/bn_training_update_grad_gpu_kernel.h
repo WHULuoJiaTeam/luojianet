@@ -34,9 +34,8 @@ constexpr size_t kCIndex = 1;
 constexpr size_t kHIndex = 2;
 constexpr size_t kWIndex = 3;
 
-#if 0
 template <typename T>
-class BNTraingUpdateGradGpuKernelMod : public DeprecatedNativeGpuKernelMod {
+class BNTraingUpdateGradGpuKernelMod : public NativeGpuKernelMod {
  public:
   BNTraingUpdateGradGpuKernelMod() { ResetResource(); }
   ~BNTraingUpdateGradGpuKernelMod() override = default;
@@ -120,7 +119,6 @@ class BNTraingUpdateGradGpuKernelMod : public DeprecatedNativeGpuKernelMod {
   bool is_null_input_;
 };
 
-#endif
 
 }  // namespace kernel
 }  // namespace luojianet_ms

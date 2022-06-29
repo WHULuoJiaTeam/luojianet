@@ -19,6 +19,7 @@
 
 namespace luojianet_ms {
 namespace kernel {
+#if 0
 MS_REG_GPU_KERNEL_ONE(BNTrainingUpdate,
                       KernelAttr()
                         .AddInputAttr(kNumberTypeFloat32)    // x
@@ -50,5 +51,6 @@ MS_REG_GPU_KERNEL_ONE(BNTrainingUpdate,
                         .AddOutputAttr(kNumberTypeFloat32)   // batch_mean
                         .AddOutputAttr(kNumberTypeFloat32),  // batch_variance
                       BNTrainingUpdateGpuKernelMod, half)
+#endif
 }  // namespace kernel
 }  // namespace luojianet_ms

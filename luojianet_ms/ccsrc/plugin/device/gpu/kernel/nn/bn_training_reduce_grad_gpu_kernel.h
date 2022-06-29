@@ -53,7 +53,7 @@ class BNTraingReduceGradGpuKernelMod : public NativeGpuKernelMod {
     float *scale = GetDeviceAddress<float>(inputs, 4);
     float *batch_mean = GetDeviceAddress<float>(inputs, 5);
     float *batch_variance = GetDeviceAddress<float>(inputs, 6);
-    float *y = GetDeviceAddress<float>(outputs, 0);
+    T *y = GetDeviceAddress<T>(outputs, 0);
     BNTrainingReduceGrad(grads, x, diff_scale, diff_offset, scale, batch_mean, batch_variance, y, epsilon_, batch_,
                          channel_, height_, width_, reinterpret_cast<cudaStream_t>(stream_ptr));
     return true;

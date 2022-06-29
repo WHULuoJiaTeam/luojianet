@@ -34,6 +34,7 @@ constexpr size_t kCIndex = 1;
 constexpr size_t kHIndex = 2;
 constexpr size_t kWIndex = 3;
 
+#if 0
 template <typename T>
 class BNTraingUpdateGradGpuKernelMod : public DeprecatedNativeGpuKernelMod {
  public:
@@ -118,6 +119,9 @@ class BNTraingUpdateGradGpuKernelMod : public DeprecatedNativeGpuKernelMod {
   size_t x_size_;
   bool is_null_input_;
 };
+
+#endif
+
 }  // namespace kernel
 }  // namespace luojianet_ms
 #endif  // LUOJIANET_MS_CCSRC_BACKEND_KERNEL_COMPILER_GPU_NN_BN_TRAINING_UPDATE_GRAD_GPU_KERNEL_H_

@@ -19,6 +19,8 @@
 
 namespace luojianet_ms {
 namespace kernel {
+#if 0
+
 MS_REG_GPU_KERNEL_ONE(BNTrainingUpdateGrad,
                       KernelAttr()
                         .AddInputAttr(kNumberTypeFloat16)    // grads
@@ -37,5 +39,6 @@ MS_REG_GPU_KERNEL_ONE(BNTrainingUpdateGrad,
                         .AddOutputAttr(kNumberTypeFloat32)   // diff_scale
                         .AddOutputAttr(kNumberTypeFloat32),  // diff_offset
                       BNTraingUpdateGradGpuKernelMod, float)
+#endif
 }  // namespace kernel
 }  // namespace luojianet_ms

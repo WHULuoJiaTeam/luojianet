@@ -32,9 +32,9 @@ constexpr size_t kChannelIndex = 1;
 constexpr size_t kHeightIndex = 2;
 constexpr size_t kWidthIndex = 3;
 
-#if 0
+
 template <typename T>
-class BNTrainingReduceGpuKernelMod : public DeprecatedNativeGpuKernelMod {
+class BNTrainingReduceGpuKernelMod : public NativeGpuKernelMod {
  public:
   BNTrainingReduceGpuKernelMod() { ResetResource(); }
   ~BNTrainingReduceGpuKernelMod() override = default;
@@ -105,7 +105,6 @@ class BNTrainingReduceGpuKernelMod : public DeprecatedNativeGpuKernelMod {
   size_t output_size_;
 };
 
-#endif
 
 }  // namespace kernel
 }  // namespace luojianet_ms

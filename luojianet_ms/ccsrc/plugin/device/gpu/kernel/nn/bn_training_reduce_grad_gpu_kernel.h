@@ -48,12 +48,12 @@ class BNTraingReduceGradGpuKernelMod : public DeprecatedNativeGpuKernelMod {
       return true;
     }
     T *grads = GetDeviceAddress<T>(inputs, 0);
-    float *x = GetDeviceAddress<float>(inputs, 1);
-    float *diff_scale = GetDeviceAddress<float>(inputs, 2);
-    float *diff_offset = GetDeviceAddress<float>(inputs, 3);
-    float *scale = GetDeviceAddress<float>(inputs, 4);
-    float *batch_mean = GetDeviceAddress<float>(inputs, 5);
-    float *batch_variance = GetDeviceAddress<float>(inputs, 6);
+    T *x = GetDeviceAddress<T>(inputs, 1);
+    T *diff_scale = GetDeviceAddress<T>(inputs, 2);
+    T *diff_offset = GetDeviceAddress<T>(inputs, 3);
+    T *scale = GetDeviceAddress<T>(inputs, 4);
+    T *batch_mean = GetDeviceAddress<T>(inputs, 5);
+    T *batch_variance = GetDeviceAddress<T>(inputs, 6);
     T *y = GetDeviceAddress<T>(outputs, 0);
     BNTrainingReduceGrad(grads, x, diff_scale, diff_offset, scale, batch_mean, batch_variance, y, epsilon_, batch_,
                          channel_, height_, width_, reinterpret_cast<cudaStream_t>(stream_ptr));

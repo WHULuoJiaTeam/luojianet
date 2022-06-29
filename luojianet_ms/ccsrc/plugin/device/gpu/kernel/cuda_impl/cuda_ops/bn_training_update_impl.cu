@@ -45,9 +45,9 @@ __global__ void BNTrainingUpdateKernel(size_t N, size_t C, size_t H, size_t W, T
     float save_variance_reduce = variance_div - variance_square;
 
     float multiplier_add = save_variance_reduce + epsilon;
-    if(multiplier_add < static_cast<float>(0)) {
-      printf("multiplier_add < 0 %f!\n",multiplier_add);
-    }
+//    if(multiplier_add < static_cast<float>(0)) {
+//      printf("multiplier_add < 0 %f!\n",multiplier_add);
+//    }
 
     float multiplier_sqrt = sqrtf(AbsFunc(multiplier_add));
     float multiplier_div = scale[channel_index] / multiplier_sqrt;

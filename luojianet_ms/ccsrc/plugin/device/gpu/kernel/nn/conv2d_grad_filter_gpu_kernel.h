@@ -173,9 +173,9 @@ class ConvGradFilterBkwGpuKernelMod : public NativeGpuKernelMod {
       pad_width_ = pad_list[kLeft2DPadIndex] + pad_list[kRight2DPadIndex];
       pad_top_ = pad_list[kTop2DPadIndex];
       pad_left_ = pad_list[kLeft2DPadIndex];
-      if (pad_height_ % kSymmetricCoef == 0 && pad_width_ % kSymmetricCoef == 0) {
-        use_pad_ = false;
-      }
+     // if (pad_height_ % kSymmetricCoef == 0 && pad_width_ % kSymmetricCoef == 0) {
+     //   use_pad_ = false;
+     // }
       int dimA[NBDIMS];
       int strideApadded[NBDIMS];
       if (data_format_ == kOpFormat_NCHW || data_format_ == kOpFormat_DEFAULT) {

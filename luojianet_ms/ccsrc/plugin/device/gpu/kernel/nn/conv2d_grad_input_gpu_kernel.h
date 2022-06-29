@@ -33,7 +33,7 @@ namespace kernel {
 const std::map<std::string, size_t> kFormatIndexMap = {{"NCHW", 2}, {"HWCN", 0}, {"NHWC", 1}};
 
 constexpr size_t kConv2dDimSize = 2;
-constexpr int kSymmetricCoef = 2;
+//constexpr int kSymmetricCoef = 2;
 
 constexpr size_t k2DPadSize = 4;
 constexpr size_t kTop2DPadIndex = 0;
@@ -183,9 +183,9 @@ class ConvGradInputBkwGpuKernelMod : public NativeGpuKernelMod {
       pad_width_ = pad_list[kLeft2DPadIndex] + pad_list[kRight2DPadIndex];
       pad_top_ = pad_list[kTop2DPadIndex];
       pad_left_ = pad_list[kLeft2DPadIndex];
-      if (pad_height_ % kSymmetricCoef == 0 && pad_width_ % kSymmetricCoef == 0) {
-        use_pad_ = false;
-      }
+     // if (pad_height_ % kSymmetricCoef == 0 && pad_width_ % kSymmetricCoef == 0) {
+     //   use_pad_ = false;
+     // }
       int dimA[k2DPadSize];
       int strideApadded[k2DPadSize];
       if (data_format_ == kOpFormat_NCHW || data_format_ == kOpFormat_DEFAULT) {

@@ -261,10 +261,10 @@ void BatchNormInfo::InferReplaceOps() {
   MS_EXCEPTION_IF_NULL(ms_context);
   std::string backend = ms_context->get_param<std::string>(MS_CTX_DEVICE_TARGET);
 
-  if (backend != kAscendDevice && backend != kDavinciDevice) {
-    MS_LOG(INFO) << name_ << ": The backend is " << backend << ", it does not support SyncBatchNorm operator";
-    return;
-  }
+ // if (backend != kAscendDevice && backend != kDavinciDevice) {
+ //   MS_LOG(INFO) << name_ << ": The backend is " << backend << ", it does not support SyncBatchNorm operator";
+ //   return;
+ // }
 
   ValuePtr epsilon = MakeValue(epsilon_);
   ValuePtr momentum = MakeValue(momentum_);

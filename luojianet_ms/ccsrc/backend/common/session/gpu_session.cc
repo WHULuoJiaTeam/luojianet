@@ -31,6 +31,8 @@
 #include "plugin/device/gpu/optimizer/batch_norm_relu_fusion.h"
 #include "plugin/device/gpu/optimizer/batch_norm_relu_grad_fusion.h"
 #include "plugin/device/gpu/optimizer/batch_norm_add_relu_fusion.h"
+#include "plugin/device/gpu/optimizer/sync_batch_norm_fusion.h"
+#include "plugin/device/gpu/optimizer/sync_batch_norm_grad_fusion.h"
 #include "plugin/device/gpu/optimizer/post_batch_norm_add_relu_fusion.h"
 #include "plugin/device/gpu/optimizer/batch_norm_add_relu_grad_fusion.h"
 #include "plugin/device/gpu/optimizer/combine_momentum_fusion.h"
@@ -174,6 +176,8 @@ void GPUSession::Optimize(const std::shared_ptr<KernelGraph> &kernel_graph) {
   pm->AddPass(std::make_shared<opt::InsertCastGPU>("insert_cast_gpu"));
   pm->AddPass(std::make_shared<opt::NeighborExchangeV2Fusion>());
   pm->AddPass(std::make_shared<opt::NeighborExchangeV2GradFusion>());
+  pm->AddPass(std::make_shared<opt::SyncBatchNormFusion>());
+  pm->AddPass(std::make_shared<opt::SyncBatchNormGradFusion>());
   optimizer->AddPassManager(pm);
   (void)optimizer->Optimize(kernel_graph);
   kernel_graph->SetExecOrderByDefault();

@@ -471,6 +471,7 @@ class BatchNorm2d(_BatchNorm):
                  moving_mean_init='zeros',
                  moving_var_init='ones',
                  use_batch_statistics=None,
+                 process_groups=0,
                  data_format='NCHW'):
         """Initialize BatchNorm2d."""
         super(BatchNorm2d, self).__init__(num_features,
@@ -482,6 +483,7 @@ class BatchNorm2d(_BatchNorm):
                                           moving_mean_init,
                                           moving_var_init,
                                           use_batch_statistics,
+                                          process_groups=process_groups,
                                           input_dims='2d',
                                           data_format=data_format)
 

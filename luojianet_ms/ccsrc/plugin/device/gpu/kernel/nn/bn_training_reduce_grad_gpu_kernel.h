@@ -27,7 +27,6 @@
 #include "plugin/device/gpu/kernel/gpu_kernel.h"
 #include "plugin/device/gpu/kernel/gpu_kernel_factory.h"
 
-#include <cuda_runtime_api.h>
 
 namespace luojianet_ms {
 namespace kernel {

@@ -1,9 +1,8 @@
-# MindSpore contributing guidelines
+# LuoJiaNET contributing guidelines
 
 <!-- TOC -->
 
-- [MindSpore contributing guidelines](#mindspore-contributing-guidelines)
-    - [Contributor License Agreement](#contributor-license-agreement)
+- [LuoJiaNET contributing guidelines](#LuoJiaNET-contributing-guidelines)
     - [Getting Started](#getting-started)
     - [Contribution workflow](#contribution-workflow)
         - [Code style](#code-style)
@@ -13,30 +12,24 @@
 
 <!-- /TOC -->
 
-## Contributor License Agreement
-
-It's required to sign CLA before your first code submission to MindSpore community.
-
-For individual contributor, please refer to [ICLA online document](https://www.mindspore.cn/icla) for the detailed information.
-
 ## Getting Started
 
-- Fork the repository on [Github](https://github.com/mindspore-ai/mindspore) or [Gitee](https://gitee.com/mindspore/mindspore).
-- Read the [README.md](README.md) and [install page](https://www.mindspore.cn/install/en) for project information and build instructions.
+- Fork the repository on [Github](https://github.com/WHULuoJiaTeam/luojianet) or [Gitee](https://gitee.com/mindspore/luojianet).
+- Read the [README.md](README.md) and [install page](https://www.LuoJiaNET.cn/install/en) for project information and build instructions.
 
 ## Contribution Workflow
 
 ### Code style
 
-Please follow this style to make MindSpore easy to review, maintain and develop.
+Please follow this style to make LuoJiaNET easy to review, maintain and develop.
 
 - Coding guidelines
 
-    The *Python* coding style suggested by [Python PEP 8 Coding Style](https://pep8.org/) and *C++* coding style suggested by [Google C++ Coding Guidelines](http://google.github.io/styleguide/cppguide.html) are used in MindSpore community. The [CppLint](https://github.com/cpplint/cpplint), [CppCheck](http://cppcheck.sourceforge.net), [CMakeLint](https://github.com/cmake-lint/cmake-lint), [CodeSpell](https://github.com/codespell-project/codespell), [Lizard](http://www.lizard.ws), [ShellCheck](https://github.com/koalaman/shellcheck) and [PyLint](https://pylint.org) are used to check the format of codes, installing these plugins in your IDE is recommended.
+    The *Python* coding style suggested by [Python PEP 8 Coding Style](https://pep8.org/) and *C++* coding style suggested by [Google C++ Coding Guidelines](http://google.github.io/styleguide/cppguide.html) are used in LuoJiaNET community. The [CppLint](https://github.com/cpplint/cpplint), [CppCheck](http://cppcheck.sourceforge.net), [CMakeLint](https://github.com/cmake-lint/cmake-lint), [CodeSpell](https://github.com/codespell-project/codespell), [Lizard](http://www.lizard.ws), [ShellCheck](https://github.com/koalaman/shellcheck) and [PyLint](https://pylint.org) are used to check the format of codes, installing these plugins in your IDE is recommended.
 
 - Unittest guidelines
 
-    The *Python* unittest style suggested by [pytest](http://www.pytest.org/en/latest/) and *C++* unittest style suggested by [Googletest Primer](https://github.com/google/googletest/blob/master/docs/primer.md) are used in MindSpore community. The design intent of a testcase should be reflected by its name of comment.
+    The *Python* unittest style suggested by [pytest](http://www.pytest.org/en/latest/) and *C++* unittest style suggested by [Googletest Primer](https://github.com/google/googletest/blob/master/docs/primer.md) are used in LuoJiaNET community. The design intent of a testcase should be reflected by its name of comment.
 
 - Refactoring guidelines
 
@@ -44,7 +37,7 @@ Please follow this style to make MindSpore easy to review, maintain and develop.
 
 - Document guidelines
 
-    We use *MarkdownLint* to check the format of markdown documents. MindSpore CI modifies the following rules based on the default configuration.
+    We use *MarkdownLint* to check the format of markdown documents. LuoJiaNET CI modifies the following rules based on the default configuration.
     - MD007 (unordered list indentation): The **indent** parameter is set to **4**, indicating that all content in the unordered list needs to be indented using four spaces.
     - MD009 (spaces at the line end): The **br_spaces** parameter is set to **2**, indicating that there can be 0 or 2 spaces at the end of a line.
     - MD029 (sequence numbers of an ordered list): The **style** parameter is set to **ordered**, indicating that the sequence numbers of the ordered list are in ascending order.
@@ -53,22 +46,9 @@ Please follow this style to make MindSpore easy to review, maintain and develop.
 
 ### Fork-Pull development model
 
-- Fork MindSpore repository
+- Fork LuoJiaNET repository
 
-    Before submitting code to MindSpore project, please make sure that this project have been forked to your own repository. It means that there will be parallel development between MindSpore repository and your own repository, so be careful to avoid the inconsistency between them.
-
-- Clone the remote repository
-
-    If you want to download the code to the local machine, `git` is the best way:
-
-    ```shell
-    # For GitHub
-    git clone https://github.com/{insert_your_forked_repo}/mindspore.git
-    git remote add upstream https://github.com/mindspore-ai/mindspore.git
-    # For Gitee
-    git clone https://gitee.com/{insert_your_forked_repo}/mindspore.git
-    git remote add upstream https://gitee.com/mindspore/mindspore.git
-    ```
+    Before submitting code to LuoJiaNET project, please make sure that this project have been forked to your own repository. It means that there will be parallel development between LuoJiaNET repository and your own repository, so be careful to avoid the inconsistency between them.
 
 - Develop code locally
 
@@ -78,7 +58,7 @@ Please follow this style to make MindSpore easy to review, maintain and develop.
     git checkout -b {new_branch_name} origin/master
     ```
 
-    Taking the master branch as an example, MindSpore may create version branches and downstream development branches as needed, please fix bugs upstream first.
+    Taking the master branch as an example, LuoJiaNET may create version branches and downstream development branches as needed, please fix bugs upstream first.
     Then you can change the code arbitrarily.
 
 - Push the code to the remote repository
@@ -93,9 +73,9 @@ Please follow this style to make MindSpore easy to review, maintain and develop.
     git push origin {new_branch_name}
     ```
 
-- Pull a request to MindSpore repository
+- Pull a request to LuoJiaNET repository
 
-    In the last step, your need to pull a compare request between your new branch and MindSpore `master` branch. After finishing the pull request, the Jenkins CI will be automatically set up for building test. Your pull request should be merged into the upstream master branch as soon as possible to reduce the risk of merging.
+    In the last step, your need to pull a compare request between your new branch and LuoJiaNET `master` branch. After finishing the pull request, the Jenkins CI will be automatically set up for building test. Your pull request should be merged into the upstream master branch as soon as possible to reduce the risk of merging.
 
 ### Report issues
 
@@ -103,7 +83,7 @@ A great way to contribute to the project is to send a detailed report when you e
 
 When reporting issues, refer to this format:
 
-- What version of env (mindspore, os, python etc) are you using?
+- What version of env (LuoJiaNET, os, python etc) are you using?
 - Is this a BUG REPORT or FEATURE REQUEST?
 - What kind of issue is, add the labels to highlight it on the issue dashboard.
 - What happened?
@@ -116,11 +96,11 @@ When reporting issues, refer to this format:
 - **If you find an unclosed issue, which is exactly what you are going to solve,** please put some comments on that issue to tell others you would be in charge of it.
 - **If an issue is opened for a while,** it's recommended for contributors to precheck before working on solving that issue.
 - **If you resolve an issue which is reported by yourself,** it's also required to let others know before closing that issue.
-- **If you want the issue to be responded as quickly as possible,** please try to label it, you can find kinds of labels on [Label List](https://gitee.com/mindspore/community/blob/master/sigs/dx/docs/labels.md)
+- **If you want the issue to be responded as quickly as possible,** please try to label it, you can find kinds of labels on [Label List](https://github.com/WHULuoJiaTeam/luojianet/labels)
 
 ### Propose PRs
 
-- Raise your idea as an *issue* on [GitHub](https://github.com/mindspore-ai/mindspore/issues) or [Gitee](https://gitee.com/mindspore/mindspore/issues)
+- Raise your idea as an *issue* on [GitHub](https://github.com/WHULuoJiaTeam/luojianet/issues) or [Gitee](https://gitee.com/mindspore/luojianet/issues)
 - If it is a new feature that needs lots of design details, a design proposal should also be submitted.
 - After reaching consensus in the issue discussions and design proposal reviews, complete the development on the forked repo and submit a PR.
 - None of PRs is not permitted until it receives **2+ LGTM** from approvers. Please NOTICE that approver is NOT allowed to add *LGTM* on his own PR.

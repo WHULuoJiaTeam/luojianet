@@ -1,0 +1,41 @@
+addict @ file:///home/conda/feedstock_root/build_artifacts/addict_1636818143388/work
+asttokens==2.0.5
+attrdict==2.0.1
+certifi==2021.10.8
+colorama @ file:///tmp/build/80754af9/colorama_1607707115595/work
+cycler==0.11.0
+faiss==1.7.2
+fonttools==4.32.0
+joblib==1.1.0
+kiwisolver==1.4.2
+luojianet-ms-gpu @ file:///dat02/xwj/LuoJiaNET_applications/install_doc/ubuntu20.04-cuda11.1-cudnn8.0.5/luojianet_ms_gpu-1.0.0-cp38-cp38-linux_x86_64.whl
+matplotlib==3.5.1
+mkl-fft==1.3.1
+mkl-random @ file:///tmp/build/80754af9/mkl_random_1626186064646/work
+mkl-service==2.4.0
+mmcv-full==1.4.8
+numpy @ file:///tmp/build/80754af9/numpy_and_numpy_base_1649782759471/work
+opencv-python==4.5.5.64
+packaging==21.3
+pandas==1.4.2
+Pillow==9.1.0
+protobuf==3.20.0
+psutil==5.9.0
+pycocotools==2.0.4
+pyparsing==3.0.8
+python-dateutil==2.8.2
+pytz==2022.1
+PyYAML==6.0
+scikit-learn==1.0.2
+scipy==1.8.0
+seaborn==0.11.2
+Shapely @ file:///tmp/build/80754af9/shapely_1632813486044/work
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+sklearn==0.0
+threadpoolctl==3.1.0
+torch==1.10.1+cu111
+torchaudio==0.10.1+rocm4.1
+torchvision==0.11.2+cu111
+tqdm @ file:///opt/conda/conda-bld/tqdm_1647339053476/work
+typing_extensions==4.2.0
+yapf==0.32.0

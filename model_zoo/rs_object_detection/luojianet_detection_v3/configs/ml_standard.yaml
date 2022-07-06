@@ -1,0 +1,46 @@
+NAME: 'demo'
+
+Device_id: 0
+
+DATA:
+    train_root: /luojiaNet/model_zoo/rs_object_detection/examples/ml_mini_dataset/train/
+    train_list: train.txt
+    test_root: /luojiaNet/model_zoo/rs_object_detection/examples/ml_mini_dataset/train/
+    test_list: mini_train.txt
+
+    re_size: [128, 128]
+    cls_num: 12
+
+    AUG:
+        mean: [122.67892, 116.66877, 104.00699]
+        std: [1.0, 1.0, 1.0]
+        resize_h: 128
+        resize_w: 128
+
+MODEL:
+    backbone: "resnet_152"
+    pre_trained: True
+    load_model_path: ./pretrained_models/resnet152.ckpt
+
+    # resnet
+    resnet_block: [ 3, 8, 36, 3 ]  # [3, 4, 6, 3]
+    resnet_in_channels: [ 64, 256, 512, 1024 ]
+    resnet_out_channels: [ 256, 512, 1024, 2048 ]
+
+
+TRAIN:
+    epoch: 300
+    lr: 0.0001
+    batch_size: 128
+    warmup_step: 0
+    warmup_ratio: 0.0625
+
+TEST:
+    batch_size: 64
+    rank_k: 3
+
+
+save_checkpoint_epochs: 10
+keep_checkpoint_max: 25
+save_checkpoint_path: './output_dir/ml_mini_dataset'
+

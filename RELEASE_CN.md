@@ -1,4 +1,11 @@
-# LuoJiaNet 1.0.0
+# LuoJiaNet 1.0.6
+
+## LuoJiaNet 1.0.6 Release Notes
+
+- Network construction follows the PyTorch-like style
+- Enable distributed GPU cluster processing for large remote sensing images 
+- Simplified compile working flow for LuoJiaNet, all at once.
+
 
 ## LuoJiaNet 1.0.0 Release Notes
 

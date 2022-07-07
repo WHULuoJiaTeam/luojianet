@@ -22,7 +22,7 @@ SET BUILD_PATH=%BASE_PATH%/build
 SET threads=8
 SET ENABLE_GITEE=ON
 SET ENABLE_THIRD=OFF
-SET ENABLE_RS=OFF
+SET ENABLE_RS=ON
 
 set VERSION_STR=''
 for /f "tokens=1" %%a in (version.txt) do (set VERSION_STR=%%a)

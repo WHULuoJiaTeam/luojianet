@@ -25,7 +25,7 @@ LuoJiaNET同时与国产人工智能硬件NPU深度融合，可同时支持CPU�
             super(Mul, self).__init__()
             self.mul = P.Mul()
 
-        def call(self, x, y):
+        def forward(self, x, y):
             return self.mul(x, y)
 
     x = Tensor(np.array([1.0, 2.0, 3.0]).astype(np.float32))

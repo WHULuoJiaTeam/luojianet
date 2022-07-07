@@ -1,20 +1,20 @@
 [submodule "akg"]
 	path = akg
-	url  = https://gitee.com/mizhangwhuer/akg.git
+	url  = https://github.com/WHULuoJiaTeam/akg.git
 
 [submodule "graphengine"]
 	path = graphengine
-	url  = https://gitee.com/mizhangwhuer/graphengine.git
+	url  = https://github.com/WHULuoJiaTeam/graphengine.git
 
 [submodule "tests/models"]
 	path = tests/models
-	url  = https://gitee.com/mindspore/models.git
+	url  = https://github.com/mindspore-ai/models.git
 
 [submodule "akg"]
-	url  = https://gitee.com/mizhangwhuer/akg
+	url  = https://github.com/WHULuoJiaTeam/akg
 	path = akg
 
 [submodule "graphengine"]
-	url  = https://gitee.com/mizhangwhuer/graphengine
+	url  = https://github.com/WHULuoJiaTeam/graphengine
 	path = graphengine
 

@@ -21,7 +21,7 @@
 template <typename T>
 void BNTrainingUpdate(size_t N, size_t C, size_t H, size_t W, T *x, T *y, float *sum, float *square_sum,
                       float *scale, float *offset, float *mean, float *variance, float factor, float epsilon,
-                      float *mean_output, float *variance_output, float *save_mean_reduce_output,
-                      float *save_variance_reduce_output, cudaStream_t cuda_stream);
+                      float *mean_output, float *variance_output, float *batch_mean, float *batch_variance,
+                      cudaStream_t cuda_stream);
 
 #endif  // LUOJIANET_MS_CCSRC_PLUGIN_DEVICE_GPU_KERNEL_CUDA_IMPL_CUDA_OPS_BN_TRAINING_UPDATE_IMPL_CUH_

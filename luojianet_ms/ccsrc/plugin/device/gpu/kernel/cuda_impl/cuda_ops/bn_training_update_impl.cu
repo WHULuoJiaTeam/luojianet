@@ -28,56 +28,62 @@ __device__ __forceinline__ T AbsFunc(T x) {
 }
 
 template <typename T>
-__global__ void BNTrainingUpdateKernel(size_t N, size_t C, size_t H, size_t W, T *x, T *y, float *sum,
-                                       float *square_sum, float *scale, float *offset, float *mean,
-                                       float *variance, float factor, float epsilon, float *mean_output,
-                                       float *variance_output, float *save_mean_reduce_output,
-                                       float *save_variance_reduce_output) {
+__global__ void BNTrainingUpdateKernel1(size_t N, size_t C, size_t H, size_t W, T *x, T *y, float *sum,
+                                        float *square_sum, float *scale, float *offset, float epsilon) {
   __shared__ float num_rec;
   int num = N * C * H * W;
   int normal_size = N * H * W;
-  num_rec = HalfFloatInputConvert(1) / normal_size;
+  num_rec = static_cast<float>(1) / normal_size;
   for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < num; i += blockDim.x * gridDim.x) {
     int channel_index = i / (H * W) % C;
     float save_mean_reduce = sum[channel_index] * num_rec;
     float variance_div = square_sum[channel_index] * num_rec;
     float variance_square = save_mean_reduce * save_mean_reduce;
     float save_variance_reduce = variance_div - variance_square;
-
     float multiplier_add = save_variance_reduce + epsilon;
-//    if(multiplier_add < static_cast<float>(0)) {
-//      printf("multiplier_add < 0 %f!\n",multiplier_add);
-//    }
-
     float multiplier_sqrt = sqrtf(AbsFunc(multiplier_add));
     float multiplier_div = scale[channel_index] / multiplier_sqrt;
-
     float addend_mul = multiplier_div * save_mean_reduce;
     float addend_sub = offset[channel_index] - addend_mul;
     T res_y = (multiplier_div * HalfFloatInputConvert(x[i])) + addend_sub;
+    y[i] = res_y;
+  }
+  return;
+}
 
-    float batch_var_scaler;
-    if (num == 1) {
-      batch_var_scaler = 0.0;
-    } else {
-      batch_var_scaler = static_cast<float>(num) / (num - 1);
-    }
-    float batch_variance = save_variance_reduce * batch_var_scaler;
+__global__ void BNTrainingUpdateKernel2(size_t N, size_t C, size_t H, size_t W, float *sum, float *square_sum,
+                                        float *mean, float *variance, float factor, float *mean_output,
+                                        float *variance_output, float *batch_mean, float *batch_variance) {
+  __shared__ float num_rec;
+  int num = N * C * H * W;
+  int normal_size = N * H * W;
+  num_rec = static_cast<float>(1) / normal_size;
+  __shared__ float batch_var_scaler;
+  if (num == 1) {
+    batch_var_scaler = 0.0;
+  } else {
+    batch_var_scaler = static_cast<float>(num) / (num - 1);
+  }
+  for (size_t pos = blockIdx.x * blockDim.x + threadIdx.x; pos < C; pos += blockDim.x * gridDim.x) {
+    float save_mean_reduce = sum[pos] * num_rec;
+    float variance_div = square_sum[pos] * num_rec;
+    float variance_square = save_mean_reduce * save_mean_reduce;
+    float save_variance_reduce = variance_div - variance_square;
 
+    float save_batch_variance = save_variance_reduce * batch_var_scaler;
     float factor_reverse = 1.0 - factor;
     float mean_mul = save_mean_reduce * factor;
-    float mean_mul_rev = mean[channel_index] * factor_reverse;
-    float mean = mean_mul + mean_mul_rev;
-
-    float var_mul = batch_variance * factor;
-    float var_mul_rev = variance[channel_index] * factor_reverse;
-    float variance = var_mul + var_mul_rev;
-
-    mean_output[channel_index] = mean;
-    variance_output[channel_index] = variance;
-    save_mean_reduce_output[channel_index] = save_mean_reduce;
-    save_variance_reduce_output[channel_index] = save_variance_reduce;
-    y[i] = res_y;
+    float mean_mul_rev = mean[pos] * factor_reverse;
+    float mean_value = mean_mul + mean_mul_rev;
+    float var_mul = save_batch_variance * factor;
+    float var_mul_rev = variance[pos] * factor_reverse;
+    float variance_value = var_mul + var_mul_rev;
+    mean_output[pos] = mean_value;
+    variance_output[pos] = variance_value;
+    batch_mean[pos] = save_mean_reduce;
+    batch_variance[pos] = save_variance_reduce;
+    mean[pos] = mean_value;
+    variance[pos] = variance_value;
   }
   return;
 }
@@ -85,24 +91,23 @@ __global__ void BNTrainingUpdateKernel(size_t N, size_t C, size_t H, size_t W, T
 template <typename T>
 void BNTrainingUpdate(size_t N, size_t C, size_t H, size_t W, T *x, T *y, float *sum, float *square_sum, float *scale,
                       float *offset, float *mean, float *variance, float factor, float epsilon, float *mean_output,
-                      float *variance_output, float *save_mean_reduce_output, float *save_variance_reduce_output,
-                      cudaStream_t cuda_stream) {
-  BNTrainingUpdateKernel<<<C, GET_THREADS, 0, cuda_stream>>>(N, C, H, W, x, y, sum, square_sum, scale, offset, mean,
-                                                             variance, factor, epsilon, mean_output, variance_output,
-                                                             save_mean_reduce_output, save_variance_reduce_output);
+                      float *variance_output, float *batch_mean, float *batch_variance, cudaStream_t cuda_stream) {
+  size_t size = N * C * H * W;
+  BNTrainingUpdateKernel1<<<GET_BLOCKS(size), GET_THREADS, 0, cuda_stream>>>(N, C, H, W, x, y, sum, square_sum, scale,
+    offset, epsilon);
+  BNTrainingUpdateKernel2<<<1, std::min(C, static_cast<size_t>(GET_THREADS)), 0, cuda_stream>>>(N, C, H, W, sum,
+    square_sum, mean, variance, factor, mean_output, variance_output, batch_mean, batch_variance);
   return;
 }
 
 template CUDA_LIB_EXPORT void BNTrainingUpdate<half>(size_t N, size_t C, size_t H, size_t W, half *x, half *y,
                                                      float *sum, float *square_sum, float *scale, float *offset,
                                                      float *mean, float *variance, float factor, float epsilon,
-                                                     float *mean_output, float *variance_output,
-                                                     float *save_mean_reduce_output, float *save_variance_reduce_output,
-                                                     cudaStream_t cuda_stream);
+                                                     float *mean_output, float *variance_output, float *batch_mean,
+                                                     float *batch_variance, cudaStream_t cuda_stream);
 
 template CUDA_LIB_EXPORT void BNTrainingUpdate<float>(size_t N, size_t C, size_t H, size_t W, float *x, float *y,
                                                       float *sum, float *square_sum, float *scale, float *offset,
                                                       float *mean, float *variance, float factor, float epsilon,
-                                                      float *mean_output, float *variance_output,
-                                                      float *save_mean_reduce_output,
-                                                      float *save_variance_reduce_output, cudaStream_t cuda_stream);
+                                                      float *mean_output, float *variance_output, float *batch_mean,
+                                                      float *batch_variance, cudaStream_t cuda_stream);

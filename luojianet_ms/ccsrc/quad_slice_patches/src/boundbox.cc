@@ -79,11 +79,11 @@ double BoundaryBox::GetDims() const {
 	return dis;
 }
 
-int BoundaryBox::GetWidth() const {
+int BoundaryBox::GetHeight() const {
 	return (UpperBound.x - LowerBound.x);
 }
 
-int BoundaryBox::GetHeight() const {
+int BoundaryBox::GetWidth() const {
 	return (UpperBound.y - LowerBound.y);
 }
 

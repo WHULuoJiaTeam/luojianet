@@ -245,7 +245,9 @@ BoundaryBox get_mini_rect(Mat& top_level_mask) {
 	return BoundaryBox(Vector2(min_true_x, min_true_y), Vector2(max_true_x, max_true_y));
 }
 
-void QuadTree::get_multiscale_object(Mat& ori_level_image, Mat& ori_level_label, int max_searchsize) {
+void QuadTree::get_multiscale_object(Mat& ori_level_image, Mat& ori_level_label, int max_searchsize,
+                                     int init_rows, int init_cols,
+                                     int row_cord, int col_cord, int current_block_rows, int current_block_cols) {
 	BoundaryBox top_mini_rect;
 	Vector2 lowerbound, upperbound;  // cord of original data.
 	float ratio = ori_level_image.cols / 16.0;
@@ -276,26 +278,46 @@ void QuadTree::get_multiscale_object(Mat& ori_level_image, Mat& ori_level_label,
 		if ((rect_height <= max_searchsize) &&
 			  (rect_width <= max_searchsize) &&
 				(rect_size <= max_searchsize * max_searchsize)) {
-			Mat image_object = ori_level_image(Range(ori_mini_rect.LBx(), ori_mini_rect.UBx()), Range(ori_mini_rect.LBy(), ori_mini_rect.UBy()));
-			Mat label_object = ori_level_label(Range(ori_mini_rect.LBx(), ori_mini_rect.UBx()), Range(ori_mini_rect.LBy(), ori_mini_rect.UBy()));
 
-      // Ignore poor-information matrix.
-      Mat gray_image_object;
-      cvtColor(image_object, gray_image_object, COLOR_BGR2GRAY);
-      double info_ratio = (double)countNonZero(gray_image_object) / (double)(gray_image_object.rows * gray_image_object.cols);
-      if (info_ratio < 0.1) {
+      int current_row_cord = row_cord + ori_mini_rect.LBx();
+      int current_col_cord = col_cord + ori_mini_rect.LBy();
+      if (current_row_cord >= init_rows || current_col_cord >= init_cols) {
         continue;
       }
 
-			// For numpy, convert datatype to the CV_8U.
-			Mat image_object_8UC3(rect_height, rect_width, CV_8UC3);
-			image_object.copyTo(image_object_8UC3);
+      if ((current_row_cord + rect_height) > init_rows) {
+        rect_height = init_rows - current_row_cord;
+      }
 
-			Mat label_object_8UC1(rect_height, rect_width, CV_8UC1);
-			label_object.copyTo(label_object_8UC1);
+      if ((current_col_cord + rect_width) > init_cols) {
+        rect_width = init_cols - current_col_cord;
+      }
 
-			image_objects.push_back(image_object_8UC3);
-			label_objects.push_back(label_object_8UC1);
+      search_patch_cord.first.push_back(current_row_cord);
+      search_patch_cord.second.push_back(current_col_cord);
+      search_patch_block_size.first.push_back(rect_height);
+      search_patch_block_size.second.push_back(rect_width);
+        
+			//Mat image_object = ori_level_image(Range(ori_mini_rect.LBx(), ori_mini_rect.UBx()), Range(ori_mini_rect.LBy(), ori_mini_rect.UBy()));
+			//Mat label_object = ori_level_label(Range(ori_mini_rect.LBx(), ori_mini_rect.UBx()), Range(ori_mini_rect.LBy(), ori_mini_rect.UBy()));
+
+   //   // Ignore poor-information matrix.
+   //   Mat gray_image_object;
+   //   cvtColor(image_object, gray_image_object, COLOR_BGR2GRAY);
+   //   double info_ratio = (double)countNonZero(gray_image_object) / (double)(gray_image_object.rows * gray_image_object.cols);
+   //   if (info_ratio < 0.5) {
+   //     continue;
+   //   }
+
+			//// For numpy, convert datatype to the CV_8U.
+			//Mat image_object_8UC3(rect_height, rect_width, CV_8UC3);
+			//image_object.copyTo(image_object_8UC3);
+
+			//Mat label_object_8UC1(rect_height, rect_width, CV_8UC1);
+			//label_object.copyTo(label_object_8UC1);
+
+			//image_objects.push_back(image_object_8UC3);
+			//label_objects.push_back(label_object_8UC1);
 		}
 	}
 }

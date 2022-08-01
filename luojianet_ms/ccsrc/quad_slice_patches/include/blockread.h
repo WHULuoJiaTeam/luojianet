@@ -96,12 +96,12 @@ class BlockRead {
   /// \param[in] image, image size is (block_size, block_size).
   /// \param[in] label, label size is (block_size, block_size).
   /// \param[in] max_searchsize, patch size is equal to max_searchsize.
-  void get_slice_patches(Mat& image, Mat& label, int max_searchsize);
+  //void get_slice_patches(Mat& image, Mat& label, int max_searchsize);
 
 	vector<Vector2> get_related_block_cord() const { return related_block_cord; }
 
-  vector<Mat> get_image_patches() const { return image_patches; }
-  vector<Mat> get_label_patches() const { return label_patches; }
+  //vector<Mat> get_image_patches() const { return image_patches; }
+  //vector<Mat> get_label_patches() const { return label_patches; }
 
  private:
 	Mat_<uchar> class_attribute;  // class_attribute matrix.
@@ -110,8 +110,8 @@ class BlockRead {
 
 	vector<Vector2> related_block_cord;  	// cord vector of class realted block.
 
-  vector<Mat> image_patches;  // random_search image results.
-  vector<Mat> label_patches;  // random_search label results.
+  //vector<Mat> image_patches;  // random_search image results.
+  //vector<Mat> label_patches;  // random_search label results.
 };
 
 }  // namespace luojianet_ms

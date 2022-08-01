@@ -90,14 +90,20 @@ class QuadTree {
 	/// \param[in] ori_level_image, original level pyramid image.
 	/// \param[in] ori_level_label, original level pyramid label.
 	/// \param[in] max_searchsize, the maximum search size in origin cord.
-	void get_multiscale_object(Mat& ori_level_image, Mat& ori_level_label, int max_searchsize);
+	//void get_multiscale_object(Mat& ori_level_image, Mat& ori_level_label, int max_searchsize);
+  void get_multiscale_object(Mat& ori_level_image, Mat& ori_level_label, int max_searchsize,
+                             int init_rows, int init_cols,
+                             int row_cord, int col_cord, int current_block_rows, int current_block_cols);
 
 	/// \Release the memory.
 	/// \param[in] root_node, init is the root node, after quadtree subdivide, root_node has all nodes for this area.
 	void delete_quadtree(QuadNode* root_node);
 
-	vector<Mat> get_image_objects() const { return image_objects; }
-	vector<Mat> get_label_objects() const { return label_objects; }
+	//vector<Mat> get_image_objects() const { return image_objects; }
+	//vector<Mat> get_label_objects() const { return label_objects; }
+
+  pair<vector<int>, vector<int>> get_patch_cord() const { return search_patch_cord; }
+  pair<vector<int>, vector<int>> get_block_size() const { return search_patch_block_size; }
 
 	//void quad_search();
 
@@ -125,8 +131,11 @@ class QuadTree {
 
 	vector<Mat_<uchar>> top_level_mask;  // masks for grid search results.
 
-	vector<Mat> image_objects;  // random_search image results.
-	vector<Mat> label_objects;  // random_search label results.
+  pair<vector<int>, vector<int>> search_patch_cord;  // <row_cord, col_cord>
+  pair<vector<int>, vector<int>> search_patch_block_size;  // <row_block, col_block>
+
+	//vector<Mat> image_objects;  // random_search image results.
+	//vector<Mat> label_objects;  // random_search label results.
 };
 
 }  // namespace luojianet_ms

@@ -24,7 +24,7 @@ def run_Gid(ClassN):
     weight_decay = 1e-5
     batch_size_train = 2
     batch_size_test = 2
-    mioubest = 60
+    mioubest = 55
 
     image_dir = '/media/xx/PortableSSD/GID5/image/'  # original image
     encode_label_dir = '/media/xx/PortableSSD/GID5/label/'  # encoded label

@@ -8,13 +8,15 @@ import luojianet_ms.common.dtype as mstype
 from metrics import SegmentationMetric
 import luojianet_ms.ops.operations as P
 
-def run_Gid(ClassN, dataset_path, checkpoint_path):
+def run_Gid(ClassN, checkpoint_path):
     ##################### define parameters #############################################################
-    batch_size_test = 24
-    dataset_test = dataset_path
+    batch_size_test = 2
+    encode_label_dir = '/media/xx/PortableSSD/GID5/label/'  # encoded label
+    color_label_dir = '/media/xx/PortableSSD/GID5/label_5classes/'  # color label
+
     ##################### load data ##################################################################
 
-    test_dataset_generator = Dataset_RealUD(json_path=dataset_test)
+    test_dataset_generator = Dataset_RealUD(encode_label_dir=encode_label_dir, color_label_dir=color_label_dir, json_path='./patch_info_valid.json')
     test_loader = dataset.GeneratorDataset(test_dataset_generator, ["data", "label"], shuffle=False)
     test_loader = test_loader.batch(batch_size_test)
 
@@ -55,15 +57,14 @@ if __name__ == '__main__':
     import luojianet_ms.context as context
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset_path', default=r'/media/vhr/0D7A09740D7A0974/zz/GID/LCC5C/LCC5C_b512_woOverlap_test.json')
-    parser.add_argument('--checkpoint_path', default='/media/vhr/0D7A09740D7A0974/zz/Luojianet_ckpt/hrnet/hrnet_best.ckpt')
+    parser.add_argument('--checkpoint_path', default='./ckpt/hrnet_21.ckpt')
     parser.add_argument('--device_target', default='GPU')
     args = parser.parse_args()
 
-    # os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-    # os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+    os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     context.set_context(mode=context.GRAPH_MODE, device_target=args.device_target)
-    run_Gid(6, args.dataset_path, args.checkpoint_path)
+    run_Gid(6, args.checkpoint_path)
 
 
 

@@ -8,8 +8,11 @@
 
 大幅面四叉树方法具体介绍和使用教程可参考 https://luojianet-frontend.obs.cn-central-221.ovaijisuan.com/static/docs/luojianet-docs-r1.7/tutorials/experts/build_zh_cn/html/large_image_processing/binary_tree.html
 
-1. 下载GID数据集 http://captain.whu.edu.cn/GID/，将数据集整理成如下格式：
+1. 下载GID数据集
+http://captain.whu.edu.cn/GID/
+将数据集整理成如下格式：
 
+```
     |──GID5 			
          |──image(original data)
          |    |──GF2_PMS1__L1A0000647767-MSS1.tif
@@ -26,6 +29,7 @@
          |    |──GF2_PMS2__L1A0000635115-MSS2_label.tif
          |    |──GF2_PMS2__L1A0000788763-MSS2_label.tif    
          |    └─ ...
+```
 
 2.在train_hrnet_new.py脚本中设置好相应的文件和训练相关参数，即可运行python train_hrnet_new.py进行训练。
 

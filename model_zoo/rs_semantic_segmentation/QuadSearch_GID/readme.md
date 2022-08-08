@@ -1,7 +1,7 @@
 ### 基于大幅面四叉树索引的高分辨率遥感影像语义分割
 
 模型包含常用的语义分割网络如下：
-1.HRNet
+HRNet
 论文：《Deep High-Resolution Representation Learning for Visual Recognition》
 
 链接：[https://arxiv.org/abs/1908.07919](http://)

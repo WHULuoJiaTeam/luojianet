@@ -6,7 +6,8 @@ HRNet
 
 链接：[https://arxiv.org/abs/1908.07919](http://)
 
-大幅面四叉树方法具体介绍和使用教程可参考 https://luojianet-frontend.obs.cn-central-221.ovaijisuan.com/static/docs/luojianet-docs-r1.7/tutorials/experts/build_zh_cn/html/large_image_processing/binary_tree.html
+大幅面四叉树方法具体介绍和使用教程可参考
+https://luojianet-frontend.obs.cn-central-221.ovaijisuan.com/static/docs/luojianet-docs-r1.7/tutorials/experts/build_zh_cn/html/large_image_processing/binary_tree.html
 
 1. 下载GID数据集
 http://captain.whu.edu.cn/GID/
@@ -30,6 +31,8 @@ http://captain.whu.edu.cn/GID/
          |    |──GF2_PMS2__L1A0000788763-MSS2_label.tif    
          |    └─ ...
 ```
+
+有关训练集和验证集，已提供划分好的文件，详见文件夹下的./datalist/train.txt文件和./datalist/valid.txt文件。
 
 2.在train_hrnet_new.py脚本中设置好相应的文件和训练相关参数，即可运行python train_hrnet_new.py进行训练。
 

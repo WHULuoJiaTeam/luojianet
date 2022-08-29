@@ -92,56 +92,56 @@ void BlockRead::quick_statistic_class(Mat& label, int block_index, int n_classes
 	}
 }
 
-// Funtion used in 'get_class_attribute'.
-void BlockRead::get_slice_patches(Mat& image, Mat& label, int max_searchsize) {
-  // Ignore zero-matrix block_size data.
-  Mat gray_image;
-  cvtColor(image, gray_image, COLOR_BGR2GRAY);
-  if (cv::countNonZero(gray_image) < 1) {
-    return;
-  }
-
-  int rows = image.rows;
-  int cols = image.cols;
-  const int patch_size = max_searchsize;
-  for (int i = 0; i < rows; i += patch_size) {
-    for (int j = 0; j < cols; j += patch_size) {
-      int current_row_patch_size = patch_size;
-      int current_col_patch_size = patch_size;
-      if (i + patch_size > rows) {
-        current_row_patch_size = rows - i;
-      }
-      if (j + patch_size > cols) {
-        current_col_patch_size = cols - j;
-      }
-
-      Rect roi(j, i, current_col_patch_size, current_row_patch_size);
-      Mat image_patch = image(roi);
-      Mat label_patch = label(roi);
-
-      // If need, make border the data patch, to size (max_searchsize, max_searchsize).
-      pair<Mat, Mat> patch_border_result = make_border(image_patch, label_patch, patch_size);
-
-      // Ignore poor-information matrix.
-      Mat gray_image_patch;
-      cvtColor(patch_border_result.first, gray_image_patch, COLOR_BGR2GRAY);
-      double info_ratio = (double)countNonZero(gray_image_patch) / (double)(gray_image_patch.rows * gray_image_patch.cols);
-      if (info_ratio < 0.1) {
-        continue;
-      }
-
-      // For numpy, convert datatype to the CV_8U.
-      Mat image_patch_8UC3(patch_size, patch_size, CV_8UC3);
-      patch_border_result.first.copyTo(image_patch_8UC3);
-
-      Mat label_patch_8UC1(patch_size, patch_size, CV_8UC1);
-      patch_border_result.second.copyTo(label_patch_8UC1);
-
-      image_patches.push_back(image_patch_8UC3);
-      label_patches.push_back(label_patch_8UC1);
-    }
-  }
-}
+//// Funtion used in 'get_class_attribute'.
+//void BlockRead::get_slice_patches(Mat& image, Mat& label, int max_searchsize) {
+//  // Ignore zero-matrix block_size data.
+//  Mat gray_image;
+//  cvtColor(image, gray_image, COLOR_BGR2GRAY);
+//  if (cv::countNonZero(gray_image) < 1) {
+//    return;
+//  }
+//
+//  int rows = image.rows;
+//  int cols = image.cols;
+//  const int patch_size = max_searchsize;
+//  for (int i = 0; i < rows; i += patch_size) {
+//    for (int j = 0; j < cols; j += patch_size) {
+//      int current_row_patch_size = patch_size;
+//      int current_col_patch_size = patch_size;
+//      if (i + patch_size > rows) {
+//        current_row_patch_size = rows - i;
+//      }
+//      if (j + patch_size > cols) {
+//        current_col_patch_size = cols - j;
+//      }
+//
+//      Rect roi(j, i, current_col_patch_size, current_row_patch_size);
+//      Mat image_patch = image(roi);
+//      Mat label_patch = label(roi);
+//
+//      // If need, make border the data patch, to size (max_searchsize, max_searchsize).
+//      pair<Mat, Mat> patch_border_result = make_border(image_patch, label_patch, patch_size);
+//
+//      // Ignore poor-information matrix.
+//      Mat gray_image_patch;
+//      cvtColor(patch_border_result.first, gray_image_patch, COLOR_BGR2GRAY);
+//      double info_ratio = (double)countNonZero(gray_image_patch) / (double)(gray_image_patch.rows * gray_image_patch.cols);
+//      if (info_ratio < 0.1) {
+//        continue;
+//      }
+//
+//      // For numpy, convert datatype to the CV_8U.
+//      Mat image_patch_8UC3(patch_size, patch_size, CV_8UC3);
+//      patch_border_result.first.copyTo(image_patch_8UC3);
+//
+//      Mat label_patch_8UC1(patch_size, patch_size, CV_8UC1);
+//      patch_border_result.second.copyTo(label_patch_8UC1);
+//
+//      image_patches.push_back(image_patch_8UC3);
+//      label_patches.push_back(label_patch_8UC1);
+//    }
+//  }
+//}
 
 /// Get the class attribute matrix of bif_input data:
 /// block_index	    class1       class2    ...
@@ -205,8 +205,9 @@ void BlockRead::get_class_attribute(string& image_path, string& label_path,
   		if (j + block_size > init_cols) {
   			current_block_cols = init_cols - j;
   		}
-      Mat image = gdal2cv.gdal_read(image_path, j, i, current_block_cols, current_block_rows);
-  		Mat label = gdal2cv.gdal_read(label_path, j, i, current_block_cols, current_block_rows);
+
+      Mat image = gdal2cv.gdal_read(image_path, i, j, current_block_rows, current_block_cols);
+      Mat label = gdal2cv.gdal_read(label_path, i, j, current_block_rows, current_block_cols);
   
   		// Make border the residule block to standard BLOCK_SIZE for quick statistic.
   		if (image.rows < block_size || image.cols < block_size) {
@@ -215,14 +216,14 @@ void BlockRead::get_class_attribute(string& image_path, string& label_path,
   			Mat label_border = border_result.second;
 
         // Get slice pathces from block data.
-        get_slice_patches(image_border, label_border, max_searchsize);
+        //get_slice_patches(image_border, label_border, max_searchsize);
 
   			quick_statistic_class(label_border, block_index, n_classes, ignore_label);
 
   		}
   		else {
         // Get slice pathces from block data.
-        get_slice_patches(image, label, max_searchsize);
+        //get_slice_patches(image, label, max_searchsize);
 
   			quick_statistic_class(label, block_index, n_classes, ignore_label);
   		}

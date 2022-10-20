@@ -10,7 +10,7 @@ HRNet
 https://luojianet-frontend.obs.cn-central-221.ovaijisuan.com/static/docs/luojianet-docs-r1.7/tutorials/experts/build_zh_cn/html/large_image_processing/binary_tree.html
 
 1. 下载GID数据集
-http://captain.whu.edu.cn/GID/
+http://captain-whu.edu.cn/GID/
 将数据集整理成如下格式：
 
 ```

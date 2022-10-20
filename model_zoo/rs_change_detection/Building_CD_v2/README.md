@@ -5,7 +5,8 @@
 代码提供者：[gaosong@whu.edu.cn](gaosong@whu.edu.cn)  
 ![网络示意图](image.png)
 &emsp;
-1. 下载遥感建筑物变化检测影像数据集，如WHU ChangeDetection等
+1. 下载遥感建筑物变化检测影像数据集，如WHU building ChangeDetection等
+>WHU building ChangeDetection:http://gpcv.whu.edu.cn/data/building_dataset.html
 2. 将数据集整理成如下格式：  
 注意：A、B、building_A、building_B、label中的图片名字必须对应！  
 其中，A，building_A分别为A时相影像以及对应的建筑物掩膜，B，building_B分别为B时相影像以及对应的建筑物掩膜，label为对应的变化掩膜

@@ -2,7 +2,8 @@
 ![HRNet-3D网络结构](HRNet3D.PNG)
 
 1.数据集组织格式
-
+>数据集链接
+>WHU_OHS:http://irsip.whu.edu.cn/resources/WHU_OHS_show.php
 将数据集的影像（训练集和测试集的所有影像）放入"image"文件夹，训练集标签放入"train"文件夹，测试集标签放入"test"文件夹，标签的名字和对应影像的名字相同，例如，将数据组织成以下格式：
 
     └── data

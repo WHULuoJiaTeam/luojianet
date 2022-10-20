@@ -13,6 +13,11 @@
 
 
 1. 下载常用的遥感分类影像数据集，如WHU-RS19、UCMD以及NWPU DataSet等
+>数据集链接：
+WHU-RS19:https://captain-whu.github.io/BED4RS/
+UCMD:http://weegee.vision.ucmerced.edu/datasets/landuse.html
+NWPU DataSet:https://arxiv.org/abs/1703.00121
+>
 2. 将数据集整理成如下格式：
 ```
 .. code-block::

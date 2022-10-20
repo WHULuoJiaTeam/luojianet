@@ -6,6 +6,7 @@
 ![网络图](image.png)
 &emsp;
 1. 下载常用的遥感变化检测影像数据集，如WHU ChangeDetection等带对应时相标签的数据集（按照论文内的设置）
+>WHU building ChangeDetection:http://gpcv.whu.edu.cn/data/building_dataset.html
 2. 将数据集整理成如下格式：
 注意：A、B、label中的图片名字必须对应！
 ```

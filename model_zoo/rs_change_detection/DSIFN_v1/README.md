@@ -5,7 +5,9 @@
 代码参考：[https://github.com/GeoZcx/A-deeply-supervised-image-fusion-network-for-change-detection-in-remote-sensing-images](https://github.com/GeoZcx/A-deeply-supervised-image-fusion-network-for-change-detection-in-remote-sensing-images)  
 ![网络图](image.png)
 &emsp;
-1. 下载常用的遥感变化检测影像数据集，如WHU ChangeDetection, LEVIR-CD等
+1. 下载常用的遥感变化检测影像数据集，如WHU building ChangeDetection, LEVIR-CD等
+>WHU building ChangeDetection:http://gpcv.whu.edu.cn/data/building_dataset.html
+>LEVIR-CD:https://justchenhao.github.io/LEVIR/
 2. 将数据集整理成如下格式：
 注意：A、B、label中的图片名字必须对应！
 ```

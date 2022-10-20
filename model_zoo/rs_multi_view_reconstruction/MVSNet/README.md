@@ -6,6 +6,7 @@
 
 ### 数据准备
 下载WHU—MVS数据集
+http://gpcv.whu.edu.cn/data/WHU_MVS_Stereo_dataset.html
 
 ### 训练
 在LuoJiaNET环境下， 执行以下命令，进行网络的训练：

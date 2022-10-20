@@ -7,7 +7,7 @@
 
 ![输入图片说明](UNet.JPG)
 
-1.下载GID 数据集 http://captain-whu.edu.cn/GID/ 数据不裁剪，使用先标记再分块读入的方式，标记json文档格式如下：
+1.下载GID 数据集 https://captain-whu.github.io/GID/ 数据不裁剪，使用先标记再分块读入的方式，标记json文档格式如下：
 
 ```
 {

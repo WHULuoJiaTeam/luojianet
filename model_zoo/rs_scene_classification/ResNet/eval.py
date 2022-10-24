@@ -8,8 +8,8 @@ from luojianet_ms.train.serialization import load_checkpoint, load_param_into_ne
 
 from config import *
 from untils import create_dataset,CrossEntropySmooth
-from vgg import *
-# from Resnet import *
+# from vgg import *
+from Resnet import *
 # from Resnet_se import *
 
 set_seed(1)
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     step_size = dataset.get_dataset_size()
 
     # define net
-    net = vgg11_bn(num_classes=config.class_num)
+    net = resnet18(num_classes=config.class_num)
 
     # load checkpoint
     load_param_into_net(net, param_dict)
